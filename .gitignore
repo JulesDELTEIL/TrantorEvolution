@@ -8,7 +8,7 @@ vgcore.*
 build/
 
 # Files Created
-default_project_name
+zappy_*
 
 # Doc
 latex/

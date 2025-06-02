@@ -1,5 +1,5 @@
 name: Mirroring To Epitech
-run-name: Mirroring default_project_name
+run-name: Mirroring TrantorEvolution
 
 on:
   pull_request:

@@ -1,5 +1,5 @@
 name: Checker
-run-name: Checking default_project_name
+run-name: Checking TrantorEvolution
 
 on:
   pull_request:
@@ -14,7 +14,7 @@ jobs:
       - name: Set up Git repository
         uses: actions/checkout@v4
 
-      - name: Check default_project_name Coding Style
+      - name: Check TrantorEvolution Coding Style
         run: check.sh $(pwd) $(pwd) && while IFS=":" read -r file line error type ; do >&2 echo "::error title=$error coding style error ,file=$file,line=$line::$type" ; done < coding-style-reports.log
       - name: Is there coding style
         run: if [ -s coding-style-reports.log ]; then exit 1 ; fi
@@ -31,4 +31,4 @@ jobs:
         working-directory: ./build/
         run: cmake .. -G "Unix Makefiles" -DCMAKE_BUILD_TYPE=Release && cmake -\-build .
       - name: Check for executable
-        run: if [ ! -f "./default_project_name" ]; then exit 1; fi
+        run: if [ ! -f "./TrantorEvolution" ]; then exit 1; fi

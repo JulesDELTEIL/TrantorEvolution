@@ -1,4 +1,4 @@
-# default_project_name
+# TrantorEvolution
 
 ## Support
 

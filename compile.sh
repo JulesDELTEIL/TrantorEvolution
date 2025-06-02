@@ -2,7 +2,10 @@ clear
 if [[ $1 == "re" ]]
 then
     echo "------------RE-BUILD"------------
-    rm -rf ./build/ ./default_project_name
+    if [ -d "./build/" ]
+    then
+        rm -rf ./build/ ./zappy_*
+    fi
     mkdir ./build/ && cd ./build/
     cmake .. -G "Unix Makefiles" -DCMAKE_BUILD_TYPE=Release
     cmake --build .
@@ -12,7 +15,10 @@ then
 elif [[ $1 == "d" ]]
 then
     echo ""------------DEBUG"------------"
-    rm -rf ./build/ ./default_project_name
+    if [ -d "./build/" ]
+    then
+        rm -rf ./build/ ./zappy_*
+    fi
     mkdir ./build/ && cd ./build/
     cmake .. -G "Unix Makefiles" -DCMAKE_BUILD_TYPE=Debug
     cmake --build . -v
@@ -22,7 +28,7 @@ then
 elif [[ $1 == "c" ]]
 then
     echo "------------CLEAR------------"
-    rm -rf ./build/ ./default_project_name
+    rm -rf ./build/ ./zappy_*
     echo "------------END------------"
 
 else
@@ -32,6 +38,7 @@ else
         mkdir ./build/ && cd ./build/
         cmake .. -G "Unix Makefiles" -DCMAKE_BUILD_TYPE=Release
         cd ..
+        cmake --build ./build/
     else
         cmake --build ./build/
     fi
