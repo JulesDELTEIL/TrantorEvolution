@@ -1,0 +1,34 @@
+name: Checker
+run-name: Checking default_project_name
+
+on:
+  pull_request:
+    branches-ignore:
+      - 'ga-ignore-*'
+
+jobs:
+  check_coding_style:
+    runs-on: ubuntu-latest
+    container:  ghcr.io/epitech/coding-style-checker:latest
+    steps:
+      - name: Set up Git repository
+        uses: actions/checkout@v4
+
+      - name: Check default_project_name Coding Style
+        run: check.sh $(pwd) $(pwd) && while IFS=":" read -r file line error type ; do >&2 echo "::error title=$error coding style error ,file=$file,line=$line::$type" ; done < coding-style-reports.log
+      - name: Is there coding style
+        run: if [ -s coding-style-reports.log ]; then exit 1 ; fi
+    
+  check_program_compilation:
+    needs: [check_coding_style]
+    runs-on: ubuntu-latest
+    container: epitechcontent/epitest-docker
+    steps:
+      - uses: actions/checkout@v4
+      - name: Create build folder
+        run: mkdir ./build/
+      - name: Compilation
+        working-directory: ./build/
+        run: cmake .. -G "Unix Makefiles" -DCMAKE_BUILD_TYPE=Release && cmake -\-build .
+      - name: Check for executable
+        run: if [ ! -f "./default_project_name" ]; then exit 1; fi
