@@ -16,13 +16,22 @@
 
     #define MIN_PORT 1025
     #define MAX_PORT 65535
+    #define MIN_MAP_SIZE 1
+    #define MAX_MAP_SIZE 100
+    #define MIN_CLIENTS 0
+    #define MIN_FREQ 0
+    #define MIN_NB_ARGS 12
 
-    #define ARG_PORT "-p"
-    #define ARG_MAP "-m"
-    #define ARG_DEBUG "-d"
+static const char ARG_PORT[] = "-p";
+static const char ARG_DEBUG[] = "-d";
+static const char ARG_WIDTH[] = "-x";
+static const char ARG_HEIGHT[] = "-y";
+static const char ARG_CLIENTS[] = "-c";
+static const char ARG_FREQ[] = "-f";
 
 static const char *USAGE_MSG[] = {
-    "./zappy_server -p <port> [-d]\n"
+    "./zappy_server -p <port> -x <width max 100> -y <height max 100> ",
+    "-n <name1 name2 ...> -c <clientsNb> -f <freq> [-d]\n"
 };
 
 int display_usage(void);

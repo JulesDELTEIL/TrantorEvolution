@@ -15,7 +15,7 @@ int main(int ac, char *av[])
     arguments_t args = {0};
     int rc = DEFAULTRC;
 
-    if (ac < 3 || ac > 4) {
+    if (ac < MIN_NB_ARGS) {
         display_usage();
         return 84;
     }
