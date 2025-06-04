@@ -50,12 +50,19 @@ typedef struct fdarray_s {
 
 /*
 struct arguments_t :
- - char map[BUFFSIZE]
  - int port
+ - int width of the map
+ - int height of the map
+ - int clientsNb
+ - int freq reciprocal of time unit
  - bool debug
 */
 typedef struct arguments_s {
     int port;
+    int width;
+    int height;
+    int clientnb;
+    int freq;
     bool debug;
 } arguments_t;
 
