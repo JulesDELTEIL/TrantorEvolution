@@ -1,17 +1,26 @@
 project(zappy_server)
 
 ########## SETUP ##########
-set(SERV_SRC_DIR "${PROJECT_SOURCE_DIR}/src/")
-set(SERV_HDR_DIR "${PROJECT_SOURCE_DIR}/include/")
+set(SERVER_SRC_DIR "${PROJECT_SOURCE_DIR}/src/")
+set(SERVER_HDR_DIR "${PROJECT_SOURCE_DIR}/include/")
 
 ########## BINARY ##########
 add_executable( ${PROJECT_NAME}
-    ${SERV_SRC_DIR}main.c
+    ${SERVER_SRC_DIR}main.c
+    ${SERVER_SRC_DIR}args.c
+    ${SERVER_SRC_DIR}usage.c
+    ${SERVER_SRC_DIR}setup.c
+    ${SERVER_SRC_DIR}loop.c
+    ${SERVER_SRC_DIR}connection.c
+    ${SERVER_SRC_DIR}transmission.c
+    ${SERVER_SRC_DIR}commands.c
+    ${SERVER_SRC_DIR}returnwitherror.c
+    ${SERVER_SRC_DIR}end.c
 )
 
 ########## LINKAGE ##########
 target_include_directories( ${PROJECT_NAME}
     PRIVATE
         ${HDR_DIR}
-        ${SERV_HDR_DIR}
+        ${SERVER_HDR_DIR}
 )
