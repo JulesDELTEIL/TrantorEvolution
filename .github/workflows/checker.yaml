@@ -31,4 +31,4 @@ jobs:
         working-directory: ./build/
         run: cmake .. -G "Unix Makefiles" -DCMAKE_BUILD_TYPE=Release && cmake -\-build .
       - name: Check for executable
-        run: if [ ! -f "./zappy_qui" ]; then exit 84; fi; if [ ! -f "./zappy_server" ]; then exit 84; fi
+        run: if [ ! -f "./zappy_gui" ]; then exit 84; fi; if [ ! -f "./zappy_server" ]; then exit 84; fi
