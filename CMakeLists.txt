@@ -9,5 +9,5 @@ set(HDR_DIR "${PROJECT_SOURCE_DIR}/include/")
 
 ########## BINARYs ##########
 add_subdirectory(server)
-add_subdirectory(ui)
+add_subdirectory(gui)
 # add_subdirectory(ia)
