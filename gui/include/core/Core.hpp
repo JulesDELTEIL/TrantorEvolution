@@ -9,8 +9,10 @@
     #define CORE_HPP_
 
     #include <map>
+    #include <memory>
 
     #include "core/Engine.hpp"
+    #include "visual/IMenu.hpp"
 
 namespace gui {
 namespace core {
@@ -27,6 +29,8 @@ class Core {
 
         void display(void);
         void events(void);
+
+        std::map<visual::MenuType_e, std::unique_ptr<visual::IMenu>> _menus;
 
 };
 
