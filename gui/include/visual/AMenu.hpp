@@ -16,12 +16,6 @@
 namespace gui {
 namespace visual {
 
-enum MenuType_e {
-    MAIN,
-    LOBBY,
-    IN_GAME,
-};
-
 class AMenu : public IMenu {
     public:
         AMenu() = default;

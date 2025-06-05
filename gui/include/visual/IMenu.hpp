@@ -10,6 +10,15 @@
 
     #include <SFML/Window/Event.hpp>
 
+namespace gui {
+namespace visual {
+
+enum MenuType_e {
+    MAIN,
+    LOBBY,
+    IN_GAME,
+};
+
 class IMenu {
     public:
         virtual void display(void) const = 0;
@@ -17,5 +26,8 @@ class IMenu {
     private:
 
 };
+
+} // visual
+} // gui
 
 #endif
