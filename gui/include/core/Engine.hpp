@@ -2,7 +2,7 @@
 ** EPITECH PROJECT, 2025
 ** TrantorEvolution
 ** File description:
-** Window.hpp
+** Engine.hpp
 */
 
 #ifndef WINDOW_HPP_
@@ -18,8 +18,8 @@ namespace core {
 
     #define FRAMERATE_LIMIT 60
 
-struct Window {
-    Window();
+struct Engine {
+    Engine();
     sf::RenderWindow window;
     sf::Event events;
     sf::Clock runTime;

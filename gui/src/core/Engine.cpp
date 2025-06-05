@@ -2,15 +2,15 @@
 ** EPITECH PROJECT, 2025
 ** TrantorEvolution
 ** File description:
-** Window.cpp
+** Engine.cpp
 */
 
-#include "core/Window.hpp"
+#include "core/Engine.hpp"
 
 namespace gui {
 namespace core {
 
-Window::Window(void) : window(sf::VideoMode({WIN_X, WIN_Y}), "TrantorEvolution", sf::Style::Default, sf::ContextSettings(32))
+Engine::Engine(void) : window(sf::VideoMode({WIN_X, WIN_Y}), "TrantorEvolution", sf::Style::Default, sf::ContextSettings(32))
 {
     // window.setVerticalSyncEnabled(true);
     window.setFramerateLimit(FRAMERATE_LIMIT);

@@ -10,7 +10,7 @@
 
     #include <map>
 
-    #include "core/Window.hpp"
+    #include "core/Engine.hpp"
 
 namespace gui {
 namespace core {
@@ -20,8 +20,13 @@ class Core {
         Core();
         ~Core() = default;
 
+        void run(void);
+
     private:
-        Window _window;
+        Engine _engine;
+
+        void display(void);
+        void events(void);
 
 };
 
