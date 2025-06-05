@@ -6,7 +6,7 @@ set(GUI_SRC_DIR "${PROJECT_SOURCE_DIR}/src/")
 set(GUI_HDR_DIR "${PROJECT_SOURCE_DIR}/include/")
 
 ########## PACKAGES ##########
-find_package(OpenGL 4.6 REQUIRED)
+find_package(OpenGL REQUIRED)
 find_package(SFML 2.5.1 COMPONENTS graphics REQUIRED)
 
 ########## BINARY ##########
