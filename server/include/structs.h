@@ -55,6 +55,7 @@ struct arguments_t :
  - int height of the map
  - int clientsNb
  - int freq reciprocal of time unit
+ - char **teamName stocking the name of every team
  - bool debug
 */
 typedef struct arguments_s {
@@ -63,6 +64,7 @@ typedef struct arguments_s {
     int height;
     int clientnb;
     int freq;
+    char **team_name;
     bool debug;
 } arguments_t;
 
