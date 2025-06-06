@@ -20,8 +20,10 @@ int main(int ac, char *av[])
         return 84;
     }
     get_args(ac, av, &args);
-    if (check_args(&args) == EXIT_FAILURE)
+    if (check_args(&args) == EXIT_FAILURE) {
+        display_usage();
         return PROCESS_FAILURE;
+    }
     rc = server_loop(&args);
     if (rc == EXIT_FAILURE)
         return PROCESS_FAILURE;
