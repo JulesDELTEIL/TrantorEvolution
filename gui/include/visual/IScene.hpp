@@ -2,24 +2,24 @@
 ** EPITECH PROJECT, 2025
 ** TrantorEvolution
 ** File description:
-** IMenu.hpp
+** IScene.hpp
 */
 
-#ifndef IMENU_HPP_
-    #define IMENU_HPP_
+#ifndef ISCENE_HPP_
+    #define ISCENE_HPP_
 
     #include <SFML/Window/Event.hpp>
 
 namespace gui {
 namespace visual {
 
-enum MenuType_e {
-    MAIN,
+enum Scene_e {
+    MENU,
     LOBBY,
     IN_GAME,
 };
 
-class IMenu {
+class IScene {
     public:
         virtual void display(void) const = 0;
         virtual void event(const sf::Event&) = 0;

@@ -12,7 +12,7 @@
     #include <memory>
 
     #include "core/Engine.hpp"
-    #include "visual/IMenu.hpp"
+    #include "visual/IScene.hpp"
 
 namespace gui {
 namespace core {
@@ -30,7 +30,8 @@ class Core {
         void display(void);
         void events(void);
 
-        std::map<visual::MenuType_e, std::unique_ptr<visual::IMenu>> _menus;
+        visual::Scene_e _selected_scene;
+        std::map<visual::Scene_e, std::unique_ptr<visual::IScene>> _scenes;
 
 };
 
