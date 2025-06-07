@@ -25,7 +25,7 @@ class ALayer : public ILayer {
         void display(sf::RenderTarget&) const override;
         void event(const sf::Event&) override;
 
-    private:
+    protected:
         std::vector<std::unique_ptr<IDrawable>> _drawables;
 
 };

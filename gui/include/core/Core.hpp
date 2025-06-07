@@ -31,7 +31,7 @@ class Core {
         void display(void);
         void events(void);
 
-        visual::Scene_e _selected_scene;
+        visual::Scene_e _selected_scene = visual::Scene_e::NONE;
         std::map<visual::Scene_e, std::unique_ptr<visual::IScene>> _scenes;
 
 };

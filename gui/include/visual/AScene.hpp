@@ -9,9 +9,10 @@
     #define ASCENE_HPP_
 
     #include <vector>
+    #include <memory>
 
-    #include "IScene.hpp"
-    #include "ILayer.hpp"
+    #include "visual/IScene.hpp"
+    #include "visual/ALayer.hpp"
 
 namespace gui {
 namespace visual {
@@ -24,8 +25,8 @@ class AScene : public IScene {
         void display(sf::RenderTarget&) const override;
         void event(const sf::Event&) override;
 
-    private:
-        std::vector<ILayer> _layers;
+    protected:
+        std::vector<std::unique_ptr<ILayer>> _layers;
 
 };
 

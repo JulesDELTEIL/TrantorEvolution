@@ -12,15 +12,15 @@ namespace visual {
 
 void AScene::display(sf::RenderTarget& target) const
 {
-    for (const ILayer& layer : _layers) {
-        layer.display(target);
+    for (const std::unique_ptr<ILayer>& layer : _layers) {
+        layer->display(target);
     }
 }
 
 void AScene::event(const sf::Event& event)
 {
-    for (ILayer& layer : _layers) {
-        layer.event(event);
+    for (std::unique_ptr<ILayer>& layer : _layers) {
+        layer->event(event);
     }
 }
 

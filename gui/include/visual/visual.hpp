@@ -15,9 +15,10 @@ namespace gui {
 namespace visual {
 
 enum Scene_e {
-    MENU = 0,
-    LOBBY = 1,
-    IN_GAME = 2,
+    NONE = 0,
+    MENU = 1,
+    LOBBY = 2,
+    IN_GAME = 3,
 };
 
 enum VisualType_e {

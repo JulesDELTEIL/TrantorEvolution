@@ -16,6 +16,8 @@ add_executable( ${PROJECT_NAME}
     ${GUI_SRC_DIR}visual/AScene.cpp
     ${GUI_SRC_DIR}visual/ALayer.cpp
     ${GUI_SRC_DIR}visual/ADrawable.cpp
+    ${GUI_SRC_DIR}visual/scenes/DefaultScene.cpp
+    ${GUI_SRC_DIR}visual/layers/DefaultLayer.cpp
 )
 
 ########## LINKAGE ##########
