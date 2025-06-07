@@ -2,24 +2,24 @@
 ** EPITECH PROJECT, 2025
 ** TrantorEvolution
 ** File description:
-** AMenu.hpp
+** AScene.hpp
 */
 
-#ifndef AMENU_HPP_
-    #define AMENU_HPP_
+#ifndef ASCENE_HPP_
+    #define ASCENE_HPP_
 
     #include <vector>
 
-    #include "IMenu.hpp"
+    #include "IScene.hpp"
     #include "ILayer.hpp"
 
 namespace gui {
 namespace visual {
 
-class AMenu : public IMenu {
+class AScene : public IScene {
     public:
-        AMenu() = default;
-        ~AMenu() = default;
+        AScene() = default;
+        ~AScene() = default;
 
         void display(void) const override;
         void event(const sf::Event&) override;

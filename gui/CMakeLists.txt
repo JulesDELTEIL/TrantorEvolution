@@ -13,7 +13,7 @@ add_executable( ${PROJECT_NAME}
     ${GUI_SRC_DIR}main.cpp
     ${GUI_SRC_DIR}core/Core.cpp
     ${GUI_SRC_DIR}core/Engine.cpp
-    ${GUI_SRC_DIR}visual/AMenu.cpp
+    ${GUI_SRC_DIR}visual/AScene.cpp
     ${GUI_SRC_DIR}visual/ALayer.cpp
 )
 
