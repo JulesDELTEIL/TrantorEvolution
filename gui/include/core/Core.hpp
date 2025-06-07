@@ -12,6 +12,7 @@
     #include <memory>
 
     #include "core/Engine.hpp"
+    #include "visual/visual.hpp"
     #include "visual/IScene.hpp"
 
 namespace gui {

@@ -27,7 +27,7 @@ void Core::run(void)
 void Core::display(void)
 {
     _engine.window.clear();
-    _scenes.at(_selected_scene)->display();
+    // _scenes.at(_selected_scene)->display(_engine.window);
     _engine.window.display();
 }
 
@@ -36,7 +36,7 @@ void Core::events(void)
     while (_engine.window.pollEvent(_engine.events)) {
         if (_engine.events.type == sf::Event::Closed)
             _engine.window.close();
-        _scenes.at(_selected_scene)->event(_engine.events);
+        // _scenes.at(_selected_scene)->event(_engine.events);
     }
 }
 

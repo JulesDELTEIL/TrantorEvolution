@@ -12,6 +12,7 @@
     #include <memory>
 
     #include "visual/ILayer.hpp"
+    #include "visual/IDrawable.hpp"
 
 namespace gui {
 namespace visual {
@@ -21,11 +22,11 @@ class ALayer : public ILayer {
         ALayer() = default;
         ~ALayer() = default;
 
-        void display(void) const override;
+        void display(sf::RenderTarget&) const override;
         void event(const sf::Event&) override;
 
     private:
-        std::vector<std::unique_ptr<int>> _drawables;
+        std::vector<std::unique_ptr<IDrawable>> _drawables;
 
 };
 

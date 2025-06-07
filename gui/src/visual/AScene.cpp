@@ -10,10 +10,10 @@
 namespace gui {
 namespace visual {
 
-void AScene::display(void) const
+void AScene::display(sf::RenderTarget& target) const
 {
     for (const ILayer& layer : _layers) {
-        layer.display();
+        layer.display(target);
     }
 }
 

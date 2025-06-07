@@ -10,16 +10,16 @@
 namespace gui {
 namespace visual {
 
-void ALayer::display(void) const
+void ALayer::display(sf::RenderTarget& target) const
 {
-    for (const std::unique_ptr<int>& draw : _drawables) {
-
+    for (const std::unique_ptr<IDrawable>& drawable : _drawables) {
+        target.draw(*drawable);
     }
 }
 
 void ALayer::event(const sf::Event& event)
 {
-    for (const std::unique_ptr<int>& draw : _drawables) {
+    for (std::unique_ptr<IDrawable>& drawable : _drawables) {
 
     }
 }

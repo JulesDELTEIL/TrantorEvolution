@@ -21,7 +21,7 @@ class AScene : public IScene {
         AScene() = default;
         ~AScene() = default;
 
-        void display(void) const override;
+        void display(sf::RenderTarget&) const override;
         void event(const sf::Event&) override;
 
     private:
