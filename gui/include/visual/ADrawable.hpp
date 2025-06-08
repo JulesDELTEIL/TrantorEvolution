@@ -15,7 +15,7 @@ namespace visual {
 
 class ADrawable : public IDrawable{
     public:
-        ADrawable() = default;
+        ADrawable(sf::Vector2f entity_origin);
         ~ADrawable() = default;
         VisualType_e getId(void) override;
 

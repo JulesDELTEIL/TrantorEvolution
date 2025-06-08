@@ -1,0 +1,31 @@
+/*
+** EPITECH PROJECT, 2025
+** TrantorEvolution
+** File description:
+** IEntity.hpp
+*/
+
+#ifndef IENTITY_HPP_
+    #define IENTITY_HPP_
+
+    #include <SFML/Graphics/RenderTarget.hpp>
+    #include <SFML/Window/Event.hpp>
+
+namespace gui {
+namespace visual {
+
+class IEntity {
+    public:
+        virtual void display(sf::RenderTarget&) const = 0;
+        virtual void event(const sf::Event&) = 0;
+
+        virtual void setPosition(const sf::Vector2f&) = 0;
+        virtual void updatePosition(const sf::Vector2f&) = 0;
+        virtual void setRotation(float) = 0;
+        virtual void updateRotation(float) = 0;
+};
+
+} // visual
+} // gui
+
+#endif

@@ -22,8 +22,8 @@ class AScene : public IScene {
         AScene() = default;
         ~AScene() = default;
 
-        void display(sf::RenderTarget&) const override;
-        void event(const sf::Event&) override;
+        void display(sf::RenderTarget&) const = 0;
+        void event(const sf::Event&) = 0;
 
     protected:
         std::vector<std::unique_ptr<ILayer>> _layers;

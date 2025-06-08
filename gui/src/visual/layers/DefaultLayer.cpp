@@ -10,9 +10,23 @@
 namespace gui {
 namespace visual {
 
-DefaultLayer::DefaultLayer() : ALayer()
+DefaultLayer::DefaultLayer()
 {
     
+}
+
+void DefaultLayer::display(sf::RenderTarget& target) const
+{
+    for (const std::unique_ptr<IEntity>& entity : _entities) {
+        entity->display(target);
+    }
+}
+
+void DefaultLayer::event(const sf::Event& event)
+{
+    for (std::unique_ptr<IEntity>& entity : _entities) {
+        entity->event(event);
+    }
 }
 
 } // visual

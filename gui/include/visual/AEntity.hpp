@@ -1,0 +1,38 @@
+/*
+** EPITECH PROJECT, 2025
+** TrantorEvolution
+** File description:
+** AEntity.hpp
+*/
+
+#ifndef AENTITY_HPP_
+    #define AENTITY_HPP_
+
+    #include <map>
+    #include <memory>
+
+    #include "visual/IEntity.hpp"
+    #include "visual/IDrawable.hpp"
+
+namespace gui {
+namespace visual {
+
+class AEntity : public IEntity{
+    public:
+        void display(sf::RenderTarget&) const = 0;
+        void event(const sf::Event&) = 0;
+
+        void setPosition(const sf::Vector2f&) override;
+        void updatePosition(const sf::Vector2f&) override;
+        void setRotation(float) override;
+        void updateRotation(float) override;
+
+    protected:
+        std::map<std::string, std::unique_ptr<IDrawable>> _drawables;
+        sf::Vector2f _origin;
+};
+
+} // visual
+} // gui
+
+#endif

@@ -12,7 +12,7 @@
     #include <memory>
 
     #include "visual/ILayer.hpp"
-    #include "visual/IDrawable.hpp"
+    #include "visual/IEntity.hpp"
 
 namespace gui {
 namespace visual {
@@ -22,11 +22,11 @@ class ALayer : public ILayer {
         ALayer() = default;
         ~ALayer() = default;
 
-        void display(sf::RenderTarget&) const override;
-        void event(const sf::Event&) override;
+        void display(sf::RenderTarget&) const = 0;
+        void event(const sf::Event&) = 0;
 
     protected:
-        std::vector<std::unique_ptr<IDrawable>> _drawables;
+        std::vector<std::unique_ptr<IEntity>> _entities;
 
 };
 

@@ -18,6 +18,9 @@ class DefaultScene : public AScene {
         DefaultScene();
         ~DefaultScene() = default;
 
+        void display(sf::RenderTarget&) const override;
+        void event(const sf::Event&) override;
+
     private:
 
 };

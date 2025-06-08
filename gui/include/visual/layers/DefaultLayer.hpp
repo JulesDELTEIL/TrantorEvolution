@@ -18,6 +18,9 @@ class DefaultLayer : public ALayer {
         DefaultLayer();
         ~DefaultLayer() = default;
 
+        void display(sf::RenderTarget&) const override;
+        void event(const sf::Event&) override;
+
     private:
 
 };
