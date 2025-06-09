@@ -6,13 +6,14 @@
 */
 
 #include "visual/entities/DefaultEntity.hpp"
+#include "visual/drawables/GrassTile.hpp"
 
 namespace gui {
 namespace visual {
 
 DefaultEntity::DefaultEntity()
 {
-
+    _drawables;
 }
 
 void DefaultEntity::display(sf::RenderTarget& win) const
@@ -23,7 +24,7 @@ void DefaultEntity::display(sf::RenderTarget& win) const
 
 void DefaultEntity::event(const sf::Event&)
 {
-    
+
 }
 
 } // visual

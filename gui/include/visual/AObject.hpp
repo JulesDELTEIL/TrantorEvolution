@@ -21,7 +21,7 @@ namespace visual {
 
 class AObject : public ADrawable, public sf::Sprite {
     public:
-        AObject(const sf::Vector2f&, const std::string& = "");
+        AObject(const sf::Vector2f&);
         ~AObject() = default;
 
     protected:
