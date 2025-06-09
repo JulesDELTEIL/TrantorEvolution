@@ -14,13 +14,7 @@
 static void handle_unrecognized_code(serverdata_t *sdata, client_t *client,
     void *db)
 {
-    uint8_t data[1024];
-    uint8_t code = 4;
-
-    read(client->fd, data, 1024);
-    output_fd(client, 4, NULL, 0);
-    memcpy(data, &code, 1);
-    debug_output(data, 1);
+    send_data(client, WRC, NULL, 0);
 }
 
 static handler_t get_handler(uint8_t code)

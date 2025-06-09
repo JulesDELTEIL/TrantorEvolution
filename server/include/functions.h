@@ -63,7 +63,7 @@ int input_fd(serverdata_t *sdata, client_t *client);
 Used to write data to client FD
 Returns number of bytes written
 */
-int output_fd(client_t *client, uint8_t code, void *data, size_t datalen);
+int send_data(client_t *client, const uint8_t *cmd, uint8_t *data, size_t datalen);
 
 /*
 Opens a connection with a client
@@ -87,6 +87,6 @@ Returns ERRORCODE
 int returnwitherror(const char *msg, int errorcode);
 
 void debug_input(client_t *client, uint8_t *data, int size);
-void debug_output(uint8_t *data, int size);
+void debug_output(client_t *client, uint8_t *data, int size);
 
 #endif

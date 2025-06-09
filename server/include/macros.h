@@ -9,16 +9,24 @@
 #ifndef SERVERMACROS_H_
     #define SERVERMACROS_H_
 
+    #define uint unsigned int
+
     #define DEFAULTRC -1
     #define NOFD -1
 
     #define TEMPBUFFSIZE 1024
     #define BUFFSIZE 1024
     #define POLLTIMEOUT 1 //milliseconds
-    #define CRLF_LEN 2
+
+    #define PREAMBLE_BEGIN_IDX 0
+    #define PREAMBLE_LEN 4
+    #define SIZEINFO_BEGIN_IDX (PREAMBLE_BEGIN_IDX + PREAMBLE_LEN)
+    #define SIZEINFO_LEN 1
+    #define CMD_BEGIN_IDX (SIZEINFO_BEGIN_IDX + SIZEINFO_LEN)
+    #define CMD_LEN 3
+    #define DATA_BEGIN_IDX (CMD_BEGIN_IDX + CMD_LEN)
 
     #define CLOSE_PROCESS 12
-
     #define NBCLIENTS_MAX 500
     #define NBCLIENTS_QUEUE 100
     #define NB_SERVER_FD 2

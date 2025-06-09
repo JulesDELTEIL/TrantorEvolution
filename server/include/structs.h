@@ -33,8 +33,7 @@ struct client_t :
 */
 typedef struct client_s {
     int fd;
-    char *username;
-    bool logged_in;
+    int id;
     player_t player;
 } client_t;
 

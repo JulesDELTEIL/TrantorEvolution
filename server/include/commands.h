@@ -25,4 +25,37 @@ static const command_t user_commands[] = {
 
 static const int NB_COMMANDS = sizeof(user_commands) / sizeof(command_t);
 
+enum alpha_ascii_e {
+    A = 97,
+    B,
+    C,
+    D,
+    E,
+    F,
+    G,
+    H,
+    I,
+    J,
+    K,
+    L,
+    M,
+    N,
+    O,
+    P,
+    Q,
+    R,
+    S,
+    T,
+    U,
+    V,
+    W,
+    X,
+    Y,
+    Z
+};
+
+static const uint8_t CYE[3] = {C, Y, E}; //connection yes
+static const uint8_t CNO[3] = {C, N, O}; //connection no
+static const uint8_t WRC[3] = {W, R, C}; //wrong command
+
 #endif
