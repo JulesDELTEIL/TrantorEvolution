@@ -11,7 +11,7 @@ namespace gui {
 namespace visual {
 
 AAnimated::AAnimated(const sf::Vector2f& entity_pos,
-    const std::string& sprite_path = "") : AObject(entity_pos, sprite_path)
+    const std::string& sprite_path) : AObject(entity_pos, sprite_path)
 {
 
 }
