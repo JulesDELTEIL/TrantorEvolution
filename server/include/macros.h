@@ -26,8 +26,10 @@
     #define CMD_LEN 3
     #define DATA_BEGIN_IDX (CMD_BEGIN_IDX + CMD_LEN)
 
+    #define CLIENT_BUFFER_SIZE 1024
+
     #define CLOSE_PROCESS 12
-    #define NBCLIENTS_MAX 500
+    #define NBCLIENTS_MAX 100
     #define NBCLIENTS_QUEUE 100
     #define NB_SERVER_FD 2
     #define NBTOTAL_FD (NBCLIENTS_MAX + NB_SERVER_FD)

@@ -13,7 +13,7 @@ int search_events(serverdata_t *sdata, fdarray_t *fdarray, int k)
     if (fdarray->clients[k].fd == NOFD)
         return EXIT_SUCCESS;
     if (fdarray->fds[k].revents & POLLIN)
-        input_fd(sdata, &(fdarray->clients[k]));
+        receive_data(sdata, &(fdarray->clients[k]));
 }
 
 static int getnb_fd(fdarray_t *fdarray)

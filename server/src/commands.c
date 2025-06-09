@@ -17,23 +17,69 @@ static void handle_unrecognized_code(serverdata_t *sdata, client_t *client,
     send_data(client, WRC, NULL, 0);
 }
 
-static handler_t get_handler(uint8_t code)
+int find_command(serverdata_t *sdata, client_t *client, uint8_t *command, uint8_t *data)
 {
-    for (size_t i = 0; i < NB_COMMANDS; i++) {
-        if (user_commands[i].code == code)
-            return user_commands[i].handler_t;
+    for (uint k = 0; k < NB_COMMANDS; k++) {
+        if (user_commands[k].command[0] == command[0] &&
+            user_commands[k].command[1] == command[1] &&
+            user_commands[k].command[2] == command[2])
+            return user_commands[k].handler(sdata, client, data);
     }
-    return NULL;
+    handle_unrecognized_code(sdata, client, NULL);
+    return EXIT_FAILURE;
 }
 
-int process_handler(serverdata_t *sdata, client_t *client, uint8_t code)
+static bool check_packet_conform(client_t *client)
 {
-    handler_t handler = get_handler(code);
+    if (client->buffsize < 8)
+        return false;
+    for (uint k = 0; k < PREAMBLE_LEN; k++)
+        if (client->buffer[k] != 0) {
+            return false;
+        }
+    return true;
+}
 
-    if (handler != NULL) {
-        return handler(sdata, client, NULL);
-    } else {
-        handle_unrecognized_code(sdata, client, NULL);
+static void delete_command(client_t *client, uint datasize)
+{
+    uint to_delete = PREAMBLE_LEN + SIZEINFO_LEN + datasize;
+    int remaining = client->buffsize - to_delete;
+    uint8_t copy[remaining];
+
+    for (uint k = 0; k < remaining; k++)
+        copy[k] = client->buffer[k + to_delete];
+    for (uint k = 0; k < client->buffsize; k++)
+        client->buffer[k] = 0;
+    for (uint k = 0; k < remaining; k++)
+        client->buffer[k] = copy[k];
+    client->buffsize -= to_delete;
+}
+
+static int extract_data(client_t *client, uint8_t *cmd_buf, uint8_t *data_buf)
+{
+    uint datasize = 0;
+
+    if (check_packet_conform(client) == false)
+        return -1;
+    datasize = client->buffer[SIZEINFO_BEGIN_IDX];
+    if ((PREAMBLE_LEN + SIZEINFO_LEN + datasize) > client->buffsize)
+        return 0;
+    for (uint k = 0; k < CMD_LEN; k++)
+        cmd_buf[k] = client->buffer[k + CMD_BEGIN_IDX];
+    for (uint k = 0; k < datasize; k++)
+        data_buf[k] = client->buffer[k + DATA_BEGIN_IDX];
+    delete_command(client, datasize);
+    return datasize;
+}
+
+int command_handler(serverdata_t *sdata, client_t *client)
+{
+    uint8_t command[3] = {0};
+    uint8_t data[BUFFSIZE] = {0};
+    int rc = DEFAULTRC;
+
+    rc = extract_data(client, command, data);
+    if (rc <= 0)
         return EXIT_FAILURE;
-    }
+    return find_command(sdata, client, command, data);
 }

@@ -35,6 +35,8 @@ typedef struct client_s {
     int fd;
     int id;
     player_t player;
+    uint8_t buffer[CLIENT_BUFFER_SIZE];
+    uint buffsize;
 } client_t;
 
 /*

@@ -30,18 +30,23 @@ void debug_output(client_t *client, uint8_t *data, int size)
     printf("]\n");
 }
 
-int input_fd(serverdata_t *sdata, client_t *client)
+int receive_data(serverdata_t *sdata, client_t *client)
 {
-    uint8_t bytecode = 0;
+    uint8_t buffer[BUFSIZ];
     int rc = DEFAULTRC;
 
-    rc = read(client->fd, &bytecode, 1);
+    rc = read(client->fd, buffer, BUFSIZ);
     if (rc == 0) {
-        printf("CL%-3d ↓  [2]\n", client->fd);
+        printf("CL%-3d ↓  ✕\n", client->fd);
         return closeconnection(sdata, client);
-    }
-    printf("CL%-3d ↓  [%d]\n", client->fd, bytecode);
-    return process_handler(sdata, client, bytecode);
+    } else if (rc == -1)
+        return EXIT_FAILURE;
+    debug_input(client, buffer, rc);
+    uint buffstart = client->buffsize;
+    for (uint k = 0; k < rc; k++)
+        client->buffer[buffstart + k] = buffer[k];
+    client->buffsize += rc;
+    return command_handler(sdata, client);
 }
 
 int send_data(client_t *client, const uint8_t *cmd, uint8_t *data, size_t datalen)

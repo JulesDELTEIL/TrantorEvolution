@@ -39,6 +39,9 @@ int setup_server(serverdata_t *sdata)
 int setempty_client(client_t *client)
 {
     client->fd = NOFD;
+    for (uint k = 0; k < CLIENT_BUFFER_SIZE; k++)
+        client->buffer[k] = 0;
+    client->buffsize = 0;
     client->player.meters = 0;
     client->player.pos_x = 0;
     client->player.pos_y = 0;
