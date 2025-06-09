@@ -1,8 +1,9 @@
+#!/usr/bin/env python3
 #
 ## EPITECH PROJECT, 2025
 ## TrantorEvolution
 ## File description:
-## IA CLIENT MAINl
+## IA CLIENT MAIN
 #
 
 def main () :
