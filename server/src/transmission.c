@@ -50,7 +50,6 @@ int send_data(client_t *client, const uint8_t *cmd, uint8_t *data, size_t datale
     uint8_t fullpacket[packetlen];
     int rc = DEFAULTRC;
 
-    printf("packetlen = %d\n", packetlen);
     if (cmd == NULL)
         return EXIT_FAILURE;
     for (size_t k = 0; k < packetlen; k++)
