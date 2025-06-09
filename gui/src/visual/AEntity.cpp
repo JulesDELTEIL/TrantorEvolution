@@ -24,25 +24,25 @@ void AEntity::event(const sf::Event&)
 void AEntity::setPosition(const sf::Vector2f& new_pos)
 {
     for (const auto& drawable : _drawables)
-        drawable.second->setPosition(new_pos);
+        drawable.second->setDrawPosition(new_pos);
 }
 
 void AEntity::updatePosition(const sf::Vector2f& factor)
 {
     for (const auto& drawable : _drawables)
-        drawable.second->setPosition(drawable.second->getPosition() + factor);
+        drawable.second->setDrawPosition(drawable.second->getDrawPosition() + factor);
 }
 
 void AEntity::setRotation(float new_angle)
 {
     for (const auto& drawable : _drawables)
-        drawable.second->setRotation(new_angle);
+        drawable.second->setDrawRotation(new_angle);
 }
 
 void AEntity::updateRotation(float factor)
 {
     for (const auto& drawable : _drawables)
-        drawable.second->setRotation(drawable.second->getRotation() + factor);
+        drawable.second->setDrawRotation(drawable.second->getDrawRotation() + factor);
 }
 
 

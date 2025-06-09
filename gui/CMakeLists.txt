@@ -13,9 +13,13 @@ add_executable( ${PROJECT_NAME}
     ${GUI_SRC_DIR}main.cpp
     ${GUI_SRC_DIR}core/Core.cpp
     ${GUI_SRC_DIR}core/Engine.cpp
+    ${GUI_SRC_DIR}visual/AEntity.cpp
     ${GUI_SRC_DIR}visual/ADrawable.cpp
+    ${GUI_SRC_DIR}visual/AObject.cpp
+    ${GUI_SRC_DIR}visual/AAnimation.cpp
     ${GUI_SRC_DIR}visual/scenes/DefaultScene.cpp
     ${GUI_SRC_DIR}visual/layers/DefaultLayer.cpp
+    ${GUI_SRC_DIR}visual/entities/DefaultEntity.cpp
 )
 
 ########## LINKAGE ##########

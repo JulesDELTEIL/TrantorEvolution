@@ -6,13 +6,14 @@
 */
 
 #include "visual/layers/DefaultLayer.hpp"
+#include "visual/entities/DefaultEntity.hpp"
 
 namespace gui {
 namespace visual {
 
 DefaultLayer::DefaultLayer()
 {
-    
+    _entities.emplace_back(std::make_unique<DefaultEntity>());
 }
 
 void DefaultLayer::display(sf::RenderTarget& target) const

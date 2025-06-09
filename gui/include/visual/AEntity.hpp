@@ -28,8 +28,8 @@ class AEntity : public IEntity{
         void updateRotation(float) override;
 
     protected:
-        std::map<std::string, std::unique_ptr<IDrawable>> _drawables;
         sf::Vector2f _origin;
+        std::map<std::string, std::unique_ptr<IDrawable>> _drawables;
 };
 
 } // visual
