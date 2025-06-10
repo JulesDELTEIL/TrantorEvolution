@@ -86,8 +86,6 @@ Returns ERRORCODE
 */
 int returnwitherror(const char *msg, int errorcode);
 
-int command_handler(serverdata_t *sdata, client_t *client);
-
 void debug_input(client_t *client, uint8_t *data, int size);
 void debug_output(client_t *client, uint8_t *data, int size);
 

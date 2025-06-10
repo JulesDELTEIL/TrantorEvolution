@@ -10,14 +10,14 @@
 
     #include "structs.h"
 
-typedef int (*handler_t)(serverdata_t *sdata, client_t *client, void *data);
+typedef int (*handler_t)(serverdata_t *sdata, client_t *client);
 
 typedef struct command_s {
     uint8_t *command;
-    int (*handler)(serverdata_t *sdata, client_t *client, uint8_t *data);
+    int (*handler)(serverdata_t *sdata, client_t *client);
 } command_t;
 
-int command_handler(serverdata_t *sdata, client_t *client);
+int command_handler(serverdata_t *sdata, client_t *client, uint8_t *command);
 
 enum alpha_ascii_e {
     A = 97,

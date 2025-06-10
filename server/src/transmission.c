@@ -32,38 +32,32 @@ void debug_output(client_t *client, uint8_t *data, int size)
 
 int receive_data(serverdata_t *sdata, client_t *client)
 {
-    uint8_t buffer[BUFSIZ];
+    uint8_t buffer[CMD_LEN] = {0};
     int rc = DEFAULTRC;
 
-    rc = read(client->fd, buffer, BUFSIZ);
+    rc = read(client->fd, buffer, CMD_LEN);
     if (rc == 0) {
         printf("CL%-3d ↓  ✕\n", client->fd);
         return closeconnection(sdata, client);
-    } else if (rc == -1)
+    } else if (rc == -1 || rc != CMD_LEN)
         return EXIT_FAILURE;
     debug_input(client, buffer, rc);
-    uint buffstart = client->buffsize;
-    for (uint k = 0; k < rc; k++)
-        client->buffer[buffstart + k] = buffer[k];
-    client->buffsize += rc;
-    return command_handler(sdata, client);
+    return command_handler(sdata, client, buffer);
 }
 
 int send_data(client_t *client, const uint8_t *cmd, uint8_t *data, size_t datalen)
 {
-    uint packetlen = PREAMBLE_LEN + SIZEINFO_LEN + CMD_LEN + datalen;
+    uint packetlen = CMD_LEN + datalen + EOP_LEN;
     uint8_t fullpacket[packetlen];
     int rc = DEFAULTRC;
 
     if (cmd == NULL)
         return EXIT_FAILURE;
-    for (size_t k = 0; k < packetlen; k++)
-        fullpacket[k] = 0;
-    fullpacket[SIZEINFO_BEGIN_IDX] = CMD_LEN + datalen;
     for (uint k = 0; k < CMD_LEN; k++)
         fullpacket[CMD_BEGIN_IDX + k] = cmd[k];
     for (size_t k = 1; k < datalen; k++)
         fullpacket[DATA_BEGIN_IDX + k] = data[k];
+    fullpacket[DATA_BEGIN_IDX + datalen] = EOP;
     rc = write(client->fd, fullpacket, datalen + 1);
     debug_output(client, fullpacket, packetlen);
     return rc;
