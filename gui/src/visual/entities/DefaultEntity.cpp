@@ -14,6 +14,7 @@ namespace visual {
 DefaultEntity::DefaultEntity()
 {
     _drawables["tree_sprite"] = std::make_unique<Tree>(sf::Vector2f(100, 100));
+    _drawables["tree_sprite2"] = std::make_unique<Tree>(sf::Vector2f(200, 100));
 }
 
 void DefaultEntity::display(sf::RenderTarget& win) const
@@ -26,6 +27,10 @@ void DefaultEntity::display(sf::RenderTarget& win) const
 void DefaultEntity::event(const sf::Event& event)
 {
     if (event.type == sf::Event::KeyPressed) {
+        if (event.key.code == sf::Keyboard::E)
+            updatePosition(sf::Vector2f(10, 0));
+        if (event.key.code == sf::Keyboard::A)
+            updatePosition(sf::Vector2f(-10, 0));
         if (event.key.code == sf::Keyboard::D)
             _drawables.at("tree_sprite")->setPosition(
                 sf::Vector2f(
