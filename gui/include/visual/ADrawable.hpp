@@ -20,10 +20,10 @@ class ADrawable : public IDrawable {
 
         VisualType_e getId(void) override;
 
-        void setDrawPosition(const sf::Vector2f&) override;
-        sf::Vector2f getDrawPosition(void) const override;
-        void setDrawRotation(float) override;
-        float getDrawRotation(void) const override;
+        void setPosition(const sf::Vector2f&) override;
+        sf::Vector2f getPosition(void) const override;
+        void setRotation(float) override;
+        float getRotation(void) const override;
 
     protected:
         sf::Vector2f _pos;

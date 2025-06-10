@@ -5,17 +5,48 @@
 ** AObject.cpp
 */
 
+#include <SFML/Graphics/RenderTarget.hpp>
+
 #include "visual/AObject.hpp"
 
 namespace gui {
 namespace visual {
 
-AObject::AObject(const sf::Vector2f& entity_origin) :
-    ADrawable(entity_origin), sf::Sprite()
+AObject::AObject(const sf::Vector2f& pos, const std::string& path) :
+    ADrawable(pos)
 {
     _type = ANIMATED;
-    this->setPosition(entity_origin);
+    if (!path.empty())
+        _texture.loadFromFile(path);
+    _sprite.setTexture(_texture);
+    _sprite.setPosition(pos);
 }
+
+void AObject::draw(sf::RenderTarget& target, sf::RenderStates) const
+{
+    target.draw(_sprite);
+}
+
+void AObject::setPosition(const sf::Vector2f& pos)
+{
+    _sprite.setPosition(pos);
+}
+
+sf::Vector2f AObject::getPosition(void) const
+{
+    return _sprite.getPosition();
+}
+
+void AObject::setRotation(float angle)
+{
+    _sprite.setRotation(angle);
+}
+
+float AObject::getRotation(void) const
+{
+    return _sprite.getRotation();
+}
+
 
 } // visual
 } // gui

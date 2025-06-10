@@ -10,7 +10,7 @@
 namespace gui {
 namespace visual {
 
-GrassTile::GrassTile(const sf::Vector2f& entity_pos) : AObject(entity_pos)
+GrassTile::GrassTile(const sf::Vector2f& pos) : AObject(pos)
 {
     _texture.loadFromFile(GRASS_TILE_TEXTURE);
 }

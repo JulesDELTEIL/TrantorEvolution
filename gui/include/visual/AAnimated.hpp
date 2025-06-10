@@ -8,6 +8,8 @@
 #ifndef AANIMATED_HPP_
     #define AANIMATED_HPP_
 
+    #include <SFML/System/Clock.hpp>
+
     #include "visual/AObject.hpp"
 
 namespace gui {
@@ -15,7 +17,7 @@ namespace visual {
 
 class AAnimated : public AObject {
     public:
-        AAnimated(const sf::Vector2f&, const std::string& = "");
+        AAnimated(const sf::Vector2f&, const std::string&);
         ~AAnimated() = default;
 
         virtual void animation(void) = 0;

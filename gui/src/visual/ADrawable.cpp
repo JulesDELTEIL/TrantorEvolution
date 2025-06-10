@@ -20,22 +20,22 @@ VisualType_e ADrawable::getId(void)
     return _type;
 }
 
-void ADrawable::setDrawPosition(const sf::Vector2f& new_pos)
+void ADrawable::setPosition(const sf::Vector2f& new_pos)
 {
     _pos = new_pos;
 }
 
-sf::Vector2f ADrawable::getDrawPosition(void) const
+sf::Vector2f ADrawable::getPosition(void) const
 {
     return _pos;
 }
 
-void ADrawable::setDrawRotation(float new_angle)
+void ADrawable::setRotation(float new_angle)
 {
     _angle = new_angle;
 }
 
-float ADrawable::getDrawRotation(void) const
+float ADrawable::getRotation(void) const
 {
     return _angle;
 }
