@@ -6,6 +6,7 @@
 */
 
 #include "visual/layers/Land.hpp"
+#include "visual/visual.hpp"
 #include "ECSFactory.hpp"
 
 namespace gui {
@@ -46,13 +47,17 @@ void Land::event(const sf::Event& event)
 
 void Land::loadMap(const std::vector<sf::Vector2f>&)
 {
-    // _entities.emplace_back(VisualFactory::createEntity("Tile", sf::Vector2f(0, 0), GRASS));
-    // _entities.emplace_back(VisualFactory::createEntity("Tile", sf::Vector2f(32, 0), GRASS));
-    // _entities.emplace_back(VisualFactory::createEntity("Tile", sf::Vector2f(64, 0), SAND));
-    // _entities.emplace_back(VisualFactory::createEntity("Tile", sf::Vector2f(16, 8), GRASS));
-    // _entities.emplace_back(VisualFactory::createEntity("Tile", sf::Vector2f(48, 8), SAND));
-    // _entities.emplace_back(VisualFactory::createEntity("Tile", sf::Vector2f(0, 16), SAND));
-    // _entities.emplace_back(VisualFactory::createEntity("Tile", sf::Vector2f(32, 16), SAND));
+    try {
+            _entities.emplace_back(ecs::ECSFactory::create<ecs::IEntity>("tile", 0.0f, 0.0f, static_cast<int>(GRASS)));
+            _entities.emplace_back(ecs::ECSFactory::create<ecs::IEntity>("tile", 32.0f, 0.0f, static_cast<int>(GRASS)));
+            _entities.emplace_back(ecs::ECSFactory::create<ecs::IEntity>("tile", 64.0f, 0.0f, static_cast<int>(SAND)));
+            _entities.emplace_back(ecs::ECSFactory::create<ecs::IEntity>("tile", 16.0f, 8.0f, static_cast<int>(GRASS)));
+            _entities.emplace_back(ecs::ECSFactory::create<ecs::IEntity>("tile", 48.0f, 8.0f, static_cast<int>(SAND)));
+            _entities.emplace_back(ecs::ECSFactory::create<ecs::IEntity>("tile", 0.0f, 16.0f, static_cast<int>(SAND)));
+            _entities.emplace_back(ecs::ECSFactory::create<ecs::IEntity>("tile", 32.0f, 16.0f, static_cast<int>(SAND)));
+    } catch (const std::invalid_argument& e) {
+        std::cerr << e.what() << std::endl;
+    }
 }
 
 } // visual

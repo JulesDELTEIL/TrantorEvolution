@@ -15,7 +15,7 @@ namespace visual {
 DefaultLayer::DefaultLayer()
 {
     try {
-        _entities.emplace_back(ecs::ECSFactory::create<ecs::IEntity>("tile", 0, 0, GRASS));
+        _entities.emplace_back(ecs::ECSFactory::create<ecs::IEntity>("tile", 0.0f, 0.0f, static_cast<int>(GRASS)));
     } catch (const std::invalid_argument& e) {
         std::cerr << e.what() << std::endl;
     }

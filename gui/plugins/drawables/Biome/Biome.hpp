@@ -8,8 +8,8 @@
 #ifndef BIOME_HPP_
     #define BIOME_HPP_
 
-    #include <SFML/Graphics/Rect.hpp>
     #include <memory>
+    #include <SFML/Graphics/Rect.hpp>
 
     #include "visual/visual.hpp"
     #include "interfaces/AObject.hpp"
