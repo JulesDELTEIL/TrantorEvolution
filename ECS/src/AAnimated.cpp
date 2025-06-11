@@ -5,10 +5,9 @@
 ** AAnimated.cpp
 */
 
-#include "visual/AAnimated.hpp"
+#include "interfaces/AAnimated.hpp"
 
-namespace gui {
-namespace visual {
+namespace ecs {
 
 AAnimated::AAnimated(const sf::Vector2f& pos, const std::string& path, const sf::IntRect& rect) :
     AObject(pos, path, rect)
@@ -21,5 +20,4 @@ void AAnimated::restartClock(void)
     _anim_clock.restart();
 }
 
-} // visual
-} // gui
+} // ecs

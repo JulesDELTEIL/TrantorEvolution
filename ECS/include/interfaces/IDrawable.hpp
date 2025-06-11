@@ -10,15 +10,10 @@
 
     #include <SFML/Graphics/Drawable.hpp>
 
-    #include "visual/visual.hpp"
-
-namespace gui {
-namespace visual {
+namespace ecs {
 
 class IDrawable : public sf::Drawable {
     public:
-        virtual VisualType_e getId(void) = 0;
-
         virtual void setPosition(const sf::Vector2f&) = 0;
         virtual sf::Vector2f getPosition(void) const = 0;
         virtual void setRotation(float) = 0;
@@ -26,7 +21,6 @@ class IDrawable : public sf::Drawable {
 
 };
 
-} // visual
-} // gui
+} // ecs
 
 #endif

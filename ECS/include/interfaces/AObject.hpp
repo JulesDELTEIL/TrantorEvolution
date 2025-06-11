@@ -13,10 +13,11 @@
     #include <SFML/Graphics/Sprite.hpp>
     #include <SFML/Graphics/Texture.hpp>
     #include <SFML/Graphics/Rect.hpp>
-    #include "visual/ADrawable.hpp"
+    #include <SFML/Graphics/RenderTarget.hpp>
 
-namespace gui {
-namespace visual {
+    #include "interfaces/ADrawable.hpp"
+
+namespace ecs {
 
 class AObject : public ADrawable {
     public:
@@ -35,8 +36,6 @@ class AObject : public ADrawable {
         sf::Sprite _sprite;
 };
 
-
-} // visual
-} // gui
+} // ecs
 
 #endif

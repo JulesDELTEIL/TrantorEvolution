@@ -5,10 +5,10 @@
 ** AEntity.cpp
 */
 
-#include "visual/AEntity.hpp"
+#include <iostream> // test purpose (to delet)
+#include "interfaces/AEntity.hpp"
 
-namespace gui {
-namespace visual {
+namespace ecs {
 
 AEntity::AEntity(const sf::Vector2f& pos)
 {
@@ -50,6 +50,4 @@ void AEntity::updateRotation(float factor)
         drawable.second->setRotation(drawable.second->getRotation() + factor);
 }
 
-
-} // visual
-} // gui
+} // ecs

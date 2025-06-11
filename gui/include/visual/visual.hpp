@@ -16,54 +16,46 @@ namespace visual {
 
 enum Scene_e {
     NONE = 0,
-    MENU = 1,
-    LOBBY = 2,
-    IN_GAME = 3,
+    MENU,
+    LOBBY,
+    IN_GAME,
 };
 
 enum VisualType_e {
-    DRAWABLE,
+    ENTITY = 0,
     INTERACTIVE,
-    ANIMATED,
+    DRAWABLE,
     TEXT,
-    TEXT_FIELD,
-    BUTTON,
-    DRAG_DROP,
-    DROP_DOWN,
     OBJECT,
-    TRANTOR,
-    MATERIALS,
-    BACKGROUND,
+    ANIMATED,
+    TEXT_FIELD,
+    BUTTON
+};
+
+static const std::map<VisualType_e, std::vector<VisualType_e>> VISUAL_INHERITANCE = {
+    {ENTITY, {}},
+    {DRAWABLE, {ENTITY}},
+    {INTERACTIVE, {ENTITY}},
+    {TEXT, {ENTITY, DRAWABLE}},
+    {OBJECT, {ENTITY, DRAWABLE}},
+    {ANIMATED, {ENTITY, DRAWABLE, OBJECT}},
+    {TEXT_FIELD, {ENTITY, INTERACTIVE}},
+    {BUTTON, {ENTITY, INTERACTIVE}}
+};
+
+enum BiomeTypes_e {
+    GRASS = 0,
+    SAND,
+    SEA
 };
 
 enum ResourceType_e {
-    WOOD,
+    WOOD = 0,
     STONE,
     CLAY,
     METAL,
     OIL,
     ANTI_MATTER
-};
-
-static const std::map<VisualType_e, std::vector<VisualType_e>> INHERITANCE = {
-    {DRAWABLE, {}},
-    {INTERACTIVE, {DRAWABLE}},
-    {ANIMATED, {DRAWABLE}},
-    {TEXT, {DRAWABLE}},
-    {TEXT_FIELD, {DRAWABLE, INTERACTIVE}},
-    {BUTTON, {DRAWABLE, INTERACTIVE}},
-    {DRAG_DROP, {DRAWABLE, INTERACTIVE}},
-    {DROP_DOWN, {DRAWABLE, INTERACTIVE}},
-    {OBJECT, {DRAWABLE, INTERACTIVE, ANIMATED}},
-    {TRANTOR, {DRAWABLE, INTERACTIVE, ANIMATED, OBJECT}},
-    {MATERIALS, {DRAWABLE, INTERACTIVE, ANIMATED, OBJECT}},
-    {BACKGROUND, {DRAWABLE, INTERACTIVE, ANIMATED, OBJECT}}
-};
-
-enum BiomeTypes_e {
-    GRASS,
-    SAND,
-    SEA
 };
 
 } // visual

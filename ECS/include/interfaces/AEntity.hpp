@@ -11,12 +11,11 @@
     #include <map>
     #include <memory>
 
-    #include "visual/IEntity.hpp"
-    #include "visual/IDrawable.hpp"
-    #include "visual/AInteractive.hpp"
+    #include "interfaces/IEntity.hpp"
+    #include "interfaces/IDrawable.hpp"
+    #include "interfaces/AInteractive.hpp"
 
-namespace gui {
-namespace visual {
+namespace ecs {
 
 class AEntity : public IEntity{
     public:
@@ -36,7 +35,6 @@ class AEntity : public IEntity{
         std::map<std::string, std::unique_ptr<AInteractive>> _interactives;
 };
 
-} // visual
-} // gui
+} // ecs
 
 #endif

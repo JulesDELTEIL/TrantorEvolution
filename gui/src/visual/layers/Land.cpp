@@ -6,8 +6,7 @@
 */
 
 #include "visual/layers/Land.hpp"
-
-#include "visual/entities/Tile.hpp"
+#include "ECSFactory.hpp"
 
 namespace gui {
 namespace visual {
@@ -19,7 +18,7 @@ Land::Land()
 
 void Land::display(sf::RenderTarget& render) const
 {
-    for (const std::unique_ptr<IEntity>& entity : _entities)
+    for (const std::unique_ptr<ecs::IEntity>& entity : _entities)
         entity->display(render);
 }
 
@@ -47,13 +46,13 @@ void Land::event(const sf::Event& event)
 
 void Land::loadMap(const std::vector<sf::Vector2f>&)
 {
-    _entities.emplace_back(std::make_unique<Tile>(sf::Vector2f(0, 0), GRASS));
-    _entities.emplace_back(std::make_unique<Tile>(sf::Vector2f(32, 0), GRASS));
-    _entities.emplace_back(std::make_unique<Tile>(sf::Vector2f(64, 0), SAND));
-    _entities.emplace_back(std::make_unique<Tile>(sf::Vector2f(16, 8), GRASS));
-    _entities.emplace_back(std::make_unique<Tile>(sf::Vector2f(48, 8), SAND));
-    _entities.emplace_back(std::make_unique<Tile>(sf::Vector2f(0, 16), SAND));
-    _entities.emplace_back(std::make_unique<Tile>(sf::Vector2f(32, 16), SAND));
+    // _entities.emplace_back(VisualFactory::createEntity("Tile", sf::Vector2f(0, 0), GRASS));
+    // _entities.emplace_back(VisualFactory::createEntity("Tile", sf::Vector2f(32, 0), GRASS));
+    // _entities.emplace_back(VisualFactory::createEntity("Tile", sf::Vector2f(64, 0), SAND));
+    // _entities.emplace_back(VisualFactory::createEntity("Tile", sf::Vector2f(16, 8), GRASS));
+    // _entities.emplace_back(VisualFactory::createEntity("Tile", sf::Vector2f(48, 8), SAND));
+    // _entities.emplace_back(VisualFactory::createEntity("Tile", sf::Vector2f(0, 16), SAND));
+    // _entities.emplace_back(VisualFactory::createEntity("Tile", sf::Vector2f(32, 16), SAND));
 }
 
 } // visual
