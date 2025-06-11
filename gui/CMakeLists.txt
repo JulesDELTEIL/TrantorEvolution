@@ -21,6 +21,7 @@ add_executable( ${PROJECT_NAME}
     ${GUI_SRC_DIR}visual/layers/DefaultLayer.cpp
     ${GUI_SRC_DIR}visual/entities/DefaultEntity.cpp
     ${GUI_SRC_DIR}visual/drawables/Tree.cpp
+    ${GUI_SRC_DIR}visual/drawables/ResourceNode.cpp
 )
 
 ########## LINKAGE ##########

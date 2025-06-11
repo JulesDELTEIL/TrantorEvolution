@@ -7,6 +7,7 @@
 
 #include "visual/entities/DefaultEntity.hpp"
 #include "visual/drawables/Tree.hpp"
+#include "visual/drawables/ResourceNode.hpp"
 
 namespace gui {
 namespace visual {
@@ -15,6 +16,7 @@ DefaultEntity::DefaultEntity()
 {
     _drawables["tree_sprite"] = std::make_unique<Tree>(sf::Vector2f(100, 100));
     _drawables["tree_sprite2"] = std::make_unique<Tree>(sf::Vector2f(200, 100));
+    _drawables["wood_node1"] = std::make_unique<ResourceNode>(sf::Vector2f(400, 100), WOOD);
 }
 
 void DefaultEntity::display(sf::RenderTarget& win) const
