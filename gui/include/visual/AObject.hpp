@@ -5,8 +5,8 @@
 ** AObject.hpp
 */
 
-#ifndef AObject_HPP_
-    #define AObject_HPP_
+#ifndef AOBJECT_HPP_
+    #define AOBJECT_HPP_
 
     #include <string>
 
