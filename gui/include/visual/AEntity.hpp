@@ -13,6 +13,7 @@
 
     #include "visual/IEntity.hpp"
     #include "visual/IDrawable.hpp"
+    #include "visual/AInteractive.hpp"
 
 namespace gui {
 namespace visual {
@@ -32,6 +33,7 @@ class AEntity : public IEntity{
     protected:
         sf::Vector2f _origin;
         std::map<std::string, std::unique_ptr<IDrawable>> _drawables;
+        std::map<std::string, std::unique_ptr<AInteractive>> _interactives;
 };
 
 } // visual

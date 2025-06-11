@@ -23,8 +23,8 @@ add_executable( ${PROJECT_NAME}
     ${GUI_SRC_DIR}visual/layers/Land.cpp
     ${GUI_SRC_DIR}visual/entities/DefaultEntity.cpp
     ${GUI_SRC_DIR}visual/entities/Tile.cpp
-    ${GUI_SRC_DIR}visual/drawables/Tree.cpp
     ${GUI_SRC_DIR}visual/drawables/Biome.cpp
+    ${GUI_SRC_DIR}visual/drawables/ResourceNode.cpp
 )
 
 ########## LINKAGE ##########

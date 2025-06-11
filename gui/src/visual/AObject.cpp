@@ -12,7 +12,7 @@
 namespace gui {
 namespace visual {
 
-AObject::AObject(const sf::Vector2f& pos, const std::string& path) :
+AObject::AObject(const sf::Vector2f& pos, const std::string& path, const sf::IntRect& rect) :
     ADrawable(pos)
 {
     _type = ANIMATED;
@@ -20,6 +20,7 @@ AObject::AObject(const sf::Vector2f& pos, const std::string& path) :
         _texture.loadFromFile(path);
     _sprite.setTexture(_texture);
     _sprite.setPosition(pos);
+    _sprite.setTextureRect(rect);
 }
 
 void AObject::draw(sf::RenderTarget& target, sf::RenderStates) const

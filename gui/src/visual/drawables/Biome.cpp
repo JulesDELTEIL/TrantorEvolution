@@ -10,9 +10,9 @@
 namespace gui {
 namespace visual {
 
-Biome::Biome(const sf::Vector2f& pos, BiomeTypes_e type) : AObject(pos, BIOME_TEXTURE_PATH)
+Biome::Biome(const sf::Vector2f& pos, BiomeTypes_e type) : AObject(pos, BIOME_TEXTURE_PATH, TEXTURE_RECT.at(type))
 {
-    _sprite.setTextureRect(TEXTURE_RECT.at(type));
+    
 }
 
 } // visual

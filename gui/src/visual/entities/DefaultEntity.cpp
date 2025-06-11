@@ -6,15 +6,17 @@
 */
 
 #include "visual/entities/DefaultEntity.hpp"
-#include "visual/drawables/Tree.hpp"
+#include "visual/drawables/ResourceNode.hpp"
 
 namespace gui {
 namespace visual {
 
 DefaultEntity::DefaultEntity(const sf::Vector2f& pos) : AEntity(pos)
 {
-    _drawables["tree_sprite"] = std::make_unique<Tree>(sf::Vector2f(pos.x, pos.y));
-    _drawables["tree_sprite2"] = std::make_unique<Tree>(sf::Vector2f(pos.x + 100, pos.y));
+    _drawables["wood_node1"] = std::make_unique<ResourceNode>(sf::Vector2f(100, 100), WOOD);
+    _drawables["stone_node1"] = std::make_unique<ResourceNode>(sf::Vector2f(100, 200), STONE);
+    _drawables["clay_node1"] = std::make_unique<ResourceNode>(sf::Vector2f(100, 300), CLAY);
+    _drawables["metal_node1"] = std::make_unique<ResourceNode>(sf::Vector2f(100, 400), METAL);
 }
 
 void DefaultEntity::display(sf::RenderTarget& win) const
@@ -32,17 +34,17 @@ void DefaultEntity::event(const sf::Event& event)
         if (event.key.code == sf::Keyboard::A)
             updatePosition(sf::Vector2f(-10, 0));
         if (event.key.code == sf::Keyboard::D)
-            _drawables.at("tree_sprite")->setPosition(
+            _drawables.at("wood_node1")->setPosition(
                 sf::Vector2f(
-                    _drawables.at("tree_sprite")->getPosition().x + 30,
-                    _drawables.at("tree_sprite")->getPosition().y
+                    _drawables.at("wood_node1")->getPosition().x + 30,
+                    _drawables.at("wood_node1")->getPosition().y
                 )
             );
         if (event.key.code == sf::Keyboard::Q)
-            _drawables.at("tree_sprite")->setPosition(
+            _drawables.at("wood_node1")->setPosition(
                 sf::Vector2f(
-                    _drawables.at("tree_sprite")->getPosition().x - 30,
-                    _drawables.at("tree_sprite")->getPosition().y
+                    _drawables.at("wood_node1")->getPosition().x - 30,
+                    _drawables.at("wood_node1")->getPosition().y
                 )
             );
     }

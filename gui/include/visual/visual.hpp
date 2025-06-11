@@ -36,6 +36,15 @@ enum VisualType_e {
     BACKGROUND,
 };
 
+enum ResourceType_e {
+    WOOD,
+    STONE,
+    CLAY,
+    METAL,
+    OIL,
+    ANTI_MATTER
+};
+
 static const std::map<VisualType_e, std::vector<VisualType_e>> INHERITANCE = {
     {DRAWABLE, {}},
     {INTERACTIVE, {DRAWABLE}},

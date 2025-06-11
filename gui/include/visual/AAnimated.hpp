@@ -17,7 +17,7 @@ namespace visual {
 
 class AAnimated : public AObject {
     public:
-        AAnimated(const sf::Vector2f&, const std::string&);
+        AAnimated(const sf::Vector2f&, const std::string&, const sf::IntRect&);
         ~AAnimated() = default;
 
         virtual void animation(void) = 0;
