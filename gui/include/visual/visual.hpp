@@ -60,6 +60,12 @@ static const std::map<VisualType_e, std::vector<VisualType_e>> INHERITANCE = {
     {BACKGROUND, {DRAWABLE, INTERACTIVE, ANIMATED, OBJECT}}
 };
 
+enum BiomeTypes_e {
+    GRASS,
+    SAND,
+    SEA
+};
+
 } // visual
 } // gui
 

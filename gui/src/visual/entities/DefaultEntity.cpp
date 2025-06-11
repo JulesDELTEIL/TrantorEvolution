@@ -11,7 +11,7 @@
 namespace gui {
 namespace visual {
 
-DefaultEntity::DefaultEntity()
+DefaultEntity::DefaultEntity(const sf::Vector2f& pos) : AEntity(pos)
 {
     _drawables["wood_node1"] = std::make_unique<ResourceNode>(sf::Vector2f(100, 100), WOOD);
     _drawables["stone_node1"] = std::make_unique<ResourceNode>(sf::Vector2f(100, 200), STONE);

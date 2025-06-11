@@ -2,24 +2,26 @@
 ** EPITECH PROJECT, 2025
 ** TrantorEvolution
 ** File description:
-** DefaultEntity.hpp
+** Tile.hpp
 */
 
-#ifndef DEFAULT_ENTITY_HPP_
-    #define DEFAULT_ENTITY_HPP_
+#ifndef TILE_HPP_
+    #define TILE_HPP_
 
     #include "visual/AEntity.hpp"
 
 namespace gui {
 namespace visual {
 
-class DefaultEntity : public AEntity {
+class Tile : public AEntity {
     public:
-        DefaultEntity(const sf::Vector2f& pos);
-        ~DefaultEntity() = default;
+        Tile(const sf::Vector2f& pos, BiomeTypes_e type);
+        ~Tile() = default;
 
         void display(sf::RenderTarget& render) const override;
         void event(const sf::Event& event) override;
+
+    private:
 
 };
 
