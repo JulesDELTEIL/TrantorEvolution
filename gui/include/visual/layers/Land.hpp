@@ -2,25 +2,27 @@
 ** EPITECH PROJECT, 2025
 ** TrantorEvolution
 ** File description:
-** DefaultEntity.hpp
+** Land.hpp
 */
 
-#ifndef DEFAULT_ENTITY_HPP_
-    #define DEFAULT_ENTITY_HPP_
+#ifndef LAND_HPP_
+    #define LAND_HPP_
 
-    #include "visual/AEntity.hpp"
+    #include "visual/ALayer.hpp"
 
 namespace gui {
 namespace visual {
 
-class DefaultEntity : public AEntity {
+class Land : public ALayer {
     public:
-        DefaultEntity(const sf::Vector2f& pos);
-        ~DefaultEntity() = default;
+        Land();
+        ~Land() = default;
 
         void display(sf::RenderTarget& render) const override;
         void event(const sf::Event& event) override;
-
+    
+    private:
+        void loadMap(const std::vector<sf::Vector2f>&);
 };
 
 } // visual

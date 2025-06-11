@@ -10,6 +10,11 @@
 namespace gui {
 namespace visual {
 
+AEntity::AEntity(const sf::Vector2f& pos)
+{
+    _origin = pos;
+}
+
 void AEntity::display(sf::RenderTarget& win) const
 {
     for (const auto& drawable : _drawables)

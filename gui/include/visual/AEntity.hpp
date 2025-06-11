@@ -19,6 +19,8 @@ namespace visual {
 
 class AEntity : public IEntity{
     public:
+        AEntity(const sf::Vector2f& pos);
+
         void display(sf::RenderTarget&) const = 0;
         void event(const sf::Event&) = 0;
 

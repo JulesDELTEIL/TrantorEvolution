@@ -13,7 +13,7 @@ namespace visual {
 
 DefaultLayer::DefaultLayer()
 {
-    _entities.emplace_back(std::make_unique<DefaultEntity>());
+    _entities.emplace_back(std::make_unique<DefaultEntity>(sf::Vector2f(0, 0)));
 }
 
 void DefaultLayer::display(sf::RenderTarget& target) const
