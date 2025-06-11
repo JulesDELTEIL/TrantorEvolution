@@ -11,9 +11,9 @@ namespace gui {
 namespace visual {
 
 ResourceNode::ResourceNode(const sf::Vector2f& pos, ResourceType_e type)
-: AAnimated(pos, RESOURCE_NODE_TEXTURE.at(type))
+: AAnimated(pos, RESOURCE_NODE_TEXTURE.at(type), RESOURCE_RECT)
 {
-    
+
 }
 
 } // visual

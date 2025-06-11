@@ -10,8 +10,8 @@
 namespace gui {
 namespace visual {
 
-AAnimated::AAnimated(const sf::Vector2f& pos, const std::string& path) :
-    AObject(pos, path)
+AAnimated::AAnimated(const sf::Vector2f& pos, const std::string& path, const sf::IntRect& rect) :
+    AObject(pos, path, rect)
 {
 
 }

@@ -21,7 +21,7 @@ namespace visual {
 class AObject : public ADrawable {
     public:
         AObject(const sf::Vector2f& pos, const std::string& path,
-            const sf::IntRect& rect = sf::IntRect());
+            const sf::IntRect& rect);
         ~AObject() = default;
 
         void draw(sf::RenderTarget& target, sf::RenderStates states) const override;

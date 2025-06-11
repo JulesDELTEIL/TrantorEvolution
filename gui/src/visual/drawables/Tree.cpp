@@ -5,7 +5,6 @@
 ** Tree.cpp
 */
 
-#include "visual/drawables/Tree.hpp"
 
 namespace gui {
 namespace visual {

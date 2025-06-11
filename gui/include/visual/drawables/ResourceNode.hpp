@@ -30,6 +30,8 @@ static const std::map<ResourceType_e, std::string> RESOURCE_NODE_TEXTURE  = {
     {ANTI_MATTER, "assets/ressources/Grass_Biom_Tree.png"}
 };
 
+static const sf::IntRect RESOURCE_RECT(0, 0, 30, 30);
+
 } // gui
 } // visual
 
