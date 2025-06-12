@@ -16,9 +16,9 @@
 
     #define MIN_PORT 1025
     #define MAX_PORT 65535
-    #define MIN_MAP_SIZE 1
+    #define MIN_MAP_SIZE 5
     #define MAX_MAP_SIZE 100
-    #define MIN_CLIENTS 0
+    #define MIN_CLIENTS 6
     #define MIN_FREQ 0
     #define MIN_NB_ARGS 12
     #define FIRST_CHAR 0
