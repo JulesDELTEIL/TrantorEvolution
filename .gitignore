@@ -10,6 +10,7 @@ build/
 # Files Created
 zappy_*
 ECS.a
+ECS/default.so
 gui/plugins/*.so
 
 # Doc

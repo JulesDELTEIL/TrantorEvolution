@@ -20,7 +20,10 @@
     #define DL_EXTENSION_SIZE 3
     #define GET_PLUGIN_NAME(s) s.substr(LAST_SLASH(s), s.size() - LAST_SLASH(s) - DL_EXTENSION_SIZE);
 
+static const std::string DEFAULT_HANDLER = "default";
 static const std::string ENTRYPOINT = "Entrypoint";
+
+    #define DEFAULT_PATH "ECS/" + DEFAULT_HANDLER + DL_EXTENSION
 
 class PluginManager {
     public:
@@ -35,7 +38,12 @@ class PluginManager {
         PluginManager(const PluginManager&) = delete;
         void operator=(const PluginManager&) = delete;
 
-        static void loadFolder(const std::string& path) {
+        static void load(void) {
+            setHandler(DEFAULT_PATH);
+        }
+
+        static void load(const std::string& path) {
+            setHandler(DEFAULT_PATH);
             for (const auto &file : std::filesystem::directory_iterator(path)) {
                 if (!std::filesystem::path(file).extension().compare(DL_EXTENSION)) {
                     setHandler(file.path());
