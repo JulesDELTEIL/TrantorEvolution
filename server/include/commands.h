@@ -10,15 +10,6 @@
 
     #include "structs.h"
 
-typedef int (*handler_t)(serverdata_t *sdata, client_t *client);
-
-typedef struct command_s {
-    uint8_t *command;
-    int (*handler)(serverdata_t *sdata, client_t *client);
-} command_t;
-
-int command_handler(serverdata_t *sdata, client_t *client, uint8_t *command);
-
 enum alpha_ascii_e {
     A = 97,
     B,
@@ -48,13 +39,26 @@ enum alpha_ascii_e {
     Z
 };
 
-static const uint8_t CYE[3] = {C, Y, E}; //connection yes
-static const uint8_t CNO[3] = {C, N, O}; //connection no
-static const uint8_t WRC[3] = {W, R, C}; //wrong command
+static const char CYE[3] = "cye"; //connection yes
+static const char CNO[3] = "cno"; //connection no
+static const char WRC[3] = "wrc"; //wrong command
 
-static const command_t user_commands[] = {
+int command_handler(serverdata_t *sdata, client_t *client, char *command);
+
+typedef int (*handler_t)(serverdata_t *sdata, client_t *client);
+
+typedef struct command_s {
+    char command[3];
+    int (*handler)(serverdata_t *sdata, client_t *client, uint cmd_idx);
+    uint datalen;
+} command_t;
+
+int cmd_idn(serverdata_t *sdata, client_t *client, uint cmd_idx);
+
+static const command_t USER_COMMANDS[] = {
+    {"idn", &cmd_idn, 1 + EOP_LEN},
 };
 
-static const int NB_COMMANDS = sizeof(user_commands) / sizeof(command_t);
+static const int NB_USER_COMMANDS = sizeof(USER_COMMANDS) / sizeof(command_t);
 
 #endif

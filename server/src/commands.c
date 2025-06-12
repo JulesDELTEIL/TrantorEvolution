@@ -17,13 +17,13 @@ static void handle_unrecognized_code(serverdata_t *sdata, client_t *client,
     send_data(client, WRC, NULL, 0);
 }
 
-int command_handler(serverdata_t *sdata, client_t *client, uint8_t *command)
+int command_handler(serverdata_t *sdata, client_t *client,  char *command)
 {
-    for (uint k = 0; k < NB_COMMANDS; k++) {
-        if (user_commands[k].command[0] == command[0] &&
-            user_commands[k].command[1] == command[1] &&
-            user_commands[k].command[2] == command[2])
-            return user_commands[k].handler(sdata, client);
+    for (uint k = 0; k < NB_USER_COMMANDS; k++) {
+        if (USER_COMMANDS[k].command[0] == command[0] &&
+            USER_COMMANDS[k].command[1] == command[1] &&
+            USER_COMMANDS[k].command[2] == command[2])
+            return USER_COMMANDS[k].handler(sdata, client, k);
     }
     handle_unrecognized_code(sdata, client, NULL);
     return EXIT_FAILURE;

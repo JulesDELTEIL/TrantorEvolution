@@ -2,6 +2,7 @@ project(zappy_server)
 
 ########## SETUP ##########
 set(SERVER_SRC_DIR "${PROJECT_SOURCE_DIR}/src/")
+set(SERVER_CMD_DIR "${PROJECT_SOURCE_DIR}/src/commands/")
 set(SERVER_HDR_DIR "${PROJECT_SOURCE_DIR}/include/")
 
 ########## BINARY ##########
@@ -16,6 +17,7 @@ add_executable( ${PROJECT_NAME}
     ${SERVER_SRC_DIR}commands.c
     ${SERVER_SRC_DIR}returnwitherror.c
     ${SERVER_SRC_DIR}end.c
+    ${SERVER_CMD_DIR}idn.c
 )
 
 ########## LINKAGE ##########

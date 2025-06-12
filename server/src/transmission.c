@@ -7,7 +7,6 @@
 
 #include "functions.h"
 #include "commands.h"
-#include "commands.h"
 
 void debug_input(client_t *client, uint8_t *data, int size)
 {

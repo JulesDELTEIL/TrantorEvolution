@@ -43,4 +43,10 @@
     #define CLIENTS_OVERFLOW_MSG "Maximum clients reached, try again later\n"
     #define CLIENTS_OVERFLOW_CODE 42
 
+    enum client_type_e {
+        UNSET = -1,
+        AI = 0,
+        GUI = 1,
+    };
+
 #endif
