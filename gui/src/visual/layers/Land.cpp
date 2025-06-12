@@ -47,17 +47,13 @@ void Land::event(const sf::Event& event)
 
 void Land::loadMap(const std::vector<sf::Vector2f>&)
 {
-    try {
-        _entities.emplace_back(ecs::ECSFactory::create<ecs::IEntity>("tile", 0.0f, 0.0f, static_cast<int>(GRASS)));
-        _entities.emplace_back(ecs::ECSFactory::create<ecs::IEntity>("tile", 32.0f, 0.0f, static_cast<int>(GRASS)));
-        _entities.emplace_back(ecs::ECSFactory::create<ecs::IEntity>("tile", 64.0f, 0.0f, static_cast<int>(SAND)));
-        _entities.emplace_back(ecs::ECSFactory::create<ecs::IEntity>("tile", 16.0f, 8.0f, static_cast<int>(GRASS)));
-        _entities.emplace_back(ecs::ECSFactory::create<ecs::IEntity>("tile", 48.0f, 8.0f, static_cast<int>(SAND)));
-        _entities.emplace_back(ecs::ECSFactory::create<ecs::IEntity>("tile", 0.0f, 16.0f, static_cast<int>(SAND)));
-        _entities.emplace_back(ecs::ECSFactory::create<ecs::IEntity>("tile", 32.0f, 16.0f, static_cast<int>(SAND)));
-    } catch (const std::invalid_argument& e) {
-        std::cerr << e.what() << std::endl;
-    }
+    _entities.emplace_back(ecs::ECSFactory::create<ecs::IEntity>("tile", 0.0f, 0.0f, static_cast<int>(GRASS)));
+    _entities.emplace_back(ecs::ECSFactory::create<ecs::IEntity>("tile", 32.0f, 0.0f, static_cast<int>(GRASS)));
+    _entities.emplace_back(ecs::ECSFactory::create<ecs::IEntity>("tile", 64.0f, 0.0f, static_cast<int>(SAND)));
+    _entities.emplace_back(ecs::ECSFactory::create<ecs::IEntity>("tile", 16.0f, 8.0f, static_cast<int>(GRASS)));
+    _entities.emplace_back(ecs::ECSFactory::create<ecs::IEntity>("tile", 48.0f, 8.0f, static_cast<int>(SAND)));
+    _entities.emplace_back(ecs::ECSFactory::create<ecs::IEntity>("tile", 0.0f, 16.0f, static_cast<int>(SAND)));
+    _entities.emplace_back(ecs::ECSFactory::create<ecs::IEntity>("tile", 32.0f, 16.0f, static_cast<int>(SAND)));
 }
 
 } // visual
