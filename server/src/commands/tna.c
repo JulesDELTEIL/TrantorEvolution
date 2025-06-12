@@ -2,7 +2,7 @@
 ** EPITECH PROJECT, 2024
 ** zappy
 ** File description:
-** idn.c
+** tna.c
 */
 
 #include <unistd.h>
@@ -11,7 +11,7 @@
 #include "structs.h"
 #include "commands.h"
 
-int cmd_idn(serverdata_t *sdata, client_t *client, uint cmd_idx)
+int cmd_tna(serverdata_t *sdata, client_t *client, uint cmd_idx)
 {
     uint cmd_data_len = USER_COMMANDS[cmd_idx].datalen;
     uint8_t data[cmd_data_len];
