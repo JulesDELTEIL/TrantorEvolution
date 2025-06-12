@@ -35,7 +35,8 @@ typedef struct client_s {
     int fd;
     int id;
     int type;
-    char buffer[CLIENT_BUFFER_SIZE];
+    // char *buffer;
+    // uint buffersize;
     player_t player;
 } client_t;
 

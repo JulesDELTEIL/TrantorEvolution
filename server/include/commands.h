@@ -49,14 +49,13 @@ typedef int (*handler_t)(serverdata_t *sdata, client_t *client);
 
 typedef struct command_s {
     char command[3];
-    int (*handler)(serverdata_t *sdata, client_t *client, uint cmd_idx);
-    uint datalen;
+    int (*handler)(serverdata_t *sdata, client_t *client, char *data);
 } command_t;
 
-int cmd_tna(serverdata_t *sdata, client_t *client, uint cmd_idx);
+int cmd_tna(serverdata_t *sdata, client_t *client, char *data);
 
 static const command_t USER_COMMANDS[] = {
-    {"tna", &cmd_tna, 1 + EOP_LEN},
+    {"tna", &cmd_tna},
 };
 
 static const int NB_USER_COMMANDS = sizeof(USER_COMMANDS) / sizeof(command_t);

@@ -23,22 +23,19 @@ void debug_output(client_t *client, uint8_t *data, int size)
 {
     if (size == 0 || !data)
         return;
-    printf("CL%-3d  ↑ [%d", client->fd, data[0]);
-    for (size_t k = 1; k < size; k++)
-        printf(",%d", data[k]);
-    printf("]\n");
+    printf("CL%-3d  ↑ [%s]\n", client->fd, data);
 }
 
 int receive_data(serverdata_t *sdata, client_t *client)
 {
-    uint8_t buffer[CMD_LEN] = {0};
+    uint8_t buffer[BUFFSIZE] = {0};
     int rc = DEFAULTRC;
 
-    rc = read(client->fd, buffer, CMD_LEN);
+    rc = read(client->fd, buffer, BUFFSIZE - 1);
     if (rc == 0) {
         printf("CL%-3d ↓  ✕\n", client->fd);
         return closeconnection(sdata, client);
-    } else if (rc == -1 || rc != CMD_LEN)
+    } else if (rc == -1)
         return EXIT_FAILURE;
     debug_input(client, buffer, rc);
     return command_handler(sdata, client, buffer);
