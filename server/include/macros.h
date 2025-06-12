@@ -5,7 +5,6 @@
 ** macros.h
 */
 
-
 #ifndef SERVERMACROS_H_
     #define SERVERMACROS_H_
 
@@ -35,12 +34,13 @@
     #define SERVER_FD_INDEX 0
     #define SERVER_STDIN_INDEX 1
 
-    #define ERROR_SETSOCKOPT "ERROR: setsockopt() failed\n"
-    #define ERROR_BIND "ERROR: bind() failed\n"
-    #define ERROR_POLL "ERROR: poll() failed\n"
-    #define ERROR_ACCEPT "ERROR: accept() failed\n"
+static const char ERROR_SETSOCKOPT[] = "ERROR: setsockopt() failed\n";
+static const char ERROR_BIND[] = "ERROR: bind() failed\n";
+static const char ERROR_POLL[] = "ERROR: poll() failed\n";
+static const char ERROR_ACCEPT[] = "ERROR: accept() failed\n";
+static const char CLIENTS_OVERFLOW_MSG[] =
+    "Maximum clients reached, try again later\n";
 
-    #define CLIENTS_OVERFLOW_MSG "Maximum clients reached, try again later\n"
     #define CLIENTS_OVERFLOW_CODE 42
 
     enum client_type_e {
