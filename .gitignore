@@ -9,6 +9,8 @@ build/
 
 # Files Created
 zappy_*
+ECS.a
+gui/plugins/*.so
 
 # Doc
 latex/

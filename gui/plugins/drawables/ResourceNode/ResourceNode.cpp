@@ -5,7 +5,7 @@
 ** ResourceNode.cpp
 */
 
-#include "visual/drawables/ResourceNode.hpp"
+#include "ResourceNode.hpp"
 
 namespace gui {
 namespace visual {

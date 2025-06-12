@@ -10,10 +10,9 @@
 
     #include <SFML/System/Clock.hpp>
 
-    #include "visual/AObject.hpp"
+    #include "interfaces/AObject.hpp"
 
-namespace gui {
-namespace visual {
+namespace ecs {
 
 class AAnimated : public AObject {
     public:
@@ -30,7 +29,6 @@ class AAnimated : public AObject {
 
 };
 
-} // visual
-} // gui
+} // ecs
 
 #endif

@@ -8,19 +8,18 @@
 #ifndef AINTERACTIVE
     #define AINTERACTIVE
 
-namespace gui {
-namespace visual {
+    #include <SFML/Window/Event.hpp>
+
+namespace ecs {
 
 class AInteractive {
     public:
         AInteractive() = default;
         ~AInteractive() = default;
 
-        virtual void action(sf::Event&) const = 0;
+        virtual void action(const sf::Event&) const = 0;
 };
 
-
-} // gui
-} // visual
+} // ecs
 
 #endif

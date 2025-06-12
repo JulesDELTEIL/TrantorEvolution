@@ -11,8 +11,7 @@
     #include <SFML/Graphics/RenderTarget.hpp>
     #include <SFML/Window/Event.hpp>
 
-namespace gui {
-namespace visual {
+namespace ecs {
 
 class IEntity {
     public:
@@ -25,7 +24,6 @@ class IEntity {
         virtual void updateRotation(float) = 0;
 };
 
-} // visual
-} // gui
+} // ecs
 
 #endif

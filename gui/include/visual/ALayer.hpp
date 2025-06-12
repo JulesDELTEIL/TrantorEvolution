@@ -12,7 +12,7 @@
     #include <memory>
 
     #include "visual/ILayer.hpp"
-    #include "visual/IEntity.hpp"
+    #include "interfaces/IEntity.hpp"
 
 namespace gui {
 namespace visual {
@@ -26,7 +26,7 @@ class ALayer : public ILayer {
         void event(const sf::Event&) = 0;
 
     protected:
-        std::vector<std::unique_ptr<IEntity>> _entities;
+        std::vector<std::unique_ptr<ecs::IEntity>> _entities;
 
 };
 

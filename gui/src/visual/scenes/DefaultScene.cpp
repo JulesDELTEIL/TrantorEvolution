@@ -6,6 +6,7 @@
 */
 
 #include "visual/scenes/DefaultScene.hpp"
+
 #include "visual/layers/DefaultLayer.hpp"
 
 namespace gui {

@@ -5,17 +5,13 @@
 ** AObject.cpp
 */
 
-#include <SFML/Graphics/RenderTarget.hpp>
+#include "interfaces/AObject.hpp"
 
-#include "visual/AObject.hpp"
-
-namespace gui {
-namespace visual {
+namespace ecs {
 
 AObject::AObject(const sf::Vector2f& pos, const std::string& path, const sf::IntRect& rect) :
     ADrawable(pos)
 {
-    _type = ANIMATED;
     if (!path.empty())
         _texture.loadFromFile(path);
     _sprite.setTexture(_texture);
@@ -48,6 +44,4 @@ float AObject::getRotation(void) const
     return _sprite.getRotation();
 }
 
-
-} // visual
-} // gui
+} // ecs

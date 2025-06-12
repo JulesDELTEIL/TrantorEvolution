@@ -8,12 +8,15 @@
 #ifndef RESOURCENODE_HPP_
     #define RESOURCENODE_HPP_
 
-    #include "visual/AAnimated.hpp" 
+    #include <memory>
+
+    #include "visual/visual.hpp"
+    #include "interfaces/AAnimated.hpp" 
 
 namespace gui {
 namespace visual {
 
-class ResourceNode : public AAnimated {
+class ResourceNode : public ecs::AAnimated {
     public:
         ResourceNode(const sf::Vector2f& pos, ResourceType_e type);
         ~ResourceNode() = default;
@@ -32,7 +35,14 @@ static const std::map<ResourceType_e, std::string> RESOURCE_NODE_TEXTURE  = {
 
 static const sf::IntRect RESOURCE_RECT(0, 0, 30, 30);
 
+extern "C" {
+    std::unique_ptr<ecs::IDrawable> resource_nodeEntrypoint(float x, float y, int type) {
+        return std::make_unique<ResourceNode>(sf::Vector2f(x, y), ResourceType_e(type));
+    }
+}
+
 } // gui
 } // visual
+
 
 #endif
