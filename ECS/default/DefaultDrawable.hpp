@@ -13,6 +13,7 @@
     #include "interfaces/AObject.hpp"
 
     #define DEFAULT_TEXTURE "ECS/default/assets/error.png"
+    #define DEFAULT_TEXTURE_RECT sf::IntRect(0, 0, 800, 800)
 
 namespace ecs {
     

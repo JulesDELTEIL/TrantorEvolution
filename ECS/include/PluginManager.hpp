@@ -15,14 +15,15 @@
     #include <filesystem>
     #include <iostream>
 
-    #define DEFAULT_PATH "ECS/default.so"
-
     #define LAST_SLASH(s) (s.find_last_of("/\\") + 1)
     #define DL_EXTENSION ".so"
     #define DL_EXTENSION_SIZE 3
     #define GET_PLUGIN_NAME(s) s.substr(LAST_SLASH(s), s.size() - LAST_SLASH(s) - DL_EXTENSION_SIZE);
 
+static const std::string DEFAULT_HANDLER = "default";
 static const std::string ENTRYPOINT = "Entrypoint";
+
+    #define DEFAULT_PATH "ECS/" + DEFAULT_HANDLER + DL_EXTENSION
 
 class PluginManager {
     public:

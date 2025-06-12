@@ -15,6 +15,9 @@
     #include "interfaces/IEntity.hpp"
     #include "interfaces/IDrawable.hpp"
 
+    #define DRAW_ENTRY ("drawable" + ENTRYPOINT)
+    #define ENTITY_ENTRY ("entity" + ENTRYPOINT)
+
     #define IS_TYPE(t1, t2) (typeid(t1) == typeid(t2))
 
 namespace ecs {
@@ -45,14 +48,14 @@ class ECSFactory {
 
         template<typename Type>
         static std::unique_ptr<Type> defaultObject() {
-            void* handler = PluginManager::getHandler("default");
+            void* handler = PluginManager::getHandler(DEFAULT_HANDLER);
             std::unique_ptr<Type>(*maker)(float, float) = NULL;
             std::string entrypoint;
 
             if (IS_TYPE(Type, IDrawable))
-                entrypoint = "drawable" + ENTRYPOINT;
+                entrypoint = DRAW_ENTRY;
             else
-                entrypoint = "entity" + ENTRYPOINT;
+                entrypoint = ENTITY_ENTRY;
             maker = (std::unique_ptr<Type>(*)(float, float))dlsym(handler, entrypoint.c_str());
             return maker(0.0f, 0.0f);
         }
