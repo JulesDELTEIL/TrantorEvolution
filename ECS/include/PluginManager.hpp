@@ -15,6 +15,8 @@
     #include <filesystem>
     #include <iostream>
 
+    #define DEFAULT_PATH "ECS/default.so"
+
     #define LAST_SLASH(s) (s.find_last_of("/\\") + 1)
     #define DL_EXTENSION ".so"
     #define DL_EXTENSION_SIZE 3
@@ -35,7 +37,12 @@ class PluginManager {
         PluginManager(const PluginManager&) = delete;
         void operator=(const PluginManager&) = delete;
 
-        static void loadFolder(const std::string& path) {
+        static void load(void) {
+            setHandler(DEFAULT_PATH);
+        }
+
+        static void load(const std::string& path) {
+            setHandler(DEFAULT_PATH);
             for (const auto &file : std::filesystem::directory_iterator(path)) {
                 if (!std::filesystem::path(file).extension().compare(DL_EXTENSION)) {
                     setHandler(file.path());

@@ -24,3 +24,7 @@ target_include_directories( ${PROJECT_NAME}
     PUBLIC
         ${ECS_HDR_DIR}
 )
+
+########## DEFAULT ##########
+set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${PROJECT_SOURCE_DIR})
+add_subdirectory(default)

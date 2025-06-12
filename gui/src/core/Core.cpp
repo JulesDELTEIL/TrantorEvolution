@@ -16,7 +16,7 @@ namespace core {
 
 Core::Core()
 {
-    PluginManager::loadFolder("gui/plugins");
+    PluginManager::load("gui/plugins");
     _scenes[visual::Scene_e::NONE] = std::make_unique<visual::DefaultScene>();
     _scenes[visual::Scene_e::IN_GAME] = std::make_unique<visual::InGame>();
 }
