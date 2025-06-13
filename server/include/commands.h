@@ -15,7 +15,7 @@ int command_handler(serverdata_t *sdata, client_t *client);
 typedef int (*handler_t)(serverdata_t *sdata, client_t *client);
 
 typedef struct command_s {
-    char command[3];
+    char *command;
     int (*handler)(serverdata_t *sdata, client_t *client, char *data);
 } command_t;
 

@@ -44,7 +44,7 @@ static int add_circular(client_t *client, char *buffer)
 
 int receive_data(serverdata_t *sdata, client_t *client)
 {
-    uint8_t buffer[BUFFSIZE] = {0};
+    char buffer[BUFFSIZE] = {0};
     int rc = DEFAULTRC;
 
     rc = read(client->fd, buffer, BUFFSIZE - 1);
@@ -68,17 +68,18 @@ static int get_datalen(char *data)
 int send_data(client_t *client, char *cmd, char *data)
 {
     uint datalen = get_datalen(data);
-    uint packetlen = CMD_LEN + datalen + EOP_LEN;
+    uint cmdlen = get_datalen(cmd);
+    uint packetlen = cmdlen + datalen + 1;
     uint8_t fullpacket[packetlen];
     int rc = DEFAULTRC;
 
     if (cmd == NULL)
         return EXIT_FAILURE;
-    for (uint k = 0; k < CMD_LEN; k++)
-        fullpacket[CMD_BEGIN_IDX + k] = cmd[k];
-    for (size_t k = 1; k < datalen; k++)
-        fullpacket[DATA_BEGIN_IDX + k] = data[k];
-    fullpacket[DATA_BEGIN_IDX + datalen] = EOP;
+    for (uint k = 0; k < cmdlen; k++)
+        fullpacket[k] = cmd[k];
+    for (size_t k = 0; k < datalen; k++)
+        fullpacket[cmdlen + k] = data[k];
+    fullpacket[cmdlen + datalen] = '\n';
     rc = write(client->fd, fullpacket, datalen + 1);
     debug_output(client, fullpacket, packetlen);
     return rc;

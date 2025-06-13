@@ -17,12 +17,6 @@
     #define BUFFSIZE 1024
     #define POLLTIMEOUT 1 //milliseconds
 
-    #define CMD_BEGIN_IDX 0
-    #define CMD_LEN 3
-    #define DATA_BEGIN_IDX (CMD_BEGIN_IDX + CMD_LEN)
-    #define EOP '\n'
-    #define EOP_LEN 1
-
     #define CLIENT_BUFFER_SIZE 1024
 
     #define CLOSE_PROCESS 12

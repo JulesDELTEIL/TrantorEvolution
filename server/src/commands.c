@@ -13,7 +13,7 @@
 
 static void handle_unrecognized_code(serverdata_t *sdata, client_t *client)
 {
-    send_data(client, "wrc", NULL);
+    send_data(client, "ko\n", NULL);
 }
 
 static int empty_client_buff(client_t *client, uint index)
@@ -37,32 +37,55 @@ static int empty_client_buff(client_t *client, uint index)
     return EXIT_SUCCESS;
 }
 
-static int command_parser(client_t *client, char *dest)
+static int command_parser(client_t *client, char *cmd, char *data)
 {
-    if (!client)
+    uint cmdlen = 0;
+    uint flw = 0;
+
+    if (!client || !client->buffer)
         return EXIT_FAILURE;
-    if (!client->buffer)
-        return EXIT_FAILURE;
-    for (uint k = 0; client->buffer[k] != 0; k++) {
-        dest[k] = client->buffer[k];
+    for (uint k = 0; client->buffer[k] != 0 && client->buffer[k] != ' '; k++) {
+        cmd[k] = client->buffer[flw];
+        flw++;
+    }
+    flw++;
+    for (uint k = 0; client->buffer[flw] != 0; k++) {
+        data[k] = client->buffer[flw];
         if (client->buffer[k] == '\n') {
-            empty_client_buff(client, k);
+            empty_client_buff(client, flw);
             return EXIT_SUCCESS;
         }
+        flw++;
     }
     return EXIT_FAILURE;
 }
 
+static int compare_str(char *s1, char *s2)
+{
+    int len_s1 = strlen(s1);
+    int len_s2 = strlen(s2);
+    int smallest_len = len_s1;
+
+    if (len_s1 > len_s2) {
+        smallest_len = len_s2;
+    }
+    for (int k = 0; k < smallest_len; k++) {
+        if (s1[k] != s2[k]) {
+            return s1[k] - s2[k];
+        }
+    }
+    return 0;
+}
+
 int command_handler(serverdata_t *sdata, client_t *client)
 {
+    char cmd[BUFFSIZE] = {0};
     char data[BUFFSIZE] = {0};
 
-    if (command_parser(client, data) == EXIT_FAILURE)
+    if (command_parser(client, cmd, data) == EXIT_FAILURE)
         return EXIT_FAILURE;
     for (uint k = 0; k < NB_USER_COMMANDS; k++) {
-        if (USER_COMMANDS[k].command[0] == data[0] &&
-            USER_COMMANDS[k].command[1] == data[1] &&
-            USER_COMMANDS[k].command[2] == data[2])
+        if (compare_str(cmd, USER_COMMANDS[k].command) == 0)
             return USER_COMMANDS[k].handler(sdata, client, data);
     }
     handle_unrecognized_code(sdata, client);
