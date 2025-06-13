@@ -60,23 +60,6 @@ static int command_parser(client_t *client, char *cmd, char *data)
     return EXIT_FAILURE;
 }
 
-static int compare_str(char *s1, char *s2)
-{
-    int len_s1 = strlen(s1);
-    int len_s2 = strlen(s2);
-    int smallest_len = len_s1;
-
-    if (len_s1 > len_s2) {
-        smallest_len = len_s2;
-    }
-    for (int k = 0; k < smallest_len; k++) {
-        if (s1[k] != s2[k]) {
-            return s1[k] - s2[k];
-        }
-    }
-    return 0;
-}
-
 int command_handler(serverdata_t *sdata, client_t *client)
 {
     char cmd[BUFFSIZE] = {0};
@@ -85,7 +68,7 @@ int command_handler(serverdata_t *sdata, client_t *client)
     if (command_parser(client, cmd, data) == EXIT_FAILURE)
         return EXIT_FAILURE;
     for (uint k = 0; k < NB_USER_COMMANDS; k++) {
-        if (compare_str(cmd, USER_COMMANDS[k].command) == 0)
+        if (strcmp(cmd, USER_COMMANDS[k].command) == 0)
             return USER_COMMANDS[k].handler(sdata, client, data);
     }
     handle_unrecognized_code(sdata, client);
