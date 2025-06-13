@@ -61,6 +61,7 @@ static void get_team_name(size_t *flw, arguments_t *args, char *av[])
         *flw += 1;
     }
     args->team_name[nb_of_teams] = NULL;
+    *flw -= BACK_TO_FLAG;
 }
 
 void get_args(int ad, char *av[], arguments_t *args)
