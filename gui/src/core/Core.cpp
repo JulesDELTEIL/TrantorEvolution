@@ -18,7 +18,12 @@ namespace core {
 
 Core::Core(int argc, const char *argv[])
 {
-
+    try {
+        _parser = Parser(argc, argv);
+    } catch(const std::exception& e) {
+        std::cerr << e.what() << '\n';
+    }
+    
 }
 
 void Core::run(void)
