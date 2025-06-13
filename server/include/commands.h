@@ -10,19 +10,21 @@
 
     #include "structs.h"
 
-typedef int (*handler_t)(serverdata_t *sdata, client_t *client, void *data);
+int buffer_handler(serverdata_t *sdata, client_t *client);
+
+typedef int (*handler_t)(serverdata_t *sdata, client_t *client);
 
 typedef struct command_s {
-    uint8_t code;
-    int (*handler_t)(serverdata_t *sdata, client_t *client, void *data);
+    char *command;
+    int (*handler)(serverdata_t *sdata, client_t *client, char *data);
 } command_t;
 
+int cmd_tna(serverdata_t *sdata, client_t *client, char *data);
 
-int process_handler(serverdata_t *sdata, client_t *client, uint8_t code);
-
-static const command_t user_commands[] = {
+static const command_t USER_COMMANDS[] = {
+    {"tna", &cmd_tna},
 };
 
-static const int NB_COMMANDS = sizeof(user_commands) / sizeof(command_t);
+static const int NB_USER_COMMANDS = sizeof(USER_COMMANDS) / sizeof(command_t);
 
 #endif

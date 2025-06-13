@@ -22,7 +22,7 @@ typedef struct player_s {
     float pos_y;
     size_t meters;
     int speed;
-    uint8_t status;
+    uint_t status;
 } player_t;
 
 /*
@@ -33,8 +33,9 @@ struct client_t :
 */
 typedef struct client_s {
     int fd;
-    char *username;
-    bool logged_in;
+    int id;
+    int type;
+    char *buffer;
     player_t player;
 } client_t;
 

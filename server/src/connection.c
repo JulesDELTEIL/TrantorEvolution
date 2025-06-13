@@ -6,6 +6,7 @@
 */
 
 #include "functions.h"
+#include "commands.h"
 
 static void displayfds(fdarray_t *fdarray)
 {
@@ -26,8 +27,6 @@ static int getnextfree(fdarray_t *fdarray)
 
 static int destroy_client(client_t *client)
 {
-    if (client->username != NULL)
-        free(client->username);
 }
 
 int closeconnection(serverdata_t *sdata, client_t *client)
@@ -42,11 +41,11 @@ int openconnection(serverdata_t *sdata, fdarray_t *fdarray)
 {
     int rc = DEFAULTRC;
     int newfd = NOFD;
-    int nextfree = -1;
+    int nextfree = NOFD;
 
     nextfree = getnextfree(fdarray);
-    if (nextfree == -1) {
-        write(2, CLIENTS_OVERFLOW_MSG, strlen(CLIENTS_OVERFLOW_MSG));
+    if (nextfree == NOFD) {
+        send_data(&(fdarray->clients[nextfree]), "cno", NULL);
         return CLIENTS_OVERFLOW_CODE;
     }
     newfd = accept(sdata->sockfd,
@@ -55,6 +54,6 @@ int openconnection(serverdata_t *sdata, fdarray_t *fdarray)
         returnwitherror(ERROR_ACCEPT, EXIT_FAILURE);
     fdarray->fds[nextfree].fd = newfd;
     fdarray->clients[nextfree].fd = newfd;
-    output_fd(&(fdarray->clients[nextfree]), 1, NULL, 0);
+    send_data(&(fdarray->clients[nextfree]), "cye", NULL);
     return EXIT_SUCCESS;
 }

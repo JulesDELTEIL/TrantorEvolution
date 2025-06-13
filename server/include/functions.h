@@ -57,13 +57,13 @@ fdarray_t setup_fds(int sockfd);
 Used to read data from client FD
 Returns EXIT_SUCCESS or EXIT_FAILURE
 */
-int input_fd(serverdata_t *sdata, client_t *client);
+int receive_data(serverdata_t *sdata, client_t *client);
 
 /*
 Used to write data to client FD
 Returns number of bytes written
 */
-int output_fd(client_t *client, uint8_t code, void *data, size_t datalen);
+int send_data(client_t *client, char *cmd, char *data);
 
 /*
 Opens a connection with a client
@@ -86,7 +86,7 @@ Returns ERRORCODE
 */
 int returnwitherror(const char *msg, int errorcode);
 
-void debug_input(client_t *client, uint8_t *data, int size);
-void debug_output(uint8_t *data, int size);
+void debug_input(client_t *client, char *data, int size);
+void debug_output(client_t *client, char *data, int size);
 
 #endif
