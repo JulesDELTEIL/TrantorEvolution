@@ -5,7 +5,7 @@
 ** DefaultEntity.cpp
 */
 
-#include "DefaultDrawable.hpp"
+#include "default/DefaultDrawable.hpp"
 
 namespace ecs {
     

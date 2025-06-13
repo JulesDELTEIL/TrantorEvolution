@@ -5,15 +5,18 @@
 ** ECSFactory.hpp
 */
 
-#ifndef VISUAL_FACTORY_HPP_
-    #define VISUAL_FACTORY_HPP_
+#ifndef ECS_FACTORY_HPP_
+    #define ECS_FACTORY_HPP_
 
-    #include <map>
     #include <memory>
+    #include <map>
+    #include <functional>
 
-    #include "PluginManager.hpp"
     #include "interfaces/IEntity.hpp"
     #include "interfaces/IDrawable.hpp"
+
+    #include "default/DefaultDrawable.hpp"
+    #include "default/DefaultEntity.hpp"
 
     #define DRAW_ENTRY ("drawable" + ENTRYPOINT)
     #define ENTITY_ENTRY ("entity" + ENTRYPOINT)
@@ -32,33 +35,27 @@ class ECSFactory {
 
         template<typename Type, typename ...Args>
         static std::unique_ptr<Type> create(const std::string& object, Args... args) {
-            void * handler = NULL;
-            std::unique_ptr<Type>(*maker)(Args...) = NULL;
-            handler = PluginManager::getHandler(object);
-            if (handler == NULL) {
-                return defaultObject<Type>();
+            if (IS_TYPE(Type, IEntity)) {
+                if (_entities.find(object) == _entities.end())
+                    return std::make_unique<DefaultEntity>(0, 0);
+                return _entities.at(object)(args...);
+            } else {
+                if (_drawables.find(object) == _drawables.end())
+                    return std::make_unique<DefaultDrawable>(0, 0);
+                return _drawables.at(object)(args...);
             }
-            maker = (std::unique_ptr<Type>(*)(Args...))dlsym(handler, (object + ENTRYPOINT).c_str());
-            if (maker  == NULL)
-                return defaultObject<Type>();
-            return maker(args...);
         };
 
     private:
+        typedef std::function<std::unique_ptr<IEntity>()>  entityMaker;
+        static inline const std::map<std::string, entityMaker> _entities = {
 
-        template<typename Type>
-        static std::unique_ptr<Type> defaultObject() {
-            void* handler = PluginManager::getHandler(DEFAULT_HANDLER);
-            std::unique_ptr<Type>(*maker)(float, float) = NULL;
-            std::string entrypoint;
+        };
 
-            if (IS_TYPE(Type, IDrawable))
-                entrypoint = DRAW_ENTRY;
-            else
-                entrypoint = ENTITY_ENTRY;
-            maker = (std::unique_ptr<Type>(*)(float, float))dlsym(handler, entrypoint.c_str());
-            return maker(0.0f, 0.0f);
-        }
+        typedef std::function<std::unique_ptr<IEntity>()> drawMaker;
+        static inline const std::map<std::string, drawMaker> _drawables = {
+            
+        };
 
 };
 

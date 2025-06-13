@@ -9,14 +9,12 @@
 
 #include "visual/scenes/DefaultScene.hpp"
 #include "visual/scenes/InGame.hpp"
-#include "PluginManager.hpp"
 
 namespace gui {
 namespace core {
 
 Core::Core()
 {
-    PluginManager::load("gui/plugins");
     _scenes[visual::Scene_e::NONE] = std::make_unique<visual::DefaultScene>();
     changeScene(visual::Scene_e::NONE);
     _scenes[visual::Scene_e::IN_GAME] = std::make_unique<visual::InGame>();

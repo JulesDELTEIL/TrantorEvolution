@@ -24,10 +24,8 @@ class DefaultDrawable : public AObject {
 
 };
 
-extern "C" {
-    std::unique_ptr<ecs::IDrawable> drawableEntrypoint(float x, float y) {
-        return std::make_unique<DefaultDrawable>(x, y);
-    }
+std::unique_ptr<ecs::IDrawable> drawableEntrypoint(float x, float y) {
+    return std::make_unique<DefaultDrawable>(x, y);
 }
 
 } // namespace ecs

@@ -15,14 +15,14 @@ namespace visual {
 
 class Land : public ALayer {
     public:
-        Land();
+        Land(const std::vector<int>&);
         ~Land() = default;
 
         void display(sf::RenderTarget& render) const override;
         void event(const sf::Event& event) override;
     
     private:
-        void loadMap(const std::vector<sf::Vector2f>&);
+        void loadMap(const std::vector<int>&);
 };
 
 } // visual

@@ -24,10 +24,8 @@ class DefaultEntity : public AEntity {
 
 };
 
-extern "C" {
-    std::unique_ptr<ecs::IEntity> entityEntrypoint(float x, float y) {
-        return std::make_unique<DefaultEntity>(x, y);
-    }
+std::unique_ptr<ecs::IEntity> entityEntrypoint(float x, float y) {
+    return std::make_unique<DefaultEntity>(x, y);
 }
 
 } // namespace ecs
