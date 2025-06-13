@@ -6,13 +6,14 @@
 */
 
 #include "visual/scenes/DefaultScene.hpp"
+#include "core/Engine.hpp"
 
 #include "visual/layers/DefaultLayer.hpp"
 
 namespace gui {
 namespace visual {
 
-DefaultScene::DefaultScene() : AScene(DEFAULT_VIEW)
+DefaultScene::DefaultScene() : AScene(core::DEFAULT_VIEW)
 {
     _layers.emplace_back(std::make_unique<DefaultLayer>());
 }

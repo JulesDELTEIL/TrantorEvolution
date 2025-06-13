@@ -6,13 +6,14 @@
 */
 
 #include "visual/scenes/InGame.hpp"
+#include "core/Engine.hpp"
 
 #include "visual/layers/Land.hpp"
 
 namespace gui {
 namespace visual {
 
-InGame::InGame() : AScene(sf::FloatRect(0, 0, 600, 338))
+InGame::InGame() : AScene(core::DEFAULT_VIEW)
 {
     _layers.emplace_back(std::make_unique<Land>());
 }
