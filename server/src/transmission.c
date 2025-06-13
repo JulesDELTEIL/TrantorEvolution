@@ -12,11 +12,7 @@ void debug_input(client_t *client, uint8_t *data, int size)
 {
     if (size == 0 || !data)
         return;
-    printf("C%-3d ↓ [%d", client->fd, data[0]);
-    for (size_t k = 1; k < size; k++) {
-        printf(", %d", data[k]);
-    }
-    printf("]\n");
+    printf("C%-3d ↓ [%s]\n", client->fd, data);
 }
 
 void debug_output(client_t *client, uint8_t *data, int size)
@@ -24,6 +20,26 @@ void debug_output(client_t *client, uint8_t *data, int size)
     if (size == 0 || !data)
         return;
     printf("CL%-3d  ↑ [%s]\n", client->fd, data);
+}
+
+static int add_circular(client_t *client, char *buffer)
+{
+    char *newbuff = NULL;
+    uint c_bufflen = 0;
+    uint n_bufflen = strlen(buffer);
+
+    if (client->buffer != NULL)
+        c_bufflen = strlen(client->buffer);
+    newbuff = malloc(sizeof(char) * (c_bufflen + n_bufflen + 1));
+    for (uint k = 0; k < c_bufflen; k++)
+        newbuff[k] = client->buffer[k];
+    for (uint k = 0; k < n_bufflen; k++)
+        newbuff[k + c_bufflen] = buffer[k];
+    newbuff[c_bufflen + n_bufflen] = 0;
+    if (client->buffer != NULL)
+        free(client->buffer);
+    client->buffer = newbuff;
+    return EXIT_SUCCESS;
 }
 
 int receive_data(serverdata_t *sdata, client_t *client)
@@ -38,11 +54,20 @@ int receive_data(serverdata_t *sdata, client_t *client)
     } else if (rc == -1)
         return EXIT_FAILURE;
     debug_input(client, buffer, rc);
-    return command_handler(sdata, client, buffer);
+    add_circular(client, buffer);
+    return command_handler(sdata, client);
 }
 
-int send_data(client_t *client, const uint8_t *cmd, uint8_t *data, size_t datalen)
+static int get_datalen(char *data)
 {
+    if (data == NULL)
+        return 0;
+    return strlen(data);
+}
+
+int send_data(client_t *client, char *cmd, char *data)
+{
+    uint datalen = get_datalen(data);
     uint packetlen = CMD_LEN + datalen + EOP_LEN;
     uint8_t fullpacket[packetlen];
     int rc = DEFAULTRC;

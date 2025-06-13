@@ -10,40 +10,7 @@
 
     #include "structs.h"
 
-enum alpha_ascii_e {
-    A = 97,
-    B,
-    C,
-    D,
-    E,
-    F,
-    G,
-    H,
-    I,
-    J,
-    K,
-    L,
-    M,
-    N,
-    O,
-    P,
-    Q,
-    R,
-    S,
-    T,
-    U,
-    V,
-    W,
-    X,
-    Y,
-    Z
-};
-
-static const char CYE[3] = "cye"; //connection yes
-static const char CNO[3] = "cno"; //connection no
-static const char WRC[3] = "wrc"; //wrong command
-
-int command_handler(serverdata_t *sdata, client_t *client, char *command);
+int command_handler(serverdata_t *sdata, client_t *client);
 
 typedef int (*handler_t)(serverdata_t *sdata, client_t *client);
 
