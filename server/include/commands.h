@@ -10,7 +10,7 @@
 
     #include "structs.h"
 
-int command_handler(serverdata_t *sdata, client_t *client);
+int buffer_handler(serverdata_t *sdata, client_t *client);
 
 typedef int (*handler_t)(serverdata_t *sdata, client_t *client);
 

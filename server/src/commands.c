@@ -37,35 +37,47 @@ static int empty_client_buff(client_t *client, uint index)
     return EXIT_SUCCESS;
 }
 
-static int command_parser(client_t *client, char *cmd, char *data)
+static int parse_cmd(client_t *client, char *cmd)
 {
-    uint cmdlen = 0;
-    uint flw = 0;
+    for (uint k = 0; client->buffer[k] != 0; k++) {
+        cmd[k] = client->buffer[k];
+        if (client->buffer[k] == ' ')
+            return k;
+    }
+    return -1;
+}
+
+static int parse_data(client_t *client, char *data, uint start)
+{
+    for (uint k = 0; client->buffer[k] != 0; k++) {
+        data[k] = client->buffer[start + k];
+        if (client->buffer[k] == '\n')
+            return k;
+    }
+    return -1;
+}
+
+static int packet_parser(client_t *client, char *cmd, char *data)
+{
+    uint space_idx = 0;
+    uint nl_idx = 0;
 
     if (!client || !client->buffer)
         return EXIT_FAILURE;
-    for (uint k = 0; client->buffer[k] != 0 && client->buffer[k] != ' '; k++) {
-        cmd[k] = client->buffer[flw];
-        flw++;
-    }
-    flw++;
-    for (uint k = 0; client->buffer[flw] != 0; k++) {
-        data[k] = client->buffer[flw];
-        if (client->buffer[k] == '\n') {
-            empty_client_buff(client, flw);
-            return EXIT_SUCCESS;
-        }
-        flw++;
-    }
+    space_idx = parse_cmd(client, cmd);
+    if (space_idx > 0)
+        nl_idx = parse_data(client, data, space_idx + 1);
+    empty_client_buff(client, nl_idx);
     return EXIT_FAILURE;
+    
 }
 
-int command_handler(serverdata_t *sdata, client_t *client)
+int buffer_handler(serverdata_t *sdata, client_t *client)
 {
     char cmd[BUFFSIZE] = {0};
     char data[BUFFSIZE] = {0};
 
-    if (command_parser(client, cmd, data) == EXIT_FAILURE)
+    if (packet_parser(client, cmd, data) == EXIT_FAILURE)
         return EXIT_FAILURE;
     for (uint k = 0; k < NB_USER_COMMANDS; k++) {
         if (strcmp(cmd, USER_COMMANDS[k].command) == 0)

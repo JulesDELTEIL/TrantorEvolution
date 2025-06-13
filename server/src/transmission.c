@@ -62,7 +62,7 @@ int receive_data(serverdata_t *sdata, client_t *client)
         return EXIT_FAILURE;
     debug_input(client, buffer, rc);
     add_circular(client, buffer);
-    return command_handler(sdata, client);
+    return buffer_handler(sdata, client);
 }
 
 static int get_datalen(char *data)
