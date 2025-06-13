@@ -15,6 +15,6 @@ int cmd_tna(serverdata_t *sdata, client_t *client, char *data)
 {
     int rc = DEFAULTRC;
 
-    send_data(client, "ok", NULL); //replace
+    send_data(client, "ok", NULL);
     return EXIT_SUCCESS;
 }
