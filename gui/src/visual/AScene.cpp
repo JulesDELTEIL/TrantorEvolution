@@ -10,18 +10,27 @@
 namespace gui {
 namespace visual {
 
-void AScene::display(void) const
+AScene::AScene(const sf::FloatRect& rect) : _camera(rect)
+{}
+
+sf::View AScene::getView(void)
 {
-    for (const ILayer& layer : _layers) {
-        layer.display();
-    }
+    return _camera;
 }
 
-void AScene::event(const sf::Event& event)
+void AScene::zoom(float scale)
 {
-    for (ILayer& layer : _layers) {
-        layer.event(event);
-    }
+    _camera.zoom(scale);
+}
+
+void AScene::move(const sf::Vector2f& factor)
+{
+    _camera.move(factor);
+}
+
+void AScene::move(float x, float y)
+{
+    _camera.move(sf::Vector2f(x, y));
 }
 
 } // visual

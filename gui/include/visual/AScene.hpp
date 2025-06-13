@@ -9,23 +9,30 @@
     #define ASCENE_HPP_
 
     #include <vector>
+    #include <memory>
 
-    #include "IScene.hpp"
-    #include "ILayer.hpp"
+    #include "visual/IScene.hpp"
+    #include "visual/ALayer.hpp"
 
 namespace gui {
 namespace visual {
 
 class AScene : public IScene {
     public:
-        AScene() = default;
+        AScene(const sf::FloatRect&);
         ~AScene() = default;
 
-        void display(void) const override;
-        void event(const sf::Event&) override;
+        void display(sf::RenderTarget&) const = 0;
+        void event(const sf::Event&) = 0;
 
-    private:
-        std::vector<ILayer> _layers;
+        sf::View getView(void) override;
+        void zoom(float) override;
+        void move(const sf::Vector2f&) override;
+        void move(float, float) override;
+
+    protected:
+        sf::View _camera;
+        std::vector<std::unique_ptr<ILayer>> _layers;
 
 };
 
