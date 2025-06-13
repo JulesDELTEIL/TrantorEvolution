@@ -86,7 +86,7 @@ Returns ERRORCODE
 */
 int returnwitherror(const char *msg, int errorcode);
 
-void debug_input(client_t *client, uint8_t *data, int size);
-void debug_output(client_t *client, uint8_t *data, int size);
+void debug_input(client_t *client, char *data, int size);
+void debug_output(client_t *client, char *data, int size);
 
 #endif

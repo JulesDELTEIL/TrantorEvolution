@@ -22,7 +22,7 @@ typedef struct player_s {
     float pos_y;
     size_t meters;
     int speed;
-    uint8_t status;
+    uint_t status;
 } player_t;
 
 /*

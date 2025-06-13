@@ -8,7 +8,7 @@
 #include "functions.h"
 #include "commands.h"
 
-void debug_input(client_t *client, uint8_t *data, int size)
+void debug_input(client_t *client, char *data, int size)
 {
     if (size == 0 || !data)
         return;
@@ -19,7 +19,7 @@ void debug_input(client_t *client, uint8_t *data, int size)
     printf("]\n");
 }
 
-void debug_output(client_t *client, uint8_t *data, int size)
+void debug_output(client_t *client, char *data, int size)
 {
     if (size == 0 || !data)
         return;
@@ -32,15 +32,15 @@ void debug_output(client_t *client, uint8_t *data, int size)
 static int add_circular(client_t *client, char *buffer)
 {
     char *newbuff = NULL;
-    uint c_bufflen = 0;
-    uint n_bufflen = strlen(buffer);
+    uint_t c_bufflen = 0;
+    uint_t n_bufflen = strlen(buffer);
 
     if (client->buffer != NULL)
         c_bufflen = strlen(client->buffer);
     newbuff = malloc(sizeof(char) * (c_bufflen + n_bufflen + 1));
-    for (uint k = 0; k < c_bufflen; k++)
+    for (uint_t k = 0; k < c_bufflen; k++)
         newbuff[k] = client->buffer[k];
-    for (uint k = 0; k < n_bufflen; k++)
+    for (uint_t k = 0; k < n_bufflen; k++)
         newbuff[k + c_bufflen] = buffer[k];
     newbuff[c_bufflen + n_bufflen] = 0;
     if (client->buffer != NULL)
@@ -74,15 +74,15 @@ static int get_datalen(char *data)
 
 int send_data(client_t *client, char *cmd, char *data)
 {
-    uint datalen = get_datalen(data);
-    uint cmdlen = get_datalen(cmd);
-    uint packetlen = cmdlen + datalen + 1;
-    uint8_t fullpacket[packetlen];
+    uint_t datalen = get_datalen(data);
+    uint_t cmdlen = get_datalen(cmd);
+    uint_t packetlen = cmdlen + datalen + 1;
+    char fullpacket[packetlen];
     int rc = DEFAULTRC;
 
     if (cmd == NULL)
         return EXIT_FAILURE;
-    for (uint k = 0; k < cmdlen; k++)
+    for (uint_t k = 0; k < cmdlen; k++)
         fullpacket[k] = cmd[k];
     for (size_t k = 0; k < datalen; k++)
         fullpacket[cmdlen + k] = data[k];

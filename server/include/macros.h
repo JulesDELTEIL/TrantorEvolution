@@ -8,7 +8,7 @@
 #ifndef SERVERMACROS_H_
     #define SERVERMACROS_H_
 
-    #define uint unsigned int
+typedef unsigned int uint_t;
 
     #define DEFAULTRC -1
     #define NOFD -1
@@ -33,14 +33,14 @@ static const char ERROR_BIND[] = "ERROR: bind() failed\n";
 static const char ERROR_POLL[] = "ERROR: poll() failed\n";
 static const char ERROR_ACCEPT[] = "ERROR: accept() failed\n";
 static const char CLIENTS_OVERFLOW_MSG[] =
-    "Maximum clients reached, try again later\n";
+"Maximum clients reached, try again later\n";
 
     #define CLIENTS_OVERFLOW_CODE 42
 
-    enum client_type_e {
-        UNSET = -1,
-        AI = 0,
-        GUI = 1,
-    };
+enum client_type_e {
+    UNSET = -1,
+    AI = 0,
+    GUI = 1,
+};
 
 #endif
