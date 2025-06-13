@@ -18,6 +18,7 @@ add_executable( ${PROJECT_NAME}
     ${SERVER_SRC_DIR}returnwitherror.c
     ${SERVER_SRC_DIR}end.c
     ${SERVER_CMD_DIR}tna.c
+    ${SERVER_CMD_DIR}idn.c
 )
 
 ########## LINKAGE ##########

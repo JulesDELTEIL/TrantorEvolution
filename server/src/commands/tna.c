@@ -7,14 +7,14 @@
 
 #include <unistd.h>
 #include <stdlib.h>
+#include <string.h>
 
-#include "structs.h"
-#include "commands.h"
+#include "functions.h"
 
 int cmd_tna(serverdata_t *sdata, client_t *client, char *data)
 {
     int rc = DEFAULTRC;
 
-    client->type = data[0];
+    send_data(client, "ok", NULL); //replace
     return EXIT_SUCCESS;
 }

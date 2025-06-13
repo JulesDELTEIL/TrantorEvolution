@@ -40,6 +40,7 @@ int setempty_client(client_t *client)
 {
     client->fd = NOFD;
     client->id = 0;
+    client->team = NULL;
     client->buffer = NULL;
     client->type = UNSET;
     client->player.meters = 0;
