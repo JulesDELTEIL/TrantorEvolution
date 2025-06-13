@@ -5,15 +5,21 @@
 ** Core.cpp
 */
 
+#include <iostream>
+
 #include "core/Core.hpp"
 
 namespace gui {
 namespace core {
 
-Core::Core()
+Core::Core(int argc, const char *argv[])
 : _selected_scene(visual::Scene_e::MENU)
 {
-
+    try {
+        _parser = Parser(argc, argv);
+    } catch(const Parser::Error& e) {
+        std::cerr << e.what() << '\n';
+    }
 }
 
 void Core::run(void)
