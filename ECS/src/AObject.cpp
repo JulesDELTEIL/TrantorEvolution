@@ -26,6 +26,7 @@ void AObject::draw(sf::RenderTarget& target, sf::RenderStates) const
 
 void AObject::setPosition(const sf::Vector2f& pos)
 {
+    _pos = pos;
     _sprite.setPosition(pos);
 }
 
@@ -34,14 +35,20 @@ sf::Vector2f AObject::getPosition(void) const
     return _sprite.getPosition();
 }
 
-void AObject::setRotation(float angle)
+void AObject::setScale(const sf::Vector2f& scale)
 {
-    _sprite.setRotation(angle);
+    _sprite.setScale(scale);
 }
 
-float AObject::getRotation(void) const
+sf::Vector2f AObject::getScale(void) const
 {
-    return _sprite.getRotation();
+    return _sprite.getScale();
+}
+
+void AObject::zoom(const sf::Vector2f& zoom)
+{
+    _sprite.setPosition({_pos.x * zoom.x, _pos.y * zoom.y});
+    _sprite.setScale(zoom);
 }
 
 } // ecs

@@ -28,8 +28,9 @@ class AObject : public ADrawable {
         void draw(sf::RenderTarget& target, sf::RenderStates states) const override;
         void setPosition(const sf::Vector2f& pos) override;
         sf::Vector2f getPosition(void) const override;
-        void setRotation(float angle) override;
-        float getRotation(void) const override;
+        void setScale(const sf::Vector2f&) override;
+        sf::Vector2f getScale(void) const override;
+        void zoom(const sf::Vector2f&) override;
 
     protected:
         sf::Texture _texture;

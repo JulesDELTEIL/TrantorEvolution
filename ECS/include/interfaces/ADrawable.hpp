@@ -21,11 +21,13 @@ class ADrawable : public IDrawable {
 
         void setPosition(const sf::Vector2f&) override;
         sf::Vector2f getPosition(void) const override;
-        void setRotation(float) override;
-        float getRotation(void) const override;
+        void setScale(const sf::Vector2f&) override;
+        sf::Vector2f getScale(void) const override;
+        void zoom(const sf::Vector2f&) override;
 
     protected:
         sf::Vector2f _pos;
+        sf::Vector2f _scale;
         float _angle;
 };
 

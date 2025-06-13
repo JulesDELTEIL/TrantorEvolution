@@ -42,6 +42,14 @@ void Land::event(const sf::Event& event)
             for (const auto& entity : _entities)
                 entity->updatePosition(sf::Vector2f(0, -10));
         }
+        if (event.key.code == sf::Keyboard::E) {
+            for (const auto& entity : _entities)
+                entity->zoom(sf::Vector2f(-0.1, -0.1));
+        }
+        if (event.key.code == sf::Keyboard::A) {
+            for (const auto& entity : _entities)
+                entity->zoom(sf::Vector2f(0.1, 0.1));
+        }
     }
 }
 

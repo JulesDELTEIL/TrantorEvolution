@@ -24,14 +24,20 @@ sf::Vector2f ADrawable::getPosition(void) const
     return _pos;
 }
 
-void ADrawable::setRotation(float new_angle)
+void ADrawable::setScale(const sf::Vector2f& new_scale)
 {
-    _angle = new_angle;
+    _scale = new_scale;
 }
 
-float ADrawable::getRotation(void) const
+sf::Vector2f ADrawable::getScale(void) const
 {
-    return _angle;
+    return _scale;
+}
+
+void ADrawable::zoom(const sf::Vector2f& zoom)
+{
+    _pos = {_pos.x * zoom.x, _pos.y * zoom.y};
+    _scale = zoom;
 }
 
 } // ecs

@@ -16,8 +16,9 @@ class IDrawable : public sf::Drawable {
     public:
         virtual void setPosition(const sf::Vector2f&) = 0;
         virtual sf::Vector2f getPosition(void) const = 0;
-        virtual void setRotation(float) = 0;
-        virtual float getRotation(void) const = 0;
+        virtual void setScale(const sf::Vector2f&) = 0;
+        virtual sf::Vector2f getScale(void) const = 0;
+        virtual void zoom(const sf::Vector2f&) = 0;
 
 };
 

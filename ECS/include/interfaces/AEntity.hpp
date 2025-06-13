@@ -24,10 +24,8 @@ class AEntity : public IEntity{
         void display(sf::RenderTarget&) const = 0;
         void event(const sf::Event&) = 0;
 
-        void setPosition(const sf::Vector2f&) override;
         void updatePosition(const sf::Vector2f&) override;
-        void setRotation(float) override;
-        void updateRotation(float) override;
+        void zoom(const sf::Vector2f&) override;
 
     protected:
         sf::Vector2f _origin;
