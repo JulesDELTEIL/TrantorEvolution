@@ -12,7 +12,7 @@ void debug_input(client_t *client, uint8_t *data, int size)
 {
     if (size == 0 || !data)
         return;
-    printf("Cfd%-3d ↓  [%d", client->fd, data[0]);
+    printf("Cfd%-3d ↓  %dB [%d", client->fd, size, data[0]);
     for (size_t k = 1; k < size; k++) {
         printf(", %d", data[k]);
     }
@@ -23,7 +23,7 @@ void debug_output(client_t *client, uint8_t *data, int size)
 {
     if (size == 0 || !data)
         return;
-    printf("Cfd%-3d  ↑ [%d", client->fd, data[0]);
+    printf("Cfd%-3d  ↑ %dB [%d", client->fd, size, data[0]);
     for (size_t k = 1; k < size; k++)
         printf(", %d", data[k]);
     printf("]\n");
@@ -87,7 +87,7 @@ int send_data(client_t *client, char *cmd, char *data)
     for (size_t k = 0; k < datalen; k++)
         fullpacket[cmdlen + k] = data[k];
     fullpacket[cmdlen + datalen] = '\n';
-    rc = write(client->fd, fullpacket, datalen + 1);
+    rc = write(client->fd, fullpacket, packetlen);
     debug_output(client, fullpacket, packetlen);
     return rc;
 }
