@@ -76,6 +76,10 @@ static int packet_parser(client_t *client, char *cmd, char *data)
 
 static bool command_ready(client_t *client)
 {
+    if (client == NULL)
+        return false;
+    if (client->buffer == NULL)
+        return false;
     for (uint_t k = 0; client->buffer[k] != 0; k++)
         if (client->buffer[k] == '\n')
             return true;
