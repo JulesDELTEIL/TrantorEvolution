@@ -23,7 +23,6 @@ class ADrawable : public IDrawable {
         sf::Vector2f getPosition(void) const override;
         void setScale(const sf::Vector2f&) override;
         sf::Vector2f getScale(void) const override;
-        void zoom(const sf::Vector2f&) override;
 
     protected:
         sf::Vector2f _pos;

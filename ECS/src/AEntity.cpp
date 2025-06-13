@@ -32,11 +32,4 @@ void AEntity::updatePosition(const sf::Vector2f& factor)
         drawable.second->setPosition(drawable.second->getPosition() + factor);
 }
 
-void AEntity::zoom(const sf::Vector2f& factor)
-{
-    for (const auto& drawable : _drawables) {
-        drawable.second->zoom(drawable.second->getScale() + factor);
-    }
-}
-
 } // ecs

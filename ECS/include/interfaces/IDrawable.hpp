@@ -18,8 +18,6 @@ class IDrawable : public sf::Drawable {
         virtual sf::Vector2f getPosition(void) const = 0;
         virtual void setScale(const sf::Vector2f&) = 0;
         virtual sf::Vector2f getScale(void) const = 0;
-        virtual void zoom(const sf::Vector2f&) = 0;
-
 };
 
 } // ecs

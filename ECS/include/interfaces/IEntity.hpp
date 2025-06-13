@@ -19,7 +19,6 @@ class IEntity {
         virtual void event(const sf::Event&) = 0;
 
         virtual void updatePosition(const sf::Vector2f&) = 0;
-        virtual void zoom(const sf::Vector2f&) = 0;
 };
 
 } // ecs

@@ -12,7 +12,7 @@
 namespace gui {
 namespace visual {
 
-DefaultScene::DefaultScene() : AScene()
+DefaultScene::DefaultScene() : AScene(DEFAULT_VIEW)
 {
     _layers.emplace_back(std::make_unique<DefaultLayer>());
 }

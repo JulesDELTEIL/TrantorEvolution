@@ -45,10 +45,4 @@ sf::Vector2f AObject::getScale(void) const
     return _sprite.getScale();
 }
 
-void AObject::zoom(const sf::Vector2f& zoom)
-{
-    _sprite.setPosition({_pos.x * zoom.x, _pos.y * zoom.y});
-    _sprite.setScale(zoom);
-}
-
 } // ecs

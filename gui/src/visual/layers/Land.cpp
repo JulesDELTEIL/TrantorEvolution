@@ -25,32 +25,7 @@ void Land::display(sf::RenderTarget& render) const
 
 void Land::event(const sf::Event& event)
 {
-    if (event.type == sf::Event::KeyPressed) {
-        if (event.key.code == sf::Keyboard::Q) {
-            for (const auto& entity : _entities)
-                entity->updatePosition(sf::Vector2f(10, 0));
-        }
-        if (event.key.code == sf::Keyboard::D) {
-            for (const auto& entity : _entities)
-                entity->updatePosition(sf::Vector2f(-10, 0));
-        }
-        if (event.key.code == sf::Keyboard::Z) {
-            for (const auto& entity : _entities)
-                entity->updatePosition(sf::Vector2f(0, 10));
-        }
-        if (event.key.code == sf::Keyboard::S) {
-            for (const auto& entity : _entities)
-                entity->updatePosition(sf::Vector2f(0, -10));
-        }
-        if (event.key.code == sf::Keyboard::E) {
-            for (const auto& entity : _entities)
-                entity->zoom(sf::Vector2f(-0.1, -0.1));
-        }
-        if (event.key.code == sf::Keyboard::A) {
-            for (const auto& entity : _entities)
-                entity->zoom(sf::Vector2f(0.1, 0.1));
-        }
-    }
+
 }
 
 void Land::loadMap(const std::vector<sf::Vector2f>&)

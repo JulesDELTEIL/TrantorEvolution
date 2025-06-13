@@ -25,7 +25,6 @@ class AEntity : public IEntity{
         void event(const sf::Event&) = 0;
 
         void updatePosition(const sf::Vector2f&) override;
-        void zoom(const sf::Vector2f&) override;
 
     protected:
         sf::Vector2f _origin;

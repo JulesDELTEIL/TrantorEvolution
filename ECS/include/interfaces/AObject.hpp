@@ -30,7 +30,6 @@ class AObject : public ADrawable {
         sf::Vector2f getPosition(void) const override;
         void setScale(const sf::Vector2f&) override;
         sf::Vector2f getScale(void) const override;
-        void zoom(const sf::Vector2f&) override;
 
     protected:
         sf::Texture _texture;

@@ -10,6 +10,8 @@
 
     #include "visual/AScene.hpp"
 
+static const sf::FloatRect DEFAULT_VIEW = {0, 0, 1280, 720};
+
 namespace gui {
 namespace visual {
 
