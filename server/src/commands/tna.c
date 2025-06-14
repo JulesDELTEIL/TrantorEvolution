@@ -15,6 +15,12 @@ int cmd_tna(serverdata_t *sdata, client_t *client, char *data)
 {
     int rc = DEFAULTRC;
 
-    send_data(client, "ok", NULL);
+    if (strlen(data) != 0) {
+        send_data(client, "ko", NULL);
+        return EXIT_FAILURE;
+    }
+    for (uint_t k = 0; sdata->args->team_name[k]; k++) {
+        send_data(client, "tna", sdata->args->team_name[k]);
+    }
     return EXIT_SUCCESS;
 }
