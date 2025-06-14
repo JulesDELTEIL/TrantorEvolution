@@ -13,7 +13,7 @@ gui::core::Parser::Parser(int argc, const char *argv[])
 {
     if (argc < ARGS_NB)
         throw gui::core::Parser::Error("Error: Wrong number of arguments");
-    if (isUnsignedNumber(argv[PORT_NB_ARG_INDEX]))
+    if (!isUnsignedNumber(argv[PORT_NB_ARG_INDEX]))
         throw gui::core::Parser::Error("Error: First argument should be an unsigned number");
     _port_nb = std::stoi(argv[PORT_NB_ARG_INDEX]);
     _host_name = argv[HOST_NAME_ARG_INDEX];
