@@ -52,17 +52,32 @@ static int parse_cmd(client_t *client, char *cmd, bool *nl_presence)
     return -1;
 }
 
+static int remove_end_spaces(char *data, uint_t end)
+{
+    for (uint_t k = end; k > 0; k++) {
+        if (data[k] != ' ')
+            return 0;
+        data[k] = 0;
+    }
+}
+
 static int parse_data(client_t *client, char *data, uint_t cmdend_idx,
     bool *nl_presence)
 {
-    if (client->buffer[cmdend_idx] != ' ')
+    uint_t flw = 0;
+
+    if (cmdend_idx < 1 || client->buffer[cmdend_idx] != ' ')
         return cmdend_idx;
     cmdend_idx++;
     for (uint_t k = cmdend_idx; client->buffer[k] != 0; k++) {
-        data[k - cmdend_idx] = client->buffer[k];
         if (client->buffer[k] == '\n') {
             *nl_presence = true;
+            remove_end_spaces(data, flw - 1);
             return k;
+        }
+        if (client->buffer[k] != ' ' || client->buffer[k - 1] != ' ') {
+            data[flw] = client->buffer[k];
+            flw++;
         }
     }
     return -1;
@@ -78,11 +93,10 @@ static int packet_parser(client_t *client, char *cmd, char *data)
         return EXIT_FAILURE;
     if (nl_presence == false)
         end_idx = parse_data(client, data, end_idx, &nl_presence);
-    if (end_idx > 0) {
-        empty_client_buff(client, end_idx);
-        return EXIT_SUCCESS;
-    }
-    return EXIT_FAILURE;
+    if (end_idx <= 0)
+        return EXIT_FAILURE;
+    empty_client_buff(client, end_idx);
+    return EXIT_SUCCESS;
 }
 
 void debug_buffer(client_t *client)
