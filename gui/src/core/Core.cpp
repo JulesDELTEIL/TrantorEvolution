@@ -28,6 +28,7 @@ Core::Core(int argc, const char *argv[])
         _scenes[visual::Scene_e::IN_GAME] = std::make_unique<visual::InGame>();
     } catch(const std::exception& e) {
         std::cerr << e.what() << '\n';
+        exit(84);
     }
 }
 
