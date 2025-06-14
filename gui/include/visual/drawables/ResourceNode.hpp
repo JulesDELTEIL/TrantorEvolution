@@ -35,10 +35,6 @@ static const std::map<ResourceType_e, std::string> RESOURCE_NODE_TEXTURE  = {
 
 static const sf::IntRect RESOURCE_RECT(0, 0, 30, 30);
 
-std::unique_ptr<ecs::IDrawable> resource_nodeEntrypoint(float x, float y, int type) {
-    return std::make_unique<ResourceNode>(sf::Vector2f(x, y), ResourceType_e(type));
-}
-
 } // gui
 } // visual
 

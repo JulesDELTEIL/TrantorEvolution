@@ -33,27 +33,28 @@ class ECSFactory {
         ECSFactory(const ECSFactory&) = delete;
         void operator=(const ECSFactory&) = delete;
 
-        template<typename Type, typename ...Args>
-        static std::unique_ptr<Type> create(const std::string& object, Args... args) {
-            if (IS_TYPE(Type, IEntity)) {
-                if (_entities.find(object) == _entities.end())
-                    return std::make_unique<DefaultEntity>(0, 0);
-                return _entities.at(object)(args...);
-            } else {
-                if (_drawables.find(object) == _drawables.end())
-                    return std::make_unique<DefaultDrawable>(0, 0);
-                return _drawables.at(object)(args...);
-            }
+        template<typename ...Args>
+        static std::unique_ptr<IDrawable> createDraw(const std::string& object, Args... args) {
+            if (_drawables<Args...>.find(object) == _drawables<Args...>.end())
+                return std::make_unique<DefaultDrawable>(args...);
+            return _drawables<Args...>.at(object)(args...);
+        };
+
+        template<typename ...Args>
+        static std::unique_ptr<IEntity> createEntity(const std::string& object, Args... args) {
+            if (_entities<Args...>.find(object) == _entities<Args...>.end())
+                return std::make_unique<DefaultEntity>(args...);
+            return _entities<Args...>.at(object)(args...);
         };
 
     private:
-        typedef std::function<std::unique_ptr<IEntity>()>  entityMaker;
-        static inline const std::map<std::string, entityMaker> _entities = {
+        template<typename ...Args>
+        static inline const std::map<std::string, std::unique_ptr<IEntity>(*)(Args...)> _entities = {
 
         };
 
-        typedef std::function<std::unique_ptr<IEntity>()> drawMaker;
-        static inline const std::map<std::string, drawMaker> _drawables = {
+        template<typename ...Args>
+        static inline const std::map<std::string, std::unique_ptr<IDrawable>(*)(Args...)> _drawables = {
             
         };
 

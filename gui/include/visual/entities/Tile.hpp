@@ -28,10 +28,6 @@ class Tile : public ecs::AEntity {
 
 };
 
-std::unique_ptr<ecs::IEntity> tileEntrypoint(float x, float y, int type) {
-    return std::make_unique<Tile>(sf::Vector2f(x, y), BiomeTypes_e(type));
-}
-
 } // visual
 } // gui
 
