@@ -76,7 +76,7 @@ int send_data(client_t *client, char *cmd, char *data)
 {
     uint_t datalen = get_datalen(data);
     uint_t cmdlen = get_datalen(cmd);
-    uint_t packetlen = cmdlen + datalen + 1;
+    uint_t packetlen = cmdlen + 1 + datalen + 1;
     char fullpacket[packetlen];
     int rc = DEFAULTRC;
 
@@ -84,9 +84,10 @@ int send_data(client_t *client, char *cmd, char *data)
         return EXIT_FAILURE;
     for (uint_t k = 0; k < cmdlen; k++)
         fullpacket[k] = cmd[k];
+    fullpacket[cmdlen] = ' ';
     for (size_t k = 0; k < datalen; k++)
-        fullpacket[cmdlen + k] = data[k];
-    fullpacket[cmdlen + datalen] = '\n';
+        fullpacket[cmdlen + 1 + k] = data[k];
+    fullpacket[cmdlen + 1 + datalen] = '\n';
     rc = write(client->fd, fullpacket, packetlen);
     debug_output(client, fullpacket, packetlen);
     return rc;
