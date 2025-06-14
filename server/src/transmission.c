@@ -46,6 +46,7 @@ static int add_circular(client_t *client, char *buffer)
     if (client->buffer != NULL)
         free(client->buffer);
     client->buffer = newbuff;
+    client->cmd_nb++;
     return EXIT_SUCCESS;
 }
 
@@ -62,7 +63,7 @@ int receive_data(serverdata_t *sdata, client_t *client)
         return EXIT_FAILURE;
     debug_input(client, buffer, rc);
     add_circular(client, buffer);
-    return buffer_handler(sdata, client);
+    return EXIT_SUCCESS;
 }
 
 static int get_datalen(char *data)

@@ -7,6 +7,7 @@
 
 #include "functions.h"
 #include "macros.h"
+#include "commands.h"
 
 int search_events(serverdata_t *sdata, fdarray_t *fdarray, int k)
 {
@@ -58,6 +59,16 @@ int listen_fds(serverdata_t *sdata, fdarray_t *fdarray)
     return EXIT_SUCCESS;
 }
 
+static int check_clients_buffers(serverdata_t *sdata, fdarray_t *fdarray)
+{
+    for (uint_t k = 0; k < NBTOTAL_FD; k++) {
+        if (fdarray->clients[k].buffer != NULL) {
+            buffer_handler(sdata, &(fdarray->clients[k]));
+        }
+    }
+    return EXIT_SUCCESS;
+}
+
 int server_loop(arguments_t *args)
 {
     serverdata_t sdata = setup_parameters(args);
@@ -72,6 +83,7 @@ int server_loop(arguments_t *args)
     listen(sdata.sockfd, NBCLIENTS_QUEUE);
     while (run) {
         rc = listen_fds(&sdata, &fdarray);
+        check_clients_buffers(&sdata, &fdarray);
         if (rc == EXIT_FAILURE || rc == CLOSE_PROCESS)
             run = false;
     }
