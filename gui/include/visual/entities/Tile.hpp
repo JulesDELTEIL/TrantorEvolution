@@ -9,7 +9,6 @@
     #define TILE_HPP_
 
     #include <memory>
-    #include <iostream> // test purpose (to delete)
 
     #include "visual/visual.hpp"
     #include "interfaces/AEntity.hpp"
@@ -28,12 +27,6 @@ class Tile : public ecs::AEntity {
     private:
 
 };
-
-extern "C" {
-    std::unique_ptr<ecs::IEntity> tileEntrypoint(float x, float y, int type) {
-        return std::make_unique<Tile>(sf::Vector2f(x, y), BiomeTypes_e(type));
-    }
-}
 
 } // visual
 } // gui

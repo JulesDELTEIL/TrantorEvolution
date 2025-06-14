@@ -5,7 +5,7 @@
 ** Biome.cpp
 */
 
-#include "Biome.hpp"
+#include "visual/drawables/Biome.hpp"
 
 namespace gui {
 namespace visual {

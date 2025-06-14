@@ -14,7 +14,7 @@ namespace visual {
 
 DefaultLayer::DefaultLayer()
 {
-    _entities.emplace_back(ecs::ECSFactory::create<ecs::IEntity>("caca qui peu"));
+    _entities.emplace_back(ecs::ECSFactory::createEntity("default", 0.0f, 0.0f));
 }
 
 void DefaultLayer::display(sf::RenderTarget& target) const
