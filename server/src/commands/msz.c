@@ -2,7 +2,7 @@
 ** EPITECH PROJECT, 2024
 ** zappy
 ** File description:
-** tna.c
+** idn.c
 */
 
 #include <unistd.h>
@@ -11,16 +11,16 @@
 
 #include "functions.h"
 
-int cmd_tna(serverdata_t *sdata, client_t *client, char *data)
+int cmd_msz(serverdata_t *sdata, client_t *client, char *data)
 {
+    char answer[BUFFSIZE] = {0};
     int rc = DEFAULTRC;
 
     if (strlen(data) != 0) {
         send_data(client, "ko", NULL);
         return EXIT_FAILURE;
     }
-    for (uint_t k = 0; sdata->args->team_name[k]; k++) {
-        send_data(client, "tna", sdata->args->team_name[k]);
-    }
+    sprintf(answer, "%d %d", sdata->args->width, sdata->args->height);
+    send_data(client, "msz", answer);
     return EXIT_SUCCESS;
 }

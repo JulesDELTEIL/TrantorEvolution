@@ -84,6 +84,7 @@ typedef struct serverdata_s {
     struct sockaddr_in address;
     socklen_t addrlen;
     int opt;
+    arguments_t *args;
 } serverdata_t;
 
 #endif

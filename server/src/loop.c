@@ -65,7 +65,7 @@ int server_loop(arguments_t *args)
     fdarray_t fdarray;
     int rc = DEFAULTRC;
 
-    rc = setup_server(&sdata);
+    rc = setup_server(&sdata, args);
     if (rc == EXIT_FAILURE)
         return EXIT_FAILURE;
     fdarray = setup_fds(sdata.sockfd);
