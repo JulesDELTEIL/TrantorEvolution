@@ -15,6 +15,9 @@
     #include "visual/visual.hpp"
     #include "visual/IScene.hpp"
 
+    #include "ECSFactory.hpp"
+    #include "visual/setup.hpp"
+
 namespace gui {
 namespace core {
 
@@ -34,6 +37,8 @@ class Core {
         visual::Scene_e _selected_scene;
         std::map<visual::Scene_e, std::unique_ptr<visual::IScene>> _scenes;
         void changeScene(const visual::Scene_e&);
+
+        void setupVisual(void);
 };
 
 } // core

@@ -12,7 +12,7 @@ namespace ecs {
 
 DefaultEntity::DefaultEntity(float x, float y, ...) : AEntity(sf::Vector2f(x, y))
 {
-    _drawables["default"] = ECSFactory::createDraw("default", x, x);
+    _drawables[DEFAULT_ID] = ECSFactory::createDraw(DEFAULT_ID, x, y);
 }
 
 void DefaultEntity::display(sf::RenderTarget& win) const

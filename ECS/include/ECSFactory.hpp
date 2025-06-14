@@ -18,8 +18,7 @@
     #include "default/DefaultDrawable.hpp"
     #include "default/DefaultEntity.hpp"
 
-    #define DRAW_ENTRY ("drawable" + ENTRYPOINT)
-    #define ENTITY_ENTRY ("entity" + ENTRYPOINT)
+    #define DEFAULT_ID "default"
 
     #define IS_TYPE(t1, t2) (typeid(t1) == typeid(t2))
 
@@ -34,11 +33,23 @@ class ECSFactory {
         void operator=(const ECSFactory&) = delete;
 
         template<typename ...Args>
+        static void setDraw(const std::string& object, std::unique_ptr<IDrawable>(*maker)(Args...)) {
+            if (_drawables<Args...>.find(object) == _drawables<Args...>.end())
+                _drawables<Args...>[object] = maker;
+        }
+
+        template<typename ...Args>
         static std::unique_ptr<IDrawable> createDraw(const std::string& object, Args... args) {
             if (_drawables<Args...>.find(object) == _drawables<Args...>.end())
                 return std::make_unique<DefaultDrawable>(args...);
             return _drawables<Args...>.at(object)(args...);
         };
+
+        template<typename ...Args>
+        static void setEntity(const std::string& object, std::unique_ptr<IEntity>(*maker)(Args...)) {
+            if (_entities<Args...>.find(object) == _entities<Args...>.end())
+                _entities<Args...>[object] = maker;
+        }
 
         template<typename ...Args>
         static std::unique_ptr<IEntity> createEntity(const std::string& object, Args... args) {
@@ -48,15 +59,12 @@ class ECSFactory {
         };
 
     private:
-        template<typename ...Args>
-        static inline const std::map<std::string, std::unique_ptr<IEntity>(*)(Args...)> _entities = {
-
-        };
 
         template<typename ...Args>
-        static inline const std::map<std::string, std::unique_ptr<IDrawable>(*)(Args...)> _drawables = {
-            
-        };
+        static inline std::map<std::string, std::unique_ptr<IEntity>(*)(Args...)> _entities = {};
+
+        template<typename ...Args>
+        static inline std::map<std::string, std::unique_ptr<IDrawable>(*)(Args...)> _drawables = {};
 
 };
 

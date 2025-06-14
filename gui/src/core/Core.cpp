@@ -15,6 +15,7 @@ namespace core {
 
 Core::Core()
 {
+    setupVisual();
     _scenes[visual::Scene_e::NONE] = std::make_unique<visual::DefaultScene>();
     changeScene(visual::Scene_e::NONE);
     _scenes[visual::Scene_e::IN_GAME] = std::make_unique<visual::InGame>();
@@ -53,6 +54,13 @@ void Core::changeScene(const visual::Scene_e& scene)
 {
     _selected_scene = scene;
     _engine.window.setView(_scenes.at(_selected_scene)->getView());
+}
+
+void Core::setupVisual(void)
+{
+    ecs::ECSFactory::setDraw("biome", &visual::makeBiome);
+    ecs::ECSFactory::setDraw("resource_node", &visual::makeResourceNode);
+    ecs::ECSFactory::setEntity("tile", &visual::makeTile);
 }
 
 } // core
