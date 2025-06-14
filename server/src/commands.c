@@ -103,8 +103,10 @@ void debug_buffer(client_t *client)
 {
     uint_t size = 0;
 
-    if (client->buffer == NULL)
+    if (client->buffer == NULL) {
+        printf("Cfd%-3d.buff = %dB []", client->fd, size);
         return;
+    }
     size = strlen(client->buffer);
     if (size == 0) {
         printf("Cfd%-3d.buff = %dB []", client->fd, size);

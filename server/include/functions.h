@@ -33,7 +33,7 @@ serverdata_t setup_parameters(arguments_t *args);
 Sets the options described in the sdata struct into the socket
 Returns EXIT_SUCCESS or EXIT_FAILURE
 */
-int setup_server(serverdata_t *sdata);
+int setup_server(serverdata_t *sdata, arguments_t *args);
 
 /*
 Main loop of the ftp server, takes port as parameter

@@ -21,7 +21,7 @@ serverdata_t setup_parameters(arguments_t *args)
     return sdata;
 }
 
-int setup_server(serverdata_t *sdata)
+int setup_server(serverdata_t *sdata, arguments_t *args)
 {
     int rc = DEFAULTRC;
 
@@ -33,6 +33,7 @@ int setup_server(serverdata_t *sdata)
         &sdata->address, sdata->addrlen);
     if (rc < 0)
         return returnwitherror(ERROR_BIND, EXIT_FAILURE);
+    sdata->args = args;
     return EXIT_SUCCESS;
 }
 
