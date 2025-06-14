@@ -10,6 +10,8 @@
 
     #include "visual/ALayer.hpp"
 
+    #include "visual/entities/Tile.hpp"
+
 namespace gui {
 namespace visual {
 
@@ -23,6 +25,7 @@ class Land : public ALayer {
     
     private:
         void loadMap(const std::vector<int>&);
+        std::vector<std::unique_ptr<Tile>> _tiles;
 };
 
 } // visual
