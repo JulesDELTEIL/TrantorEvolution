@@ -133,7 +133,6 @@ int buffer_handler(serverdata_t *sdata, client_t *client)
     for (uint_t k = 0; k < NB_USER_COMMANDS; k++)
         if (strcmp(cmd, USER_COMMANDS[k].command) == 0) {
             USER_COMMANDS[k].handler(sdata, client, data);
-            client->cmd_nb--;
             return EXIT_SUCCESS;
         }
     handle_unrecognized_code(sdata, client);
