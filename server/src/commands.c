@@ -37,53 +37,52 @@ static int empty_client_buff(client_t *client, uint_t index)
     return EXIT_SUCCESS;
 }
 
-static int parse_cmd(client_t *client, char *cmd)
+static int parse_cmd(client_t *client, char *cmd, bool *nl_presence)
 {
     for (uint_t k = 0; client->buffer[k] != 0; k++) {
-        if (client->buffer[k] == ' ' || client->buffer[k] == '\n')
+        if (client->buffer[k] == '\n') {
+            *nl_presence = true;
             return k;
+        }
+        if (client->buffer[k] == ' ') {
+            return k;
+        }
         cmd[k] = client->buffer[k];
     }
     return -1;
 }
 
-static int parse_data(client_t *client, char *data, uint_t cmdend_idx)
+static int parse_data(client_t *client, char *data, uint_t cmdend_idx,
+    bool *nl_presence)
 {
     if (client->buffer[cmdend_idx] != ' ')
         return cmdend_idx;
     cmdend_idx++;
     for (uint_t k = cmdend_idx; client->buffer[k] != 0; k++) {
         data[k - cmdend_idx] = client->buffer[k];
-        if (client->buffer[k] == '\n')
+        if (client->buffer[k] == '\n') {
+            *nl_presence = true;
             return k;
+        }
     }
     return -1;
 }
 
 static int packet_parser(client_t *client, char *cmd, char *data)
 {
-    uint_t space_idx = 0;
-    uint_t nl_idx = 0;
+    uint_t end_idx = 0;
+    bool nl_presence = false;
 
-    space_idx = parse_cmd(client, cmd);
-    if (space_idx <= 0)
+    end_idx = parse_cmd(client, cmd, &nl_presence);
+    if (end_idx <= 0)
         return EXIT_FAILURE;
-    nl_idx = parse_data(client, data, space_idx);
-    if (nl_idx > 0)
-        empty_client_buff(client, nl_idx);
-    return EXIT_SUCCESS;
-}
-
-static bool command_ready(client_t *client)
-{
-    if (client == NULL)
-        return false;
-    if (client->buffer == NULL)
-        return false;
-    for (uint_t k = 0; client->buffer[k] != 0; k++)
-        if (client->buffer[k] == '\n')
-            return true;
-    return false;
+    if (nl_presence == false)
+        end_idx = parse_data(client, data, end_idx, &nl_presence);
+    if (end_idx > 0) {
+        empty_client_buff(client, end_idx);
+        return EXIT_SUCCESS;
+    }
+    return EXIT_FAILURE;
 }
 
 int buffer_handler(serverdata_t *sdata, client_t *client)
@@ -91,7 +90,9 @@ int buffer_handler(serverdata_t *sdata, client_t *client)
     char cmd[BUFFSIZE] = {0};
     char data[BUFFSIZE] = {0};
 
-    if (command_ready(client) == false)
+    if (client == NULL)
+        return EXIT_FAILURE;
+    if (client->buffer == NULL)
         return EXIT_FAILURE;
     if (packet_parser(client, cmd, data) == EXIT_FAILURE)
         return EXIT_FAILURE;
