@@ -5,20 +5,30 @@
 ** Core.cpp
 */
 
+#include <iostream>
+
 #include "core/Core.hpp"
 
 #include "visual/scenes/DefaultScene.hpp"
 #include "visual/scenes/InGame.hpp"
 
+#include "ECSFactory.hpp"
+#include "visual/setup.hpp"
+
 namespace gui {
 namespace core {
 
-Core::Core()
+Core::Core(int argc, const char *argv[])
 {
-    setupVisual();
-    _scenes[visual::Scene_e::NONE] = std::make_unique<visual::DefaultScene>();
-    changeScene(visual::Scene_e::NONE);
-    _scenes[visual::Scene_e::IN_GAME] = std::make_unique<visual::InGame>();
+    try {
+        _parser = Parser(argc, argv);
+        setupVisual();
+        _scenes[visual::Scene_e::NONE] = std::make_unique<visual::DefaultScene>();
+        changeScene(visual::Scene_e::NONE);
+        _scenes[visual::Scene_e::IN_GAME] = std::make_unique<visual::InGame>();
+    } catch(const std::exception& e) {
+        std::cerr << e.what() << '\n';
+    }
 }
 
 void Core::run(void)

@@ -11,25 +11,25 @@
     #include <map>
     #include <memory>
 
+
     #include "core/Engine.hpp"
     #include "visual/visual.hpp"
+    #include "core/Parser.hpp"
     #include "visual/IScene.hpp"
-
-    #include "ECSFactory.hpp"
-    #include "visual/setup.hpp"
 
 namespace gui {
 namespace core {
 
 class Core {
     public:
-        Core();
+        Core(int argc, const char *argv[]);
         ~Core() = default;
 
         void run(void);
 
     private:
         Engine _engine;
+        Parser _parser;
 
         void display(void);
         void events(void);
