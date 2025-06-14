@@ -12,23 +12,17 @@
 
     #include "interfaces/AObject.hpp"
 
-    #define DEFAULT_TEXTURE "ECS/default/assets/error.png"
-    #define DEFAULT_TEXTURE_RECT sf::IntRect(0, 0, 800, 800)
+    #define DEFAULT_TEXTURE "ECS/assets/error.png"
+    #define DEFAULT_TEXTURE_RECT sf::IntRect(0, 0, 32, 32)
 
 namespace ecs {
     
 class DefaultDrawable : public AObject {
     public:
-        DefaultDrawable(float x, float y);
+        DefaultDrawable(float x, float y, ...);
         ~DefaultDrawable() = default;
 
 };
-
-extern "C" {
-    std::unique_ptr<ecs::IDrawable> drawableEntrypoint(float x, float y) {
-        return std::make_unique<DefaultDrawable>(x, y);
-    }
-}
 
 } // namespace ecs
 

@@ -34,12 +34,6 @@ class Biome : public ecs::AObject{
 
 };
 
-extern "C" {
-    std::unique_ptr<ecs::IDrawable> biomeEntrypoint(float x, float y, int type) {
-        return std::make_unique<Biome>(sf::Vector2f(x, y), BiomeTypes_e(type));
-    }
-}
-
 } // visual
 } // gui
 
