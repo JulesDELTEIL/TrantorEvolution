@@ -85,21 +85,38 @@ static int packet_parser(client_t *client, char *cmd, char *data)
     return EXIT_FAILURE;
 }
 
+void debug_buffer(client_t *client)
+{
+    uint_t size = 0;
+
+    if (client->buffer == NULL)
+        return;
+    size = strlen(client->buffer);
+    if (size == 0) {
+        printf("Cfd%-3d.buffer = %dB []", client->fd, size);
+    } else {
+        printf("Cfd%-3d.buffer = %dB [%d", client->fd, size, client->buffer[0]);
+        for (size_t k = 1; k < size; k++)
+            printf(", %d", client->buffer[k]);
+        printf("]\n");
+    }
+}
+
 int buffer_handler(serverdata_t *sdata, client_t *client)
 {
     char cmd[BUFFSIZE] = {0};
     char data[BUFFSIZE] = {0};
 
+    debug_buffer(client);
     if (client == NULL)
         return EXIT_FAILURE;
     if (client->buffer == NULL)
         return EXIT_FAILURE;
     if (packet_parser(client, cmd, data) == EXIT_FAILURE)
         return EXIT_FAILURE;
-    for (uint_t k = 0; k < NB_USER_COMMANDS; k++) {
+    for (uint_t k = 0; k < NB_USER_COMMANDS; k++)
         if (strcmp(cmd, USER_COMMANDS[k].command) == 0)
             return USER_COMMANDS[k].handler(sdata, client, data);
-    }
     handle_unrecognized_code(sdata, client);
     return EXIT_FAILURE;
 }
