@@ -13,6 +13,25 @@
 
     #include "macros.h"
 
+#define NB_DIFF_ITEMS 7
+
+typedef enum player_dir_e {
+    UP,
+    DOWN,
+    RIGHT,
+    LEFT
+} player_dir_t;
+
+enum item_inv_idx_e {
+    FOOD,
+    WOOD,
+    STONE,
+    CLAY,
+    IRON,
+    OIL,
+    ANTIMATTER
+};
+
 /*
 struct player_t :
 - size_t level
@@ -21,12 +40,11 @@ struct player_t :
 - uint_t direction
 */
 typedef struct player_s {
-    size_t score;
-    float pos_x;
-    float pos_y;
-    size_t meters;
-    int speed;
-    uint_t status;
+    size_t level;
+    uint_t x;
+    uint_t y;
+    player_dir_t direction;
+    uint_t inventory[NB_DIFF_ITEMS];
 } player_t;
 
 /*
