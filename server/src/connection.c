@@ -8,15 +8,6 @@
 #include "functions.h"
 #include "commands.h"
 
-static void displayfds(fdarray_t *fdarray)
-{
-    printf("[");
-    printf("%d", fdarray->clients[0].fd);
-    for (int k = 1; k < NBTOTAL_FD; k++)
-        printf(", %d", fdarray->clients[k].fd);
-    printf("]\n");
-}
-
 static int getnextfree(fdarray_t *fdarray)
 {
     for (size_t k = NB_SERVER_FD; k < NBTOTAL_FD; k++)

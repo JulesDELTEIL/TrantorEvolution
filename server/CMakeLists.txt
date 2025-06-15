@@ -16,6 +16,7 @@ add_executable( ${PROJECT_NAME}
     ${SERVER_SRC_DIR}transmission.c
     ${SERVER_SRC_DIR}commands.c
     ${SERVER_SRC_DIR}timer.c
+    ${SERVER_SRC_DIR}debug.c
     ${SERVER_SRC_DIR}returnwitherror.c
     ${SERVER_SRC_DIR}end.c
     ${SERVER_CMD_DIR}tna.c

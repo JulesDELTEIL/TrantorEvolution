@@ -6,28 +6,7 @@
 */
 
 #include "functions.h"
-#include "commands.h"
-
-void debug_input(client_t *client, char *data, int size)
-{
-    if (size == 0 || !data)
-        return;
-    printf("Cfd%-3d ↓  %dB [%d", client->fd, size, data[0]);
-    for (size_t k = 1; k < size; k++) {
-        printf(", %d", data[k]);
-    }
-    printf("]\n");
-}
-
-void debug_output(client_t *client, char *data, int size)
-{
-    if (size == 0 || !data)
-        return;
-    printf("Cfd%-3d  ↑ %dB [%d", client->fd, size, data[0]);
-    for (size_t k = 1; k < size; k++)
-        printf(", %d", data[k]);
-    printf("]\n");
-}
+#include "debug.h"
 
 static int add_circular(client_t *client, char *buffer)
 {
