@@ -15,6 +15,9 @@
 namespace gui {
 namespace visual {
 
+    #define TILE_SIZE 32
+    #define CENTER_MAP(map_height) (sf::Vector2f(1280.0f / 2 - (TILE_SIZE / 2), (780.0f - map_height * TILE_SIZE) / 2))
+
 class Land : public ALayer {
     public:
         Land() = default;

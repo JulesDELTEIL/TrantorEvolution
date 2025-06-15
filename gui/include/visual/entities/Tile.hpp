@@ -16,6 +16,14 @@
 namespace gui {
 namespace visual {
 
+    #define RES_MAX_X 25
+    #define RES_MIN_X 8
+    #define RES_MAX_Y 9
+    #define RES_MIN_Y 4
+
+static const int RES_RANGE_X = RES_MAX_X - RES_MIN_X + 1;
+static const int RES_RANGE_Y = RES_MAX_Y - RES_MIN_Y + 1;
+
 class Tile : public ecs::AEntity {
     public:
         Tile(const sf::Vector2f& pos, BiomeTypes_e type,

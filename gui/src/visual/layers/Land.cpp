@@ -27,7 +27,7 @@ void Land::event(const sf::Event& event)
 {
     if (event.type == sf::Event::KeyPressed) {
         if (event.key.code == sf::Keyboard::L)
-            loadMap({1280.0f / 2, (780.0f - TEST_MAP.size() * 32) / 2}, TEST_MAP);
+            loadMap(CENTER_MAP(TEST_MAP.size()), TEST_MAP);
     }
 }
 
@@ -40,7 +40,7 @@ void Land::loadMap(const sf::Vector2f& middle,
     _tiles.clear();
     for (size_t y = 0; y < map.size(); ++y) {
         for (size_t x = 0; x < map[y].size(); ++x) {
-            pos = {middle.x - (16 * (x + y)) + (32 * y), middle.y + (8 * (x + y))};
+            pos = {middle.x - ((TILE_SIZE / 2) * (x + y)) + (TILE_SIZE * y), middle.y + (8 * (x + y))};
             _tiles.emplace_back(dynamic_cast<Tile*>(
                     ecs::ECSFactory::createEntity(
                         "tile",
