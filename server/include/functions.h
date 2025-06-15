@@ -35,6 +35,8 @@ Returns EXIT_SUCCESS
 */
 int close_server(serverdata_t *sdata, fdarray_t *fdarray);
 
+int destroy_client(client_t *client);
+
 /*
 Setup the fdarray_t struct used to store all fds
 Returns a fdarray_t

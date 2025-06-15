@@ -22,10 +22,6 @@ static int getnextfree(fdarray_t *fdarray)
     return -1;
 }
 
-static int destroy_client(client_t *client)
-{
-}
-
 int closeconnection(serverdata_t *sdata, client_t *client)
 {
     close(client->fd);
