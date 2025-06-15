@@ -9,7 +9,7 @@
 #include <stdlib.h>
 #include <string.h>
 
-#include "functions.h"
+#include "transmission.h"
 
 int cmd_tna(serverdata_t *sdata, client_t *client, char *data)
 {

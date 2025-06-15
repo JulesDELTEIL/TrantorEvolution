@@ -7,10 +7,12 @@
 
 #include <stdio.h>
 #include <unistd.h>
+#include <stdlib.h>
+#include <string.h>
 
 #include "commands.h"
-#include "functions.h"
 #include "debug.h"
+#include "transmission.h"
 
 static void handle_unrecognized_code(serverdata_t *sdata, client_t *client)
 {

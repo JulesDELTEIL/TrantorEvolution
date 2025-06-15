@@ -10,6 +10,7 @@
 #include "functions.h"
 #include "macros.h"
 #include "commands.h"
+#include "transmission.h"
 
 int search_events(serverdata_t *sdata, fdarray_t *fdarray, int k)
 {

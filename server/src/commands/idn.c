@@ -9,7 +9,7 @@
 #include <stdlib.h>
 #include <string.h>
 
-#include "functions.h"
+#include "transmission.h"
 
 static int set_teamname(char **args_teamnames, client_t *client, char *data)
 {

@@ -7,6 +7,7 @@
 
 #include "functions.h"
 #include "commands.h"
+#include "transmission.h"
 
 static int getnextfree(fdarray_t *fdarray)
 {

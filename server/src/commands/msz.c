@@ -8,9 +8,9 @@
 #include <unistd.h>
 #include <stdlib.h>
 #include <string.h>
+#include <stdio.h>
 
-#include "functions.h"
-#include "commands.h"
+#include "transmission.h"
 
 int cmd_msz(serverdata_t *sdata, client_t *client, char *data)
 {
