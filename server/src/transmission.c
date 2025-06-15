@@ -73,10 +73,9 @@ int receive_data(serverdata_t *sdata, client_t *client)
     } else if (rc == -1)
         return EXIT_FAILURE;
     debug_input(client, buffer, rc);
-    if (rc < 2)
+    if (rc < 2 || count_nl(client->buffer) >= 10)
         return EXIT_FAILURE;
-    if (count_nl(client->buffer) < 10)
-        add_circular(client, buffer);
+    add_circular(client, buffer);
     return EXIT_SUCCESS;
 }
 

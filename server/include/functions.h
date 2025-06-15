@@ -39,7 +39,7 @@ int setup_server(serverdata_t *sdata, arguments_t *args);
 Main loop of the ftp server, takes port as parameter
 Returns EXIT_SUCCESS or EXIT_FAILURE
 */
-int server_loop(arguments_t *args);
+int server(arguments_t *args);
 
 /*
 Function to call at end of ftp server, used to destroy entities

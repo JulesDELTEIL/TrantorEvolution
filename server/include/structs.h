@@ -12,7 +12,7 @@
     #include <arpa/inet.h>
     #include <poll.h>
     #include <stdbool.h>
-    #include <time.h>
+    #include <sys/time.h>
 
     #include "macros.h"
 
@@ -38,6 +38,7 @@ typedef struct client_s {
     char *team;
     char *buffer;
     uint_t cmd_nb;
+    size_t action_end;
     player_t player;
 } client_t;
 

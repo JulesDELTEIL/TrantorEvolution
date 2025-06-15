@@ -24,7 +24,7 @@ int main(int ac, char *av[])
         display_usage();
         return PROCESS_FAILURE;
     }
-    rc = server_loop(&args);
+    rc = server(&args);
     if (rc == EXIT_FAILURE)
         return PROCESS_FAILURE;
     return PROCESS_SUCCESS;

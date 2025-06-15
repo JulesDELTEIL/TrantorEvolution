@@ -5,6 +5,8 @@
 ** main.c
 */
 
+#include <sys/time.h>
+
 #include "functions.h"
 #include "macros.h"
 #include "commands.h"
@@ -61,18 +63,37 @@ int listen_fds(serverdata_t *sdata, fdarray_t *fdarray)
 
 static int check_clients_buffers(serverdata_t *sdata, fdarray_t *fdarray)
 {
+    struct timeval tp;
+
     for (uint_t k = 0; k < NBTOTAL_FD; k++) {
         if (fdarray->clients[k].buffer != NULL) {
-            buffer_handler(sdata, &(fdarray->clients[k]));
+            gettimeofday(&tp, NULL);
+            if ((tp.tv_sec * 1000 + tp.tv_usec / 1000) >= fdarray->clients[k].action_end) {
+                fdarray->clients[k].action_end = 0;
+                buffer_handler(sdata, &(fdarray->clients[k]));
+            }
         }
     }
     return EXIT_SUCCESS;
 }
 
-int server_loop(arguments_t *args)
+static int server_loop(serverdata_t *sdata, fdarray_t *fdarray)
+{
+    bool run = true;
+    int rc = DEFAULTRC;
+
+    while (run) {
+        rc = listen_fds(sdata, fdarray);
+        if (rc == EXIT_FAILURE || rc == CLOSE_PROCESS)
+            run = false;
+        check_clients_buffers(sdata, fdarray);
+    }
+    return rc;
+}
+
+int server(arguments_t *args)
 {
     serverdata_t sdata = setup_parameters(args);
-    bool run = true;
     fdarray_t fdarray;
     int rc = DEFAULTRC;
 
@@ -81,12 +102,7 @@ int server_loop(arguments_t *args)
         return EXIT_FAILURE;
     fdarray = setup_fds(sdata.sockfd);
     listen(sdata.sockfd, NBCLIENTS_QUEUE);
-    while (run) {
-        rc = listen_fds(&sdata, &fdarray);
-        check_clients_buffers(&sdata, &fdarray);
-        if (rc == EXIT_FAILURE || rc == CLOSE_PROCESS)
-            run = false;
-    }
+    rc = server_loop(&sdata, &fdarray);
     close_server(&sdata, &fdarray);
     if (rc == EXIT_FAILURE)
         return EXIT_FAILURE;
