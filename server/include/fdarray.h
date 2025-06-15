@@ -13,6 +13,13 @@
 
     #include "macros.h"
 
+/*
+struct player_t :
+- size_t level
+- uint_t x
+- uint_t y
+- uint_t direction
+*/
 typedef struct player_s {
     size_t score;
     float pos_x;
@@ -25,8 +32,12 @@ typedef struct player_s {
 /*
 struct client_t :
 - int fd
-- char *user
-- bool logged_in
+- int id
+- int type (if the client is ai or gui)
+- char *team
+- char *buffer (command buffer)
+- size_t act_end (timestamp in ms of when the player will be able to do the next action)
+- player_t player
 */
 typedef struct client_s {
     int fd;
@@ -34,7 +45,6 @@ typedef struct client_s {
     int type;
     char *team;
     char *buffer;
-    uint_t cmd_nb;
     size_t act_end;
     player_t player;
 } client_t;
@@ -42,8 +52,8 @@ typedef struct client_s {
 /*
 struct fdarray_t :
 - client_t clients[NBTOTAL_FD]
- - struct pollfd fds[NBTOTAL_FD]
- */
+- struct pollfd fds[NBTOTAL_FD]
+*/
 typedef struct fdarray_s {
     client_t clients[NBTOTAL_FD];
     struct pollfd fds[NBTOTAL_FD];

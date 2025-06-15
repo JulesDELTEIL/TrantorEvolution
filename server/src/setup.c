@@ -49,7 +49,6 @@ int setempty_client(client_t *client)
     client->type = UNSET;
     client->team = NULL;
     client->buffer = NULL;
-    client->cmd_nb = 0;
     client->act_end = 0;
     client->player.meters = 0;
     client->player.pos_x = 0;
