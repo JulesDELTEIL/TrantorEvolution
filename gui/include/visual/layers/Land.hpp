@@ -17,14 +17,16 @@ namespace visual {
 
 class Land : public ALayer {
     public:
-        Land(const std::vector<int>&);
+        Land() = default;
         ~Land() = default;
 
         void display(sf::RenderTarget& render) const override;
         void event(const sf::Event& event) override;
     
+        void loadMap(const sf::Vector2f&,
+            const std::vector<std::vector<TileInfo_s>>&);
     private:
-        void loadMap(const std::vector<int>&);
+        uint8_t convertResource(const std::array<bool, NB_RESOURCES>&);
         std::vector<std::unique_ptr<Tile>> _tiles;
 };
 

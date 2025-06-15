@@ -18,7 +18,8 @@ namespace visual {
 
 class Tile : public ecs::AEntity {
     public:
-        Tile(const sf::Vector2f& pos, BiomeTypes_e type);
+        Tile(const sf::Vector2f& pos, BiomeTypes_e type,
+            const std::vector<ResourceType_e>&);
         ~Tile() = default;
 
         void display(sf::RenderTarget& render) const override;

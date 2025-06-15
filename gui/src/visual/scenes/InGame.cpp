@@ -15,7 +15,7 @@ namespace visual {
 
 InGame::InGame() : AScene(core::DEFAULT_VIEW)
 {
-    _layers.emplace_back(std::make_unique<Land>(std::vector<int>{1, 2}));
+    _layers.emplace_back(std::make_unique<Land>());
 }
 
 void InGame::display(sf::RenderTarget& target) const

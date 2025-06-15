@@ -5,17 +5,25 @@
 ** Tile.cpp
 */
 
+#include <cstdlib>
+
 #include "visual/entities/Tile.hpp"
 #include "ECSFactory.hpp"
 
 namespace gui {
 namespace visual {
 
-Tile::Tile(const sf::Vector2f& pos, BiomeTypes_e type) : AEntity(pos)
+Tile::Tile(const sf::Vector2f& pos, BiomeTypes_e type,
+    const std::vector<ResourceType_e>& resources) : AEntity(pos)
 {
+    int rangeX = 25 - 8 + 1;
+    int rangeY = 9 - 4 + 1;
+
     _drawables["background"] = ecs::ECSFactory::createDraw("biome", pos.x, pos.y, static_cast<int>(type));
-    if (type == GRASS)
-        _drawables["tree"] = ecs::ECSFactory::createDraw("resource_node", pos.x + 8.0f, pos.y + 8.0f, static_cast<int>(WOOD));
+    for (const ResourceType_e& res : resources) {
+        sf::Vector2f res_pos = {pos.x + std::rand() % rangeX + 8, pos.y + std::rand() % rangeY + 4};
+        _drawables["resource_node" + res] = ecs::ECSFactory::createDraw("resource_node", res_pos.x, res_pos.y, static_cast<int>(res));
+    }
 }
 
 void Tile::display(sf::RenderTarget& win) const

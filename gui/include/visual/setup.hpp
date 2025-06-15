@@ -23,7 +23,7 @@ namespace visual {
 std::unique_ptr<ecs::IDrawable> makeBiome(float, float, int);
 std::unique_ptr<ecs::IDrawable> makeResourceNode(float x, float y, int type);
 
-std::unique_ptr<ecs::IEntity> makeTile(float x, float y, int type);
+std::unique_ptr<ecs::IEntity> makeTile(float x, float y, int type, uint8_t resources);
 
 } // namespace visual
 } // namespace gui
