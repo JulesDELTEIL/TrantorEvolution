@@ -64,17 +64,23 @@ int listen_fds(serverdata_t *sdata, fdarray_t *fdarray)
     return EXIT_SUCCESS;
 }
 
-static int check_clients_buffers(serverdata_t *sdata, fdarray_t *fdarray)
+static int check_client_buffer(serverdata_t *sdata, client_t *client)
 {
     struct timeval tp;
 
+    gettimeofday(&tp, NULL);
+    if ((tp.tv_sec * 1000 + tp.tv_usec / 1000) >= client->act_end) {
+        client->act_end = 0;
+        buffer_handler(sdata, client);
+    }
+    return EXIT_SUCCESS;
+}
+
+static int clients_buffers(serverdata_t *sdata, fdarray_t *fdarray)
+{
     for (uint_t k = 0; k < NBTOTAL_FD; k++) {
         if (fdarray->clients[k].buffer != NULL) {
-            gettimeofday(&tp, NULL);
-            if ((tp.tv_sec * 1000 + tp.tv_usec / 1000) >= fdarray->clients[k].act_end) {
-                fdarray->clients[k].act_end = 0;
-                buffer_handler(sdata, &(fdarray->clients[k]));
-            }
+            check_client_buffer(sdata, &(fdarray->clients[k]));
         }
     }
     return EXIT_SUCCESS;
@@ -89,7 +95,7 @@ static int server_loop(serverdata_t *sdata, fdarray_t *fdarray)
         rc = listen_fds(sdata, fdarray);
         if (rc == EXIT_FAILURE || rc == CLOSE_PROCESS)
             run = false;
-        check_clients_buffers(sdata, fdarray);
+        clients_buffers(sdata, fdarray);
     }
     return rc;
 }
