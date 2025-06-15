@@ -5,12 +5,17 @@
 ** setup.c
 */
 
-#include "functions.h"
+#include <stdlib.h>
+
+#include "serverdata.h"
+#include "fdarray.h"
+#include "utils.h"
 
 serverdata_t setup_parameters(arguments_t *args)
 {
     serverdata_t sdata;
 
+    sdata.debug = args->debug;
     sdata.port = args->port;
     sdata.address.sin_addr.s_addr = INADDR_ANY;
     sdata.address.sin_family = AF_INET;
@@ -41,9 +46,11 @@ int setempty_client(client_t *client)
 {
     client->fd = NOFD;
     client->id = 0;
+    client->type = UNSET;
     client->team = NULL;
     client->buffer = NULL;
-    client->type = UNSET;
+    client->cmd_nb = 0;
+    client->act_end = 0;
     client->player.meters = 0;
     client->player.pos_x = 0;
     client->player.pos_y = 0;

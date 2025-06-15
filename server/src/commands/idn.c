@@ -9,7 +9,7 @@
 #include <stdlib.h>
 #include <string.h>
 
-#include "functions.h"
+#include "transmission.h"
 
 static int set_teamname(char **args_teamnames, client_t *client, char *data)
 {
@@ -31,13 +31,13 @@ int cmd_idn(serverdata_t *sdata, client_t *client, char *data)
     int rc = DEFAULTRC;
 
     if (client->team != NULL || data == NULL || strlen(data) == 0) {
-        send_data(client, "ko", NULL);
+        send_data(client, "ko", NULL, sdata->debug);
         return EXIT_FAILURE;
     }
     if (set_teamname(sdata->args->team_name, client, data) == EXIT_FAILURE) {
-        send_data(client, "ko", NULL);
+        send_data(client, "ko", NULL, sdata->debug);
         return EXIT_FAILURE;
     }
-    send_data(client, "ok", NULL);
+    send_data(client, "ok", NULL, sdata->debug);
     return EXIT_SUCCESS;
 }

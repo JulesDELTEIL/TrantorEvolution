@@ -5,17 +5,14 @@
 ** connection.c
 */
 
-#include "functions.h"
-#include "commands.h"
+#include <stdio.h>
+#include <stdlib.h>
+#include <unistd.h>
+#include <string.h>
+#include <stdbool.h>
 
-static void displayfds(fdarray_t *fdarray)
-{
-    printf("[");
-    printf("%d", fdarray->clients[0].fd);
-    for (int k = 1; k < NBTOTAL_FD; k++)
-        printf(", %d", fdarray->clients[k].fd);
-    printf("]\n");
-}
+#include "functions.h"
+#include "transmission.h"
 
 static int getnextfree(fdarray_t *fdarray)
 {
@@ -23,10 +20,6 @@ static int getnextfree(fdarray_t *fdarray)
         if (fdarray->clients[k].fd == NOFD)
             return k;
     return -1;
-}
-
-static int destroy_client(client_t *client)
-{
 }
 
 int closeconnection(serverdata_t *sdata, client_t *client)
@@ -45,7 +38,7 @@ int openconnection(serverdata_t *sdata, fdarray_t *fdarray)
 
     nextfree = getnextfree(fdarray);
     if (nextfree == NOFD) {
-        send_data(&(fdarray->clients[nextfree]), "cno", NULL);
+        send_data(&(fdarray->clients[nextfree]), "cno", NULL, sdata->debug);
         return CLIENTS_OVERFLOW_CODE;
     }
     newfd = accept(sdata->sockfd,
@@ -54,6 +47,6 @@ int openconnection(serverdata_t *sdata, fdarray_t *fdarray)
         returnwitherror(ERROR_ACCEPT, EXIT_FAILURE);
     fdarray->fds[nextfree].fd = newfd;
     fdarray->clients[nextfree].fd = newfd;
-    send_data(&(fdarray->clients[nextfree]), "cye", NULL);
+    send_data(&(fdarray->clients[nextfree]), "cye", NULL, sdata->debug);
     return EXIT_SUCCESS;
 }

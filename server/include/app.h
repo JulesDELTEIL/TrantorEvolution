@@ -9,7 +9,7 @@
     #define APP_H_
 
     #include <stdbool.h>
-    #include "structs.h"
+    #include "serverdata.h"
 
     #define PROCESS_FAILURE 84
     #define PROCESS_SUCCESS 0
@@ -46,5 +46,11 @@ int display_usage(void);
 void get_args(int ad, char *av[], arguments_t *args);
 
 int check_args(arguments_t *args);
+
+/*
+Main loop of the ftp server, takes port as parameter
+Returns EXIT_SUCCESS or EXIT_FAILURE
+*/
+int server(arguments_t *args);
 
 #endif

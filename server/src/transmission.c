@@ -5,29 +5,13 @@
 ** actions.c
 */
 
+#include <stdlib.h>
+#include <stdio.h>
+#include <unistd.h>
+#include <string.h>
+
 #include "functions.h"
-#include "commands.h"
-
-void debug_input(client_t *client, char *data, int size)
-{
-    if (size == 0 || !data)
-        return;
-    printf("Cfd%-3d ↓  %dB [%d", client->fd, size, data[0]);
-    for (size_t k = 1; k < size; k++) {
-        printf(", %d", data[k]);
-    }
-    printf("]\n");
-}
-
-void debug_output(client_t *client, char *data, int size)
-{
-    if (size == 0 || !data)
-        return;
-    printf("Cfd%-3d  ↑ %dB [%d", client->fd, size, data[0]);
-    for (size_t k = 1; k < size; k++)
-        printf(", %d", data[k]);
-    printf("]\n");
-}
+#include "debug.h"
 
 static int add_circular(client_t *client, char *buffer)
 {
@@ -49,6 +33,18 @@ static int add_circular(client_t *client, char *buffer)
     return EXIT_SUCCESS;
 }
 
+static int count_nl(char *buff)
+{
+    int count = 0;
+
+    if (buff == NULL)
+        return 0;
+    for (uint_t k = 0; buff[k] != 0; k++)
+        if (buff[k] == '\n')
+            count++;
+    return count;
+}
+
 int receive_data(serverdata_t *sdata, client_t *client)
 {
     char buffer[BUFFSIZE] = {0};
@@ -56,13 +52,17 @@ int receive_data(serverdata_t *sdata, client_t *client)
 
     rc = read(client->fd, buffer, BUFFSIZE - 1);
     if (rc == 0) {
-        printf("Cfd%-3d ↓  ✕\n", client->fd);
+        if (sdata->debug)
+            printf("Cfd%-3d ↓  ✕\n", client->fd);
         return closeconnection(sdata, client);
     } else if (rc == -1)
         return EXIT_FAILURE;
-    debug_input(client, buffer, rc);
+    if (sdata->debug)
+        debug_input(client, buffer, rc);
+    if (rc < 2 || count_nl(client->buffer) >= 10)
+        return EXIT_FAILURE;
     add_circular(client, buffer);
-    return buffer_handler(sdata, client);
+    return EXIT_SUCCESS;
 }
 
 static int get_datalen(char *data)
@@ -72,7 +72,7 @@ static int get_datalen(char *data)
     return strlen(data);
 }
 
-int send_data(client_t *client, char *cmd, char *data)
+int send_data(client_t *client, char *cmd, char *data, bool debug)
 {
     uint_t datalen = get_datalen(data);
     uint_t cmdlen = get_datalen(cmd);
@@ -89,6 +89,7 @@ int send_data(client_t *client, char *cmd, char *data)
         fullpacket[cmdlen + 1 + k] = data[k];
     fullpacket[cmdlen + 1 + datalen] = '\n';
     rc = write(client->fd, fullpacket, packetlen);
-    debug_output(client, fullpacket, packetlen);
+    if (debug)
+        debug_output(client, fullpacket, packetlen);
     return rc;
 }

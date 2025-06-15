@@ -8,7 +8,6 @@
 #include <stdlib.h>
 
 #include "app.h"
-#include "functions.h"
 
 int main(int ac, char *av[])
 {
@@ -24,7 +23,7 @@ int main(int ac, char *av[])
         display_usage();
         return PROCESS_FAILURE;
     }
-    rc = server_loop(&args);
+    rc = server(&args);
     if (rc == EXIT_FAILURE)
         return PROCESS_FAILURE;
     return PROCESS_SUCCESS;

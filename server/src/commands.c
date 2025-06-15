@@ -7,13 +7,16 @@
 
 #include <stdio.h>
 #include <unistd.h>
+#include <stdlib.h>
+#include <string.h>
 
 #include "commands.h"
-#include "functions.h"
+#include "debug.h"
+#include "transmission.h"
 
 static void handle_unrecognized_code(serverdata_t *sdata, client_t *client)
 {
-    send_data(client, "ko", NULL);
+    send_data(client, "ko", NULL, sdata->debug);
 }
 
 static int empty_client_buff(client_t *client, uint_t index)
@@ -28,10 +31,11 @@ static int empty_client_buff(client_t *client, uint_t index)
         return EXIT_FAILURE;
     }
     newbuff = malloc(sizeof(char) * (remaining + 1));
-    for (uint_t k = index + 1; k < remaining; k++) {
+    for (uint_t k = index + 1; flw < remaining; k++) {
         newbuff[flw] = client->buffer[k];
         flw++;
     }
+    newbuff[flw] = 0;
     free(client->buffer);
     client->buffer = newbuff;
     return EXIT_SUCCESS;
@@ -85,7 +89,7 @@ static int parse_data(client_t *client, char *data, uint_t cmdend_idx,
 
 static int packet_parser(client_t *client, char *cmd, char *data)
 {
-    uint_t end_idx = 0;
+    int end_idx = 0;
     bool nl_presence = false;
 
     end_idx = parse_cmd(client, cmd, &nl_presence);
@@ -99,40 +103,24 @@ static int packet_parser(client_t *client, char *cmd, char *data)
     return EXIT_SUCCESS;
 }
 
-void debug_buffer(client_t *client)
-{
-    uint_t size = 0;
-
-    if (client->buffer == NULL) {
-        printf("Cfd%-3d.buff = %dB []", client->fd, size);
-        return;
-    }
-    size = strlen(client->buffer);
-    if (size == 0) {
-        printf("Cfd%-3d.buff = %dB []", client->fd, size);
-    } else {
-        printf("Cfd%-3d.buff = %dB [%d", client->fd, size, client->buffer[0]);
-        for (size_t k = 1; k < size; k++)
-            printf(", %d", client->buffer[k]);
-        printf("]\n");
-    }
-}
-
 int buffer_handler(serverdata_t *sdata, client_t *client)
 {
     char cmd[BUFFSIZE] = {0};
     char data[BUFFSIZE] = {0};
 
-    debug_buffer(client);
     if (client == NULL)
         return EXIT_FAILURE;
     if (client->buffer == NULL)
         return EXIT_FAILURE;
+    if (sdata->debug)
+        debug_buffer(client);
     if (packet_parser(client, cmd, data) == EXIT_FAILURE)
         return EXIT_FAILURE;
     for (uint_t k = 0; k < NB_USER_COMMANDS; k++)
-        if (strcmp(cmd, USER_COMMANDS[k].command) == 0)
-            return USER_COMMANDS[k].handler(sdata, client, data);
+        if (strcmp(cmd, USER_COMMANDS[k].command) == 0) {
+            USER_COMMANDS[k].handler(sdata, client, data);
+            return EXIT_SUCCESS;
+        }
     handle_unrecognized_code(sdata, client);
     return EXIT_FAILURE;
 }

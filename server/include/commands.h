@@ -8,9 +8,12 @@
 #ifndef COMMANDS_H_
     #define COMMANDS_H_
 
-    #include "structs.h"
+    #include "serverdata.h"
+    #include "fdarray.h"
 
 int buffer_handler(serverdata_t *sdata, client_t *client);
+
+void set_action_end(client_t *client, int freq, int ticks);
 
 typedef int (*handler_t)(serverdata_t *sdata, client_t *client);
 
