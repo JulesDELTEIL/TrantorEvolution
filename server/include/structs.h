@@ -38,7 +38,7 @@ typedef struct client_s {
     char *team;
     char *buffer;
     uint_t cmd_nb;
-    size_t action_end;
+    size_t act_end;
     player_t player;
 } client_t;
 
