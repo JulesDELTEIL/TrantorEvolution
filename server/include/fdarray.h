@@ -13,7 +13,7 @@
 
     #include "macros.h"
 
-#define NB_DIFF_ITEMS 7
+    #define NB_DIFF_ITEMS 7
 
 typedef enum player_dir_e {
     UP,
@@ -54,7 +54,8 @@ struct client_t :
 - int type (if the client is ai or gui)
 - char *team
 - char *buffer (command buffer)
-- size_t act_end (timestamp in ms of when the player will be able to do the next action)
+- size_t act_end (timestamp in ms of when the player
+    will be able to do the next action)
 - player_t player
 */
 typedef struct client_s {

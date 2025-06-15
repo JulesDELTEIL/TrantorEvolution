@@ -1,5 +1,5 @@
 /*
-** EPITECH PROJECT, 2025
+** EPITECH PROJECT, 2024
 ** zappy
 ** File description:
 ** commands.h
@@ -22,11 +22,13 @@ Sets the timeout end timer of the client depending on FREQ and TICKS
 void set_action_end(client_t *client, int freq, int ticks);
 
 /*
-Command structure designed for the function pointer array by matching the char *COMMAND
+Command structure designed for the function pointer array by
+    matching the char *COMMAND
 
 struct command_t :
 - char *command (command name)
-- int *handler(serverdata_t *sdata, client_t *client, char *data) (handler function pointer)
+- int *handler(serverdata_t *sdata, client_t *client, char *data)
+    (handler function pointer)
 */
 typedef struct command_s {
     char *command;
