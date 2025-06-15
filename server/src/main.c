@@ -8,7 +8,6 @@
 #include <stdlib.h>
 
 #include "app.h"
-#include "functions.h"
 
 int main(int ac, char *av[])
 {

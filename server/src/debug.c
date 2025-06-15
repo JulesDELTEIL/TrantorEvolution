@@ -5,7 +5,11 @@
 ** debug.c
 */
 
-#include "functions.h"
+#include <stdlib.h>
+#include <stdio.h>
+#include <string.h>
+
+#include "structs.h"
 
 void displayfds(fdarray_t *fdarray)
 {

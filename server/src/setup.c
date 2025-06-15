@@ -5,6 +5,8 @@
 ** setup.c
 */
 
+#include <stdlib.h>
+
 #include "functions.h"
 
 serverdata_t setup_parameters(arguments_t *args)

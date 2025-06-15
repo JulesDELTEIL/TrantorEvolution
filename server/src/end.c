@@ -5,7 +5,10 @@
 ** end.c
 */
 
-#include "functions.h"
+#include <stdlib.h>
+#include <unistd.h>
+
+#include "structs.h"
 
 int close_server(serverdata_t *sdata, fdarray_t *fdarray)
 {

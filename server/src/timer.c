@@ -5,6 +5,8 @@
 ** timer.c
 */
 
+#include <stdlib.h>
+
 #include "functions.h"
 
 void set_action_end(client_t *client, int freq, int ticks)

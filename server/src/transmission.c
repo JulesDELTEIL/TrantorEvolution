@@ -5,6 +5,11 @@
 ** actions.c
 */
 
+#include <stdlib.h>
+#include <stdio.h>
+#include <unistd.h>
+#include <string.h>
+
 #include "functions.h"
 #include "debug.h"
 
