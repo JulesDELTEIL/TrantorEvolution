@@ -1,8 +1,8 @@
 /*
 ** EPITECH PROJECT, 2025
-** jetpack
+** zappy
 ** File description:
-** server.h
+** connection.h
 */
 
 #ifndef CONNECTION_H_
@@ -14,7 +14,8 @@
     #include <netinet/in.h>
     #include <poll.h>
 
-    #include "structs.h"
+    #include "serverdata.h"
+    #include "fdarray.h"
 
 /*
 Uses a port and returns a serverdata_t struct containing socket informations

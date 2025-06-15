@@ -1,8 +1,8 @@
 /*
 ** EPITECH PROJECT, 2025
-** jetpack
+** zappy
 ** File description:
-** functions.h
+** app.h
 */
 
 #ifndef APP_H_
@@ -41,10 +41,19 @@ static const char *USAGE_MSG[] = {
     "-n <name1 name2 ...> -c <clientsNb> -f <freq> [-d]\n"
 };
 
+/*
+Displays the program usage
+*/
 int display_usage(void);
 
+/*
+Fills ARGS depending on program arguments, given in AV
+*/
 void get_args(int ad, char *av[], arguments_t *args);
 
+/*
+Checks if every argument of ARGS is valid
+*/
 int check_args(arguments_t *args);
 
 /*

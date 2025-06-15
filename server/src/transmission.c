@@ -1,8 +1,8 @@
 /*
 ** EPITECH PROJECT, 2025
-** jetpack
+** zappy
 ** File description:
-** actions.c
+** transmission.c
 */
 
 #include <stdlib.h>

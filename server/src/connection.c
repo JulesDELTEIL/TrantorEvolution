@@ -1,6 +1,6 @@
 /*
 ** EPITECH PROJECT, 2025
-** jetpack
+** zappy
 ** File description:
 ** connection.c
 */

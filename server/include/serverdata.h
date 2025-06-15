@@ -1,8 +1,8 @@
 /*
 ** EPITECH PROJECT, 2025
-** jetpack
+** zappy
 ** File description:
-** structs.h
+** serverdata.h
 */
 
 #ifndef SERVERDATA_H_
@@ -16,13 +16,13 @@
 
 /*
 struct arguments_t :
- - int port
- - int width of the map
- - int height of the map
- - int clientsNb
- - int freq reciprocal of time unit
- - char **teamName stocking the name of every team
- - bool debug
+- int port
+- int width (width of the map)
+- int height (height of the map)
+- int clientsnb (number of authorized clients per team)
+- int freq (reciprocal of time unit)
+- char **team_name (name of every team in an array, null terminated)
+- bool debug
 */
 typedef struct arguments_s {
     int port;
@@ -36,11 +36,13 @@ typedef struct arguments_s {
 
 /*
 struct serverdata_t :
- - int port
- - int sockfd
- - struct sockaddr_in address
- - socklen_t addrlen
- - int opt
+- int port
+- int sockfd
+- struct sockaddr_in address
+- socklen_t addrlen
+- int opt
+- bool debug
+- arguments_t *args
 */
 typedef struct serverdata_s {
     int port;

@@ -1,8 +1,8 @@
 /*
 ** EPITECH PROJECT, 2025
-** jetpack
+** zappy
 ** File description:
-** server.h
+** functions.h
 */
 
 #ifndef SERVERFUNCTIONS_H_
@@ -35,6 +35,9 @@ Returns EXIT_SUCCESS
 */
 int close_server(serverdata_t *sdata, fdarray_t *fdarray);
 
+/*
+Destroy client datas, will not set it to default values
+*/
 int destroy_client(client_t *client);
 
 /*

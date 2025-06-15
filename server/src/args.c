@@ -1,8 +1,8 @@
 /*
 ** EPITECH PROJECT, 2025
-** jetpack
+** zappy
 ** File description:
-** checkargs.c
+** args.c
 */
 
 #include <dirent.h>

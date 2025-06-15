@@ -1,6 +1,6 @@
 /*
 ** EPITECH PROJECT, 2025
-** jetpack
+** zappy
 ** File description:
 ** setup.c
 */
@@ -49,14 +49,13 @@ int setempty_client(client_t *client)
     client->type = UNSET;
     client->team = NULL;
     client->buffer = NULL;
-    client->cmd_nb = 0;
     client->act_end = 0;
-    client->player.meters = 0;
-    client->player.pos_x = 0;
-    client->player.pos_y = 0;
-    client->player.score = 0;
-    client->player.speed = 0;
-    client->player.status = -1;
+    client->player.level = 0;
+    client->player.x = 0;
+    client->player.y = 0;
+    client->player.direction = UP;
+    for (uint_t k = 0; k < NB_DIFF_ITEMS; k++)
+        client->player.inventory[k] = 0;
 }
 
 fdarray_t setup_fds(int sockfd)
