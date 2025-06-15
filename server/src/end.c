@@ -8,7 +8,8 @@
 #include <stdlib.h>
 #include <unistd.h>
 
-#include "structs.h"
+#include "serverdata.h"
+#include "fdarray.h"
 
 int close_server(serverdata_t *sdata, fdarray_t *fdarray)
 {

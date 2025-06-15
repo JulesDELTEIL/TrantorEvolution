@@ -5,7 +5,8 @@
 ** transmission.h
 */
 
-#include "structs.h"
+#include "serverdata.h"
+#include "fdarray.h"
 
 #ifndef TRANSMISSION_H_
     #define TRANSMISSION_H_

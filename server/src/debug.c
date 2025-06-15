@@ -9,7 +9,7 @@
 #include <stdio.h>
 #include <string.h>
 
-#include "structs.h"
+#include "fdarray.h"
 
 void displayfds(fdarray_t *fdarray)
 {

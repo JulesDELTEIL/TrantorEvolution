@@ -8,7 +8,7 @@
 #ifndef DEBUG_H_
     #define DEBUG_H_
 
-    #include "structs.h"
+    #include "fdarray.h"
 
 void displayfds(fdarray_t *fdarray);
 

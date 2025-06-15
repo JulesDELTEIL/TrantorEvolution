@@ -7,7 +7,9 @@
 
 #include <stdlib.h>
 
-#include "functions.h"
+#include "serverdata.h"
+#include "fdarray.h"
+#include "utils.h"
 
 serverdata_t setup_parameters(arguments_t *args)
 {

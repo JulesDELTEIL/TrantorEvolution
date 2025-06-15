@@ -9,7 +9,7 @@
     #define APP_H_
 
     #include <stdbool.h>
-    #include "structs.h"
+    #include "serverdata.h"
 
     #define PROCESS_FAILURE 84
     #define PROCESS_SUCCESS 0

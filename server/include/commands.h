@@ -8,7 +8,8 @@
 #ifndef COMMANDS_H_
     #define COMMANDS_H_
 
-    #include "structs.h"
+    #include "serverdata.h"
+    #include "fdarray.h"
 
 int buffer_handler(serverdata_t *sdata, client_t *client);
 
