@@ -52,11 +52,13 @@ int receive_data(serverdata_t *sdata, client_t *client)
 
     rc = read(client->fd, buffer, BUFFSIZE - 1);
     if (rc == 0) {
-        printf("Cfd%-3d ↓  ✕\n", client->fd);
+        if (sdata->debug)
+            printf("Cfd%-3d ↓  ✕\n", client->fd);
         return closeconnection(sdata, client);
     } else if (rc == -1)
         return EXIT_FAILURE;
-    debug_input(client, buffer, rc);
+    if (sdata->debug)
+        debug_input(client, buffer, rc);
     if (rc < 2 || count_nl(client->buffer) >= 10)
         return EXIT_FAILURE;
     add_circular(client, buffer);
@@ -70,7 +72,7 @@ static int get_datalen(char *data)
     return strlen(data);
 }
 
-int send_data(client_t *client, char *cmd, char *data)
+int send_data(client_t *client, char *cmd, char *data, bool debug)
 {
     uint_t datalen = get_datalen(data);
     uint_t cmdlen = get_datalen(cmd);
@@ -87,6 +89,7 @@ int send_data(client_t *client, char *cmd, char *data)
         fullpacket[cmdlen + 1 + k] = data[k];
     fullpacket[cmdlen + 1 + datalen] = '\n';
     rc = write(client->fd, fullpacket, packetlen);
-    debug_output(client, fullpacket, packetlen);
+    if (debug)
+        debug_output(client, fullpacket, packetlen);
     return rc;
 }

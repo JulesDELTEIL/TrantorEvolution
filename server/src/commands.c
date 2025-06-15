@@ -16,7 +16,7 @@
 
 static void handle_unrecognized_code(serverdata_t *sdata, client_t *client)
 {
-    send_data(client, "ko", NULL);
+    send_data(client, "ko", NULL, sdata->debug);
 }
 
 static int empty_client_buff(client_t *client, uint_t index)
@@ -112,7 +112,8 @@ int buffer_handler(serverdata_t *sdata, client_t *client)
         return EXIT_FAILURE;
     if (client->buffer == NULL)
         return EXIT_FAILURE;
-    debug_buffer(client);
+    if (sdata->debug)
+        debug_buffer(client);
     if (packet_parser(client, cmd, data) == EXIT_FAILURE)
         return EXIT_FAILURE;
     for (uint_t k = 0; k < NB_USER_COMMANDS; k++)

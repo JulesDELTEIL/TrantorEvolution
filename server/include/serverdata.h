@@ -5,8 +5,8 @@
 ** structs.h
 */
 
-#ifndef SERVERSTRUCTS_H_
-    #define SERVERSTRUCTS_H_
+#ifndef SERVERDATA_H_
+    #define SERVERDATA_H_
 
     #include <sys/socket.h>
     #include <arpa/inet.h>
@@ -48,6 +48,7 @@ typedef struct serverdata_s {
     struct sockaddr_in address;
     socklen_t addrlen;
     int opt;
+    bool debug;
     arguments_t *args;
 } serverdata_t;
 

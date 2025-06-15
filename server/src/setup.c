@@ -15,6 +15,7 @@ serverdata_t setup_parameters(arguments_t *args)
 {
     serverdata_t sdata;
 
+    sdata.debug = args->debug;
     sdata.port = args->port;
     sdata.address.sin_addr.s_addr = INADDR_ANY;
     sdata.address.sin_family = AF_INET;

@@ -21,6 +21,6 @@ int receive_data(serverdata_t *sdata, client_t *client);
 Used to write data to client FD
 Returns number of bytes written
 */
-int send_data(client_t *client, char *cmd, char *data);
+int send_data(client_t *client, char *cmd, char *data, bool debug);
 
 #endif

@@ -42,7 +42,7 @@ int openconnection(serverdata_t *sdata, fdarray_t *fdarray)
 
     nextfree = getnextfree(fdarray);
     if (nextfree == NOFD) {
-        send_data(&(fdarray->clients[nextfree]), "cno", NULL);
+        send_data(&(fdarray->clients[nextfree]), "cno", NULL, sdata->debug);
         return CLIENTS_OVERFLOW_CODE;
     }
     newfd = accept(sdata->sockfd,
@@ -51,6 +51,6 @@ int openconnection(serverdata_t *sdata, fdarray_t *fdarray)
         returnwitherror(ERROR_ACCEPT, EXIT_FAILURE);
     fdarray->fds[nextfree].fd = newfd;
     fdarray->clients[nextfree].fd = newfd;
-    send_data(&(fdarray->clients[nextfree]), "cye", NULL);
+    send_data(&(fdarray->clients[nextfree]), "cye", NULL, sdata->debug);
     return EXIT_SUCCESS;
 }
