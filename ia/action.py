@@ -6,22 +6,30 @@
 ##
 
 from enum import Enum
+class Action(Enum):
+    FORWARD = "Forward"
+    LEFT = "Left"
+    RIGHT = "Right"
+    LOOK = "Look"
+    INVENTORY = "Inventory"
+    BROADCAST = "Broadcast"
+    TAKE = "Take object"
+    SET = "Set object"
+    FORK = "Fork"
+    INCANTATION = "Incantation"
+    CONNECT_NBR = "Connect_nbr"
+    EJECT = "Eject"
+    NONE = None
 
 class Commands:
-    class Action(Enum):
-        FORWARD = "Forward"
-        LEFT = "Left"
-        RIGHT = "Right"
-        LOOK = "Look"
-        INVENTORY = "Inventory"
-        BROADCAST = "Broadcast"
-        TAKE = "Take object"
-        SET = "Set object"
-        FORK = "Fork"
-        INCANTATION = "Incantation"
-        CONNECT_NBR = "Connect_nbr"
-        EJECT = "Eject"
-        NONE = None
+    def __init__(self, action: Action, argument: str = None):
+        self.action = action
+        self.argument = argument
+        
+    def __str__(self):
+        if self.argument:
+            return f"{self.action.value} {self.argument}"
+        return self.action.value
 
     COMMANDS = {
         Action.FORWARD: {"time": 7, "response success": ["ok"], "response error": ""},
@@ -38,11 +46,3 @@ class Commands:
         Action.EJECT: {"time": 7, "response success": ["ok"], "response error": "ko"}
     }
     
-    def __init__(self, action: Action, argument: str = None):
-        self.action = action
-        self.argument = argument
-        
-    def __str__(self):
-        if self.argument:
-            return f"{self.action.value} {self.argument}"
-        return self.action.value
