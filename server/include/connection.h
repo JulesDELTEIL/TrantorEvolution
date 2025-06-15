@@ -1,8 +1,8 @@
 /*
 ** EPITECH PROJECT, 2025
-** jetpack
+** zappy
 ** File description:
-** server.h
+** connection.h
 */
 
 #ifndef CONNECTION_H_

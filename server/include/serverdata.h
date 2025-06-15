@@ -1,8 +1,8 @@
 /*
 ** EPITECH PROJECT, 2025
-** jetpack
+** zappy
 ** File description:
-** structs.h
+** serverdata.h
 */
 
 #ifndef SERVERDATA_H_

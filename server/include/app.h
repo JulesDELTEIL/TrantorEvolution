@@ -1,8 +1,8 @@
 /*
 ** EPITECH PROJECT, 2025
-** jetpack
+** zappy
 ** File description:
-** functions.h
+** app.h
 */
 
 #ifndef APP_H_

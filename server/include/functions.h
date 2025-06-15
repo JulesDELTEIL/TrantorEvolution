@@ -1,8 +1,8 @@
 /*
 ** EPITECH PROJECT, 2025
-** jetpack
+** zappy
 ** File description:
-** server.h
+** functions.h
 */
 
 #ifndef SERVERFUNCTIONS_H_

@@ -1,8 +1,8 @@
 /*
 ** EPITECH PROJECT, 2025
-** jetpack
+** zappy
 ** File description:
-** main.c
+** loop.c
 */
 
 #include <stdlib.h>

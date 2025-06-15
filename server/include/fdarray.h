@@ -1,8 +1,8 @@
 /*
 ** EPITECH PROJECT, 2025
-** jetpack
+** zappy
 ** File description:
-** structs.h
+** fdarray.h
 */
 
 #ifndef FDARRAY_H_
