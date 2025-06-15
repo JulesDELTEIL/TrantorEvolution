@@ -41,14 +41,16 @@ void Land::loadMap(const sf::Vector2f& middle,
     for (size_t y = 0; y < map.size(); ++y) {
         for (size_t x = 0; x < map[y].size(); ++x) {
             pos = {middle.x - ((TILE_SIZE / 2) * (x + y)) + (TILE_SIZE * y), middle.y + (8 * (x + y))};
-            _tiles.emplace_back(dynamic_cast<Tile*>(
-                    ecs::ECSFactory::createEntity(
-                        "tile",
-                        pos.x, pos.y,
-                        static_cast<int>(map[y][x].type),
-                        convertResource(map[y][x].resources)
-                    ).release()
-            ));
+            if (map[y][x].type != EMPTY) {
+                _tiles.emplace_back(dynamic_cast<Tile*>(
+                        ecs::ECSFactory::createEntity(
+                            "tile",
+                            pos.x, pos.y,
+                            static_cast<int>(map[y][x].type),
+                            convertResource(map[y][x].resources)
+                        ).release()
+                ));
+            }
         }
     }
 }
