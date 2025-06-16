@@ -18,7 +18,7 @@ AEntity::AEntity(const sf::Vector2f& pos)
 void AEntity::display(sf::RenderTarget& win) const
 {
     for (const auto& drawable : _drawables)
-        win.draw(*drawable.second);
+        drawable.second->draw(win);
 }
 
 void AEntity::event(const sf::Event&)

@@ -24,8 +24,8 @@ Core::Core(int argc, const char *argv[])
         _parser = Parser(argc, argv);
         setupVisual();
         _scenes[visual::Scene_e::NONE] = std::make_unique<visual::DefaultScene>();
-        changeScene(visual::Scene_e::NONE);
         _scenes[visual::Scene_e::IN_GAME] = std::make_unique<visual::InGame>();
+        changeScene(visual::Scene_e::IN_GAME);
     } catch(const std::exception& e) {
         std::cerr << e.what() << '\n';
         exit(84);
@@ -53,10 +53,6 @@ void Core::events(void)
     while (_engine.window.pollEvent(_engine.events)) {
         if (_engine.events.type == sf::Event::Closed)
             _engine.window.close();
-        if (_engine.events.type == sf::Event::KeyPressed) {
-            if (_engine.events.key.code == sf::Keyboard::G)
-                changeScene(visual::Scene_e::IN_GAME);
-        }
         _scenes.at(_selected_scene)->event(_engine.events);
     }
 }
@@ -71,7 +67,9 @@ void Core::setupVisual(void)
 {
     ecs::ECSFactory::setDraw("biome", &visual::makeBiome);
     ecs::ECSFactory::setDraw("resource_node", &visual::makeResourceNode);
+    ecs::ECSFactory::setDraw("body", &visual::makeBody);
     ecs::ECSFactory::setEntity("tile", &visual::makeTile);
+    ecs::ECSFactory::setEntity("trantorian", &visual::makeTrantorian);
 }
 
 } // core
