@@ -17,7 +17,6 @@ class Trantorian:
         self.port = port
         self.team_name = team_name
         self.sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-        self.buffer = ""
         self.player = PlayerState()
         
     def connect(self):
@@ -26,13 +25,15 @@ class Trantorian:
         if welcome.strip() != "WELCOME":
             raise ConnectionError("Expected WELCOME message.")
         self.sock.sendall(f"{self.team_name}\n".encode())
+        dimension = recv_until_newline(self.sock) #je ne crois pas qu'on en ait besoin pour le moment mais c'est dans le protocole
 
     def run(self):
         self.connect()
         while True:
-            action = decide_next_action(self.player)
-            if action and action != Action.NONE:
-                self.sock.sendall((action + "\n").encode())
+            actions = decide_next_action(self.player)
+            for action in actions:
+                if action != Action.NONE:
+                    self.sock.sendall((action + "\n").encode())
             response = recv_until_newline(self.sock)
             self.handle_response(response.strip())
 
