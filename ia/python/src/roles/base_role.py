@@ -6,8 +6,8 @@
 ##
 
 from abc import ABC, abstractmethod
-from player import PlayerState
-from action import Commands
+from src.player import PlayerState
+from src.action import Commands
 
 class BaseRole(ABC):
     def __init__(self):

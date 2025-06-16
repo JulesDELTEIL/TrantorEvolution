@@ -6,6 +6,7 @@
 ##
 
 from enum import Enum
+
 class Action(Enum):
     FORWARD = "Forward"
     LEFT = "Left"

@@ -5,7 +5,7 @@
 ## strategy.py
 ##
 
-from action import Action
+from src.action import Action
 
 def decide_next_action(player):
     hunger = player.motivation.hunger

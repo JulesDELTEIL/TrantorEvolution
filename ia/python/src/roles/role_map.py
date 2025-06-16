@@ -5,11 +5,11 @@
 ## role_map.py
 ##
 
-from roles.foreman import Foreman
-from roles.worker import Worker
-from roles.queen import Queen
-from roles.kamikaze import Kamikaze
-from roles.matriarch import Matriarch
+from src.roles.foreman import Foreman
+from src.roles.worker import Worker
+from src.roles.queen import Queen
+from src.roles.kamikaze import Kamikaze
+from src.roles.matriarch import Matriarch
 
 ROLE_MAP = {
     "Queen": Queen(),

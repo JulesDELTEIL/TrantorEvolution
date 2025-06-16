@@ -5,8 +5,8 @@
 ## matriarch.py
 ##
 
-from ia.roles.base_role import BaseRole
-from action import Commands, Action
+from src.roles.base_role import BaseRole
+from src.action import Commands, Action
 
 class Matriarch(BaseRole):
     def __init__(self):

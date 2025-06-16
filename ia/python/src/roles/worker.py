@@ -5,9 +5,9 @@
 ## worker.py
 ##
 
-from ia.roles.base_role import BaseRole
-from action import Commands, Action
-from stones import STONES
+from src.roles.base_role import BaseRole
+from src.action import Commands, Action
+from src.stones import STONES
 
 class Worker(BaseRole):
     def __init__(self):

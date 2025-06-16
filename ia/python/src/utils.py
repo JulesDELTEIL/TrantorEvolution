@@ -5,6 +5,8 @@
 ## utils.py
 ##
 
+from src.roles.role_map import ROLE_MAP
+
 def recv_until_newline(sock):
     data = b""
     while not data.endswith(b"\n"):
