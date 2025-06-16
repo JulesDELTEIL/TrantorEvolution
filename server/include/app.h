@@ -9,6 +9,7 @@
     #define APP_H_
 
     #include <stdbool.h>
+    #include "args.h"
     #include "serverdata.h"
 
     #define PROCESS_FAILURE 84
