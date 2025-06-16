@@ -10,6 +10,11 @@
 namespace gui {
 namespace network {
 
+void Client::setSocket(const std::string &server, const int &port)
+{
+    _socket.setSocket(server, port);
+}
+
 void Client::checkEvent(void)
 {
     _socket.pollServer();

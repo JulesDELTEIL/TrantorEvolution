@@ -30,7 +30,7 @@ Core::Core(int argc, const char *argv[])
     _scenes[visual::Scene_e::NONE] = std::make_unique<visual::DefaultScene>();
     _scenes[visual::Scene_e::IN_GAME] = std::make_unique<visual::InGame>();
     changeScene(visual::Scene_e::IN_GAME);
-    _socket.setSocket(_parser.getHostName(), _parser.getPortNb());
+    _client.setSocket(_parser.getHostName(), _parser.getPortNb());
 }
 
 void Core::run(void)

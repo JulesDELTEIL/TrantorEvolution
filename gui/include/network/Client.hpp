@@ -20,6 +20,7 @@ class Client {
         ~Client() = default;
 
         void checkEvent(void);
+        void setSocket(const std::string &server, const int &port);
         bool pollEvent(NetEvent_e&);
 
     private:
