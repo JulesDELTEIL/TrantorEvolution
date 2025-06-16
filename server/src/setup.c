@@ -10,6 +10,8 @@
 #include "serverdata.h"
 #include "fdarray.h"
 #include "utils.h"
+#include "map.h"
+
 
 serverdata_t setup_parameters(arguments_t *args)
 {
@@ -23,6 +25,7 @@ serverdata_t setup_parameters(arguments_t *args)
     sdata.opt = 1;
     sdata.sockfd = socket(AF_INET, SOCK_STREAM, 0);
     sdata.addrlen = sizeof(sdata.address);
+    sdata.trantor_map = init_map(args->width, args->height);
     return sdata;
 }
 

@@ -29,6 +29,13 @@ void destroy_args(arguments_t *args)
     free(args->team_name);
 }
 
+void destroy_map(map_t **map)
+{
+    for (int i = 0; map[i] != NULL; i++)
+        free(map[i]);
+    free(map);
+}
+
 int close_server(serverdata_t *sdata, fdarray_t *fdarray)
 {
     close(sdata->sockfd);
@@ -36,5 +43,6 @@ int close_server(serverdata_t *sdata, fdarray_t *fdarray)
         destroy_client(&(fdarray->clients[k]));
     }
     destroy_args(sdata->args);
+    destroy_map(sdata->trantor_map);
     return EXIT_SUCCESS;
 }
