@@ -17,18 +17,18 @@ class Queen(IRole):
         if self._can_incant():
             return Commands(Action.INCANTATION)
         
-        if self._state.inventory.get("food", 0) < 2:
+        if self.state.inventory.get("food", 0) < 2:
             return Commands(Action.TAKE, "food")
         
-        if self._cycle < 3:
+        if self.cycle < 3:
             return Commands(Action.TAKE, "food")
         else:
-            self._cycle = 0
+            self.cycle = 0
             return Commands(Action.LOOK)
         
     def _can_incant(self) -> bool:
-        requirements = self._state.motivation.LEVEL_REQUIREMENTS.get(self._state.level, {})
-        current = self._state.vision[0].split()
+        requirements = self.state.motivation.LEVEL_REQUIREMENTS.get(self.state.level, {})
+        current = self.state.vision[0].split()
         for stone, needed in requirements.items():
             if current.count(stone) < needed:
                 return False
