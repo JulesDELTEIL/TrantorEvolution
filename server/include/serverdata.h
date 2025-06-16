@@ -11,8 +11,8 @@
     #include <sys/socket.h>
     #include <arpa/inet.h>
     #include <stdbool.h>
-
     #include "macros.h"
+    #include "map.h"
 
 /*
 struct arguments_t :
@@ -43,6 +43,7 @@ struct serverdata_t :
 - int opt
 - bool debug
 - arguments_t *args
+- map_t trantor_map all the tiles of the map
 */
 typedef struct serverdata_s {
     int port;
@@ -52,6 +53,7 @@ typedef struct serverdata_s {
     int opt;
     bool debug;
     arguments_t *args;
+    map_t **trantor_map;
 } serverdata_t;
 
 #endif
