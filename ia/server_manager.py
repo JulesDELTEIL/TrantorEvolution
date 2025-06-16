@@ -27,7 +27,7 @@ class ServerManager :
     def recv(self) :
         message = ""
         while not ("\n" in message) :
-            message += str(self.sock.recv(1))
+            message += self.sock.recv(1).decode("utf-8")
         self.last_message = message
         return message
 
@@ -39,9 +39,11 @@ if __name__ == "__main__":
         exit(84)
     server_manager = ServerManager(sys.argv[1], int(sys.argv[2]))
     print("Server manager")
-    while(True) :            print("stopping circ with", message, ("\n" in test))
+    while(True) :
         print("starting receiving")
-        print(server_manager.recv())
+        server_message = server_manager.recv()
+        print(server_message)
+        server_manager.send("idn ia\n".encode(encoding="utf-8"))
         print("Finished receiving")
 
 
