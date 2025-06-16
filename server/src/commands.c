@@ -48,7 +48,7 @@ static void handle_unrecognized_code(serverdata_t *sdata, client_t *client,
     }
     if (set_teamname(sdata->args->team_name, client, data) == EXIT_FAILURE) {
         send_data(client, "ko", NULL, sdata->debug);
-        return;        
+        return;
     }
     send_connection_datas(sdata, client);
 }
