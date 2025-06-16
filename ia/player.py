@@ -38,3 +38,11 @@ class PlayerState:
         tiles = content.split(",")
         self.vision = [tile.strip().split() for tile in tiles]
         
+    def vision_coords(level):
+        coords = [(0, 0)]
+        for r in range(1, level + 1):
+            y = -r
+            for x in range(-r, r + 1):
+                coords.append((x, y))
+        return coords
+        
