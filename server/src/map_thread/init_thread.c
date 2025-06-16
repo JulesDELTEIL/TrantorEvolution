@@ -63,5 +63,5 @@ void *map_thread(void *arg)
 
     first_map_refill(server->args->width,
     all_dens,
-    server->trantor_map);
+    server->game_data.trantor_map);
 }

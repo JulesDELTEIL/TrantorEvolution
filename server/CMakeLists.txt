@@ -20,6 +20,7 @@ add_executable( ${PROJECT_NAME}
     ${SERVER_SRC_DIR}debug.c
     ${SERVER_SRC_DIR}returnwitherror.c
     ${SERVER_SRC_DIR}end.c
+    ${SERVER_SRC_DIR}init_game.c
     ${SERVER_CMD_DIR}tna.c
     ${SERVER_CMD_DIR}msz.c
     ${SERVER_THR_DIR}init_map.c
