@@ -1,5 +1,5 @@
 /*
-** EPITECH PROJECT, 2024
+** EPITECH PROJECT, 2025
 ** zappy
 ** File description:
 ** commands.h
@@ -36,12 +36,10 @@ typedef struct command_s {
 } command_t;
 
 int cmd_tna(serverdata_t *sdata, client_t *client, char *data);
-int cmd_idn(serverdata_t *sdata, client_t *client, char *data);
 int cmd_msz(serverdata_t *sdata, client_t *client, char *data);
 
 static const command_t USER_COMMANDS[] = {
     {"tna", &cmd_tna},
-    {"idn", &cmd_idn},
     {"msz", &cmd_msz}
 };
 
