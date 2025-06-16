@@ -16,7 +16,10 @@
     #define PETROL_DENS 0.08
     #define ANTIMATTER_DENS 0.05
     #define NB_RESOURCES 7
+    #define TICKS_REFILLS 20
     #define WORLD_DENS(args) ((args)->width * (args)->height)
+    #define X_COORD(i, heigt) (i / height)
+    #define Y_COORD(i, heigt) (i % height)
 
 enum biome_e {
     SEA = 0,
@@ -36,23 +39,49 @@ typedef struct map_s {
     unsigned int biome;
 } map_t;
 
-/*init the map depending of the width and heigt*/
+/*
+init the map depending of the width and heigt
+*/
 map_t **init_map(int X, int Y);
 
-typedef struct {
-    int biome_start[7];
+/*
+struct biome_distribution_t :
+ - biome_start = biome start value for every tiles
+ - refill = reffils value for every tiles
+*/
+typedef struct biome_distribution_s {
+    int biome_start[NB_RESOURCES];
+    int refill[NB_RESOURCES];
 } biome_distribution_t;
 
+/*
+max density for every resources
+*/
 typedef struct density_s {
-    unsigned int dens[7];
+    unsigned int dens[NB_RESOURCES];
 } density_t;
 
 const static biome_distribution_t biome_distributions[] = {
-    [SEA] = {{5, 0, 0, 0, 0, 2, 0}},
-    [FOREST] = {{5, 2, 0, 0, 0, 0, 0}},
-    [MOUNTAINS] = {{5, 0, 2, 0, 0, 0, 0}},
-    [PLAINS] = {{5, 0, 0, 2, 0, 0, 0}},
-    [BEACH] = {{5, 0, 0, 2, 0, 2, 0}}
+    [SEA] = {
+        .biome_start = {3, 0, 0, 0, 0, 2, 0},
+        .refill = {0, 1, 0, 1, 2, 0, 1}
+    },
+    [FOREST] = {
+        .biome_start = {3, 2, 0, 0, 0, 0, 0},
+        .refill = {0, 3, 1, 0, 0, 0, 1}
+    },
+    [MOUNTAINS] = {
+        .biome_start = {3, 0, 2, 0, 0, 0, 0},
+        .refill = {0, 1, 2, 0, 0, 1, 1}
+    },
+    [PLAINS] = {
+        .biome_start = {3, 0, 0, 2, 0, 0, 0},
+        .refill = {0, 1, 1, 3, 0, 1, 1}
+    },
+    [BEACH] = {
+        .biome_start = {3, 0, 0, 2, 0, 2, 0},
+        .refill = {0, 0, 0, 2, 2, 1, 1}
+    }
 };
 
 #endif /* !MAP_H_ */
