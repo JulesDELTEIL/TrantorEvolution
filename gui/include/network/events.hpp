@@ -13,7 +13,10 @@
     #include <functional>
 
 enum NetEvent_e {
-    NET_MSIZE = 0,
+    NET_CON = 0,
+    NET_CLIENTID,
+    NET_INITMSIZE,
+    NET_MSIZE,
     NET_TILE,
     NET_MAP,
     NET_TEAMS,
