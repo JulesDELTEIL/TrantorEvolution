@@ -18,7 +18,7 @@ DefaultEntity::DefaultEntity(float x, float y, ...) : AEntity(sf::Vector2f(x, y)
 void DefaultEntity::display(sf::RenderTarget& win) const
 {
     for (const auto& drawable : _drawables) {
-        win.draw(*drawable.second);
+        drawable.second->draw(win);
     }
 }
 

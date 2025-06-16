@@ -25,7 +25,7 @@ class AObject : public ADrawable {
             const sf::IntRect& rect);
         ~AObject() = default;
 
-        void draw(sf::RenderTarget& target, sf::RenderStates states) const override;
+        void draw(sf::RenderTarget& target) override;
         void setPosition(const sf::Vector2f& pos) override;
         sf::Vector2f getPosition(void) const override;
         void setScale(const sf::Vector2f&) override;

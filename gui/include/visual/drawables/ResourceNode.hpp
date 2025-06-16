@@ -11,17 +11,15 @@
     #include <memory>
 
     #include "visual/visual.hpp"
-    #include "interfaces/AAnimated.hpp" 
+    #include "interfaces/AObject.hpp" 
 
 namespace gui {
 namespace visual {
 
-class ResourceNode : public ecs::AAnimated {
+class ResourceNode : public ecs::AObject {
     public:
         ResourceNode(const sf::Vector2f& pos, ResourceType_e type);
         ~ResourceNode() = default;
-
-        void animation(void) {};
 };
 
 static const std::map<ResourceType_e, std::string> RESOURCE_NODE_TEXTURE  = {

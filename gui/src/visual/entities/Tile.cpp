@@ -26,7 +26,7 @@ Tile::Tile(const sf::Vector2f& pos, BiomeTypes_e type,
 void Tile::display(sf::RenderTarget& win) const
 {
     for (const auto& drawable : _drawables) {
-        win.draw(*drawable.second);
+        drawable.second->draw(win);
     }
 }
 
@@ -34,7 +34,6 @@ void Tile::event(const sf::Event&)
 {
 
 }
-
 
 } // visual
 } // gui

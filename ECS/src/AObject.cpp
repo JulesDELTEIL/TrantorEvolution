@@ -19,7 +19,7 @@ AObject::AObject(const sf::Vector2f& pos, const std::string& path, const sf::Int
     _sprite.setTextureRect(rect);
 }
 
-void AObject::draw(sf::RenderTarget& target, sf::RenderStates) const
+void AObject::draw(sf::RenderTarget& target)
 {
     target.draw(_sprite);
 }
