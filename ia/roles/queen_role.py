@@ -5,10 +5,10 @@
 ## queenRole.py
 ##
 
-from irole import IRole
+from ia.roles.base_role import BaseRole
 from action import Commands, Action
 
-class Queen(IRole):
+class Queen(BaseRole):
     def __init__(self):
         super().__init__()
         

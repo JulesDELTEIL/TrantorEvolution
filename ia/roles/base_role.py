@@ -9,7 +9,7 @@ from abc import ABC, abstractmethod
 from player import PlayerState
 from action import Commands
 
-class IRole(ABC):
+class BaseRole(ABC):
     def __init__(self):
         self.cycle: int = 0
         self.state: PlayerState = PlayerState()
