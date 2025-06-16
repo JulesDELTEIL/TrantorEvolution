@@ -72,7 +72,8 @@ void debug_buffer(client_t *client)
     }
     size = strlen(client->buffer);
     if (is_drawable(client->buffer[0]))
-        printf("Cfd%-3d.buff = %dB ['%c'", client->fd, size, client->buffer[0]);
+        printf("Cfd%-3d.buff = %dB ['%c'", client->fd, size,
+            client->buffer[0]);
     else
         printf("Cfd%-3d.buff = %dB [%d", client->fd, size, client->buffer[0]);
     for (size_t k = 1; k < size; k++) {
