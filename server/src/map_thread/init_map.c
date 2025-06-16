@@ -11,10 +11,11 @@
 
 map_t **init_map(int X, int Y)
 {
-    map_t **new_map = malloc(sizeof(map_t *) * X);
+    map_t **new_map = malloc(sizeof(map_t *) * (X + 1));
 
-    for (int i = 0; new_map[i] != NULL; i++) {
+    for (int i = 0; i != X; i++) {
         new_map[i] = malloc(sizeof(map_t) * Y);
     }
+    new_map[X] = NULL;
     return new_map;
 }
