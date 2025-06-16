@@ -22,14 +22,15 @@ Core::Core(int argc, const char *argv[])
 {
     try {
         _parser = Parser(argc, argv);
-        setupVisual();
-        _scenes[visual::Scene_e::NONE] = std::make_unique<visual::DefaultScene>();
-        _scenes[visual::Scene_e::IN_GAME] = std::make_unique<visual::InGame>();
-        changeScene(visual::Scene_e::IN_GAME);
     } catch(const std::exception& e) {
         std::cerr << e.what() << '\n';
         exit(84);
     }
+    setupVisual();
+    _scenes[visual::Scene_e::NONE] = std::make_unique<visual::DefaultScene>();
+    _scenes[visual::Scene_e::IN_GAME] = std::make_unique<visual::InGame>();
+    changeScene(visual::Scene_e::IN_GAME);
+    _socket.setSocket(_parser.getHostName(), _parser.getPortNb());
 }
 
 void Core::run(void)

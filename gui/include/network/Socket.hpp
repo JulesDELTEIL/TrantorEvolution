@@ -28,9 +28,10 @@ class Socket {
       private:
           std::string errorMessage;
     };
-    Socket(const std::string& server, const std::string& port);
+    Socket() = default;
     ~Socket();
 
+    void setSocket(const std::string& server, const int& port);
     void pollServer(void);
     struct pollfd fds(void) const; 
 

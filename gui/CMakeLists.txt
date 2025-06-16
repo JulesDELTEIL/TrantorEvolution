@@ -15,6 +15,7 @@ add_executable( ${PROJECT_NAME}
     ${GUI_SRC_DIR}visual/setup.cpp
     ${GUI_SRC_DIR}core/Parser.cpp
     ${GUI_SRC_DIR}visual/AScene.cpp
+    ${GUI_SRC_DIR}network/Socket.cpp
 
     # DRAWABLES
     ${GUI_SRC_DIR}visual/drawables/Biome.cpp

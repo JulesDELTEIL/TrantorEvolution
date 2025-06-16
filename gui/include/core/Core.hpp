@@ -16,6 +16,7 @@
     #include "visual/visual.hpp"
     #include "core/Parser.hpp"
     #include "visual/IScene.hpp"
+    #include "network/Socket.hpp"
 
 namespace gui {
 namespace core {
@@ -26,10 +27,10 @@ class Core {
         ~Core() = default;
 
         void run(void);
-
     private:
         Engine _engine;
         Parser _parser;
+        network::Socket _socket;
 
         void display(void);
         void events(void);

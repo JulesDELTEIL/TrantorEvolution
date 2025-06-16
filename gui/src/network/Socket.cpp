@@ -13,13 +13,13 @@
 namespace gui {
 namespace network {
 
-Socket::Socket(const std::string& server, const std::string& port)
+void Socket::setSocket(const std::string& server, const int& port)
 {
     int fd = socket(AF_INET, SOCK_STREAM, 0);
 
     _servadr.sin_family = AF_INET;
     _servadr.sin_addr.s_addr = htons(INADDR_ANY);
-    _servadr.sin_port = htons(std::stoi(port));
+    _servadr.sin_port = htons(port);
     if (inet_pton(AF_INET, server.c_str(), &_servadr.sin_addr) <= 0)
         throw socketError("IP not found, port might be wrong too");
     if (connect(fd, (struct sockaddr*)&_servadr, sizeof(_servadr)) < 0)
