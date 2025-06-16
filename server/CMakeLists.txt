@@ -4,6 +4,7 @@ project(zappy_server)
 set(SERVER_SRC_DIR "${PROJECT_SOURCE_DIR}/src/")
 set(SERVER_CMD_DIR "${PROJECT_SOURCE_DIR}/src/commands/")
 set(SERVER_HDR_DIR "${PROJECT_SOURCE_DIR}/include/")
+set(SERVER_THR_DIR "${PROJECT_SOURCE_DIR}/src/map_thread/") 
 
 ########## BINARY ##########
 add_executable( ${PROJECT_NAME}
@@ -22,6 +23,8 @@ add_executable( ${PROJECT_NAME}
     ${SERVER_CMD_DIR}tna.c
     ${SERVER_CMD_DIR}idn.c
     ${SERVER_CMD_DIR}msz.c
+    ${SERVER_THR_DIR}init_map.c
+    ${SERVER_THR_DIR}init_thread.c
 )
 
 ########## LINKAGE ##########

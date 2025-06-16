@@ -12,6 +12,7 @@
     #include <stdlib.h>
 
     #include "macros.h"
+    #include "items.h"
 
     #define NB_DIFF_ITEMS 7
 
@@ -21,16 +22,6 @@ typedef enum player_dir_e {
     RIGHT,
     LEFT
 } player_dir_t;
-
-enum item_inv_idx_e {
-    FOOD,
-    WOOD,
-    STONE,
-    CLAY,
-    IRON,
-    OIL,
-    ANTIMATTER
-};
 
 /*
 struct player_t :
