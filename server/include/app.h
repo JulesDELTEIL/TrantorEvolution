@@ -26,7 +26,7 @@
     #define FIRST_TEAM_NAME 0
     #define A_SECOND_TEAM 1
     #define BACK_TO_FLAG 1
-
+    #define DEFAULT_FREQ 100
 
 static const char ARG_PORT[] = "-p";
 static const char ARG_DEBUG[] = "-d";
