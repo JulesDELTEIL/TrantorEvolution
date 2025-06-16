@@ -6,6 +6,7 @@
 ##
 
 import socket
+import subprocess
 from src.roles.role_map import ROLE_MAP
 from src.utils import recv_until_newline
 from src.action import Action
@@ -44,3 +45,6 @@ class Trantorian:
                 self.role = ROLE_MAP[response_list[4]]
         else:
             self.player.update(response)
+            
+    def _spawn_new_client(self):
+        subprocess.Popen(["./zappy_ai", "-p", self.port, "-n", self.team_name, "-h", self.host])
