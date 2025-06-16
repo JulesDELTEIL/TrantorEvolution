@@ -35,7 +35,7 @@ struct map_t :
  - unsigned int biome = current biome
 */
 typedef struct map_s {
-    unsigned int resources[7];
+    unsigned int resources[NB_RESOURCES];
     unsigned int biome;
 } map_t;
 
