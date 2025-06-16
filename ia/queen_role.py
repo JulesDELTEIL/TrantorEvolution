@@ -7,7 +7,6 @@
 
 from irole import IRole
 from action import Commands, Action
-from player import PlayerState
 
 class Queen(IRole):
     def __init__(self):
