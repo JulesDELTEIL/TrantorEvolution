@@ -1,6 +1,6 @@
 /*
 ** EPITECH PROJECT, 2025
-** jetpack
+** zappy
 ** File description:
 ** usage.c
 */
@@ -8,6 +8,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <unistd.h>
+
 #include "app.h"
 
 int display_usage(void)

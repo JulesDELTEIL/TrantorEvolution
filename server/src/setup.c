@@ -1,16 +1,21 @@
 /*
 ** EPITECH PROJECT, 2025
-** jetpack
+** zappy
 ** File description:
 ** setup.c
 */
 
-#include "functions.h"
+#include <stdlib.h>
+
+#include "serverdata.h"
+#include "fdarray.h"
+#include "utils.h"
 
 serverdata_t setup_parameters(arguments_t *args)
 {
     serverdata_t sdata;
 
+    sdata.debug = args->debug;
     sdata.port = args->port;
     sdata.address.sin_addr.s_addr = INADDR_ANY;
     sdata.address.sin_family = AF_INET;
@@ -21,7 +26,7 @@ serverdata_t setup_parameters(arguments_t *args)
     return sdata;
 }
 
-int setup_server(serverdata_t *sdata)
+int setup_server(serverdata_t *sdata, arguments_t *args)
 {
     int rc = DEFAULTRC;
 
@@ -33,6 +38,7 @@ int setup_server(serverdata_t *sdata)
         &sdata->address, sdata->addrlen);
     if (rc < 0)
         return returnwitherror(ERROR_BIND, EXIT_FAILURE);
+    sdata->args = args;
     return EXIT_SUCCESS;
 }
 
@@ -41,12 +47,15 @@ int setempty_client(client_t *client)
     client->fd = NOFD;
     client->id = 0;
     client->type = UNSET;
-    client->player.meters = 0;
-    client->player.pos_x = 0;
-    client->player.pos_y = 0;
-    client->player.score = 0;
-    client->player.speed = 0;
-    client->player.status = -1;
+    client->team = NULL;
+    client->buffer = NULL;
+    client->act_end = 0;
+    client->player.level = 0;
+    client->player.x = 0;
+    client->player.y = 0;
+    client->player.direction = UP;
+    for (uint_t k = 0; k < NB_DIFF_ITEMS; k++)
+        client->player.inventory[k] = 0;
 }
 
 fdarray_t setup_fds(int sockfd)

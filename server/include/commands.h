@@ -1,6 +1,6 @@
 /*
 ** EPITECH PROJECT, 2024
-** B-NWP-400-PAR-4-1-jetpack-baptiste.dunes
+** zappy
 ** File description:
 ** commands.h
 */
@@ -8,55 +8,41 @@
 #ifndef COMMANDS_H_
     #define COMMANDS_H_
 
-    #include "structs.h"
+    #include "serverdata.h"
+    #include "fdarray.h"
 
-enum alpha_ascii_e {
-    A = 97,
-    B,
-    C,
-    D,
-    E,
-    F,
-    G,
-    H,
-    I,
-    J,
-    K,
-    L,
-    M,
-    N,
-    O,
-    P,
-    Q,
-    R,
-    S,
-    T,
-    U,
-    V,
-    W,
-    X,
-    Y,
-    Z
-};
+/*
+Function called to handle the first valid command found in the client buffer
+*/
+int buffer_handler(serverdata_t *sdata, client_t *client);
 
-static const char CYE[3] = "cye"; //connection yes
-static const char CNO[3] = "cno"; //connection no
-static const char WRC[3] = "wrc"; //wrong command
+/*
+Sets the timeout end timer of the client depending on FREQ and TICKS
+*/
+void set_action_end(client_t *client, int freq, int ticks);
 
-int command_handler(serverdata_t *sdata, client_t *client, char *command);
+/*
+Command structure designed for the function pointer array by
+    matching the char *COMMAND
 
-typedef int (*handler_t)(serverdata_t *sdata, client_t *client);
-
+struct command_t :
+- char *command (command name)
+- int *handler(serverdata_t *sdata, client_t *client, char *data)
+    (handler function pointer)
+*/
 typedef struct command_s {
-    char command[3];
-    int (*handler)(serverdata_t *sdata, client_t *client, uint cmd_idx);
-    uint datalen;
+    char *command;
+    int (*handler)(serverdata_t *sdata, client_t *client, char *data);
 } command_t;
 
-int cmd_tna(serverdata_t *sdata, client_t *client, uint cmd_idx);
+int cmd_tna(serverdata_t *sdata, client_t *client, char *data);
+int cmd_idn(serverdata_t *sdata, client_t *client, char *data);
+int cmd_msz(serverdata_t *sdata, client_t *client, char *data);
 
 static const command_t USER_COMMANDS[] = {
-    {"tna", &cmd_tna, 1 + EOP_LEN},
+    {"tna", &cmd_tna},
+    {"idn", &cmd_idn},
+    {"msz", &cmd_msz}
 };
 
 static const int NB_USER_COMMANDS = sizeof(USER_COMMANDS) / sizeof(command_t);

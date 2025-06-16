@@ -16,10 +16,17 @@ add_executable( ${PROJECT_NAME}
     ${SERVER_SRC_DIR}connection.c
     ${SERVER_SRC_DIR}transmission.c
     ${SERVER_SRC_DIR}commands.c
+    ${SERVER_SRC_DIR}timer.c
+    ${SERVER_SRC_DIR}debug.c
     ${SERVER_SRC_DIR}returnwitherror.c
     ${SERVER_SRC_DIR}end.c
     ${SERVER_CMD_DIR}tna.c
+<<<<<<< HEAD
     ${SERVER_THR_DIR}init_map.c
+=======
+    ${SERVER_CMD_DIR}idn.c
+    ${SERVER_CMD_DIR}msz.c
+>>>>>>> c8e73faa43e510c8b5c40440eec8fca4e75ef4fd
 )
 
 ########## LINKAGE ##########

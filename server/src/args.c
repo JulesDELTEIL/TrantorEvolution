@@ -1,12 +1,13 @@
 /*
 ** EPITECH PROJECT, 2025
-** jetpack
+** zappy
 ** File description:
-** checkargs.c
+** args.c
 */
 
 #include <dirent.h>
 #include <stdlib.h>
+#include <string.h>
 
 #include "app.h"
 #include "functions.h"
@@ -53,11 +54,15 @@ static void get_team_name(size_t *flw, arguments_t *args, char *av[])
     *flw += NEXT_ARG;
     for (int tmp = *flw; av[tmp] != NULL && av[tmp][FIRST_CHAR] != '-'; tmp++)
         nb_of_teams++;
-    args->team_name = malloc(sizeof(char *) * nb_of_teams + 1);
+    args->team_name = malloc(sizeof(char *) * (nb_of_teams + 1));
+    if (!args->team_name)
+        return;
     for (int i = 0; i < nb_of_teams; i++) {
         args->team_name[i] = av[*flw];
         *flw += 1;
     }
+    args->team_name[nb_of_teams] = NULL;
+    *flw -= BACK_TO_FLAG;
 }
 
 void get_args(int ad, char *av[], arguments_t *args)

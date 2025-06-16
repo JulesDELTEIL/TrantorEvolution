@@ -1,63 +1,95 @@
 /*
 ** EPITECH PROJECT, 2025
-** jetpack
+** zappy
 ** File description:
-** actions.c
+** transmission.c
 */
 
-#include "functions.h"
-#include "commands.h"
+#include <stdlib.h>
+#include <stdio.h>
+#include <unistd.h>
+#include <string.h>
 
-void debug_input(client_t *client, uint8_t *data, int size)
+#include "functions.h"
+#include "debug.h"
+
+static int add_circular(client_t *client, char *buffer)
 {
-    if (size == 0 || !data)
-        return;
-    printf("C%-3d ↓ [%d", client->fd, data[0]);
-    for (size_t k = 1; k < size; k++) {
-        printf(", %d", data[k]);
-    }
-    printf("]\n");
+    char *newbuff = NULL;
+    uint_t c_bufflen = 0;
+    uint_t n_bufflen = strlen(buffer);
+
+    if (client->buffer != NULL)
+        c_bufflen = strlen(client->buffer);
+    newbuff = malloc(sizeof(char) * (c_bufflen + n_bufflen + 1));
+    for (uint_t k = 0; k < c_bufflen; k++)
+        newbuff[k] = client->buffer[k];
+    for (uint_t k = 0; k < n_bufflen; k++)
+        newbuff[k + c_bufflen] = buffer[k];
+    newbuff[c_bufflen + n_bufflen] = 0;
+    if (client->buffer != NULL)
+        free(client->buffer);
+    client->buffer = newbuff;
+    return EXIT_SUCCESS;
 }
 
-void debug_output(client_t *client, uint8_t *data, int size)
+static int count_nl(char *buff)
 {
-    if (size == 0 || !data)
-        return;
-    printf("CL%-3d  ↑ [%d", client->fd, data[0]);
-    for (size_t k = 1; k < size; k++)
-        printf(",%d", data[k]);
-    printf("]\n");
+    int count = 0;
+
+    if (buff == NULL)
+        return 0;
+    for (uint_t k = 0; buff[k] != 0; k++)
+        if (buff[k] == '\n')
+            count++;
+    return count;
 }
 
 int receive_data(serverdata_t *sdata, client_t *client)
 {
-    uint8_t buffer[CMD_LEN] = {0};
+    char buffer[BUFFSIZE] = {0};
     int rc = DEFAULTRC;
 
-    rc = read(client->fd, buffer, CMD_LEN);
+    rc = read(client->fd, buffer, BUFFSIZE - 1);
     if (rc == 0) {
-        printf("CL%-3d ↓  ✕\n", client->fd);
+        if (sdata->debug)
+            printf("Cfd%-3d ↓  ✕\n", client->fd);
         return closeconnection(sdata, client);
-    } else if (rc == -1 || rc != CMD_LEN)
+    } else if (rc == -1)
         return EXIT_FAILURE;
-    debug_input(client, buffer, rc);
-    return command_handler(sdata, client, buffer);
+    if (sdata->debug)
+        debug_input(client, buffer, rc);
+    if (rc < 2 || count_nl(client->buffer) >= 10)
+        return EXIT_FAILURE;
+    add_circular(client, buffer);
+    return EXIT_SUCCESS;
 }
 
-int send_data(client_t *client, const uint8_t *cmd, uint8_t *data, size_t datalen)
+static int get_datalen(char *data)
 {
-    uint packetlen = CMD_LEN + datalen + EOP_LEN;
-    uint8_t fullpacket[packetlen];
+    if (data == NULL)
+        return 0;
+    return strlen(data);
+}
+
+int send_data(client_t *client, char *cmd, char *data, bool debug)
+{
+    uint_t datalen = get_datalen(data);
+    uint_t cmdlen = get_datalen(cmd);
+    uint_t packetlen = cmdlen + 1 + datalen + 1;
+    char fullpacket[packetlen];
     int rc = DEFAULTRC;
 
     if (cmd == NULL)
         return EXIT_FAILURE;
-    for (uint k = 0; k < CMD_LEN; k++)
-        fullpacket[CMD_BEGIN_IDX + k] = cmd[k];
-    for (size_t k = 1; k < datalen; k++)
-        fullpacket[DATA_BEGIN_IDX + k] = data[k];
-    fullpacket[DATA_BEGIN_IDX + datalen] = EOP;
-    rc = write(client->fd, fullpacket, datalen + 1);
-    debug_output(client, fullpacket, packetlen);
+    for (uint_t k = 0; k < cmdlen; k++)
+        fullpacket[k] = cmd[k];
+    fullpacket[cmdlen] = ' ';
+    for (size_t k = 0; k < datalen; k++)
+        fullpacket[cmdlen + 1 + k] = data[k];
+    fullpacket[cmdlen + 1 + datalen] = '\n';
+    rc = write(client->fd, fullpacket, packetlen);
+    if (debug)
+        debug_output(client, fullpacket, packetlen);
     return rc;
 }

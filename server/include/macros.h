@@ -1,15 +1,14 @@
 /*
 ** EPITECH PROJECT, 2025
-** jetpack
+** zappy
 ** File description:
 ** macros.h
 */
 
-
 #ifndef SERVERMACROS_H_
     #define SERVERMACROS_H_
 
-    #define uint unsigned int
+typedef unsigned int uint_t;
 
     #define DEFAULTRC -1
     #define NOFD -1
@@ -17,12 +16,6 @@
     #define TEMPBUFFSIZE 1024
     #define BUFFSIZE 1024
     #define POLLTIMEOUT 1 //milliseconds
-
-    #define CMD_BEGIN_IDX 0
-    #define CMD_LEN 3
-    #define DATA_BEGIN_IDX (CMD_BEGIN_IDX + CMD_LEN)
-    #define EOP '\n'
-    #define EOP_LEN 1
 
     #define CLIENT_BUFFER_SIZE 1024
 
@@ -35,18 +28,19 @@
     #define SERVER_FD_INDEX 0
     #define SERVER_STDIN_INDEX 1
 
-    #define ERROR_SETSOCKOPT "ERROR: setsockopt() failed\n"
-    #define ERROR_BIND "ERROR: bind() failed\n"
-    #define ERROR_POLL "ERROR: poll() failed\n"
-    #define ERROR_ACCEPT "ERROR: accept() failed\n"
+static const char ERROR_SETSOCKOPT[] = "ERROR: setsockopt() failed\n";
+static const char ERROR_BIND[] = "ERROR: bind() failed\n";
+static const char ERROR_POLL[] = "ERROR: poll() failed\n";
+static const char ERROR_ACCEPT[] = "ERROR: accept() failed\n";
+static const char CLIENTS_OVERFLOW_MSG[] =
+"Maximum clients reached, try again later\n";
 
-    #define CLIENTS_OVERFLOW_MSG "Maximum clients reached, try again later\n"
     #define CLIENTS_OVERFLOW_CODE 42
 
-    enum client_type_e {
-        UNSET = -1,
-        AI = 0,
-        GUI = 1,
-    };
+enum client_type_e {
+    UNSET = -1,
+    AI = 0,
+    GUI = 1,
+};
 
 #endif
