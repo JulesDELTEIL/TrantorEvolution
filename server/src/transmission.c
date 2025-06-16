@@ -76,7 +76,7 @@ int send_data(client_t *client, char *cmd, char *data, bool debug)
 {
     uint_t datalen = get_datalen(data);
     uint_t cmdlen = get_datalen(cmd);
-    uint_t spacelen = (datalen > 0);
+    uint_t spacelen = (uint_t) (datalen > 0);
     uint_t packetlen = cmdlen + spacelen + datalen + 1;
     char fullpacket[packetlen];
     int rc = DEFAULTRC;
