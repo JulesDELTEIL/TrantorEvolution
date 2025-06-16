@@ -58,7 +58,7 @@ static void get_team_name(size_t *flw, arguments_t *args, char *av[])
     if (!args->team_name)
         return;
     for (int i = 0; i < nb_of_teams; i++) {
-        args->team_name[i] = av[*flw];
+        args->team_name[i] = strdup(av[*flw]);
         *flw += 1;
     }
     args->team_name[nb_of_teams] = NULL;
@@ -69,6 +69,7 @@ void get_args(int ad, char *av[], arguments_t *args)
 {
     size_t flw = 1;
 
+    args->freq = DEFAULT_FREQ;
     args->debug = false;
     for (; flw < ad; flw++) {
         if (strcmp(av[flw], ARG_DEBUG) == 0)
