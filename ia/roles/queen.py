@@ -12,18 +12,19 @@ class Queen(BaseRole):
     def __init__(self):
         super().__init__()
         
-    def decide_action(self) -> Commands:
+    def decide_action(self) -> list[Commands]:
+        self.cycle += 1
         if self._can_incant():
-            return Commands(Action.INCANTATION)
+            return list[Commands(Action.INCANTATION)]
         
         if self.state.inventory.get("food", 0) < 2:
-            return Commands(Action.TAKE, "food")
+            return list[Commands(Action.TAKE, "food")]
         
-        if self.cycle < 3:
-            return Commands(Action.TAKE, "food")
+        if self.cycle < 4:
+            return list[Commands(Action.TAKE, "food")]
         else:
             self.cycle = 0
-            return Commands(Action.LOOK)
+            return list[Commands(Action.LOOK)]
         
     def _can_incant(self) -> bool:
         requirements = self.state.motivation.LEVEL_REQUIREMENTS.get(self.state.level, {})

@@ -17,7 +17,7 @@ class Worker(BaseRole):
         self.pos = (0, 0)
         self.queens_pos = (0, -3)
         
-    def decide_action(self) -> Commands:
+    def decide_action(self) -> list[Commands]:
         commands_queue = []
         # if self.state.motivation.hunger > 0.7:
             # logique pour chercher de la food (vision...)
