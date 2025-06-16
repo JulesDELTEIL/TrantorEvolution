@@ -5,15 +5,15 @@
 ## queenRole.py
 ##
 
+from irole import IRole
 from action import Commands, Action
 from player import PlayerState
 
-class Queen:
+class Queen(IRole):
     def __init__(self):
-        self._cycle = 0 # 0-2: Take, 3: Look then reset to 0
-        self._state = PlayerState()
+        super().__init__()
         
-    def decide_action(self):
+    def decide_action(self) -> Commands:
         if self._can_incant():
             return Commands(Action.INCANTATION)
         
@@ -26,7 +26,7 @@ class Queen:
             self._cycle = 0
             return Commands(Action.LOOK)
         
-    def _can_incant(self):
+    def _can_incant(self) -> bool:
         requirements = self._state.motivation.LEVEL_REQUIREMENTS.get(self._state.level, {})
         current = self._state.vision[0].split()
         for stone, needed in requirements.items():
