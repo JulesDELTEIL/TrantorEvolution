@@ -20,23 +20,23 @@ static int get_random_biome(void)
     return rand() % 5;
 }
 
-static void refill_tiles(map_t tile)
+static void refill_tiles(map_t *tile)
 {
     biome_distribution_t dist;
 
-    tile.biome = get_random_biome();
+    tile->biome = get_random_biome();
     for (int i = 0; i < NB_RESOURCES; i++)
-        tile.resources[i] = 0;
-    dist = biome_distributions[tile.biome];
+        tile->resources[i] = 0;
+    dist = biome_distributions[tile->biome];
     for (int i = 0; i < NB_RESOURCES; i++)
-        tile.resources[i] = dist.biome_start[i];
+        tile->resources[i] = dist.biome_start[i];
 }
 
 static void first_map_refill(int Y, density_t all_dens, map_t **map_tiles)
 {
     for (int x = 0; map_tiles[x] != NULL; x++) {
         for (int y = 0; y <= Y; y++) {
-            refill_tiles(map_tiles[x][y]);
+            refill_tiles(&map_tiles[x][y]);
         }
     }
 }
@@ -55,13 +55,54 @@ static density_t init_density(int map_dens)
     return all_dens;
 }
 
+static void *get_total(int *total, int width, int height, map_t **map)
+{
+    int area = width * height;
+    int x = 0;
+    int y = 0;
+
+    for (int i = 0; i < area; x++) {
+        x = X_COORD(i, height);
+        y = Y_COORD(i, height);
+        for (int r = 0; r < NB_RESOURCES; r++)
+            total[r] += map[x][y].resources[r];
+    }
+}
+
+static void refill_map(map_t **map, int width, int height, density_t *max_dens)
+{
+    biome_distribution_t dist = {{0}, {0}};
+    int total[NB_RESOURCES];
+    int area = width * height;
+    int x = 0;
+    int y = 0;
+    int add = 0;
+
+    get_total(total, width, height, map);
+    for (int i = 0; i < area; i++) {
+        x = X_COORD(i, height);
+        y = Y_COORD(i, height);
+        dist = biome_distributions[map[x][y].biome];
+        for (int r = 0; r < NB_RESOURCES; r++) {
+            add = (total[r] < max_dens->dens[r])
+            ? rand() % dist.refill[r] : 0;
+            map[x][y].resources[r] += add;
+            total[r] += add;
+        }
+    }
+}
+
 void *map_thread(void *arg)
 {
     serverdata_t *server = (serverdata_t *)arg;
-    int map_max_density = WORLD_DENS(server->args);
-    density_t all_dens = init_density(map_max_density);
+    density_t all_dens = init_density(WORLD_DENS(server->args));
 
     first_map_refill(server->args->width,
     all_dens,
     server->game_data.trantor_map);
+    while (1) {
+        sleep(TICKS_REFILLS / server->args->freq);
+        refill_map(server->game_data.trantor_map, server->args->width,
+        server->args->height, &all_dens);
+    }
 }
