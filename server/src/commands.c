@@ -14,9 +14,43 @@
 #include "debug.h"
 #include "transmission.h"
 
-static void handle_unrecognized_code(serverdata_t *sdata, client_t *client)
+static int set_teamname(char **args_teamnames, client_t *client, char *data)
 {
-    send_data(client, "ko", NULL, sdata->debug);
+    if (strcmp(data, "graphic") == 0) {
+        client->team = strdup(data);
+        return EXIT_SUCCESS;
+    }
+    for (uint_t k = 0; args_teamnames[k] != NULL; k++) {
+        if (strcmp(data, args_teamnames[k]) == 0) {
+            client->team = strdup(data);
+            return EXIT_SUCCESS;
+        }
+    }
+    return EXIT_FAILURE;
+}
+
+static int send_connection_datas(serverdata_t *sdata, client_t *client)
+{
+    char data[BUFFSIZE];
+
+    sprintf(data, "%d", client->id);
+    send_data(client, data, NULL, sdata->debug);
+    sprintf(data, "%d %d", sdata->args->width, sdata->args->height);
+    send_data(client, data, NULL, sdata->debug);
+}
+
+static void handle_unrecognized_code(serverdata_t *sdata, client_t *client,
+    char *data)
+{
+    if (client->team != NULL) {
+        send_data(client, "ko", NULL, sdata->debug);
+        return;
+    }
+    if (set_teamname(sdata->args->team_name, client, data) == EXIT_FAILURE) {
+        send_data(client, "ko", NULL, sdata->debug);
+        return;        
+    }
+    send_connection_datas(sdata, client);
 }
 
 static int empty_client_buff(client_t *client, uint_t index)
@@ -121,6 +155,6 @@ int buffer_handler(serverdata_t *sdata, client_t *client)
             USER_COMMANDS[k].handler(sdata, client, data);
             return EXIT_SUCCESS;
         }
-    handle_unrecognized_code(sdata, client);
+    handle_unrecognized_code(sdata, client, cmd);
     return EXIT_FAILURE;
 }
