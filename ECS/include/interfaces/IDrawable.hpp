@@ -8,12 +8,14 @@
 #ifndef IDRAWABLE_HPP_
     #define IDRAWABLE_HPP_
 
-    #include <SFML/Graphics/Drawable.hpp>
+    #include <SFML/Graphics/RenderTarget.hpp>
+    #include <SFML/Graphics/RenderStates.hpp>
 
 namespace ecs {
 
-class IDrawable : public sf::Drawable {
+class IDrawable {
     public:
+        virtual void draw(sf::RenderTarget&) = 0;
         virtual void setPosition(const sf::Vector2f&) = 0;
         virtual sf::Vector2f getPosition(void) const = 0;
         virtual void setScale(const sf::Vector2f&) = 0;
