@@ -34,5 +34,7 @@ class PlayerState:
         self.food = self.inventory.get("food", 0)
         
     def parse_vision(self, response):
-        self.vision = response.strip("[]").split(",")
+        content = response.strip("[]")
+        tiles = content.split(",")
+        self.vision = [tile.strip().split() for tile in tiles]
         
