@@ -47,13 +47,12 @@ typedef struct density_s {
     unsigned int dens[7];
 } density_t;
 
-static biome_distribution_t biome_distributions[] = {
-    [SEA] =      {{5, 0, 0, 0, 0, 2, 0}},
-    [FOREST] =   {{5, 2, 0, 0, 0, 0, 0}},
-    [MOUNTAINS] ={{5, 0, 2, 0, 0, 0, 0}},
-    [PLAINS] =   {{5, 0, 0, 2, 0, 0, 0}},
-    [BEACH] =    {{5, 0, 0, 2, 0, 2, 0}} 
+const static biome_distribution_t biome_distributions[] = {
+    [SEA] = {{5, 0, 0, 0, 0, 2, 0}},
+    [FOREST] = {{5, 2, 0, 0, 0, 0, 0}},
+    [MOUNTAINS] = {{5, 0, 2, 0, 0, 0, 0}},
+    [PLAINS] = {{5, 0, 0, 2, 0, 0, 0}},
+    [BEACH] = {{5, 0, 0, 2, 0, 2, 0}}
 };
-
 
 #endif /* !MAP_H_ */
