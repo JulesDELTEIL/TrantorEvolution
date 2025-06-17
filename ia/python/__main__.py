@@ -6,8 +6,8 @@
 ## IA CLIENT MAIN
 #
 
-def main () :
-    print("This is the main of the IA client")
+from src.client import Trantorian
 
-if __name__ == "__main__" :
-    main()
+if __name__ == "__main__":
+    client = Trantorian(host="localhost", port=8000, team_name="team")
+    client.run()
