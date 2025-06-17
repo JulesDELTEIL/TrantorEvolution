@@ -30,9 +30,6 @@ def create_configuration():
     return conf
 
 if __name__ == "__main__":
-    print("hello world")
-    print(len(sys.argv))
-    print(*sys.argv)
     conf = create_configuration()
     client = Trantorian(conf["-h"], int(conf["-p"]), conf["-n"])
     client.run()
