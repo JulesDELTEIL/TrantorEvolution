@@ -29,7 +29,6 @@ class ServerManager :
         message = ""
         while not "\n" in message :
             self.sock.setblocking(True)
-            print("waiting...")
             data = self.sock.recv(BUFF_SIZE)
             self.sock.setblocking(False)
             while True :
