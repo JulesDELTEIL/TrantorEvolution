@@ -12,7 +12,6 @@
     #include <arpa/inet.h>
     #include <stdbool.h>
     #include "macros.h"
-    #include "map.h"
     #include "game.h"
 
 /*

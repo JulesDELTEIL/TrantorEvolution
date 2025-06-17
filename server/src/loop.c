@@ -12,7 +12,6 @@
 
 #include "functions.h"
 #include "macros.h"
-#include "connection.h"
 #include "commands.h"
 #include "transmission.h"
 

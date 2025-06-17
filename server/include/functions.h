@@ -67,4 +67,10 @@ Returns ERRORCODE
 */
 int returnwitherror(const char *msg, int errorcode);
 
+/*
+Setup the pthread arg for the map thread
+Returns O if working
+*/
+int setup_map_thread(serverdata_t *sdata, pthread_t *mapthr);
+
 #endif

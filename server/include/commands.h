@@ -37,10 +37,12 @@ typedef struct command_s {
 
 int cmd_tna(serverdata_t *sdata, client_t *client, char *data);
 int cmd_msz(serverdata_t *sdata, client_t *client, char *data);
+int cmd_bct(serverdata_t *sdata, client_t *client, char *data);
 
 static const command_t USER_COMMANDS[] = {
     {"tna", &cmd_tna},
-    {"msz", &cmd_msz}
+    {"msz", &cmd_msz},
+    {"bct", &cmd_bct}
 };
 
 static const int NB_USER_COMMANDS = sizeof(USER_COMMANDS) / sizeof(command_t);
