@@ -7,7 +7,9 @@
 
 #include <Python.h>
 #include <iostream>
-#include <vector>
+#include <libgen.h>
+#include <string>
+#include <cstring>
 
 #include "../include/project_tools.h"
 
@@ -15,33 +17,40 @@ int main(int ac, char **av) {
     PyStatus status;
     PyConfig config;
     PyConfig_InitPythonConfig(&config);
-    std::vector<wchar_t*> wargv(ac);
-    for (unsigned int i = 0; i < static_cast<unsigned int>(ac); i++)
+    wchar_t **wargv = static_cast<wchar_t**>(
+        PyMem_RawMalloc(sizeof(wchar_t*) * ac)
+    );
+    for (int i = 0; i < ac; ++i) {
         wargv[i] = Py_DecodeLocale(av[i], nullptr);
-    status = PyConfig_SetArgv(&config, ac, wargv.data());
-    if (PyStatus_Exception(status)) {
-        PyConfig_Clear(&config);
-        std::cerr << "PyConfig_SetArgv error: " << status.err_msg << std::endl;
-        return PROJECT_ERROR;
+        if (!wargv[i]) return PROJECT_ERROR;
     }
+    config.argv.length = ac;
+    config.argv.items = wargv;
+    config.parse_argv = 0;
     status = Py_InitializeFromConfig(&config);
     PyConfig_Clear(&config);
     if (PyStatus_Exception(status)) {
-        PyConfig_Clear(&config);
-        std::cerr << "Python initialization error: " << status.err_msg << std::endl;
+        std::cerr << status.err_msg << std::endl;
         return PROJECT_ERROR;
     }
-    PyRun_SimpleString(
-        "import sys\n" 
-        "sys.path.insert(0, \"./ia/python\")\n");
-    FILE *fp = fopen("ia/python/__main__.py", "r");
+    char *copy = strdup(av[0]);
+    std::string dir = dirname(copy);
+    free(copy);
+    std::string path = dir + "/ia/python/__main__.py";
+    std::string pkg_dir = dir + "/ia/python";
+    std::string code = "import sys\n"
+        "sys.path.insert(0, \"" + pkg_dir + "\")\n";
+    PyRun_SimpleString(code.c_str());
+    FILE *fp = fopen(path.c_str(), "r");
     if (!fp) {
-        std::cerr << "Can't open 'python/__main__py'" << std::endl;
+        std::cerr << "Can't open " << path << std::endl;
         Py_Finalize();
         return PROJECT_ERROR;
     }
-    unsigned int return_value = PyRun_SimpleFile(fp, "__main__.py");
+    int return_value = PyRun_SimpleFile(fp, "__main__.py");
     fclose(fp);
+    if (PyErr_Occurred())
+        PyErr_Print();
     Py_Finalize();
     return return_value;
 }
