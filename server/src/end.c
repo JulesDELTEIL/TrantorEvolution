@@ -6,6 +6,7 @@
 */
 
 #include <stdlib.h>
+#include <pthread.h>
 #include <unistd.h>
 
 #include "serverdata.h"
@@ -24,6 +25,8 @@ int destroy_client(client_t *client)
 
 void destroy_args(arguments_t *args)
 {
+    if (!args->team_name)
+        return;
     for (int i = 0; args->team_name[i] != NULL; i++)
         free(args->team_name[i]);
     free(args->team_name);
@@ -31,24 +34,33 @@ void destroy_args(arguments_t *args)
 
 void destroy_map(map_t **map)
 {
+    if (!map)
+        return;
     for (int i = 0; map[i] != NULL; i++)
         free(map[i]);
     free(map);
 }
 
-void destroy_teams(team_t *teams)
+void destroy_teams(team_t *teams, int team_count)
 {
+    if (!teams)
+        return;
+    for (int i = 0; i < team_count; i++) {
+        free(teams[i].name);
+    }
     free(teams);
 }
 
-int close_server(serverdata_t *sdata, fdarray_t *fdarray)
+int close_server(serverdata_t *sdata, fdarray_t *fdarray, pthread_t *mapthr)
 {
     close(sdata->sockfd);
+    sdata->is_running = false;
+    pthread_join(*mapthr, NULL);
     for (size_t k = 0; k < NBTOTAL_FD; k++) {
         destroy_client(&(fdarray->clients[k]));
     }
     destroy_args(sdata->args);
     destroy_map(sdata->game_data.trantor_map);
-    destroy_teams(sdata->game_data.teams);
+    destroy_teams(sdata->game_data.teams, sdata->game_data.nb_of_teams);
     return EXIT_SUCCESS;
 }

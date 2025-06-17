@@ -22,6 +22,7 @@ typedef struct game_s {
     map_t **trantor_map;
     player_t *players;
     team_t *teams;
+    int nb_of_teams;
 } game_t;
 
 /*Functions that init the game data, the map, and every teams*/

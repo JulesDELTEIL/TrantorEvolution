@@ -6,11 +6,19 @@
 */
 
 #include <stdlib.h>
+#include <stdio.h>
+#include <pthread.h>
 
 #include "serverdata.h"
 #include "fdarray.h"
 #include "utils.h"
 #include "map.h"
+
+int setup_map_thread(serverdata_t *sdata, pthread_t *mapthr)
+{
+    pthread_create(mapthr, NULL, map_thread, sdata);
+    return 0;
+}
 
 serverdata_t setup_parameters(arguments_t *args)
 {
@@ -25,6 +33,7 @@ serverdata_t setup_parameters(arguments_t *args)
     sdata.sockfd = socket(AF_INET, SOCK_STREAM, 0);
     sdata.addrlen = sizeof(sdata.address);
     sdata.game_data = init_game(args);
+    sdata.is_running = true;
     return sdata;
 }
 
