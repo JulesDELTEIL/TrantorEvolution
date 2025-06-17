@@ -22,14 +22,14 @@ PLAYER_LEFT = 1
 def get_dimension(dimension_str) :
     dimension_split = dimension_str.split()
     if len(dimension_split) != 2 or not all([val.isdigit() for val in dimension_split]) :
-        raise Exception("Invalid dimension from server")
+        raise Exception("Invalid dimension from server: %s" % dimension_str)
     dimension_tuple = (int(dimension_split[DIMENSION_X]), int(dimension_split[DIMENSION_Y]))
     return dimension_tuple
 
 def get_client_num(client_num_str) :
     client_num_strip = client_num_str.strip()
     if not client_num_strip.isdigit() :
-        raise Exception("Invalid client number left from server")
+        raise Exception("Invalid client number left from server: %s" % client_num_str)
     return int(client_num_strip)
 
 class Trantorian (ServerManager) :
