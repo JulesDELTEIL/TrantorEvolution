@@ -24,6 +24,7 @@ add_executable( ${PROJECT_NAME}
     ${SERVER_CMD_DIR}tna.c
     ${SERVER_CMD_DIR}msz.c
     ${SERVER_CMD_DIR}bct.c
+    ${SERVER_CMD_DIR}mct.c
     ${SERVER_THR_DIR}init_map.c
     ${SERVER_THR_DIR}init_thread.c
 )
