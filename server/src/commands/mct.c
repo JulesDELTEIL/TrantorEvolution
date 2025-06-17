@@ -12,8 +12,6 @@
 
 #include "transmission.h"
 
-//bct X Y q0 q1 q2 q3 q4 q5 q6\n
-
 static int send_tile(serverdata_t *sdata, client_t *client, int x, int y)
 {
     char answer[BUFFSIZE] = {0};
@@ -21,13 +19,13 @@ static int send_tile(serverdata_t *sdata, client_t *client, int x, int y)
     sprintf(answer, "%d %d %d %d %d %d %d %d %d",
         x,
         y,
-        sdata->game_data.trantor_map[x][y].resources[0],
-        sdata->game_data.trantor_map[x][y].resources[1],
-        sdata->game_data.trantor_map[x][y].resources[2],
-        sdata->game_data.trantor_map[x][y].resources[3],
-        sdata->game_data.trantor_map[x][y].resources[4],
-        sdata->game_data.trantor_map[x][y].resources[5],
-        sdata->game_data.trantor_map[x][y].resources[6]
+        sdata->game_data.trantor_map[x][y].resources[FOOD],
+        sdata->game_data.trantor_map[x][y].resources[WOOD],
+        sdata->game_data.trantor_map[x][y].resources[ROCK],
+        sdata->game_data.trantor_map[x][y].resources[CLAY],
+        sdata->game_data.trantor_map[x][y].resources[METAL],
+        sdata->game_data.trantor_map[x][y].resources[PETROL],
+        sdata->game_data.trantor_map[x][y].resources[ANTIMATTER]
     );
     send_data(client, "bct", answer, sdata->debug);
 }

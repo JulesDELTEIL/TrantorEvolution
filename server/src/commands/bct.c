@@ -12,8 +12,6 @@
 
 #include "transmission.h"
 
-//bct X Y q0 q1 q2 q3 q4 q5 q6\n
-
 static int fill_answer(char *answer, serverdata_t *sdata, int x, int y)
 {
     sprintf(answer, "%d %d %d %d %d %d %d %d %d",
