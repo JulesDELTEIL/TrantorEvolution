@@ -36,22 +36,10 @@ Returns EXIT_SUCCESS or EXIT_FAILURE
 int server(arguments_t *args);
 
 /*
-Function to call at end of ftp server, used to destroy entities
-Returns EXIT_SUCCESS
-*/
-int close_server(serverdata_t *sdata, fdarray_t *fdarray, pthread_t *mapthr);
-
-/*
 Setup the fdarray_t struct used to store all fds
 Returns a fdarray_t
 */
 fdarray_t setup_fds(int sockfd);
-
-/*
-Setup the pthread arg for the map thread
-Returns O if working
-*/
-int setup_map_thread(serverdata_t *sdata, pthread_t *mapthr);
 
 /*
 Opens a connection with a client

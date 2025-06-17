@@ -90,8 +90,10 @@ static int parse_cmd(client_t *client, char *cmd, bool *nl_presence)
     return -1;
 }
 
-static int remove_end_spaces(char *data, uint_t end)
+static int remove_end_spaces(char *data, int end)
 {
+    if (end < 0)
+        return EXIT_FAILURE;
     for (uint_t k = end; k > 0; k++) {
         if (data[k] != ' ')
             return 0;
