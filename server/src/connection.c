@@ -30,6 +30,13 @@ int closeconnection(serverdata_t *sdata, client_t *client)
     return EXIT_SUCCESS;
 }
 
+static int set_new_client(serverdata_t *sdata, fdarray_t *fdarray,
+    int nextfree, int newfd)
+{
+    fdarray->fds[nextfree].fd = newfd;
+    fdarray->clients[nextfree].fd = newfd;
+}
+
 int openconnection(serverdata_t *sdata, fdarray_t *fdarray)
 {
     int rc = DEFAULTRC;
@@ -46,8 +53,7 @@ int openconnection(serverdata_t *sdata, fdarray_t *fdarray)
             (struct sockaddr*)&sdata->address, &sdata->addrlen);
     if (newfd < 0)
         returnwitherror(ERROR_ACCEPT, EXIT_FAILURE);
-    fdarray->fds[nextfree].fd = newfd;
-    fdarray->clients[nextfree].fd = newfd;
+    set_new_client(sdata, fdarray, nextfree, newfd);
     send_data(&(fdarray->clients[nextfree]), "WELCOME", NULL, sdata->debug);
     return EXIT_SUCCESS;
 }
