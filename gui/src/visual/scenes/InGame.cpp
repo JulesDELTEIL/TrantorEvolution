@@ -24,10 +24,10 @@ void InGame::display(sf::RenderTarget& target) const
         layer->display(target);
 }
 
-void InGame::event(const sf::Event& event)
+void InGame::event(const sf::Event& event, const NetPack& net_events)
 {
     for (const std::unique_ptr<ILayer>& layer : _layers)
-        layer->event(event);
+        layer->event(event, net_events);
     if (event.type == sf::Event::KeyPressed) {
         if (event.key.code == sf::Keyboard::D)
             move(10, 0);

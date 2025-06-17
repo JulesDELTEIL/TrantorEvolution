@@ -21,11 +21,11 @@ class Client {
 
         void checkEvent(void);
         void setSocket(const std::string &server, const int &port);
-        bool pollEvent(NetEvent_e&);
+        bool pollEvent(NetPack&);
 
     private:
         Socket _socket;
-        EventQueue _events;
+        PackQueue _events;
 
 };
 

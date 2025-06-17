@@ -19,11 +19,11 @@ void Client::checkEvent(void)
 {
     _socket.pollServer();
     if (_socket.fds().revents & POLLIN) {
-        _events.push(NET_MSIZE); // TEST
+        _events.push({NET_MSIZE, {1, 2, 3}}); // TEST
     }
 }
 
-bool Client::pollEvent(NetEvent_e& event)
+bool Client::pollEvent(NetPack& event)
 {
     if (_events.size() > 0) {
         event = _events.front();

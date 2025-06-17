@@ -31,7 +31,7 @@ void Land::display(sf::RenderTarget& render) const
         entity->display(render);
 }
 
-void Land::event(const sf::Event& event)
+void Land::event(const sf::Event& event, const NetPack&)
 {
     if (event.type == sf::Event::KeyPressed) {
         if (event.key.code == sf::Keyboard::L)

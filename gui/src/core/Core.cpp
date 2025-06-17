@@ -11,7 +11,6 @@
 
 #include "visual/scenes/DefaultScene.hpp"
 #include "visual/scenes/InGame.hpp"
-
 #include "ECSFactory.hpp"
 #include "visual/setup.hpp"
 
@@ -23,14 +22,18 @@ Core::Core(int argc, const char *argv[])
     try {
         _parser = Parser(argc, argv);
     } catch(const std::exception& e) {
-        std::cerr << e.what() << '\n';
+        std::cerr << e.what() << std::endl;
         exit(84);
     }
     setupVisual();
     _scenes[visual::Scene_e::NONE] = std::make_unique<visual::DefaultScene>();
     _scenes[visual::Scene_e::IN_GAME] = std::make_unique<visual::InGame>();
     changeScene(visual::Scene_e::IN_GAME);
-    _client.setSocket(_parser.getHostName(), _parser.getPortNb());
+    try {
+        _client.setSocket(_parser.getHostName(), _parser.getPortNb());
+    } catch (const network::Socket::socketError& e) {
+        std::cerr << e.what() << std::endl;
+    }
 }
 
 void Core::run(void)
@@ -51,10 +54,12 @@ void Core::display(void)
 
 void Core::events(void)
 {
-    while (_engine.window.pollEvent(_engine.events)) {
+    NetPack net_event;
+
+    while (_engine.window.pollEvent(_engine.events) || _client.pollEvent(net_event)) {
         if (_engine.events.type == sf::Event::Closed)
             _engine.window.close();
-        _scenes.at(_selected_scene)->event(_engine.events);
+        _scenes.at(_selected_scene)->event(_engine.events, net_event);
     }
 }
 

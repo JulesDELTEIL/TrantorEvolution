@@ -26,7 +26,7 @@ class Land : public ALayer {
         ~Land() = default;
 
         void display(sf::RenderTarget& render) const override;
-        void event(const sf::Event& event) override;
+        void event(const sf::Event& event, const NetPack&) override;
     
         void loadMap(const sf::Vector2f&,
             const std::vector<std::vector<TileInfo_s>>&);

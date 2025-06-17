@@ -24,7 +24,7 @@ void DefaultLayer::display(sf::RenderTarget& target) const
     }
 }
 
-void DefaultLayer::event(const sf::Event& event)
+void DefaultLayer::event(const sf::Event& event, const NetPack&)
 {
     for (std::unique_ptr<ecs::IEntity>& entity : _entities) {
         entity->event(event);

@@ -12,8 +12,11 @@
     #include <map>
     #include <functional>
 
+namespace gui {
+
 enum NetEvent_e {
-    NET_CON = 0,
+    NET_NONE = 0,
+    NET_CON,
     NET_CLIENTID,
     NET_INITMSIZE,
     NET_MSIZE,
@@ -42,6 +45,13 @@ enum NetEvent_e {
     NET_PARAM,
 };
 
-typedef std::queue<NetEvent_e> EventQueue;
+struct NetPack {
+    NetEvent_e event;
+    std::vector<float> pack;
+};
+
+typedef std::queue<NetPack> PackQueue;
+
+} // gui
 
 #endif

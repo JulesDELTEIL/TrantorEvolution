@@ -19,7 +19,7 @@ class InGame : public AScene {
         ~InGame() = default;
 
         void display(sf::RenderTarget&) const override;
-        void event(const sf::Event&) override;
+        void event(const sf::Event&, const NetPack&) override;
 
     private:
 
