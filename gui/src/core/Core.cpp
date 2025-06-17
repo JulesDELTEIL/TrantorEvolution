@@ -56,6 +56,7 @@ void Core::events(void)
 {
     NetEventPack net_event;
 
+    _client.checkEvent();
     while (_engine.window.pollEvent(_engine.events) || _client.pollEvent(net_event)) {
         if (_engine.events.type == sf::Event::Closed)
             _engine.window.close();
@@ -72,10 +73,11 @@ void Core::changeScene(const visual::Scene_e& scene)
 void Core::setupVisual(void)
 {
     ecs::ECSFactory::setDraw("biome", &visual::makeBiome);
-    ecs::ECSFactory::setDraw("resource_node", &visual::makeResourceNode);
+    ecs::ECSFactory::setDraw("resource", &visual::makeResource);
     ecs::ECSFactory::setDraw("body", &visual::makeBody);
     ecs::ECSFactory::setEntity("tile", &visual::makeTile);
     ecs::ECSFactory::setEntity("trantorian", &visual::makeTrantorian);
+    ecs::ECSFactory::setEntity("resource_node", &visual::makeResourceNode);
 }
 
 } // core

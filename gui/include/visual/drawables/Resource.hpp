@@ -2,11 +2,11 @@
 ** EPITECH PROJECT, 2024
 ** zappy
 ** File description:
-** Ressource.hpp
+** Resource.hpp
 */
 
-#ifndef RESOURCENODE_HPP_
-    #define RESOURCENODE_HPP_
+#ifndef RESOURCE_HPP_
+    #define RESOURCE_HPP_
 
     #include <memory>
 
@@ -16,10 +16,10 @@
 namespace gui {
 namespace visual {
 
-class ResourceNode : public ecs::AObject {
+class Resource : public ecs::AObject {
     public:
-        ResourceNode(const sf::Vector2f& pos, ResourceType_e type);
-        ~ResourceNode() = default;
+        Resource(const sf::Vector2f& pos, ResourceType_e type);
+        ~Resource() = default;
 };
 
 static const std::map<ResourceType_e, std::string> RESOURCE_NODE_TEXTURE  = {

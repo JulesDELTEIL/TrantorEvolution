@@ -20,12 +20,13 @@ add_executable( ${PROJECT_NAME}
 
     # DRAWABLES
     ${GUI_SRC_DIR}visual/drawables/Biome.cpp
-    ${GUI_SRC_DIR}visual/drawables/ResourceNode.cpp
+    ${GUI_SRC_DIR}visual/drawables/Resource.cpp
     ${GUI_SRC_DIR}visual/drawables/Body.cpp
 
     # ENTITIES
     ${GUI_SRC_DIR}visual/entities/Tile.cpp
     ${GUI_SRC_DIR}visual/entities/Trantorian.cpp
+    ${GUI_SRC_DIR}visual/entities/ResourceNode.cpp
 
     # LAYERS
     ${GUI_SRC_DIR}visual/layers/DefaultLayer.cpp

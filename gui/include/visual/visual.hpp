@@ -39,9 +39,7 @@ static const std::map<VisualType_e, std::vector<VisualType_e>> VISUAL_INHERITANC
     {INTERACTIVE, {ENTITY}},
     {TEXT, {ENTITY, DRAWABLE}},
     {OBJECT, {ENTITY, DRAWABLE}},
-    {ANIMATED, {ENTITY, DRAWABLE, OBJECT}},
-    // {TEXT_FIELD, {ENTITY, INTERACTIVE}},
-    // {BUTTON, {ENTITY, INTERACTIVE}}
+    {ANIMATED, {ENTITY, DRAWABLE, OBJECT}}
 };
 
 enum ResourceType_e {
@@ -61,21 +59,6 @@ enum BiomeTypes_e {
     GRASS,
     SAND,
     SEA
-};
-
-struct TileInfo_s {
-    BiomeTypes_e type;
-    std::array<bool, NB_RESOURCES> resources;
-};
-
-static const std::vector<std::vector<TileInfo_s>> TEST_MAP = {
-    {{GRASS, {1,1,0,0,0,0}}, {{GRASS}, {1,0,0,0,0,0}}, {{GRASS}, {1,0,0,0,0,0}}, {{GRASS}, {0,1,0,0,0,0}}, {{GRASS}, {1,0,0,0,0,0}}, {{GRASS}, {1,0,0,0,0,0}}, {{GRASS}, {1,0,0,0,0,0}}},
-    {{SAND, {0,0,0,0,0,0}}, {{SAND}, {0,0,0,0,0,0}}, {{SAND}, {1,0,0,0,0,0}}, {{GRASS}, {0,1,0,0,0,0}}, {{GRASS}, {1,0,0,0,0,0}}, {{GRASS}, {1,0,0,0,0,0}}, {{GRASS}, {1,0,0,0,0,0}}},
-    {{SEA, {0,0,0,0,0,0}}, {{SEA}, {0,0,0,0,0,0}}, {{SAND}, {0,0,1,0,0,0}}, {{SAND}, {0,1,0,0,0,0}}, {{SAND}, {0,0,0,0,0,0}}, {GRASS, {0,1,0,0,0,0}}},
-    {{SAND, {0,0,1,0,0,0}}, {{SEA}, {0,0,0,0,0,0}}, {{SEA}, {0,0,0,0,0,0}}, {{SEA}, {0,0,0,0,0,0}}, {{SAND}, {0,0,1,0,0,0}}},
-    {{SAND, {0,0,0,0,0,0}}, {{SAND}, {0,0,1,0,0,0}}, {{SAND}, {0,0,1,0,0,0}}, {{SEA}, {0,0,0,0,0,0}}, {{SEA}, {0,0,0,0,0,0}}},
-    {{GRASS, {1,0,0,0,0,0}}, {{GRASS}, {1,0,0,0,0,0}}, {{SAND}, {0,0,0,0,0,0}}, {{SAND}, {0,0,0,0,0,0}}},
-    {{EMPTY, {0,0,0,0,0,0}}, {GRASS, {1,0,0,0,0,0}}, {GRASS, {1,0,0,0,0,0}}}
 };
 
 } // visual

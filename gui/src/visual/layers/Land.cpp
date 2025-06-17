@@ -5,7 +5,6 @@
 ** Land.cpp
 */
 
-#include <iostream> // test purpose (to delete)
 #include <cstdlib>
 #include <ctime>
 
@@ -23,66 +22,79 @@ Land::Land()
 
 void Land::display(sf::RenderTarget& render) const
 {
-    for (const std::unique_ptr<Tile>& tile : _tiles)
-        tile->display(render);
-    for (const std::unique_ptr<Trantorian>& trantor : _trantorians)
-        trantor->display(render);
+    for (const auto& tileY : _tiles) {
+        for (const auto& tileX : tileY.second) {
+            tileX.second.tile->display(render);
+            for (const auto& trantor : tileX.second.trantorians)
+                trantor.second->display(render);
+            for (const auto& resource : tileX.second.resources)
+                resource->display(render);
+        }
+    }
     for (const std::unique_ptr<ecs::IEntity>& entity : _entities)
         entity->display(render);
 }
 
-void Land::event(const sf::Event&, const NetEventPack& pack)
+void Land::event(const sf::Event&, const NetEventPack& net_pack)
 {
-    if (pack.event == NET_MAP)
-        loadMap(CENTER_MAP(TEST_MAP.size()), TEST_MAP);
-    if (pack.event == NET_NEW)
-        addTrantorian(pack.pack);
-}
-
-void Land::loadMap(const sf::Vector2f& middle,
-    const std::vector<std::vector<TileInfo_s>>& map)
-{
-    sf::Vector2f pos;
-
-    _tiles.clear();
-    for (size_t y = 0; y < map.size(); ++y) {
-        for (size_t x = 0; x < map[y].size(); ++x) {
-            pos = MAP_POS(middle, x, y);
-            if (map[y][x].type != EMPTY) {
-                _tiles.emplace_back(dynamic_cast<Tile*>(
-                        ecs::ECSFactory::createEntity(
-                            "tile",
-                            pos.x, pos.y,
-                            static_cast<int>(map[y][x].type),
-                            convertResource(map[y][x].resources)
-                        ).release()
-                ));
-            }
-        }
+    switch (static_cast<int>(net_pack.event)) {
+        case NET_MSIZE:
+            _map_size = sf::Vector2f(net_pack.pack[0], net_pack.pack[1]);
+            break;
+        case NET_MAP:
+            if (!_map_set && _map_size.y != -1)
+                loadTile(CENTER_MAP(_map_size.y), net_pack.pack);
+            else
+                updateTile(net_pack.pack);
+            break;
+        case NET_NEW:
+            addTrantorian(net_pack.pack);
+            break;
     }
 }
 
-uint8_t Land::convertResource(const std::array<bool, NB_RESOURCES>& resources)
+void Land::loadTile(const sf::Vector2f& middle, const NetPack& pack)
 {
-    uint8_t infos = 0;
+    static int index = 0;
+    sf::Vector2f pos = {0, 0};
+    BiomeTypes_e type = EMPTY;
 
-    for (uint8_t i = 0; i < NB_RESOURCES; ++i) {
-        infos += resources[i];
-        infos = infos << 1;
-    }
-    infos = infos << 1;
-    return infos;
+    int x = pack[0];
+    int y = pack[1];
+    pos = MAP_POS(middle, x, y);
+    type = readBiomeType(pack);
+    _tiles[x][y].tile = std::unique_ptr<Tile>(dynamic_cast<Tile*>(
+            ecs::ECSFactory::createEntity(
+                "tile",
+                pos.x, pos.y,
+                static_cast<int>(type)
+            ).release()
+    ));
+    index += 1;
+    if (index >= (_map_size.x * _map_size.y))
+        _map_set = true;
+}
+
+void Land::updateTile(const NetPack&)
+{
+
+}
+
+BiomeTypes_e Land::readBiomeType(const NetPack&)
+{
+    return BiomeTypes_e::GRASS;
 }
 
 void Land::addTrantorian(const NetPack& pack)
 {
     int x = pack[1];
     int y = pack[2];
-    sf::Vector2f pos = MAP_POS(CENTER_MAP(TEST_MAP.size()), x, y);
+    sf::Vector2f pos = MAP_POS(CENTER_MAP(_map_size.y), x, y);
 
-    _trantorians.emplace_back(dynamic_cast<Trantorian*>(
-        ecs::ECSFactory::createEntity("trantorian", pos.x, pos.y).release()
-    ));
+    _tiles[x][y].trantorians[static_cast<size_t>(pack[0])] =
+        std::unique_ptr<Trantorian>(dynamic_cast<Trantorian*>(
+            ecs::ECSFactory::createEntity("trantorian", pos.x, pos.y).release()
+        ));
 }
 
 } // visual
