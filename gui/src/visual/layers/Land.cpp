@@ -31,14 +31,12 @@ void Land::display(sf::RenderTarget& render) const
         entity->display(render);
 }
 
-void Land::event(const sf::Event& event, const NetPack&)
+void Land::event(const sf::Event&, const NetEventPack& pack)
 {
-    if (event.type == sf::Event::KeyPressed) {
-        if (event.key.code == sf::Keyboard::L)
-            loadMap(CENTER_MAP(TEST_MAP.size()), TEST_MAP);
-        if (event.key.code == sf::Keyboard::T)
-            addTrantorian(1, 1);
-    }
+    if (pack.event == NET_MAP)
+        loadMap(CENTER_MAP(TEST_MAP.size()), TEST_MAP);
+    if (pack.event == NET_NEW)
+        addTrantorian(pack.pack);
 }
 
 void Land::loadMap(const sf::Vector2f& middle,
@@ -76,8 +74,10 @@ uint8_t Land::convertResource(const std::array<bool, NB_RESOURCES>& resources)
     return infos;
 }
 
-void Land::addTrantorian(int x, int y)
+void Land::addTrantorian(const NetPack& pack)
 {
+    int x = pack[1];
+    int y = pack[2];
     sf::Vector2f pos = MAP_POS(CENTER_MAP(TEST_MAP.size()), x, y);
 
     _trantorians.emplace_back(dynamic_cast<Trantorian*>(

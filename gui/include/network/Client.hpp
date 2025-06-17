@@ -21,7 +21,7 @@ class Client {
 
         void checkEvent(void);
         void setSocket(const std::string &server, const int &port);
-        bool pollEvent(NetPack&);
+        bool pollEvent(NetEventPack&);
 
     private:
         Socket _socket;

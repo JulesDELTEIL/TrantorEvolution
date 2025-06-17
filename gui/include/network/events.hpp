@@ -45,12 +45,14 @@ enum NetEvent_e {
     NET_PARAM,
 };
 
-struct NetPack {
+typedef std::vector<float> NetPack;
+
+struct NetEventPack {
     NetEvent_e event;
-    std::vector<float> pack;
+    NetPack pack;
 };
 
-typedef std::queue<NetPack> PackQueue;
+typedef std::queue<NetEventPack> PackQueue;
 
 } // gui
 

@@ -26,11 +26,11 @@ class Land : public ALayer {
         ~Land() = default;
 
         void display(sf::RenderTarget& render) const override;
-        void event(const sf::Event& event, const NetPack&) override;
+        void event(const sf::Event& event, const NetEventPack&) override;
     
         void loadMap(const sf::Vector2f&,
             const std::vector<std::vector<TileInfo_s>>&);
-        void addTrantorian(int x, int y);
+        void addTrantorian(const NetPack& pack);
 
     private:
         uint8_t convertResource(const std::array<bool, NB_RESOURCES>&);

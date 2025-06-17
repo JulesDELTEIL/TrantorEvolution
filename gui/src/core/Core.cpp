@@ -54,7 +54,7 @@ void Core::display(void)
 
 void Core::events(void)
 {
-    NetPack net_event;
+    NetEventPack net_event;
 
     while (_engine.window.pollEvent(_engine.events) || _client.pollEvent(net_event)) {
         if (_engine.events.type == sf::Event::Closed)

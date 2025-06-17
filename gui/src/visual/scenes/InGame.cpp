@@ -24,7 +24,7 @@ void InGame::display(sf::RenderTarget& target) const
         layer->display(target);
 }
 
-void InGame::event(const sf::Event& event, const NetPack& net_events)
+void InGame::event(const sf::Event& event, const NetEventPack& net_events)
 {
     for (const std::unique_ptr<ILayer>& layer : _layers)
         layer->event(event, net_events);

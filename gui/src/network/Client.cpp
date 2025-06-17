@@ -23,7 +23,7 @@ void Client::checkEvent(void)
     }
 }
 
-bool Client::pollEvent(NetPack& event)
+bool Client::pollEvent(NetEventPack& event)
 {
     if (_events.size() > 0) {
         event = _events.front();
