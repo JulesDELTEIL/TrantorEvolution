@@ -7,10 +7,12 @@
 
 #include <stdlib.h>
 #include <stdio.h>
+#include <pthread.h>
 #include <sys/time.h>
 
 #include "functions.h"
 #include "macros.h"
+#include "connection.h"
 #include "commands.h"
 #include "transmission.h"
 
@@ -103,16 +105,18 @@ static int server_loop(serverdata_t *sdata, fdarray_t *fdarray)
 int server(arguments_t *args)
 {
     serverdata_t sdata = setup_parameters(args);
+    pthread_t mapthr;
     fdarray_t fdarray;
     int rc = DEFAULTRC;
 
     rc = setup_server(&sdata, args);
     if (rc == EXIT_FAILURE)
         return EXIT_FAILURE;
+    setup_map_thread(&sdata, &mapthr);
     fdarray = setup_fds(sdata.sockfd);
     listen(sdata.sockfd, NBCLIENTS_QUEUE);
     rc = server_loop(&sdata, &fdarray);
-    close_server(&sdata, &fdarray);
+    close_server(&sdata, &fdarray, &mapthr);
     if (rc == EXIT_FAILURE)
         return EXIT_FAILURE;
     return EXIT_SUCCESS;

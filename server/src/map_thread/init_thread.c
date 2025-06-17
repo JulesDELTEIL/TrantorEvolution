@@ -8,12 +8,11 @@
 #include <stdlib.h>
 #include <unistd.h>
 #include <pthread.h>
+#include <stdio.h>
+
 #include "items.h"
 #include "map.h"
 #include "serverdata.h"
-
-#include <stdlib.h>
-#include <time.h>
 
 static int get_random_biome(void)
 {
@@ -32,10 +31,10 @@ static void refill_tiles(map_t *tile)
         tile->resources[i] = dist.biome_start[i];
 }
 
-static void first_map_refill(int Y, density_t all_dens, map_t **map_tiles)
+static void first_map_refill(int Y, map_t **map_tiles)
 {
     for (int x = 0; map_tiles[x] != NULL; x++) {
-        for (int y = 0; y <= Y; y++) {
+        for (int y = 0; y < Y; y++) {
             refill_tiles(&map_tiles[x][y]);
         }
     }
@@ -61,7 +60,7 @@ static void *get_total(int *total, int width, int height, map_t **map)
     int x = 0;
     int y = 0;
 
-    for (int i = 0; i < area; x++) {
+    for (int i = 0; i < area; i++) {
         x = X_COORD(i, height);
         y = Y_COORD(i, height);
         for (int r = 0; r < NB_RESOURCES; r++)
@@ -72,7 +71,7 @@ static void *get_total(int *total, int width, int height, map_t **map)
 static void refill_map(map_t **map, int width, int height, density_t *max_dens)
 {
     biome_distribution_t dist = {{0}, {0}};
-    int total[NB_RESOURCES];
+    int total[NB_RESOURCES] = {0, 0, 0, 0, 0, 0};
     int area = width * height;
     int x = 0;
     int y = 0;
@@ -97,12 +96,13 @@ void *map_thread(void *arg)
     serverdata_t *server = (serverdata_t *)arg;
     density_t all_dens = init_density(WORLD_DENS(server->args));
 
-    first_map_refill(server->args->width,
-    all_dens,
+    srand(time(NULL));
+    first_map_refill(server->args->height,
     server->game_data.trantor_map);
-    while (1) {
-        sleep(TICKS_REFILLS / server->args->freq);
+    while (server->is_running == true) {
+        usleep(TICKS_REFILLS / server->args->freq);
         refill_map(server->game_data.trantor_map, server->args->width,
         server->args->height, &all_dens);
     }
+    return 0;
 }
