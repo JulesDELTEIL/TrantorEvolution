@@ -5,6 +5,8 @@
 ** Client.cpp
 */
 
+#include <unistd.h> 
+
 #include "network/Client.hpp"
 
 namespace gui {
@@ -17,8 +19,11 @@ void Client::setSocket(const std::string &server, const int &port)
 
 void Client::checkEvent(void)
 {
+    char buffer[CODE_LEN] = {0};
+
     _socket.pollServer();
     if (_socket.fds().revents & POLLIN) {
+        read(_socket.getFd(), &buffer, CODE_LEN);
         _events.push({NET_MSIZE, {1, 2, 3}}); // TEST
     }
 }

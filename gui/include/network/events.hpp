@@ -11,11 +11,13 @@
     #include <queue>
     #include <map>
     #include <functional>
+    #include <string>
 
 namespace gui {
+namespace network {
 
-enum NetEvent_e {
-    NET_NONE = 0,
+    enum NetEvent_e {
+        NET_NONE = 0,
     NET_CON,
     NET_CLIENTID,
     NET_INITMSIZE,
@@ -54,6 +56,20 @@ struct NetEventPack {
 
 typedef std::queue<NetEventPack> PackQueue;
 
+class NetType {
+    public:
+    NetType(const std::string& value) : _value(value) {}
+    
+    size_t getSize_t(void);
+    float getFloat(void);
+    int getInt(void);
+    std::string getString(void);
+
+    private:
+        std::string _value;
+};
+
+} // network
 } // gui
 
 #endif
