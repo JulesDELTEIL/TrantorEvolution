@@ -13,17 +13,19 @@
 #include "commands.h"
 #include "debug.h"
 #include "transmission.h"
+#include "functions.h"
 
 static int set_teamname(serverdata_t *sdata, fdarray_t *fdarray,
     client_t *client, char *data)
 {
     if (strcmp(data, "graphic") == 0) {
-        client->team = strdup(data);
+        client->type = GUI;
         return EXIT_SUCCESS;
     }
     for (uint_t k = 0; sdata->args->team_name[k] != NULL; k++) {
         if (strcmp(data, sdata->args->team_name[k]) == 0) {
-            client->team = strdup(data);
+            client->type = AI;
+            new_player(sdata, fdarray, client, data);
             return EXIT_SUCCESS;
         }
     }
@@ -32,9 +34,9 @@ static int set_teamname(serverdata_t *sdata, fdarray_t *fdarray,
 
 static int send_connection_datas(serverdata_t *sdata, client_t *client)
 {
-    char data[BUFFSIZE];
+    char data[BUFFSIZE] = {0};
 
-    sprintf(data, "%d", client->id);
+    sprintf(data, "%d", 0); // replace by team remaining slots
     send_data(client, data, NULL, sdata->debug);
     sprintf(data, "%d %d", sdata->args->width, sdata->args->height);
     send_data(client, data, NULL, sdata->debug);
@@ -43,7 +45,11 @@ static int send_connection_datas(serverdata_t *sdata, client_t *client)
 static void handle_unrecognized_code(serverdata_t *sdata, fdarray_t *fdarray,
     client_t *client, char *data)
 {
-    if (client->team != NULL) {
+    if (client->type == GUI || client->player != NULL) {
+        send_data(client, "suc", NULL, sdata->debug);
+        return;
+    }
+    if (client->player != NULL) {
         send_data(client, "ko", NULL, sdata->debug);
         return;
     }

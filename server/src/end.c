@@ -18,8 +18,6 @@ int destroy_client(client_t *client)
         return EXIT_FAILURE;
     if (client->buffer != NULL)
         free(client->buffer);
-    if (client->team != NULL)
-        free(client->team);
     return EXIT_SUCCESS;
 }
 
@@ -51,6 +49,18 @@ void destroy_teams(team_t *teams, int team_count)
     free(teams);
 }
 
+static void destroy_players(player_t *head)
+{
+    player_t *temp = NULL;
+
+    while (head != NULL) {
+        free(head->team);
+        temp = head->next;
+        free(head);
+        head = temp;
+    }
+}
+
 int close_server(serverdata_t *sdata, fdarray_t *fdarray, pthread_t *mapthr)
 {
     close(sdata->sockfd);
@@ -62,5 +72,6 @@ int close_server(serverdata_t *sdata, fdarray_t *fdarray, pthread_t *mapthr)
     destroy_args(sdata->args);
     destroy_map(sdata->game_data.trantor_map);
     destroy_teams(sdata->game_data.teams, sdata->game_data.nb_of_teams);
+    destroy_players(sdata->game_data.players);
     return EXIT_SUCCESS;
 }

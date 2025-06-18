@@ -38,6 +38,8 @@ game_t init_game(arguments_t *args)
 
     game_data.nb_of_teams = get_nb_of_teams(args);
     game_data.trantor_map = init_map(args->width, args->height);
+    game_data.players = NULL;
+    game_data.next = 0;
     game_data.teams = init_teams(args->team_name,
     args->clientnb, game_data.nb_of_teams);
     return game_data;
