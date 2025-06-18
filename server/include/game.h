@@ -15,7 +15,6 @@
 typedef struct team_s {
     char *name;
     int space_left;
-    int *players;
 } team_t;
 
 typedef struct game_s {

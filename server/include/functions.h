@@ -78,7 +78,7 @@ int setup_map_thread(serverdata_t *sdata, pthread_t *mapthr);
 Set a new player in SDATA which will be
 linked to CLIENT and be part of TEAM_NAME
 */
-int new_player(serverdata_t *sdata, fdarray_t *fdarray, client_t *client, char *team_name);
-
+int new_player(serverdata_t *sdata, fdarray_t *fdarray, client_t *client,
+    char *team_name);
 
 #endif
