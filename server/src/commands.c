@@ -51,7 +51,6 @@ static int set_teamname(serverdata_t *sdata, fdarray_t *fdarray,
             return EXIT_SUCCESS;
         }
     }
-    printf("here\n");
     return EXIT_FAILURE;
 }
 
@@ -162,15 +161,11 @@ int buffer_handler(serverdata_t *sdata, fdarray_t *fdarray, client_t *client)
         debug_buffer(client);
     if (packet_parser(client, cmd, data) == EXIT_FAILURE)
         return EXIT_FAILURE;
-    printf("before check, client = %d\n", client->type);
     if (client->type == UNSET)
         return set_teamname(sdata, fdarray, client, cmd);
-    printf("after check\n");
-    for (uint_t k = 0; k < NB_COMMANDS[client->type]; k++) {
-        printf("%s\n", COMMANDS[client->type][k].command);
+    for (uint_t k = 0; k < NB_COMMANDS[client->type]; k++)
         if (strcmp(cmd, COMMANDS[client->type][k].command) == 0)
             return COMMANDS[client->type][k].handler(sdata, client, data);
-    }
     handle_unrecognized_code(sdata, fdarray, client);
     return EXIT_FAILURE;
 }
