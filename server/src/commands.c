@@ -18,7 +18,7 @@
 static int set_teamname(serverdata_t *sdata, fdarray_t *fdarray,
     client_t *client, char *data)
 {
-    if (strcmp(data, "graphic") == 0) {
+    if (strcmp(data, GRAPHIC_TEAM) == 0) {
         client->type = GUI;
         return EXIT_SUCCESS;
     }
