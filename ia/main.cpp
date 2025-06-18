@@ -17,12 +17,11 @@ int main(int ac, char **av) {
     PyStatus status;
     PyConfig config;
     PyConfig_InitPythonConfig(&config);
-    wchar_t **wargv = static_cast<wchar_t**>(
-        PyMem_RawMalloc(sizeof(wchar_t*) * ac)
-    );
-    for (int i = 0; i < ac; ++i) {
+    wchar_t **wargv = static_cast<wchar_t **>(PyMem_RawMalloc(sizeof(wchar_t *) * ac));
+    for (unsigned int i = 0; i < static_cast<unsigned int>(ac); ++i) {
         wargv[i] = Py_DecodeLocale(av[i], nullptr);
-        if (!wargv[i]) return PROJECT_ERROR;
+        if (!wargv[i])
+            return PROJECT_ERROR;
     }
     config.argv.length = ac;
     config.argv.items = wargv;
@@ -33,24 +32,21 @@ int main(int ac, char **av) {
         std::cerr << status.err_msg << std::endl;
         return PROJECT_ERROR;
     }
-    char *copy = strdup(av[0]);
-    std::string dir = dirname(copy);
-    free(copy);
-    std::string path = dir + "/ia/python/__main__.py";
-    std::string pkg_dir = dir + "/ia/python";
+    std::string projectDir = static_cast<std::string>(dirname(av[0])) + "/ia/python";
+    std::string pythonMainPath = projectDir + "/__main__.py";
     std::string code = "import sys\n"
-        "sys.path.insert(0, \"" + pkg_dir + "\")\n";
+                        "sys.path.insert(0, \"" + projectDir + "\")\n";
     PyRun_SimpleString(code.c_str());
-    FILE *fp = fopen(path.c_str(), "r");
+    FILE *fp = fopen(pythonMainPath.c_str(), "r");
     if (!fp) {
-        std::cerr << "Can't open " << path << std::endl;
+        std::cerr << "Can't open " << pythonMainPath << std::endl;
         Py_Finalize();
         return PROJECT_ERROR;
     }
-    int return_value = PyRun_SimpleFile(fp, "__main__.py");
+    int returnVal = PyRun_SimpleFile(fp, "__main__.py");
     fclose(fp);
     if (PyErr_Occurred())
         PyErr_Print();
     Py_Finalize();
-    return return_value;
+    return returnVal;
 }
