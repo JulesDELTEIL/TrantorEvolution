@@ -17,8 +17,7 @@ class Worker(BaseRole):
         self.pos = (0, 0)
         self.queens_pos = (0, -3)
         
-    def decide_action(self) -> list[Commands]:
-        commands_queue = []
+    def decide_action(self):
         # if self.state.motivation.hunger > 0.7:
             # logique pour chercher de la food (vision...)
         
@@ -29,16 +28,14 @@ class Worker(BaseRole):
                     if stone in objects:
                         self.carry = stone
                         self.mode = 'DELIVERING'
-                        commands_queue.append(Commands(Action.TAKE, stone))
-                        return commands_queue
+                        self.queue.appendleft(Commands(Action.TAKE, stone))
                     # return logique d'exploration
             # return logique d'exploration
             
         if self.mode == 'DELIVERING':
             if self.pos == self.queens_pos:
                self.mode = 'GATHERING'
-               commands_queue.append(Commands(Action.SET, self.carry))
+               self.queue.appendleft(Commands(Action.SET, self.carry))
                self.carry = None
-               return commands_queue
             # logique pour aller jusqu'au queens
         

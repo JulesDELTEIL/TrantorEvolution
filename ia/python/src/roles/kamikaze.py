@@ -12,13 +12,8 @@ class Kamikaze(BaseRole):
     def __init__(self):
         super().__init__()
     
-    def decide_action(self) -> list[Commands]:
-        commands_queue = []
-        if not commands_queue:
+    def decide_action(self):
+        if self.queue.empty():
             for i in range(10):
-                commands_queue.append(Commands(Action.SET, 'food'))
-            return commands_queue
-
-        commands_queue.append(Commands(Action.NONE))
-        return commands_queue
-            
+                self.queue.appendleft(Commands(Action.SET, 'food'))
+        self.queue.appendleft(Commands(Action.NONE))

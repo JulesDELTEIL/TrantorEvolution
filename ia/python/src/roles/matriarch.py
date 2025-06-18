@@ -12,18 +12,17 @@ class Matriarch(BaseRole):
     def __init__(self):
         super().__init__()
     
-    def decide_action(self) -> list[Commands]:
+    def decide_action(self):
         commands_queue = []
         self.cycle += 1
 
         if self.cycle % 4 == 0:
-            commands_queue.append(Commands(Action.TAKE, 'food'))
-            return commands_queue
+            self.queue.appendleft(Commands(Action.TAKE, 'food'))
 
-        commands_queue.append(Commands(Action.FORK))
+
+        self.queue.appendleft(Commands(Action.FORK))
         
         # à faire -> Connecter nouveau client
         
         self._fork_count += 1
-        commands_queue.append(Commands(Action.BROADCAST, 'kamikaze'))
-        return commands_queue
+        self.queue.appendleft(Commands(Action.BROADCAST, 'kamikaze'))
