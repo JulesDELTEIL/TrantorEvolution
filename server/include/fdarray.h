@@ -17,10 +17,10 @@
     #define NB_DIFF_ITEMS 7
 
 typedef enum player_dir_e {
-    UP,
-    DOWN,
-    RIGHT,
-    LEFT
+    N = 1,
+    E,
+    S,
+    W
 } player_dir_t;
 
 /*
@@ -28,14 +28,17 @@ struct player_t :
 - size_t level
 - uint_t x
 - uint_t y
-- uint_t direction
+- uint_t orientation
 */
 typedef struct player_s {
+    int id;
+    uint_t team_idx;
     size_t level;
     uint_t x;
     uint_t y;
-    player_dir_t direction;
+    player_dir_t orientation;
     uint_t inventory[NB_DIFF_ITEMS];
+    struct player_s *next;
 } player_t;
 
 /*
@@ -51,12 +54,10 @@ struct client_t :
 */
 typedef struct client_s {
     int fd;
-    int id;
     int type;
-    char *team;
     char *buffer;
     size_t act_end;
-    player_t player;
+    player_t *player;
 } client_t;
 
 /*

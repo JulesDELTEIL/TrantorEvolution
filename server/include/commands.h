@@ -14,7 +14,7 @@
 /*
 Function called to handle the first valid command found in the client buffer
 */
-int buffer_handler(serverdata_t *sdata, client_t *client);
+int buffer_handler(serverdata_t *sdata, fdarray_t *fdarray, client_t *client);
 
 /*
 Sets the timeout end timer of the client depending on FREQ and TICKS
