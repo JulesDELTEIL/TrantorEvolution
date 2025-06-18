@@ -11,9 +11,12 @@ from curses.ascii import isdigit
 from sqlite3 import connect
 
 from src.roles.role_map import ROLE_MAP
+from src.roles.nobody import Nobody
 from src.utils import recv_until_newline
 from src.action import Action
 from src.server_manager import ServerManager
+
+from ia.python.src.run_ia import analyse_requests
 
 DIMENSION_X = 0
 DIMENSION_Y = 1
@@ -40,7 +43,7 @@ class Trantorian (ServerManager) :
         self.team_name = team_name
         self.dimension = None
         self.player_num = None
-        self.player = None
+        self.player = Nobody()
         self.connect()
         
     def connect(self):
@@ -51,23 +54,39 @@ class Trantorian (ServerManager) :
         self.player_num = get_client_num(self.recv())
         self.dimension = get_dimension(self.recv()) #je ne crois pas qu'on en ait besoin pour le moment mais c'est dans le protocole
 
+    def send_action(self):
+        if self.player.queue.empty() :
+            self.player.decide_action()
+        action = self.player.queue.popleft()
+        self.send((action + "\n").encode())
+
+    def analyse_requests(self, message):
+        message_left = message
+        while message_left:
+            index = message_left.find("\n")
+            if index == -1:
+                break
+            self.handle_response(message_left)
+            self.send_action()
+            message_left = message_left[index + 1:]
+        return message_left
+
     def run(self):
+        self.send_action()
         while True:
-            if self.player is not None:
-                actions = self.player.decide_action()
-                for action in actions:
-                    if action != Action.NONE:
-                        self.sock.sendall((action + "\n").encode())
-            # response = recv_until_newline(self.sock)
-            # self.handle_response(response.strip())
+            response = self.recv()
+            if not response :
+                break
+            analyse_requests(response)
+
 
     def handle_response(self, response):
-        if self.player is None:
+        if isinstance(self.player, Nobody):
             response_list = response.split() # response du serveur -> "message K, text envoyé" -> ex avec notre protocol: "message K, [Queen] role Queen"
             if response_list[3] == "role":
                 self.role = ROLE_MAP[response_list[4]]
         else:
-            self.player.update(response)
+            self.player.state.update(response)
             
     def _spawn_new_client(self):
         subprocess.Popen(["./zappy_ai", "-p", self.port, "-n", self.team_name, "-h", self.host])
