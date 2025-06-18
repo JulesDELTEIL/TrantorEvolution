@@ -26,6 +26,8 @@ int closeconnection(serverdata_t *sdata, client_t *client)
 {
     close(client->fd);
     destroy_client(client);
+    if (client->type == AI)
+        del_player(&(sdata->game_data), client->player->id);
     setempty_client(client);
     return EXIT_SUCCESS;
 }

@@ -12,14 +12,24 @@
 #include "serverdata.h"
 #include "transmission.h"
 
-static int del_player(game_t *game, int id)
+int del_player(game_t *game, int id)
 {
-    player_t *prev = NULL;
+    player_t *node = game->players->next;
+    player_t *prev = game->players;
 
-    while (game->players != NULL) {
-        if (game->players->id == id) {
+    if (game->players->id == id) {
+        game->players = prev->next;
+        free(prev);
+        return EXIT_SUCCESS;
+    }
+    while (node != NULL) {
+        if (node->id == id) {
+            prev->next = node->next;
+            free(node);
             return EXIT_SUCCESS;
         }
+        prev = node;
+        node = node->next;
     }
     return EXIT_FAILURE;
 }

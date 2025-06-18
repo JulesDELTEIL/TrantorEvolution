@@ -81,4 +81,9 @@ linked to CLIENT and be part of TEAM_NAME
 int new_player(serverdata_t *sdata, fdarray_t *fdarray, client_t *client,
     char *team_name);
 
+/*
+Deletes a player from the list in GAME depending on its ID
+*/
+int del_player(game_t *game, int id);
+
 #endif

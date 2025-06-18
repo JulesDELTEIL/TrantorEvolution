@@ -21,7 +21,6 @@ typedef struct game_s {
     map_t **trantor_map;
     player_t *players;
     size_t next;
-    int nb_players;
     team_t *teams;
     int nb_of_teams;
 } game_t;
