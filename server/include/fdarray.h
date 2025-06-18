@@ -32,7 +32,7 @@ struct player_t :
 */
 typedef struct player_s {
     int id;
-    char *team;
+    uint_t team_idx;
     size_t level;
     uint_t x;
     uint_t y;

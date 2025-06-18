@@ -36,7 +36,12 @@ static int send_connection_datas(serverdata_t *sdata, client_t *client)
 {
     char data[BUFFSIZE] = {0};
 
-    sprintf(data, "%d", 0); // replace by team remaining slots
+    if (client->type == GUI) {
+        sprintf(data, "%d", -1);
+    } else {
+        sprintf(data, "%d",
+            sdata->game_data.teams[client->player->team_idx].space_left);
+    }
     send_data(client, data, NULL, sdata->debug);
     sprintf(data, "%d %d", sdata->args->width, sdata->args->height);
     send_data(client, data, NULL, sdata->debug);
@@ -45,12 +50,11 @@ static int send_connection_datas(serverdata_t *sdata, client_t *client)
 static void handle_unrecognized_code(serverdata_t *sdata, fdarray_t *fdarray,
     client_t *client, char *data)
 {
-    if (client->type == GUI || client->player != NULL) {
-        send_data(client, "suc", NULL, sdata->debug);
-        return;
-    }
-    if (client->player != NULL) {
-        send_data(client, "ko", NULL, sdata->debug);
+    if (client->type != UNSET) {
+        if (client->type == GUI)
+            send_data(client, "suc", NULL, sdata->debug);
+        else
+            send_data(client, "ko", NULL, sdata->debug);
         return;
     }
     if (set_teamname(sdata, fdarray, client, data) == EXIT_FAILURE) {

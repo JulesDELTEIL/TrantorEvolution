@@ -54,7 +54,6 @@ static void destroy_players(player_t *head)
     player_t *temp = NULL;
 
     while (head != NULL) {
-        free(head->team);
         temp = head->next;
         free(head);
         head = temp;
