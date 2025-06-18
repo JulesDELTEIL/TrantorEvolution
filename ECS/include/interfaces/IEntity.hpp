@@ -16,7 +16,7 @@ namespace ecs {
 class IEntity {
     public:
         virtual void display(sf::RenderTarget&) const = 0;
-        virtual void event(const sf::Event&) = 0;
+        virtual void event(int) = 0;
 
         virtual void updatePosition(const sf::Vector2f&) = 0;
 };

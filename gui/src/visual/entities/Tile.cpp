@@ -25,7 +25,7 @@ void Tile::display(sf::RenderTarget& win) const
     }
 }
 
-void Tile::event(const sf::Event&)
+void Tile::event(int)
 {
 
 }

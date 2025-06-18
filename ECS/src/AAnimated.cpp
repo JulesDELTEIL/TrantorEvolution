@@ -70,4 +70,10 @@ void AAnimated::animate(void)
     }
 }
 
+void AAnimated::changeState(int state)
+{
+    _state = state;
+    changeAnimation(state);
+}
+
 } // ecs

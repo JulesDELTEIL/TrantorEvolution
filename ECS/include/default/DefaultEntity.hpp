@@ -20,7 +20,7 @@ class DefaultEntity : public AEntity {
         ~DefaultEntity() = default;
 
         void display(sf::RenderTarget& render) const override;
-        void event(const sf::Event& event) override;
+        void event(int event) override;
 
 };
 

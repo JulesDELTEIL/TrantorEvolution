@@ -26,11 +26,10 @@ void ResourceNode::display(sf::RenderTarget& render) const
         drawable.second->draw(render);
 }
 
-void ResourceNode::event(const sf::Event&)
+void ResourceNode::event(int)
 {
 
 }
-
 
 } // visual
 } // gui

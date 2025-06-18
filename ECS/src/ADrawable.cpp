@@ -34,4 +34,14 @@ sf::Vector2f ADrawable::getScale(void) const
     return _scale;
 }
 
+void ADrawable::changeState(int state)
+{
+    _state = state;
+}
+
+int ADrawable::getState(void)
+{
+    return _state;
+}
+
 } // ecs

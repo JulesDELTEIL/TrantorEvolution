@@ -12,10 +12,11 @@ namespace visual {
 
 Body::Body(const sf::Vector2f& pos) : AAnimated(pos, "", sf::IntRect(0, 0, 0, 0))
 {
-    for (const ecs::AnimationInfos& info : BODY_ANIM_INFOS)
-        addAnimation(info);
+    for (int i = NB_BODY_ANIM - 1; i >= 0; --i)
+        addAnimation(BODY_ANIM_INFOS[i]);
     changeAnimation(WALK);
-    _sprite.setScale(0.2, 0.2);
+    _scale = {0.2, 0.2};
+    _sprite.setScale(_scale.x, _scale.y);
 }
 
 } // visual

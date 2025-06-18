@@ -21,8 +21,8 @@ class AEntity : public IEntity{
     public:
         AEntity(const sf::Vector2f& pos);
 
-        void display(sf::RenderTarget&) const = 0;
-        void event(const sf::Event&) = 0;
+        virtual void display(sf::RenderTarget&) const = 0;
+        virtual void event(int) = 0;
 
         void updatePosition(const sf::Vector2f&) override;
 

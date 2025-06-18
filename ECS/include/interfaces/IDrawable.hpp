@@ -20,6 +20,8 @@ class IDrawable {
         virtual sf::Vector2f getPosition(void) const = 0;
         virtual void setScale(const sf::Vector2f&) = 0;
         virtual sf::Vector2f getScale(void) const = 0;
+        virtual void changeState(int) = 0;
+        virtual int getState(void) = 0;
 };
 
 } // ecs

@@ -22,7 +22,7 @@ void Trantorian::display(sf::RenderTarget& render) const
         drawable.second->draw(render);
 }
 
-void Trantorian::event(const sf::Event&)
+void Trantorian::event(int)
 {
 
 }

@@ -22,7 +22,7 @@ void DefaultEntity::display(sf::RenderTarget& win) const
     }
 }
 
-void DefaultEntity::event(const sf::Event&)
+void DefaultEntity::event(int)
 {
 
 }

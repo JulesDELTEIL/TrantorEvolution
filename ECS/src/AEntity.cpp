@@ -21,7 +21,7 @@ void AEntity::display(sf::RenderTarget& win) const
         drawable.second->draw(win);
 }
 
-void AEntity::event(const sf::Event&)
+void AEntity::event(int)
 {
 
 }

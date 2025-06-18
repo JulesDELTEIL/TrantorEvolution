@@ -39,6 +39,7 @@ class AAnimated : public AObject {
             size_t, size_t, float, size_t indexX = 0, size_t indexY = 0);
         void changeAnimation(int index);
         void animate(void);
+        void changeState(int) override;
 
     protected:
         int _anim_index;
