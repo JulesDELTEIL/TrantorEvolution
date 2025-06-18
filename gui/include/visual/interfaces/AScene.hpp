@@ -11,8 +11,8 @@
     #include <vector>
     #include <memory>
 
-    #include "visual/IScene.hpp"
-    #include "visual/ALayer.hpp"
+    #include "visual/interfaces/IScene.hpp"
+    #include "visual/interfaces/ALayer.hpp"
 
 namespace gui {
 namespace visual {

@@ -6,29 +6,21 @@
 */
 
 #include "visual/entities/ResourceNode.hpp"
-#include "ECSFactory.hpp"
 
 namespace gui {
 namespace visual {
 
-ResourceNode::ResourceNode(const sf::Vector2f& pos, ResourceType_e type) : AEntity(pos)
+ResourceNode::ResourceNode(const sf::Vector2f& pos, ResourceType_e type)
 {
     sf::Vector2f res_pos = {
         pos.x + std::rand() % RES_RANGE_X + RES_MIN_X,
         pos.y + std::rand() % RES_RANGE_Y + RES_MIN_Y
     };
-    _drawables["resource"] = ecs::ECSFactory::createDraw("resource", res_pos.x, res_pos.y, static_cast<int>(type));
-}
-
-void ResourceNode::display(sf::RenderTarget& render) const
-{
-    for (const auto& drawable : _drawables)
-        drawable.second->draw(render);
-}
-
-void ResourceNode::event(int)
-{
-
+    _resource.texture.loadFromFile(RESOURCE_NODE_TEXTURE.at(type));
+    _resource.sprite.setTexture(_resource.texture);
+    _resource.sprite.setTextureRect(RESOURCE_RECT);
+    _resource.sprite.setOrigin(sf::Vector2f(RESOURCE_RECT.width / 2, RESOURCE_RECT.height));
+    _resource.sprite.setScale(0.4, 0.4);
 }
 
 } // visual

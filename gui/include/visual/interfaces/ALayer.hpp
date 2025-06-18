@@ -11,8 +11,7 @@
     #include <vector>
     #include <memory>
 
-    #include "visual/ILayer.hpp"
-    #include "interfaces/IEntity.hpp"
+    #include "visual/interfaces/ILayer.hpp"
 
 namespace gui {
 namespace visual {
@@ -26,7 +25,6 @@ class ALayer : public ILayer {
         void event(const sf::Event&, const network::NetEventPack&) = 0;
 
     protected:
-        std::vector<std::unique_ptr<ecs::IEntity>> _entities;
 
 };
 

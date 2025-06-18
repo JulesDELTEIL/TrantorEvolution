@@ -2,31 +2,25 @@
 ** EPITECH PROJECT, 2025
 ** TrantorEvolution
 ** File description:
-** AAnimated.cpp
+** Animation.cpp
 */
 
-#include "interfaces/AAnimated.hpp"
+#include "visual/Animation.hpp"
 
-namespace ecs {
+namespace gui {
+namespace visual {
 
-AAnimated::AAnimated(const sf::Vector2f& pos, const std::string& path, const sf::IntRect& rect) :
-    AObject(pos, path, rect)
+Animation::Animation(std::reference_wrapper<Drawable> drawable) : _draw(drawable)
 {
 
 }
 
-void AAnimated::draw(sf::RenderTarget& target)
-{
-    animate();
-    target.draw(_sprite);
-}
-
-void AAnimated::addAnimation(AnimationInfos infos)
+void Animation::addAnimation(AnimationInfos infos)
 {
     _animation.push_back(infos);
 }
 
-void AAnimated::addAnimation(const std::string& path, size_t frame_sizeX, size_t frame_sizeY,
+void Animation::addAnimation(const std::string& path, size_t frame_sizeX, size_t frame_sizeY,
     size_t frameX, size_t frameY, float delta, size_t indexX, size_t indexY)
 {
     AnimationInfos infos;
@@ -40,22 +34,22 @@ void AAnimated::addAnimation(const std::string& path, size_t frame_sizeX, size_t
     _animation.push_back(infos);
 }
 
-void AAnimated::changeAnimation(int index)
+void Animation::changeAnimation(int index)
 {
     if (index >= static_cast<int>(_animation.size()) && index < NO_ANIM)
         return;
     _anim_index = index;
     if (_anim_index == NO_ANIM)
         return;
-    _texture.loadFromFile(A_SELECT.path);
-    _sprite.setTexture(_texture);
+    _draw.get().texture.loadFromFile(A_SELECT.path);
+    _draw.get().sprite.setTexture(_draw.get().texture);
     A_SELECT.index.x = 0;
     A_SELECT.index.y = 0;
     A_SELECT.clock.restart();
-    _sprite.setTextureRect(SET_RECT);
+    _draw.get().sprite.setTextureRect(SET_RECT);
 }
 
-void AAnimated::animate(void)
+void Animation::animate()
 {
     if (A_SELECT.clock.getElapsedTime().asSeconds() > A_SELECT.delta) {
         A_SELECT.index.x += 1;
@@ -65,15 +59,10 @@ void AAnimated::animate(void)
             if (A_SELECT.index.y >= A_SELECT.max_frame.y)
                 A_SELECT.index.y = 0;
         }
-        _sprite.setTextureRect(SET_RECT);
+        _draw.get().sprite.setTextureRect(SET_RECT);
         A_SELECT.clock.restart();
     }
 }
 
-void AAnimated::changeState(int state)
-{
-    _state = state;
-    changeAnimation(state);
 }
-
-} // ecs
+}

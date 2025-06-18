@@ -9,9 +9,6 @@ set(CMAKE_SHARED_LIBRARY_PREFIX "")
 set(HDR_DIR "${PROJECT_SOURCE_DIR}/include/")
 set(PROJECT_OUT "${PROJECT_SOURCE_DIR}")
 
-########## LIBRARYs ##########
-add_subdirectory(ECS)
-
 ########## BINARYs ##########
 add_subdirectory(server)
 add_subdirectory(gui)

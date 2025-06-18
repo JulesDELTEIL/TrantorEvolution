@@ -9,7 +9,7 @@
     #define RESOURCE_NODE_HPP_
 
     #include "visual/visual.hpp"
-    #include "interfaces/AEntity.hpp"
+    #include "visual/Drawable.hpp"
 
     #define RES_MAX_X 25
     #define RES_MIN_X 8
@@ -22,15 +22,24 @@ static const int RES_RANGE_Y = RES_MAX_Y - RES_MIN_Y + 1;
 namespace gui {
 namespace visual {
 
-class ResourceNode : public ecs::AEntity {
+static const std::map<ResourceType_e, std::string> RESOURCE_NODE_TEXTURE  = {
+    {WOOD, "assets/ressources/Grass_Biom_Tree.png"},
+    {STONE, "assets/ressources/Stone.png"},
+    {CLAY, "assets/ressources/Clay.png"},
+    {METAL, "assets/ressources/Metal.png"},
+    {OIL, "assets/ressources/Grass_Biom_Tree.png"},
+    {ANTI_MATTER, "assets/ressources/Grass_Biom_Tree.png"}
+};
+
+static const sf::IntRect RESOURCE_RECT(0, 0, 30, 30);
+
+class ResourceNode {
     public:
         ResourceNode(const sf::Vector2f& pos, ResourceType_e type);
         ~ResourceNode() = default;
 
-        void display(sf::RenderTarget& render) const override;
-        void event(int event) override;
-
     private:
+        Drawable _resource;
 
 };
 

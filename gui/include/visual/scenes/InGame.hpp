@@ -11,7 +11,7 @@
     #include <string>
     #include <vector>
 
-    #include <visual/AScene.hpp>
+    #include <visual/interfaces/AScene.hpp>
 
 namespace gui {
 namespace visual {

@@ -10,7 +10,7 @@
 
     #include <map>
 
-    #include "visual/ALayer.hpp"
+    #include "visual/interfaces/ALayer.hpp"
 
     #include "visual/entities/Tile.hpp"
     #include "visual/entities/Trantorian.hpp"
@@ -40,14 +40,15 @@ class Land : public ALayer {
         bool _map_set = false;
 
         void addTrantorian(const network::NetPack& pack);
+        void trantorianAction(const network::NetEventPack& pack);
 
         struct TileInfo {
             std::unique_ptr<Tile> tile;
-            std::map<size_t, std::unique_ptr<Trantorian>> trantorians;
-            std::vector<std::unique_ptr<ecs::IEntity>> resources;
+            std::map<size_t, std::shared_ptr<Trantorian>> trantorians;
         };
 
         std::map<size_t, std::map<size_t, TileInfo>> _tiles;
+        std::map<size_t, std::shared_ptr<Trantorian>> _trantorians;
 };
 
 } // visual
