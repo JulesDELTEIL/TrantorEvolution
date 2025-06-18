@@ -39,8 +39,7 @@ static int send_connection_datas(serverdata_t *sdata, client_t *client)
     if (client->type == GUI) {
         sprintf(data, "%d", -1);
     } else {
-        sprintf(data, "%d",
-            sdata->game_data.teams[client->player->team_idx].space_left);
+        sprintf(data, "%d", client->player->team->space_left);
     }
     send_data(client, data, NULL, sdata->debug);
     sprintf(data, "%d %d", sdata->args->width, sdata->args->height);

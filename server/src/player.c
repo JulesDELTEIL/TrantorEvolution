@@ -34,12 +34,12 @@ int del_player(game_t *game, int id)
     return EXIT_FAILURE;
 }
 
-static int add_player(game_t *game, client_t *client, int team_idx)
+static int add_player(game_t *game, client_t *client, team_t *team)
 {
     player_t *new = malloc(sizeof(player_t));
 
     new->id = game->next;
-    new->team_idx = team_idx;
+    new->team = team;
     new->level = 0;
     new->x = 0;
     new->y = 0;
@@ -62,7 +62,7 @@ static int send_pnw(serverdata_t *sdata, player_t *player, client_t *ui_client)
         player->y,
         player->orientation,
         player->level,
-        sdata->game_data.teams[player->team_idx].name
+        player->team->name
     );
     send_data(ui_client, "pnw", buff, sdata->debug);
     return EXIT_SUCCESS;
@@ -85,7 +85,8 @@ int new_player(serverdata_t *sdata, fdarray_t *fdarray, client_t *client,
         send_data(client, "ko", NULL, sdata->debug);
         return EXIT_FAILURE;
     }
-    add_player(&(sdata->game_data), client, team_idx);
+    add_player(&(sdata->game_data), client,
+        &(sdata->game_data.teams[team_idx]));
     sdata->game_data.teams[team_idx].space_left -= 1;
     for (uint_t k = NB_SERVER_FD; k < NBTOTAL_FD; k++) {
         if (fdarray->clients[k].type == GUI) {
