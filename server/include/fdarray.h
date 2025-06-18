@@ -13,6 +13,7 @@
 
     #include "macros.h"
     #include "items.h"
+    #include "team.h"
 
     #define NB_DIFF_ITEMS 7
 
@@ -32,7 +33,7 @@ struct player_t :
 */
 typedef struct player_s {
     int id;
-    uint_t team_idx;
+    team_t *team;
     size_t level;
     uint_t x;
     uint_t y;

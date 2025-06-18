@@ -8,14 +8,10 @@
 #ifndef GAME_H_
     #define GAME_H_
     #include "map.h"
-    #include "fdarray.h"
     #include "app.h"
     #include "args.h"
-
-typedef struct team_s {
-    char *name;
-    int space_left;
-} team_t;
+    #include "fdarray.h"
+    #include "team.h"
 
 typedef struct game_s {
     map_t **trantor_map;
