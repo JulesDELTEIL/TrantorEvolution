@@ -10,6 +10,8 @@
 
     #include "network/events.hpp"
     #include "network/Socket.hpp"
+    
+    #define CODE_LEN 3
 
 namespace gui {
 namespace network {
