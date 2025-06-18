@@ -85,6 +85,8 @@ class Trantorian (ServerManager) :
             response_list = response.split() # response du serveur -> "message K, text envoyé" -> ex avec notre protocol: "message K, [Queen] role Queen"
             if response_list[3] == "role":
                 self.role = ROLE_MAP[response_list[4]]
+            if self.player.cycle > 5 :
+                self.role = ROLE_MAP["Queen"]
         else:
             self.player.state.update(response)
             
