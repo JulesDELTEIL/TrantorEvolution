@@ -8,6 +8,9 @@
 #ifndef INGAME_HPP_
     #define INGAME_HPP_
 
+    #include <string>
+    #include <vector>
+
     #include <visual/AScene.hpp>
 
 namespace gui {
@@ -19,9 +22,11 @@ class InGame : public AScene {
         ~InGame() = default;
 
         void display(sf::RenderTarget&) const override;
-        void event(const sf::Event&, const NetEventPack&) override;
+        void event(const sf::Event&, const network::NetEventPack&) override;
 
     private:
+        void writeTeams(const std::string&);
+        std::vector<std::string> _teams;
 
 };
 

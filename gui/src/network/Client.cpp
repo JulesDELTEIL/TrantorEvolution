@@ -24,7 +24,7 @@ void Client::checkEvent(void)
     _socket.pollServer();
     if (_socket.fds().revents & POLLIN) {
         read(_socket.getFd(), &buffer, CODE_LEN);
-        _events.push({NET_MSIZE, {1, 2, 3}}); // TEST
+        // _events.push({MSIZE, {1, 2, 3}}); // TEST
     }
 }
 

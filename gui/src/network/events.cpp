@@ -7,25 +7,31 @@
 
 #include "network/events.hpp"
 
-gui::network::NetType::NetType(const std::string& value)
+namespace gui {
+namespace network {
+
+NetType::NetType(const std::string& value)
 : _value(value) {}
 
-size_t gui::network::NetType::getSize_t(void)
+size_t NetType::getSize_t(void) const
 {
     return std::stoi(_value);
 }
 
-float gui::network::NetType::getFloat(void)
+float NetType::getFloat(void) const
 {
     return std::stol(_value);
 }
 
-int gui::network::NetType::getInt(void)
+int NetType::getInt(void) const
 {
     return std::stof(_value);
 }
 
-std::string gui::network::NetType::getString(void)
+std::string NetType::getString(void) const
 {
     return _value;
 }
+
+} // namespace newtork
+} // namespace gui

@@ -23,7 +23,7 @@ class AScene : public IScene {
         ~AScene() = default;
 
         void display(sf::RenderTarget&) const = 0;
-        void event(const sf::Event&, const NetEventPack&) = 0;
+        void event(const sf::Event&, const network::NetEventPack&) = 0;
 
         sf::View getView(void) override;
         void zoom(float) override;

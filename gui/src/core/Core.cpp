@@ -54,7 +54,7 @@ void Core::display(void)
 
 void Core::events(void)
 {
-    NetEventPack net_event;
+    network::NetEventPack net_event;
 
     _client.checkEvent();
     while (_engine.window.pollEvent(_engine.events) || _client.pollEvent(net_event)) {

@@ -29,17 +29,17 @@ class Land : public ALayer {
         ~Land() = default;
 
         void display(sf::RenderTarget& render) const override;
-        void event(const sf::Event& event, const NetEventPack&) override;
+        void event(const sf::Event& event, const network::NetEventPack&) override;
     
 
     private:
-        void loadTile(const sf::Vector2f&, const NetPack&);
-        BiomeTypes_e readBiomeType(const NetPack& pack);
-        void updateTile(const NetPack&);
+        void loadTile(const sf::Vector2f&, const network::NetPack&);
+        BiomeTypes_e readBiomeType(const network::NetPack& pack);
+        void updateTile(const network::NetPack&);
         sf::Vector2f _map_size = {-1, -1};
         bool _map_set = false;
 
-        void addTrantorian(const NetPack& pack);
+        void addTrantorian(const network::NetPack& pack);
 
         struct TileInfo {
             std::unique_ptr<Tile> tile;
@@ -47,7 +47,7 @@ class Land : public ALayer {
             std::vector<std::unique_ptr<ecs::IEntity>> resources;
         };
 
-        std::map<size_t, std::map<size_t, TileInfo>> _tiles;        
+        std::map<size_t, std::map<size_t, TileInfo>> _tiles;
 };
 
 } // visual
