@@ -19,7 +19,7 @@ namespace visual {
 
 class IScene {
     public:
-        virtual void display(sf::RenderTarget&) const = 0;
+        virtual void display(sf::RenderTarget&) = 0;
         virtual void event(const sf::Event&, const network::NetEventPack&) = 0;
     
         virtual sf::View getView(void) = 0;

@@ -14,6 +14,7 @@
 
     #include "visual/entities/Tile.hpp"
     #include "visual/entities/Trantorian.hpp"
+    #include "visual/entities/ResourceNode.hpp"
 
 namespace gui {
 namespace visual {
@@ -28,7 +29,7 @@ class Land : public ALayer {
         Land();
         ~Land() = default;
 
-        void display(sf::RenderTarget& render) const override;
+        void display(sf::RenderTarget& render) override;
         void event(const sf::Event& event, const network::NetEventPack&) override;
     
 
@@ -39,12 +40,15 @@ class Land : public ALayer {
         sf::Vector2f _map_size = {-1, -1};
         bool _map_set = false;
 
+        void addResourceInTile(int, int, const sf::Vector2f&, ResourceType_e);
+
         void addTrantorian(const network::NetPack& pack);
         void trantorianAction(const network::NetEventPack& pack);
 
         struct TileInfo {
             std::unique_ptr<Tile> tile;
             std::map<size_t, std::shared_ptr<Trantorian>> trantorians;
+            std::vector<std::unique_ptr<ResourceNode>> resources;
         };
 
         std::map<size_t, std::map<size_t, TileInfo>> _tiles;

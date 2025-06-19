@@ -35,7 +35,8 @@ class Trantorian {
         Trantorian(const sf::Vector2f& pos);
         ~Trantorian() = default;
 
-        void draw(sf::RenderTarget&) const;
+        void draw(sf::RenderTarget&);
+        void collect(void);
 
     private:
         Drawable _body;

@@ -18,7 +18,7 @@ InGame::InGame() : AScene(core::DEFAULT_VIEW)
     _layers.emplace_back(std::make_unique<Land>());
 }
 
-void InGame::display(sf::RenderTarget& target) const
+void InGame::display(sf::RenderTarget& target)
 {
     for (const std::unique_ptr<ILayer>& layer : _layers)
         layer->display(target);

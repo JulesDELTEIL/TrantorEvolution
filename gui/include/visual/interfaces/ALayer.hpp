@@ -21,7 +21,7 @@ class ALayer : public ILayer {
         ALayer() = default;
         ~ALayer() = default;
 
-        void display(sf::RenderTarget&) const = 0;
+        void display(sf::RenderTarget&) = 0;
         void event(const sf::Event&, const network::NetEventPack&) = 0;
 
     protected:

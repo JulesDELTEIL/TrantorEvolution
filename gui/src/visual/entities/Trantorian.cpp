@@ -19,9 +19,15 @@ Trantorian::Trantorian(const sf::Vector2f& pos) : _body_animation(std::ref(_body
     _body.sprite.setPosition(pos);
 }
 
-void Trantorian::draw(sf::RenderTarget& target) const
+void Trantorian::draw(sf::RenderTarget& target)
 {
+    _body_animation.animate();
     target.draw(_body.sprite);
+}
+
+void Trantorian::collect(void)
+{
+    _body_animation.changeAnimation(COLLECT);
 }
 
 } // visual
