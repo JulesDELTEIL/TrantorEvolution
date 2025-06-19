@@ -66,8 +66,8 @@ class Trantorian (ServerManager) :
             index = message_left.find("\n")
             if index == -1:
                 break
-            self.handle_response(message_left)
-            self.send_action()
+            if self.handle_response(message_left) :
+                self.send_action()
             message_left = message_left[index + 1:]
         return message_left
 
@@ -80,15 +80,25 @@ class Trantorian (ServerManager) :
             analyse_requests(response)
 
 
-    def handle_response(self, response):
-        if isinstance(self.player, Nobody):
-            response_list = response.split() # response du serveur -> "message K, text envoyé" -> ex avec notre protocol: "message K, [Queen] role Queen"
-            if response_list[3] == "role":
+    def handle_nobody(self, response_list):
+        if self.player.cycle > 5:
+            self.role = ROLE_MAP["First_Queen"]
+            return True
+        else :
+            if self.player.handle_broadcast(response_list):
                 self.role = ROLE_MAP[response_list[4]]
-            if self.player.cycle > 5 :
-                self.role = ROLE_MAP["First_Queen"]
+                return True
+            return False
+
+    def handle_response(self, response):
+        response_list = response.split()
+        if response_list[0] == "message":
+            if isinstance(self.player, Nobody): # response du serveur -> "message K, text envoyé" -> ex avec notre protocol: "message K, [Queen] role Queen"
+                return self.handle_nobody(response_list)
+            return False
         else:
             self.player.state.update(response)
-            
+            return True
+
     def _spawn_new_client(self):
         subprocess.Popen(["./zappy_ai", "-p", self.port, "-n", self.team_name, "-h", self.host])
