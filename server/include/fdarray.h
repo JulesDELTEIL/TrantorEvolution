@@ -14,6 +14,7 @@
     #include "macros.h"
     #include "items.h"
     #include "team.h"
+    #include "pos.h"
 
     #define NB_DIFF_ITEMS 7
 
@@ -35,8 +36,7 @@ typedef struct player_s {
     int id;
     team_t *team;
     size_t level;
-    uint_t x;
-    uint_t y;
+    pos_t pos;
     player_dir_t orientation;
     uint_t inventory[NB_DIFF_ITEMS];
     struct player_s *next;

@@ -12,6 +12,7 @@
     #include "args.h"
     #include "fdarray.h"
     #include "team.h"
+    #include "pos.h"
 
 typedef struct game_s {
     map_t **trantor_map;
@@ -19,6 +20,7 @@ typedef struct game_s {
     size_t next;
     team_t *teams;
     int nb_of_teams;
+    pos_t spawn;
 } game_t;
 
 /*Functions that init the game data, the map, and every teams*/
