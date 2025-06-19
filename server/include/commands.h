@@ -38,6 +38,7 @@ typedef struct command_s {
 int cmd_forward(serverdata_t *sdata, client_t *client, char *data);
 int cmd_fork(serverdata_t *sdata, client_t *client, char *data);
 int cmd_left(serverdata_t *sdata, client_t *client, char *data);
+int cmd_right(serverdata_t *sdata, client_t *client, char *data);
 
 int cmd_tna(serverdata_t *sdata, client_t *client, char *data);
 int cmd_msz(serverdata_t *sdata, client_t *client, char *data);
@@ -54,6 +55,7 @@ static const command_t GUI_COMMANDS[] = {
 static const command_t AI_COMMANDS[] = {
     {"Forward", &cmd_forward},
     {"Left", &cmd_left},
+    {"Right", &cmd_right},
     {"Fork", &cmd_fork},
 };
 

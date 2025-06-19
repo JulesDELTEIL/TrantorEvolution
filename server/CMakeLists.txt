@@ -25,6 +25,7 @@ add_executable( ${PROJECT_NAME}
     ${SERVER_SRC_DIR}init_game.c
     ${SERVER_AI_CMD_DIR}forward.c
     ${SERVER_AI_CMD_DIR}left.c
+    ${SERVER_AI_CMD_DIR}right.c
     ${SERVER_AI_CMD_DIR}fork.c
     ${SERVER_GUI_CMD_DIR}tna.c
     ${SERVER_GUI_CMD_DIR}msz.c
