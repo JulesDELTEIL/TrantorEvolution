@@ -17,6 +17,7 @@
     #define ANTIMATTER_DENS 0.05
     #define NB_RESOURCES 7
     #define NB_BIOMES 5
+    #define NOT_DEFINED -1
     #define TICKS_REFILLS 20000
     #define WORLD_DENS(args) ((args)->width * (args)->height)
     #define X_COORD(i, heigt) (i / height)
