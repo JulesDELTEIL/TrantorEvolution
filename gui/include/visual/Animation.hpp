@@ -2,17 +2,20 @@
 ** EPITECH PROJECT, 2025
 ** TrantorEvolution
 ** File description:
-** AAnimated.hpp
+** Animation.hpp
 */
 
-#ifndef AANIMATED_HPP_
-    #define AANIMATED_HPP_
+#ifndef ANIMATION_HPP_
+    #define ANIMATION_HPP_
 
+    #include <string>
+    #include <vector>
     #include <SFML/System/Clock.hpp>
 
-    #include "interfaces/AObject.hpp"
+    #include "visual/Drawable.hpp"
 
-namespace ecs {
+namespace gui {
+namespace visual {
 
 struct AnimationInfos {
     std::string path;
@@ -27,25 +30,25 @@ struct AnimationInfos {
     #define A_SELECT (this->_animation[this->_anim_index])
     #define SET_RECT (sf::IntRect(A_SELECT.frame_size.x * A_SELECT.index.x, A_SELECT.frame_size.y * A_SELECT.index.y, A_SELECT.frame_size.x, A_SELECT.frame_size.y))
 
-class AAnimated : public AObject {
+class Animation {
     public:
-        AAnimated(const sf::Vector2f&, const std::string&, const sf::IntRect&);
-        ~AAnimated() = default;
-
-        void draw(sf::RenderTarget& target) override;
+        Animation(std::reference_wrapper<Drawable>);
+        ~Animation() = default;
 
         void addAnimation(AnimationInfos);
         void addAnimation(const std::string&, size_t, size_t,
             size_t, size_t, float, size_t indexX = 0, size_t indexY = 0);
         void changeAnimation(int index);
-        void animate(void);
+        void animate();
 
     protected:
-        int _anim_index;
+        int _anim_index = 0;
         std::vector<AnimationInfos> _animation;
+        std::reference_wrapper<Drawable> _draw;
 
 };
 
-} // ecs
+} // visual
+} // gui
 
 #endif

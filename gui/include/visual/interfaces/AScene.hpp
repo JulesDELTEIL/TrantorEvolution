@@ -11,8 +11,8 @@
     #include <vector>
     #include <memory>
 
-    #include "visual/IScene.hpp"
-    #include "visual/ALayer.hpp"
+    #include "visual/interfaces/IScene.hpp"
+    #include "visual/interfaces/ALayer.hpp"
 
 namespace gui {
 namespace visual {
@@ -22,7 +22,7 @@ class AScene : public IScene {
         AScene(const sf::FloatRect&);
         ~AScene() = default;
 
-        void display(sf::RenderTarget&) const = 0;
+        void display(sf::RenderTarget&) = 0;
         void event(const sf::Event&, const network::NetEventPack&) = 0;
 
         sf::View getView(void) override;

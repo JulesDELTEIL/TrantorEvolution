@@ -10,7 +10,6 @@
 
 #include "visual/layers/Land.hpp"
 #include "visual/visual.hpp"
-#include "ECSFactory.hpp"
 
 namespace gui {
 namespace visual {
@@ -20,19 +19,16 @@ Land::Land()
     std::srand(std::time({}));
 }
 
-void Land::display(sf::RenderTarget& render) const
+void Land::display(sf::RenderTarget& render)
 {
-    for (const auto& tileY : _tiles) {
-        for (const auto& tileX : tileY.second) {
-            tileX.second.tile->display(render);
-            for (const auto& trantor : tileX.second.trantorians)
-                trantor.second->display(render);
-            for (const auto& resource : tileX.second.resources)
-                resource->display(render);
+    for (auto& tileY : _tiles) {
+        for (auto& tileX : tileY.second) {
+            tileX.second.tile->draw(render);
+            for (auto& trantor : tileX.second.trantorians) {
+                trantor.second->draw(render);
+            }
         }
     }
-    for (const std::unique_ptr<ecs::IEntity>& entity : _entities)
-        entity->display(render);
 }
 
 void Land::event(const sf::Event&, const network::NetEventPack& net_pack)
@@ -50,6 +46,8 @@ void Land::event(const sf::Event&, const network::NetEventPack& net_pack)
         case network::NEW:
             addTrantorian(net_pack.pack);
             break;
+        case network::PUSH | network::CAST :
+            trantorianAction(net_pack);
     }
 }
 
@@ -63,13 +61,11 @@ void Land::loadTile(const sf::Vector2f& middle, const network::NetPack& pack)
     int y = pack[1].getInt();
     pos = MAP_POS(middle, x, y);
     type = readBiomeType(pack);
-    _tiles[x][y].tile = std::unique_ptr<Tile>(dynamic_cast<Tile*>(
-            ecs::ECSFactory::createEntity(
-                "tile",
-                pos.x, pos.y,
-                static_cast<int>(type)
-            ).release()
-    ));
+    _tiles[x][y].tile = std::make_unique<Tile>(pos, type);
+    for (size_t i = 2; i < NB_MAP_ARG; ++i) {
+        for (size_t d = 0; d < pack[i].getSize_t(); ++d)
+            addResourceInTile(x, y, pos, static_cast<ResourceType_e>(i - 2));
+    }
     index += 1;
     if (index >= (_map_size.x * _map_size.y))
         _map_set = true;
@@ -85,16 +81,25 @@ BiomeTypes_e Land::readBiomeType(const network::NetPack&)
     return BiomeTypes_e::GRASS;
 }
 
+void Land::addResourceInTile(int x, int y, const sf::Vector2f& pos, ResourceType_e type)
+{
+    _tiles[x][y].resources.emplace_back(std::make_unique<ResourceNode>(pos, type));
+}
+
 void Land::addTrantorian(const network::NetPack& pack)
 {
     int x = pack[1].getInt();
     int y = pack[2].getInt();
     sf::Vector2f pos = MAP_POS(CENTER_MAP(_map_size.y), x, y);
+    std::shared_ptr<Trantorian> newT = std::make_shared<Trantorian>(pos);
 
-    _tiles[x][y].trantorians[pack[0].getSize_t()] =
-        std::unique_ptr<Trantorian>(dynamic_cast<Trantorian*>(
-            ecs::ECSFactory::createEntity("trantorian", pos.x, pos.y).release()
-        ));
+    _tiles[x][y].trantorians[pack[0].getSize_t()] = newT;
+    _trantorians[pack[0].getSize_t()] = newT;
+}
+
+void Land::trantorianAction(const network::NetEventPack& pack)
+{
+    int id = pack.pack[0].getInt();
 }
 
 } // visual
