@@ -29,6 +29,7 @@ void Trantorian::draw(sf::RenderTarget& target)
 
 void Trantorian::collect(void)
 {
+    _body_movement.changeDestination({0.0f, 0.0f}, 1000.0f);
     _body_animation.changeAnimation(COLLECT);
 }
 

@@ -83,7 +83,7 @@ BiomeTypes_e Land::readBiomeType(const network::NetPack&)
 
 void Land::addResourceInTile(int x, int y, const sf::Vector2f& pos, ResourceType_e type)
 {
-    _tiles[x][y].resources.emplace_back(std::make_unique<ResourceNode>(pos, type));
+    _tiles[x][y].resources.emplace_back(std::make_shared<ResourceNode>(pos, type));
 }
 
 void Land::addTrantorian(const network::NetPack& pack)

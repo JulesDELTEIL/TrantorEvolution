@@ -71,6 +71,7 @@ struct NetEventPack {
 typedef std::queue<NetEventPack> PackQueue;
 
 static const std::map<std::string, NetEvent_e> CODE_EVENT_LINK {
+    {"WELCOME", CON},
     {"msz", MSIZE},
     {"bct", TILE},
     {"tna", TEAMS},
@@ -96,6 +97,8 @@ static const std::map<std::string, NetEvent_e> CODE_EVENT_LINK {
     {"suc", UKN},
     {"sbp", PARAM}
 };
+
+typedef std::pair<std::string, NetPack> Command;
 
 } // network
 } // gui
