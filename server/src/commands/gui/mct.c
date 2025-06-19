@@ -39,7 +39,8 @@ static int loop_send_tiles(serverdata_t *sdata, client_t *client)
     }
 }
 
-int cmd_mct(serverdata_t *sdata, client_t *client, char *data)
+int cmd_mct(serverdata_t *sdata, fdarray_t *fdarray,
+    client_t *client, char *data)
 {
     int rc = DEFAULTRC;
 

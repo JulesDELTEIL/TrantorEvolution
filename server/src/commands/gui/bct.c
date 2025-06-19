@@ -51,7 +51,8 @@ static int extract_positions(char *data, int *x, int *y)
     return EXIT_SUCCESS;
 }
 
-int cmd_bct(serverdata_t *sdata, client_t *client, char *data)
+int cmd_bct(serverdata_t *sdata, fdarray_t *fdarray,
+    client_t *client, char *data)
 {
     char answer[BUFFSIZE] = {0};
     int rc = DEFAULTRC;

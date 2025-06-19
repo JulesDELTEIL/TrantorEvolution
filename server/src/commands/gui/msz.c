@@ -12,7 +12,8 @@
 
 #include "transmission.h"
 
-int cmd_msz(serverdata_t *sdata, client_t *client, char *data)
+int cmd_msz(serverdata_t *sdata, fdarray_t *fdarray,
+    client_t *client, char *data)
 {
     char answer[BUFFSIZE] = {0};
     int rc = DEFAULTRC;

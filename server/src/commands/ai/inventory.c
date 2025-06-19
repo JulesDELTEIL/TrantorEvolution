@@ -30,7 +30,8 @@ static int send_inventory(serverdata_t *sdata, client_t *client)
     send_data(client, answer, NULL, sdata->debug);
 }
 
-int cmd_inventory(serverdata_t *sdata, client_t *client, char *data)
+int cmd_inventory(serverdata_t *sdata, fdarray_t *fdarray,
+    client_t *client, char *data)
 {
     int rc = DEFAULTRC;
 

@@ -31,6 +31,7 @@ add_executable( ${PROJECT_NAME}
     ${SERVER_AI_CMD_DIR}connect_nbr.c
     ${SERVER_AI_CMD_DIR}set.c
     ${SERVER_AI_CMD_DIR}take.c
+    ${SERVER_AI_CMD_DIR}broadcast.c
     ${SERVER_GUI_CMD_DIR}tna.c
     ${SERVER_GUI_CMD_DIR}msz.c
     ${SERVER_GUI_CMD_DIR}bct.c

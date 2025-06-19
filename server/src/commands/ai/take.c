@@ -36,7 +36,8 @@ static int idt_resource(char *data)
     return -1;
 }
 
-int cmd_take(serverdata_t *sdata, client_t *client, char *data)
+int cmd_take(serverdata_t *sdata, fdarray_t *fdarray,
+    client_t *client, char *data)
 {
     int rc = DEFAULTRC;
 
