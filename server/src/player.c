@@ -12,6 +12,28 @@
 #include "serverdata.h"
 #include "transmission.h"
 
+int del_egg(team_t *team, pos_t pos)
+{
+    egg_t *node = team->eggs->next;
+    egg_t *prev = team->eggs;
+
+    if (team->eggs->pos.x == pos.x && team->eggs->pos.y == pos.y) {
+        team->eggs = prev->next;
+        free(prev);
+        return EXIT_SUCCESS;
+    }
+    while (node != NULL) {
+        if (node->pos.x == pos.x && node->pos.y == pos.y) {
+            prev->next = node->next;
+            free(node);
+            return EXIT_SUCCESS;
+        }
+        prev = node;
+        node = node->next;
+    }
+    return EXIT_FAILURE;
+}
+
 int del_player(game_t *game, int id)
 {
     player_t *node = game->players->next;
@@ -41,8 +63,11 @@ static int add_player(game_t *game, client_t *client, team_t *team)
     new->id = game->next;
     new->team = team;
     new->level = 0;
-    new->x = 0;
-    new->y = 0;
+    if (team->eggs != NULL) {
+        new->pos = team->eggs->pos;
+        del_egg(team, new->pos);
+    } else
+        new->pos = game->spawn;
     new->orientation = N;
     for (uint_t k = 0; k < NB_DIFF_ITEMS; k++)
         new->inventory[k] = 0;
@@ -58,8 +83,8 @@ static int send_pnw(serverdata_t *sdata, player_t *player, client_t *ui_client)
 
     sprintf(buff, "%d %d %d %d %d %s",
         player->id,
-        player->x,
-        player->y,
+        player->pos.x,
+        player->pos.y,
         player->orientation,
         player->level,
         player->team->name
@@ -87,7 +112,7 @@ int new_player(serverdata_t *sdata, fdarray_t *fdarray, client_t *client,
     }
     add_player(&(sdata->game_data), client,
         &(sdata->game_data.teams[team_idx]));
-    sdata->game_data.teams[team_idx].space_left -= 1;
+    client->player->team->space_left -= 1;
     for (uint_t k = NB_SERVER_FD; k < NBTOTAL_FD; k++) {
         if (fdarray->clients[k].type == GUI) {
             send_pnw(sdata, client->player, &(fdarray->clients[k]));

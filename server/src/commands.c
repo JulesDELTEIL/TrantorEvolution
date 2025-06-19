@@ -51,6 +51,7 @@ static int set_teamname(serverdata_t *sdata, fdarray_t *fdarray,
             return EXIT_SUCCESS;
         }
     }
+    send_data(client, "ko", NULL, sdata->debug);
     return EXIT_FAILURE;
 }
 
