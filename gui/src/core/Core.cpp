@@ -13,6 +13,7 @@
 #include "visual/scenes/InGame.hpp"
 #include "ECSFactory.hpp"
 #include "visual/setup.hpp"
+#include "network/events.hpp"
 
 namespace gui {
 namespace core {
