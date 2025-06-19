@@ -33,24 +33,18 @@ int get_nb_of_teams(arguments_t *args)
     return nbteams;
 }
 
-#include <stdio.h>
-
 static int init_spawn(game_t *game, uint_t w, uint_t h)
 {
-    pos_t try = {0, 0};
+    uint_t x = 0;
+    uint_t y = 0;
 
-    // printf("w = %d h = %d\n", w, h);
-    // while (game->trantor_map[try.y][try.x].biome == SEA) {
-    //     printf("x = %d y = %d\n", try.x, try.y);
-    //     try.x += 1;
-    //     if (try.x >= w) {
-    //         try.y += 1;
-    //         try.x = 0;
-    //     }
-    //     if (try.y >= h)
-    //         return EXIT_FAILURE;
-    // }
+    pos_t try = {0, 0};
+    x = rand() % w;
+    y = rand() % h;
+    try.x = x;
+    try.y = y;
     game->spawn = try;
+    game->trantor_map[x][y].biome = PLAINS;
     return EXIT_SUCCESS;
 }
 
