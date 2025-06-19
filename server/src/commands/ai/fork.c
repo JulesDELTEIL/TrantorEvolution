@@ -10,6 +10,7 @@
 #include <string.h>
 
 #include "transmission.h"
+#include "commands.h"
 
 static int add_egg(player_t *player)
 {
@@ -31,6 +32,7 @@ int cmd_fork(serverdata_t *sdata, client_t *client, char *data)
     }
     add_egg(client->player);
     client->player->team->space_left++;
+    set_action_end(client, sdata->args->freq, 42);
     send_data(client, "ok", NULL, sdata->debug);
     return EXIT_SUCCESS;
 }
