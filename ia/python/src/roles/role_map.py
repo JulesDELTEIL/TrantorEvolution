@@ -14,6 +14,7 @@ from src.roles.matriarch import Matriarch
 
 ROLE_MAP = {
     "Queen": Queen(),
+    "First_Queen": Queen(True),
     "Foreman": Foreman(),
     "Matriarch": Matriarch(),
     "Worker": Worker(),

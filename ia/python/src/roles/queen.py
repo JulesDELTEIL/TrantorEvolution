@@ -11,7 +11,7 @@ from src.action import Commands, Action
 class Queen(BaseRole):
     def __init__(self, *inp):
         super().__init__()
-        if inp > 2 and inp[0] :
+        if len(inp) == 1 and inp[0] :
             self.give_birth = True
         else :
             self.give_birth = False
