@@ -8,19 +8,39 @@
 #ifndef TRANTORIAN_HPP_
     #define TRANTORIAN_HPP_
 
-    #include "interfaces/AEntity.hpp"
+    #include <SFML/Graphics/RenderTarget.hpp>
+
+    #include "visual/Drawable.hpp"
+    #include "visual/Animation.hpp"
 
 namespace gui {
 namespace visual {
 
-class Trantorian : public ecs::AEntity {
+enum BodyAnimIndex {
+    IDLE = 0,
+    WALK,
+    COLLECT,
+};
+
+    #define NB_BODY_ANIM 3
+
+static const std::vector<AnimationInfos> BODY_ANIM_INFOS = {
+    {"assets/trantorians/body/Idle_Side-Sheet.png", {64, 64}, {4, 1}, {0, 0}, 0.3, sf::Clock()},
+    {"assets/trantorians/body/Walk_Side-Sheet.png", {64, 64}, {6, 1}, {0, 0}, 0.1, sf::Clock()},
+    {"assets/trantorians/body/Collect_Side-Sheet.png", {64, 64}, {8, 1}, {0, 0}, 0.2, sf::Clock()}
+};
+
+class Trantorian {
     public:
         Trantorian(const sf::Vector2f& pos);
         ~Trantorian() = default;
 
-        void display(sf::RenderTarget& render) const override;
-        void event(const sf::Event& event) override;
+        void draw(sf::RenderTarget&);
+        void collect(void);
+
     private:
+        Drawable _body;
+        Animation _body_animation;
 
 };
 

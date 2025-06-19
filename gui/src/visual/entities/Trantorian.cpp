@@ -5,29 +5,29 @@
 ** Trantorian.cpp
 */
 
-#include <iostream> // test purspose (to delete)
-
 #include "visual/entities/Trantorian.hpp"
-#include "ECSFactory.hpp"
 
 namespace gui {
 namespace visual {
 
-Trantorian::Trantorian(const sf::Vector2f& pos) : AEntity(pos)
+Trantorian::Trantorian(const sf::Vector2f& pos) : _body_animation(std::ref(_body))
 {
-    _drawables["body"] = ecs::ECSFactory::createDraw("body", pos.x, pos.y);
+    for (int i = 0; i < NB_BODY_ANIM; ++i)
+        _body_animation.addAnimation(BODY_ANIM_INFOS[i]);
+    _body_animation.changeAnimation(WALK);
+    _body.sprite.setScale(0.2, 0.2);
+    _body.sprite.setPosition(pos);
 }
 
-void Trantorian::display(sf::RenderTarget& render) const
+void Trantorian::draw(sf::RenderTarget& target)
 {
-    for (const auto& drawable : _drawables)
-        drawable.second->draw(render);
+    _body_animation.animate();
+    target.draw(_body.sprite);
 }
 
-void Trantorian::event(const sf::Event& event)
+void Trantorian::collect(void)
 {
-    if (event.type == sf::Event::KeyPressed)
-        return;
+    _body_animation.changeAnimation(COLLECT);
 }
 
 } // visual
