@@ -24,10 +24,10 @@ void InGame::display(sf::RenderTarget& target) const
         layer->display(target);
 }
 
-void InGame::event(const sf::Event& event)
+void InGame::event(const sf::Event& event, const network::NetEventPack& net_events)
 {
     for (const std::unique_ptr<ILayer>& layer : _layers)
-        layer->event(event);
+        layer->event(event, net_events);
     if (event.type == sf::Event::KeyPressed) {
         if (event.key.code == sf::Keyboard::D)
             move(10, 0);
@@ -42,6 +42,15 @@ void InGame::event(const sf::Event& event)
         if (event.key.code == sf::Keyboard::A)
             zoom(1.1);
     }
+    switch (static_cast<int>(net_events.event)) {
+    case network::TEAMS:
+        writeTeams("teamName");
+    }
+}
+
+void InGame::writeTeams(const std::string& name)
+{
+    _teams.push_back(name);
 }
 
 } // visual

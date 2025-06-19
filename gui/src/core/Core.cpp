@@ -11,9 +11,9 @@
 
 #include "visual/scenes/DefaultScene.hpp"
 #include "visual/scenes/InGame.hpp"
-
 #include "ECSFactory.hpp"
 #include "visual/setup.hpp"
+#include "network/events.hpp"
 
 namespace gui {
 namespace core {
@@ -22,13 +22,18 @@ Core::Core(int argc, const char *argv[])
 {
     try {
         _parser = Parser(argc, argv);
-        setupVisual();
-        _scenes[visual::Scene_e::NONE] = std::make_unique<visual::DefaultScene>();
-        _scenes[visual::Scene_e::IN_GAME] = std::make_unique<visual::InGame>();
-        changeScene(visual::Scene_e::IN_GAME);
     } catch(const std::exception& e) {
-        std::cerr << e.what() << '\n';
+        std::cerr << e.what() << std::endl;
         exit(84);
+    }
+    setupVisual();
+    _scenes[visual::Scene_e::NONE] = std::make_unique<visual::DefaultScene>();
+    _scenes[visual::Scene_e::IN_GAME] = std::make_unique<visual::InGame>();
+    changeScene(visual::Scene_e::IN_GAME);
+    try {
+        _client.setSocket(_parser.getHostName(), _parser.getPortNb());
+    } catch (const network::Socket::socketError& e) {
+        std::cerr << e.what() << std::endl;
     }
 }
 
@@ -50,10 +55,13 @@ void Core::display(void)
 
 void Core::events(void)
 {
-    while (_engine.window.pollEvent(_engine.events)) {
+    network::NetEventPack net_event;
+
+    _client.checkEvent();
+    while (_engine.window.pollEvent(_engine.events) || _client.pollEvent(net_event)) {
         if (_engine.events.type == sf::Event::Closed)
             _engine.window.close();
-        _scenes.at(_selected_scene)->event(_engine.events);
+        _scenes.at(_selected_scene)->event(_engine.events, net_event);
     }
 }
 
@@ -66,10 +74,11 @@ void Core::changeScene(const visual::Scene_e& scene)
 void Core::setupVisual(void)
 {
     ecs::ECSFactory::setDraw("biome", &visual::makeBiome);
-    ecs::ECSFactory::setDraw("resource_node", &visual::makeResourceNode);
+    ecs::ECSFactory::setDraw("resource", &visual::makeResource);
     ecs::ECSFactory::setDraw("body", &visual::makeBody);
     ecs::ECSFactory::setEntity("tile", &visual::makeTile);
     ecs::ECSFactory::setEntity("trantorian", &visual::makeTrantorian);
+    ecs::ECSFactory::setEntity("resource_node", &visual::makeResourceNode);
 }
 
 } // core

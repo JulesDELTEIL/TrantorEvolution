@@ -19,7 +19,7 @@ class DefaultScene : public AScene {
         ~DefaultScene() = default;
 
         void display(sf::RenderTarget&) const override;
-        void event(const sf::Event&) override;
+        void event(const sf::Event&, const network::NetEventPack&) override;
 
     private:
 

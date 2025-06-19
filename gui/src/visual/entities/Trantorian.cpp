@@ -5,8 +5,6 @@
 ** Trantorian.cpp
 */
 
-#include <iostream> // test purspose (to delete)
-
 #include "visual/entities/Trantorian.hpp"
 #include "ECSFactory.hpp"
 
@@ -24,10 +22,9 @@ void Trantorian::display(sf::RenderTarget& render) const
         drawable.second->draw(render);
 }
 
-void Trantorian::event(const sf::Event& event)
+void Trantorian::event(const sf::Event&)
 {
-    if (event.type == sf::Event::KeyPressed)
-        return;
+
 }
 
 } // visual

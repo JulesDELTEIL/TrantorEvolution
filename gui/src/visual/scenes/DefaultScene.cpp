@@ -25,10 +25,10 @@ void DefaultScene::display(sf::RenderTarget& target) const
     }
 }
 
-void DefaultScene::event(const sf::Event& event)
+void DefaultScene::event(const sf::Event& event, const network::NetEventPack& net_event)
 {
     for (std::unique_ptr<ILayer>& layer : _layers) {
-        layer->event(event);
+        layer->event(event, net_event);
     }
 }
 
