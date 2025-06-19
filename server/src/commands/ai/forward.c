@@ -26,14 +26,23 @@ static int keep_player_in(player_t *player, int width, int height)
 
 static int move_player(player_t *player)
 {
-    if (player->orientation == N)
+    if (player->orientation == N) {
         player->pos.y -= 1;
-    else if (player->orientation == S)
+        return EXIT_SUCCESS;
+    }
+    if (player->orientation == S) {
         player->pos.y += 1;
-    else if (player->orientation == E)
+        return EXIT_SUCCESS;
+    }
+    if (player->orientation == E) {
         player->pos.x += 1;
-    else
+        return EXIT_SUCCESS;
+    }
+    if (player->orientation == W) {
         player->pos.x -= 1;
+        return EXIT_SUCCESS;
+    }
+    return EXIT_FAILURE;
 }
 
 int cmd_forward(serverdata_t *sdata, client_t *client, char *data)
@@ -44,7 +53,10 @@ int cmd_forward(serverdata_t *sdata, client_t *client, char *data)
         send_data(client, "ko", NULL, sdata->debug);
         return EXIT_FAILURE;
     }
-    move_player(client->player);
+    if (move_player(client->player) == EXIT_FAILURE) {
+        send_data(client, "ko", NULL, sdata->debug);
+        return EXIT_FAILURE;
+    }
     keep_player_in(client->player, sdata->args->width, sdata->args->height);
     set_action_end(client, sdata->args->freq, 7);
     send_data(client, "ok", NULL, sdata->debug);
