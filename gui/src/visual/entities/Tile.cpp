@@ -18,6 +18,7 @@ Tile::Tile(const sf::Vector2f& pos, BiomeTypes_e type)
     _biome.sprite.setTexture(_biome.texture);
     _biome.sprite.setTextureRect(TEXTURE_RECT.at(type));
     _biome.sprite.setPosition(pos);
+    _biome.sprite.setOrigin({16.0f, 0.0f});
 }
 
 void Tile::draw(sf::RenderTarget& target)

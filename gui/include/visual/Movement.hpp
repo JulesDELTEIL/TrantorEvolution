@@ -24,11 +24,10 @@ class Movement {
 
     private:
         std::reference_wrapper<Drawable> _drawable;
-        sf::Clock _clock;
-        float _time;
-        float _elapsed;
-        sf::Vector2f _to_go;
         sf::Vector2f _direction;
+        sf::Clock _clock;
+        float _last_time;
+        float _time;
 };
 
 } // visual

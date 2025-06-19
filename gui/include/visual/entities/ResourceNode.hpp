@@ -8,6 +8,8 @@
 #ifndef RESOURCE_NODE_HPP_
     #define RESOURCE_NODE_HPP_
 
+    #include <SFML/Graphics/RenderTarget.hpp>
+
     #include "visual/visual.hpp"
     #include "visual/Drawable.hpp"
 
@@ -37,6 +39,8 @@ class ResourceNode {
     public:
         ResourceNode(const sf::Vector2f& pos, ResourceType_e type);
         ~ResourceNode() = default;
+
+        void draw(sf::RenderTarget&);
 
     private:
         Drawable _resource;
