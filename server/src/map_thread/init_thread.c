@@ -69,7 +69,8 @@ static void *get_total(int *total, int width, int height, tile_t **tiles)
     }
 }
 
-static void refill_map(tile_t **tiles, int width, int height, density_t *max_dens)
+static void refill_map(tile_t **tiles, int width, int height,
+    density_t *max_dens)
 {
     biome_distribution_t dist = {{0}, {0}};
     int total[NB_RESOURCES] = {0, 0, 0, 0, 0, 0};

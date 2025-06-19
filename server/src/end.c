@@ -32,7 +32,6 @@ void destroy_args(arguments_t *args)
 
 void destroy_map(map_t map)
 {
-
     for (int i = 0; map.tiles[i] != NULL; i++)
         free(map.tiles[i]);
     free(map.tiles);
