@@ -47,18 +47,18 @@ int cmd_bct(serverdata_t *sdata, client_t *client, char *data);
 int cmd_mct(serverdata_t *sdata, client_t *client, char *data);
 
 static const command_t GUI_COMMANDS[] = {
-    {"tna", &cmd_tna},
-    {"msz", &cmd_msz},
-    {"bct", &cmd_bct},
-    {"mct", &cmd_mct}
+    {"tna", cmd_tna},
+    {"msz", cmd_msz},
+    {"bct", cmd_bct},
+    {"mct", cmd_mct}
 };
 
 static const command_t AI_COMMANDS[] = {
-    {"Forward", &cmd_forward},
-    {"Left", &cmd_left},
-    {"Right", &cmd_right},
-    {"Fork", &cmd_fork},
-    {"Inventory", &cmd_inventory},
+    {"Forward", cmd_forward},
+    {"Left", cmd_left},
+    {"Right", cmd_right},
+    {"Fork", cmd_fork},
+    {"Inventory", cmd_inventory},
 };
 
 static const command_t *COMMANDS[] = {

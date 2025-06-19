@@ -10,12 +10,12 @@
 #include <unistd.h>
 #include "map.h"
 
-map_t **init_map(int X, int Y)
+tile_t **init_map(int X, int Y)
 {
-    map_t **new_map = malloc(sizeof(map_t *) * (X + 1));
+    tile_t **new_map = malloc(sizeof(tile_t *) * (X + 1));
 
     for (int x = 0; x < X; x++) {
-        new_map[x] = malloc(sizeof(map_t) * Y);
+        new_map[x] = malloc(sizeof(tile_t) * Y);
         for (int y = 0; y < Y; y++)
             new_map[x][y].biome = NOT_DEFINED;
     }

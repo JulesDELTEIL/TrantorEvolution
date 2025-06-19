@@ -15,7 +15,7 @@
     #include "pos.h"
 
 typedef struct game_s {
-    map_t **trantor_map;
+    map_t map;
     player_t *players;
     size_t next;
     team_t *teams;
