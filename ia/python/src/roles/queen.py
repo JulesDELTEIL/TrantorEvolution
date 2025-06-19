@@ -17,7 +17,7 @@ class Queen(BaseRole):
             self.give_birth = False
 
     def create_kingdom(self):
-        for i in range(0, 5) :
+        for _ in range(5):
             self.queue.appendleft(Commands(Action.FORK))
             self.queue.appendleft(Commands(Action.BROADCAST, 'queen'))
         self.queue.appendleft(Commands(Action.FORK))
@@ -27,10 +27,10 @@ class Queen(BaseRole):
         self.give_birth = False
 
     def decide_action(self):
-        self.cycle += 1
         if self.give_birth:
             self.create_kingdom()
         if self.queue.empty() :
+            self.cycle += 1
             if self._can_incant():
                 self.queue.appendleft([Commands(Action.INCANTATION)])
 

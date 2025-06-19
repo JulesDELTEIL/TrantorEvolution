@@ -9,8 +9,8 @@ from itertools import cycle
 import socket
 from src.roles.base_role import BaseRole
 from src.action import Commands, Action
-from src.roles.role_map import ROLE_MAP
-class Unknown(BaseRole):
+
+class Nobody(BaseRole):
     def __init__(self):
         super().__init__()
 
@@ -26,4 +26,8 @@ class Unknown(BaseRole):
 
     def decide_action(self):
         if self.queue.empty():
+<<<<<<< HEAD
             self.queue.appendleft(Commands.LEFT)
+=======
+            self.queue.appendleft(Commands(Action.LEFT))
+>>>>>>> f301efde58287caca30101ebf1643ffe0df12226

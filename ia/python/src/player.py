@@ -6,6 +6,7 @@
 ##
 
 from src.motivation import Motivation
+from src.action import *
 
 class PlayerState:
     def __init__(self):
@@ -47,4 +48,40 @@ class PlayerState:
             for x in range(-r, r + 1):
                 coords.append((x, y))
         return coords
-        
+    
+    def get_movements(start, end, direction):
+        commands_queue = []
+        dx = end[0] - start[0]
+        dy = end[1] - start[1]
+
+        directions = ['up', 'right', 'down', 'left']
+
+        def turn_to(current, target):
+            moves = []
+            ci = directions.index(current)
+            ti = directions.index(target)
+            diff = (ti - ci) % 4
+            if diff == 1:
+                moves.append(Commands(Action.RIGHT))
+            elif diff == 2:
+                moves += [Commands(Action.RIGHT), Commands(Action.RIGHT)]
+            elif diff == 3:
+                moves.append(Commands(Action.LEFT))
+            return moves
+
+        # Mouvements en x
+        if dx != 0:
+            target_dir = 'right' if dx > 0 else 'left'
+            commands_queue += turn_to(direction, target_dir)
+            commands_queue += [Commands(Action.FORWARD)] * abs(dx)
+            direction = target_dir
+
+        # Mouvements en y
+        if dy != 0:
+            target_dir = 'up' if dy > 0 else 'down'
+            commands_queue += turn_to(direction, target_dir)
+            commands_queue += [Commands(Action.FORWARD)] * abs(dy)
+            direction = target_dir
+
+        return commands_queue
+            
