@@ -16,8 +16,6 @@ from src.utils import recv_until_newline
 from src.action import Action
 from src.server_manager import ServerManager
 
-from ia.python.src.run_ia import analyse_requests
-
 DIMENSION_X = 0
 DIMENSION_Y = 1
 PLAYER_LEFT = 1
@@ -55,10 +53,10 @@ class Trantorian (ServerManager) :
         self.dimension = get_dimension(self.recv()) #je ne crois pas qu'on en ait besoin pour le moment mais c'est dans le protocole
 
     def send_action(self):
-        if self.player.queue.empty() :
+        if len(self.player.queue) == 0 :
             self.player.decide_action()
         action = self.player.queue.popleft()
-        self.send((action + "\n").encode())
+        self.send((action.__str__() + "\n").encode())
 
     def analyse_requests(self, message):
         message_left = message
@@ -77,21 +75,23 @@ class Trantorian (ServerManager) :
             response = self.recv()
             if not response :
                 break
-            analyse_requests(response)
+            self.analyse_requests(response)
 
 
     def handle_nobody(self, response_list):
-        if self.player.cycle > 5:
-            self.role = ROLE_MAP["First_Queen"]
+        print("stp")
+        if self.player.handle_broadcast(response_list):
+            self.player = ROLE_MAP[response_list[4]]
             return True
-        else :
-            if self.player.handle_broadcast(response_list):
-                self.role = ROLE_MAP[response_list[4]]
-                return True
-            return False
+        return False
 
     def handle_response(self, response):
         response_list = response.split()
+        if isinstance(self.player, Nobody):
+            if self.player.cycle > 5:
+                print("allezzzzzzz")
+                self.player = ROLE_MAP["First_Queen"]
+                return True
         if response_list[0] == "message":
             if isinstance(self.player, Nobody): # response du serveur -> "message K, text envoyé" -> ex avec notre protocol: "message K, [Queen] role Queen"
                 return self.handle_nobody(response_list)

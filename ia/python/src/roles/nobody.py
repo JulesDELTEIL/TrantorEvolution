@@ -25,9 +25,6 @@ class Nobody(BaseRole):
 
 
     def decide_action(self):
-        if self.queue.empty():
-<<<<<<< HEAD
-            self.queue.appendleft(Commands.LEFT)
-=======
+        self.cycle += 1
+        if len(self.queue) == 0:
             self.queue.appendleft(Commands(Action.LEFT))
->>>>>>> f301efde58287caca30101ebf1643ffe0df12226

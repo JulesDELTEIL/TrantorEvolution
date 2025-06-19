@@ -19,14 +19,14 @@ class Motivation:
         requirements = Motivation.LEVEL_REQUIREMENTS.get(level)
         if not requirements:
             return 0.0
-        total_required = sum(requirements.values)
+        #total_required = sum(requirements.values)
         total_met = 0
         
         for stone, quantity_needed in requirements.items():
             quantity_have = inventory.get(stone, 0)
             total_met += min(quantity_have, quantity_needed)
         
-        return total_met / total_required
+        return total_met #/ total_required
     
     LEVEL_REQUIREMENTS = {
         1: {"linemate": 1},

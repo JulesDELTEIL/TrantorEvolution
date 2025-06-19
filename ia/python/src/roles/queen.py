@@ -29,7 +29,7 @@ class Queen(BaseRole):
     def decide_action(self):
         if self.give_birth:
             self.create_kingdom()
-        if self.queue.empty() :
+        if len(self.queue) == 0 :
             self.cycle += 1
             if self._can_incant():
                 self.queue.appendleft([Commands(Action.INCANTATION)])
