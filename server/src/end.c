@@ -30,13 +30,22 @@ void destroy_args(arguments_t *args)
     free(args->team_name);
 }
 
-void destroy_map(map_t **map)
+void destroy_map(map_t map)
 {
-    if (!map)
-        return;
-    for (int i = 0; map[i] != NULL; i++)
-        free(map[i]);
-    free(map);
+    for (int i = 0; map.tiles[i] != NULL; i++)
+        free(map.tiles[i]);
+    free(map.tiles);
+}
+
+static void destroy_eggs(egg_t *head)
+{
+    egg_t *temp = NULL;
+
+    while (head != NULL) {
+        temp = head->next;
+        free(head);
+        head = temp;
+    }
 }
 
 void destroy_teams(team_t *teams, int team_count)
@@ -45,6 +54,7 @@ void destroy_teams(team_t *teams, int team_count)
         return;
     for (int i = 0; i < team_count; i++) {
         free(teams[i].name);
+        destroy_eggs(teams[i].eggs);
     }
     free(teams);
 }
@@ -69,7 +79,7 @@ int close_server(serverdata_t *sdata, fdarray_t *fdarray, pthread_t *mapthr)
         destroy_client(&(fdarray->clients[k]));
     }
     destroy_args(sdata->args);
-    destroy_map(sdata->game_data.trantor_map);
+    destroy_map(sdata->game_data.map);
     destroy_teams(sdata->game_data.teams, sdata->game_data.nb_of_teams);
     destroy_players(sdata->game_data.players);
     return EXIT_SUCCESS;

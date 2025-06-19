@@ -166,7 +166,8 @@ int buffer_handler(serverdata_t *sdata, fdarray_t *fdarray, client_t *client)
         return set_teamname(sdata, fdarray, client, cmd);
     for (uint_t k = 0; k < NB_COMMANDS[client->type]; k++)
         if (strcmp(cmd, COMMANDS[client->type][k].command) == 0)
-            return COMMANDS[client->type][k].handler(sdata, client, data);
+            return COMMANDS[client->type][k].handler(sdata,
+                fdarray, client, data);
     handle_unrecognized_code(sdata, fdarray, client);
     return EXIT_FAILURE;
 }

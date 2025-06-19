@@ -19,13 +19,13 @@ static int send_tile(serverdata_t *sdata, client_t *client, int x, int y)
     sprintf(answer, "%d %d %d %d %d %d %d %d %d",
         x,
         y,
-        sdata->game_data.trantor_map[x][y].resources[FOOD],
-        sdata->game_data.trantor_map[x][y].resources[WOOD],
-        sdata->game_data.trantor_map[x][y].resources[ROCK],
-        sdata->game_data.trantor_map[x][y].resources[CLAY],
-        sdata->game_data.trantor_map[x][y].resources[METAL],
-        sdata->game_data.trantor_map[x][y].resources[PETROL],
-        sdata->game_data.trantor_map[x][y].resources[ANTIMATTER]
+        sdata->game_data.map.tiles[x][y].resources[FOOD],
+        sdata->game_data.map.tiles[x][y].resources[WOOD],
+        sdata->game_data.map.tiles[x][y].resources[ROCK],
+        sdata->game_data.map.tiles[x][y].resources[CLAY],
+        sdata->game_data.map.tiles[x][y].resources[METAL],
+        sdata->game_data.map.tiles[x][y].resources[PETROL],
+        sdata->game_data.map.tiles[x][y].resources[ANTIMATTER]
     );
     send_data(client, "bct", answer, sdata->debug);
 }
@@ -39,7 +39,8 @@ static int loop_send_tiles(serverdata_t *sdata, client_t *client)
     }
 }
 
-int cmd_mct(serverdata_t *sdata, client_t *client, char *data)
+int cmd_mct(serverdata_t *sdata, fdarray_t *fdarray,
+    client_t *client, char *data)
 {
     int rc = DEFAULTRC;
 
