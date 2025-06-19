@@ -10,7 +10,8 @@
 namespace gui {
 namespace visual {
 
-Trantorian::Trantorian(const sf::Vector2f& pos) : _body_animation(std::ref(_body))
+Trantorian::Trantorian(const sf::Vector2f& pos) :
+    _body_animation(std::ref(_body)), _body_movement(std::ref(_body))
 {
     for (int i = 0; i < NB_BODY_ANIM; ++i)
         _body_animation.addAnimation(BODY_ANIM_INFOS[i]);
@@ -22,6 +23,7 @@ Trantorian::Trantorian(const sf::Vector2f& pos) : _body_animation(std::ref(_body
 void Trantorian::draw(sf::RenderTarget& target)
 {
     _body_animation.animate();
+    _body_movement.move();
     target.draw(_body.sprite);
 }
 

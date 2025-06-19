@@ -12,6 +12,7 @@
 
     #include "visual/Drawable.hpp"
     #include "visual/Animation.hpp"
+    #include "visual/Movement.hpp"
 
 namespace gui {
 namespace visual {
@@ -37,11 +38,12 @@ class Trantorian {
 
         void draw(sf::RenderTarget&);
         void collect(void);
+        void move(const sf::Vector2f&);
 
     private:
         Drawable _body;
         Animation _body_animation;
-
+        Movement _body_movement;
 };
 
 } // visual
