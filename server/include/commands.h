@@ -42,6 +42,7 @@ int cmd_right(serverdata_t *sdata, client_t *client, char *data);
 int cmd_inventory(serverdata_t *sdata, client_t *client, char *data);
 int cmd_take(serverdata_t *sdata, client_t *client, char *data);
 int cmd_set(serverdata_t *sdata, client_t *client, char *data);
+int cmd_connect_nbr(serverdata_t *sdata, client_t *client, char *data);
 
 int cmd_tna(serverdata_t *sdata, client_t *client, char *data);
 int cmd_msz(serverdata_t *sdata, client_t *client, char *data);
@@ -62,7 +63,8 @@ static const command_t AI_COMMANDS[] = {
     {"Fork", cmd_fork},
     {"Inventory", cmd_inventory},
     {"Take", cmd_take},
-    {"Set", cmd_set}
+    {"Set", cmd_set},
+    {"Connect_nbr", cmd_connect_nbr},
 };
 
 static const command_t *COMMANDS[] = {

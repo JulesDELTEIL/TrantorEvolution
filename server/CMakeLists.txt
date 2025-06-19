@@ -28,6 +28,7 @@ add_executable( ${PROJECT_NAME}
     ${SERVER_AI_CMD_DIR}right.c
     ${SERVER_AI_CMD_DIR}fork.c
     ${SERVER_AI_CMD_DIR}inventory.c
+    ${SERVER_AI_CMD_DIR}connect_nbr.c
     ${SERVER_AI_CMD_DIR}set.c
     ${SERVER_AI_CMD_DIR}take.c
     ${SERVER_GUI_CMD_DIR}tna.c
