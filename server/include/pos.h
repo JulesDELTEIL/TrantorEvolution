@@ -8,11 +8,9 @@
 #ifndef POS_H_
     #define POS_H_
 
-    #include "macros.h"
-
 typedef struct pos_s {
-    uint_t x;
-    uint_t y;
+    int x;
+    int y;
 } pos_t;
 
 #endif
