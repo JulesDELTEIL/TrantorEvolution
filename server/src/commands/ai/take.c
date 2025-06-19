@@ -19,11 +19,11 @@ static int take_resource(serverdata_t *sdata, client_t *client, int resource)
     int pl_y = client->player->pos.y;
 
     if (resource < 0 ||
-        sdata->game_data.map.tiles[pl_y][pl_y].resources[resource] == 0)
+        sdata->game_data.map.tiles[pl_x][pl_y].resources[resource] == 0)
         return EXIT_FAILURE;
     client->player->inventory[resource] += 1;
     pthread_mutex_lock(&(sdata->game_data.map.mutex));
-    sdata->game_data.map.tiles[pl_y][pl_y].resources[resource] -= 1;
+    sdata->game_data.map.tiles[pl_x][pl_y].resources[resource] -= 1;
     pthread_mutex_unlock(&(sdata->game_data.map.mutex));
     return EXIT_SUCCESS;
 }
@@ -49,5 +49,6 @@ int cmd_take(serverdata_t *sdata, client_t *client, char *data)
         send_data(client, "ko", NULL, sdata->debug);
     else
         send_data(client, "ok", NULL, sdata->debug);
+    set_action_end(client, sdata->args->freq, 7);
     return EXIT_SUCCESS;
 }
