@@ -101,8 +101,10 @@ void *map_thread(void *arg)
     server->game_data.map.tiles);
     while (server->is_running == true) {
         usleep(TICKS_REFILLS / server->args->freq);
+        pthread_mutex_lock(&(server->game_data.map.mutex));
         refill_map(server->game_data.map.tiles, server->args->width,
         server->args->height, &all_dens);
+        pthread_mutex_unlock(&(server->game_data.map.mutex));
     }
     return 0;
 }
