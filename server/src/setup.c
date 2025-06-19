@@ -24,6 +24,7 @@ serverdata_t setup_parameters(arguments_t *args)
 {
     serverdata_t sdata;
 
+    srand(time(NULL));
     sdata.debug = args->debug;
     sdata.port = args->port;
     sdata.address.sin_addr.s_addr = INADDR_ANY;
@@ -56,17 +57,10 @@ int setup_server(serverdata_t *sdata, arguments_t *args)
 int setempty_client(client_t *client)
 {
     client->fd = NOFD;
-    client->id = 0;
     client->type = UNSET;
-    client->team = NULL;
     client->buffer = NULL;
     client->act_end = 0;
-    client->player.level = 0;
-    client->player.x = 0;
-    client->player.y = 0;
-    client->player.direction = UP;
-    for (uint_t k = 0; k < NB_DIFF_ITEMS; k++)
-        client->player.inventory[k] = 0;
+    client->player = NULL;
 }
 
 fdarray_t setup_fds(int sockfd)

@@ -13,6 +13,7 @@
     #include <sys/wait.h>
     #include <netinet/in.h>
     #include <poll.h>
+    #include <pthread.h>
 
     #include "serverdata.h"
     #include "fdarray.h"
@@ -72,5 +73,17 @@ Setup the pthread arg for the map thread
 Returns O if working
 */
 int setup_map_thread(serverdata_t *sdata, pthread_t *mapthr);
+
+/*
+Set a new player in SDATA which will be
+linked to CLIENT and be part of TEAM_NAME
+*/
+int new_player(serverdata_t *sdata, fdarray_t *fdarray, client_t *client,
+    char *team_name);
+
+/*
+Deletes a player from the list in GAME depending on its ID
+*/
+int del_player(game_t *game, int id);
 
 #endif

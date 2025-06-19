@@ -2,7 +2,8 @@ project(zappy_server)
 
 ########## SETUP ##########
 set(SERVER_SRC_DIR "${PROJECT_SOURCE_DIR}/src/")
-set(SERVER_CMD_DIR "${PROJECT_SOURCE_DIR}/src/commands/")
+set(SERVER_AI_CMD_DIR "${PROJECT_SOURCE_DIR}/src/commands/ai/")
+set(SERVER_GUI_CMD_DIR "${PROJECT_SOURCE_DIR}/src/commands/gui/")
 set(SERVER_HDR_DIR "${PROJECT_SOURCE_DIR}/include/")
 set(SERVER_THR_DIR "${PROJECT_SOURCE_DIR}/src/map_thread/") 
 
@@ -20,11 +21,16 @@ add_executable( ${PROJECT_NAME}
     ${SERVER_SRC_DIR}debug.c
     ${SERVER_SRC_DIR}returnwitherror.c
     ${SERVER_SRC_DIR}end.c
+    ${SERVER_SRC_DIR}player.c
     ${SERVER_SRC_DIR}init_game.c
-    ${SERVER_CMD_DIR}tna.c
-    ${SERVER_CMD_DIR}msz.c
-    ${SERVER_CMD_DIR}bct.c
-    ${SERVER_CMD_DIR}mct.c
+    ${SERVER_AI_CMD_DIR}forward.c
+    ${SERVER_AI_CMD_DIR}left.c
+    ${SERVER_AI_CMD_DIR}right.c
+    ${SERVER_AI_CMD_DIR}fork.c
+    ${SERVER_GUI_CMD_DIR}tna.c
+    ${SERVER_GUI_CMD_DIR}msz.c
+    ${SERVER_GUI_CMD_DIR}bct.c
+    ${SERVER_GUI_CMD_DIR}mct.c
     ${SERVER_THR_DIR}init_map.c
     ${SERVER_THR_DIR}init_thread.c
 )

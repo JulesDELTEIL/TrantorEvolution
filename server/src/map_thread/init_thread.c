@@ -23,7 +23,8 @@ static void refill_tiles(map_t *tile)
 {
     biome_distribution_t dist;
 
-    tile->biome = get_random_biome();
+    if (tile->biome != PLAINS)
+        tile->biome = get_random_biome();
     for (int i = 0; i < NB_RESOURCES; i++)
         tile->resources[i] = 0;
     dist = biome_distributions[tile->biome];
@@ -96,7 +97,6 @@ void *map_thread(void *arg)
     serverdata_t *server = (serverdata_t *)arg;
     density_t all_dens = init_density(WORLD_DENS(server->args));
 
-    srand(time(NULL));
     first_map_refill(server->args->height,
     server->game_data.trantor_map);
     while (server->is_running == true) {

@@ -26,8 +26,17 @@ int closeconnection(serverdata_t *sdata, client_t *client)
 {
     close(client->fd);
     destroy_client(client);
+    if (client->type == AI)
+        del_player(&(sdata->game_data), client->player->id);
     setempty_client(client);
     return EXIT_SUCCESS;
+}
+
+static int set_new_client(serverdata_t *sdata, fdarray_t *fdarray,
+    int nextfree, int newfd)
+{
+    fdarray->fds[nextfree].fd = newfd;
+    fdarray->clients[nextfree].fd = newfd;
 }
 
 int openconnection(serverdata_t *sdata, fdarray_t *fdarray)
@@ -46,8 +55,7 @@ int openconnection(serverdata_t *sdata, fdarray_t *fdarray)
             (struct sockaddr*)&sdata->address, &sdata->addrlen);
     if (newfd < 0)
         returnwitherror(ERROR_ACCEPT, EXIT_FAILURE);
-    fdarray->fds[nextfree].fd = newfd;
-    fdarray->clients[nextfree].fd = newfd;
+    set_new_client(sdata, fdarray, nextfree, newfd);
     send_data(&(fdarray->clients[nextfree]), "WELCOME", NULL, sdata->debug);
     return EXIT_SUCCESS;
 }
