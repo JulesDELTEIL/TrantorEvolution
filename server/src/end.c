@@ -37,12 +37,24 @@ void destroy_map(map_t map)
     free(map.tiles);
 }
 
+static void destroy_eggs(egg_t *head)
+{
+    egg_t *temp = NULL;
+
+    while (head != NULL) {
+        temp = head->next;
+        free(head);
+        head = temp;
+    }
+}
+
 void destroy_teams(team_t *teams, int team_count)
 {
     if (!teams)
         return;
     for (int i = 0; i < team_count; i++) {
         free(teams[i].name);
+        destroy_eggs(teams[i].eggs);
     }
     free(teams);
 }
