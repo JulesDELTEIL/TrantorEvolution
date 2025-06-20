@@ -20,11 +20,9 @@ int search_events(serverdata_t *sdata, fdarray_t *fdarray, int k)
 {
     if (fdarray->clients[k].fd == NOFD)
         return EXIT_SUCCESS;
-    if (fdarray->fds[k].revents & POLLIN) {
-        if (receive_data(sdata, &(fdarray->clients[k])) == 12) {
+    if (fdarray->fds[k].revents & POLLIN)
+        if (receive_data(sdata, &(fdarray->clients[k])) == CLOSE_CONNECTION)
             fdarray->fds[k].fd = NOFD;
-        }
-    }
 }
 
 static int getnb_fd(fdarray_t *fdarray)
