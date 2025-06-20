@@ -8,26 +8,22 @@
 #include <cstdlib>
 
 #include "visual/entities/Tile.hpp"
-#include "ECSFactory.hpp"
 
 namespace gui {
 namespace visual {
 
-Tile::Tile(const sf::Vector2f& pos, BiomeTypes_e type) : AEntity(pos)
+Tile::Tile(const sf::Vector2f& pos, BiomeTypes_e type)
 {
-    _drawables["background"] = ecs::ECSFactory::createDraw("biome", pos.x, pos.y, static_cast<int>(type));
+    _biome.texture.loadFromFile(BIOME_TEXTURE_PATH);
+    _biome.sprite.setTexture(_biome.texture);
+    _biome.sprite.setTextureRect(TEXTURE_RECT.at(type));
+    _biome.sprite.setPosition(pos);
+    _biome.sprite.setOrigin({16.0f, 0.0f});
 }
 
-void Tile::display(sf::RenderTarget& win) const
+void Tile::draw(sf::RenderTarget& target)
 {
-    for (const auto& drawable : _drawables) {
-        drawable.second->draw(win);
-    }
-}
-
-void Tile::event(const sf::Event&)
-{
-
+    target.draw(_biome.sprite);
 }
 
 } // visual

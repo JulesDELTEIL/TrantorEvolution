@@ -12,19 +12,15 @@ add_executable( ${PROJECT_NAME}
     ${GUI_SRC_DIR}main.cpp
     ${GUI_SRC_DIR}core/Core.cpp
     ${GUI_SRC_DIR}core/Engine.cpp
-    ${GUI_SRC_DIR}visual/setup.cpp
     ${GUI_SRC_DIR}core/Parser.cpp
     ${GUI_SRC_DIR}visual/AScene.cpp
+    ${GUI_SRC_DIR}visual/Animation.cpp
+    ${GUI_SRC_DIR}visual/Movement.cpp
 
     # NETWORK
     ${GUI_SRC_DIR}network/Client.cpp
     ${GUI_SRC_DIR}network/Socket.cpp
     ${GUI_SRC_DIR}network/events.cpp
-
-    # DRAWABLES
-    ${GUI_SRC_DIR}visual/drawables/Biome.cpp
-    ${GUI_SRC_DIR}visual/drawables/Resource.cpp
-    ${GUI_SRC_DIR}visual/drawables/Body.cpp
 
     # ENTITIES
     ${GUI_SRC_DIR}visual/entities/Tile.cpp
@@ -32,11 +28,9 @@ add_executable( ${PROJECT_NAME}
     ${GUI_SRC_DIR}visual/entities/ResourceNode.cpp
 
     # LAYERS
-    ${GUI_SRC_DIR}visual/layers/DefaultLayer.cpp
     ${GUI_SRC_DIR}visual/layers/Land.cpp
 
     # SCENES
-    ${GUI_SRC_DIR}visual/scenes/DefaultScene.cpp
     ${GUI_SRC_DIR}visual/scenes/InGame.cpp
 )
 
@@ -45,7 +39,6 @@ target_link_libraries( ${PROJECT_NAME}
     sfml-graphics
     sfml-window
     sfml-system
-    ECS::ECS
 )
 
 target_include_directories( ${PROJECT_NAME}

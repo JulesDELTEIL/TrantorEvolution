@@ -2,12 +2,13 @@
 ** EPITECH PROJECT, 2025
 ** TrantorEvolution
 ** File description:
-** ILayer.hpp
+** IScene.hpp
 */
 
-#ifndef ILAYER_HPP_
-    #define ILAYER_HPP_
+#ifndef ISCENE_HPP_
+    #define ISCENE_HPP_
 
+    #include <SFML/Graphics/Rect.hpp>
     #include <SFML/Graphics/RenderTarget.hpp>
     #include <SFML/Window/Event.hpp>
 
@@ -16,10 +17,16 @@
 namespace gui {
 namespace visual {
 
-class ILayer {
+class IScene {
     public:
-        virtual void display(sf::RenderTarget&) const = 0;
+        virtual void display(sf::RenderTarget&) = 0;
         virtual void event(const sf::Event&, const network::NetEventPack&) = 0;
+    
+        virtual sf::View getView(void) = 0;
+        virtual void zoom(float) = 0;
+        virtual void move(const sf::Vector2f&) = 0;
+        virtual void move(float, float) = 0;
+
     private:
 
 };

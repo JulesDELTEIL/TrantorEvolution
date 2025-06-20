@@ -8,12 +8,7 @@
 #include <iostream>
 
 #include "core/Core.hpp"
-
-#include "visual/scenes/DefaultScene.hpp"
 #include "visual/scenes/InGame.hpp"
-#include "ECSFactory.hpp"
-#include "visual/setup.hpp"
-#include "network/events.hpp"
 
 namespace gui {
 namespace core {
@@ -26,8 +21,6 @@ Core::Core(int argc, const char *argv[])
         std::cerr << e.what() << std::endl;
         exit(84);
     }
-    setupVisual();
-    _scenes[visual::Scene_e::NONE] = std::make_unique<visual::DefaultScene>();
     _scenes[visual::Scene_e::IN_GAME] = std::make_unique<visual::InGame>();
     changeScene(visual::Scene_e::IN_GAME);
     try {
@@ -77,16 +70,6 @@ void Core::changeScene(const visual::Scene_e& scene)
 {
     _selected_scene = scene;
     _engine.window.setView(_scenes.at(_selected_scene)->getView());
-}
-
-void Core::setupVisual(void)
-{
-    ecs::ECSFactory::setDraw("biome", &visual::makeBiome);
-    ecs::ECSFactory::setDraw("resource", &visual::makeResource);
-    ecs::ECSFactory::setDraw("body", &visual::makeBody);
-    ecs::ECSFactory::setEntity("tile", &visual::makeTile);
-    ecs::ECSFactory::setEntity("trantorian", &visual::makeTrantorian);
-    ecs::ECSFactory::setEntity("resource_node", &visual::makeResourceNode);
 }
 
 } // core
