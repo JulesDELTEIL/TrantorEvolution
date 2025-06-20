@@ -29,21 +29,25 @@ class Queen(BaseRole):
     def decide_action(self):
         if self.give_birth:
             self.create_kingdom()
+            return
         if len(self.queue) == 0 :
             self.cycle += 1
             if self._can_incant():
-                self.queue.appendleft([Commands(Action.INCANTATION)])
-
+                self.queue.appendleft(Commands(Action.INCANTATION))
+                return
             if self.state.inventory.get("food", 0) < 2:
-                self.queue.appendleft([Commands(Action.TAKE, "food")])
-
+                self.queue.appendleft(Commands(Action.TAKE, "food"))
+                return
             if self.cycle < 4:
-                self.queue.appendleft([Commands(Action.TAKE, "food")])
+                self.queue.appendleft(Commands(Action.TAKE, "food"))
+                return
             else:
                 self.cycle = 0
-                self.queue.appendleft([Commands(Action.LOOK)])
-        
+                self.queue.appendleft(Commands(Action.LOOK))
+
     def _can_incant(self) -> bool:
+        if not self.state.vision :
+            return False
         requirements = self.state.motivation.LEVEL_REQUIREMENTS.get(self.state.level, {})
         current = self.state.vision[0].split()
         for stone, needed in requirements.items():

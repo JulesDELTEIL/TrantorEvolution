@@ -53,10 +53,11 @@ class Trantorian (ServerManager) :
         self.dimension = get_dimension(self.recv()) #je ne crois pas qu'on en ait besoin pour le moment mais c'est dans le protocole
 
     def send_action(self):
-        if len(self.player.queue) == 0 :
+        if not self.player.queue :
             self.player.decide_action()
-        action = self.player.queue.pop()
-        self.send((action.__str__() + "\n").encode())
+        if self.player.queue :
+            action = self.player.queue.pop()
+            self.send((action.__str__() + "\n").encode())
 
     def analyse_requests(self, message):
         message_left = message
