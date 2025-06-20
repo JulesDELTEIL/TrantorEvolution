@@ -16,7 +16,7 @@ class Nobody(BaseRole):
 
     def handle_broadcast(self, response_list):
         if len(response_list) >= 3:
-            if response_list[3] == "role" and (response_list[2][0] == "0"):
+            if response_list[2] == "role" and (response_list[1][0] == "0"):
                 return True
             if response_list[3] == "stop":
                 self.sock.shutdown(socket.SHUT_RDWR)
