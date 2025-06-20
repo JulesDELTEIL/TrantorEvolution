@@ -109,10 +109,8 @@ int new_player(serverdata_t *sdata, fdarray_t *fdarray, client_t *client,
 {
     int team_idx = find_team_idx(&(sdata->game_data), team_name);
 
-    if (team_idx < 0 || sdata->game_data.teams[team_idx].space_left <= 0) {
-        send_data(client, "ko", NULL, sdata->debug);
+    if (team_idx < 0 || sdata->game_data.teams[team_idx].space_left <= 0)
         return EXIT_FAILURE;
-    }
     add_player(&(sdata->game_data), client,
         &(sdata->game_data.teams[team_idx]));
     client->player->team->space_left -= 1;
