@@ -29,7 +29,6 @@ static int prepare_answer_message(serverdata_t *sdata, fdarray_t *fdarray,
     char answer[BUFSIZ] = {0};
 
     sprintf(answer, "%d, %s", 0, data);
-    printf("#%s#\n", answer);
     send_message_to_all(sdata, fdarray, client, answer);
 }
 
