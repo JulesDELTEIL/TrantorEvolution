@@ -55,7 +55,7 @@ class Trantorian (ServerManager) :
     def send_action(self):
         if len(self.player.queue) == 0 :
             self.player.decide_action()
-        action = self.player.queue.popleft()
+        action = self.player.queue.pop()
         self.send((action.__str__() + "\n").encode())
 
     def analyse_requests(self, message):
@@ -79,7 +79,6 @@ class Trantorian (ServerManager) :
 
 
     def handle_nobody(self, response_list):
-        print("stp")
         if self.player.handle_broadcast(response_list):
             self.player = ROLE_MAP[response_list[4]]
             return True
@@ -89,7 +88,6 @@ class Trantorian (ServerManager) :
         response_list = response.split()
         if isinstance(self.player, Nobody):
             if self.player.cycle > 5:
-                print("allezzzzzzz")
                 self.player = ROLE_MAP["First_Queen"]
                 return True
         if response_list[0] == "message":
