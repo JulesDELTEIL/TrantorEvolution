@@ -12,6 +12,7 @@ namespace visual {
 
 ResourceNode::ResourceNode(const sf::Vector2f& pos, ResourceType_e type, size_t quantity)
 {
+    _type = type;
     sf::Vector2f res_pos = {
         pos.x + std::rand() % RES_RANGE_X + RES_MIN_X,
         pos.y + std::rand() % RES_RANGE_Y + RES_MIN_Y
@@ -35,7 +36,7 @@ void ResourceNode::draw(sf::RenderTarget& target)
 
 sf::Vector2f ResourceNode::getCollectPosition(void)
 {
-    return _resource.sprite.getPosition() + sf::Vector2f(-5, 0);
+    return _resource.sprite.getPosition() + sf::Vector2f(-2, 0);
 }
 
 void ResourceNode::addQuantity(size_t to_add)
@@ -49,6 +50,11 @@ void ResourceNode::addQuantity(size_t to_add)
     scale.x = MIN_SCALE + new_quantity / SCALE_RATIO;
     scale.y = MIN_SCALE + new_quantity / SCALE_RATIO;
     _resource.sprite.setScale(scale);
+}
+
+ResourceType_e ResourceNode::getType(void)
+{
+    return _type;
 }
 
 } // visual

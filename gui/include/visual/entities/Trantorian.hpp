@@ -20,7 +20,7 @@
 namespace gui {
 namespace visual {
 
-    #define NB_TRANTORS 7
+    #define NB_TRANTORS 6
     #define TRANTOR_SCALE 0.08f
 
 enum BodyAnimIndex {

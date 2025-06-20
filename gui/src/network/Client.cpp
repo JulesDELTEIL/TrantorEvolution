@@ -45,9 +45,7 @@ void Client::checkEvent(void)
 
     _socket.pollServer();
     if (_socket.fds().revents & POLLIN) {
-        std::cout << "passage" << std::endl;
         getline(&buffer, &len, _stream.get());
-        std::cout << buffer << std::endl;
         command = splitCodeAndArg(buffer);
         if (CODE_EVENT_LINK.contains(command.first)) {
             _events.push({CODE_EVENT_LINK.at(command.first), command.second});
@@ -59,7 +57,6 @@ bool Client::pollEvent(NetEventPack& event)
 {
     if (_events.size() > 0) {
         event = _events.front();
-        std::cout << event.event << ": event poped" << std::endl;
         _events.pop();
         return true;
     } else 

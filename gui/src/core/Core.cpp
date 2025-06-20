@@ -8,7 +8,6 @@
 #include <iostream>
 
 #include "core/Core.hpp"
-
 #include "visual/scenes/InGame.hpp"
 
 namespace gui {

@@ -14,10 +14,10 @@ Trantorian::Trantorian(const sf::Vector2f& pos, const sf::Vector2i& pos_in_map, 
     _body(NB_TRANTORS),
     _type(NB_TRANTORS),
     _body_animation({
-        std::ref(_body[0]), std::ref(_body[1]), std::ref(_body[2]), std::ref(_body[3]), std::ref(_body[4]), std::ref(_body[5]), std::ref(_body[6])
+        std::ref(_body[0]), std::ref(_body[1]), std::ref(_body[2]), std::ref(_body[3]), std::ref(_body[4]), std::ref(_body[5])
     }),
     _body_movement({
-        std::ref(_body[0]), std::ref(_body[1]), std::ref(_body[2]), std::ref(_body[3]), std::ref(_body[4]), std::ref(_body[5]), std::ref(_body[6])
+        std::ref(_body[0]), std::ref(_body[1]), std::ref(_body[2]), std::ref(_body[3]), std::ref(_body[4]), std::ref(_body[5])
     })
 {
     lvl = level;
@@ -27,12 +27,12 @@ Trantorian::Trantorian(const sf::Vector2f& pos, const sf::Vector2i& pos_in_map, 
             pos.x + std::rand() % RES_RANGE_X + RES_MIN_X,
             pos.y + std::rand() % RES_RANGE_Y + RES_MIN_Y
         };
+        _body[i].sprite.setOrigin(sf::Vector2f(32, 48));
         _body[i].sprite.setPosition(random_pos);
         for (int d = 0; d < NB_BODY_ANIM; ++d) {
             _body_animation[i].addAnimation(BODY_ANIM_INFOS[d]);
         }
         _type[i] = IDLE;
-        _body[i].sprite.setOrigin(sf::Vector2f(32, 48));
         _body_animation[i].changeAnimation(_type[i]);
         _body[i].sprite.setScale(TRANTOR_SCALE, TRANTOR_SCALE);
         _body_movement[i].changeDestination(pos, 0);
@@ -60,7 +60,13 @@ void Trantorian::collect(const std::vector<std::shared_ptr<ResourceNode>>& resou
 {
     if (resources.size() > 0) {
         for (size_t i = 0; i < resources.size(); ++i) {
-            _type[i] = COLLECT;
+            int type = resources[i]->getType();
+            if (type == 0)
+                _type[i] = AXE;
+            else if (type == 1 || type == 2 || type == 3)
+                _type[i] = PICKAXE;
+            else
+                _type[i] = COLLECT;
             _body_animation[i].changeAnimation(WALK);
             _body_movement[i].changeDestination(resources[i]->getCollectPosition(), time);
         }
