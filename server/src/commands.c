@@ -44,9 +44,9 @@ static int set_teamname(serverdata_t *sdata, fdarray_t *fdarray,
         return EXIT_SUCCESS;
     }
     for (uint_t k = 0; sdata->args->team_name[k] != NULL; k++) {
-        if (strcmp(data, sdata->args->team_name[k]) == 0) {
+        if (strcmp(data, sdata->args->team_name[k]) == 0 &&
+            new_player(sdata, fdarray, client, data) == EXIT_SUCCESS) {
             client->type = AI;
-            new_player(sdata, fdarray, client, data);
             send_c_data_ai(sdata, client);
             return EXIT_SUCCESS;
         }
