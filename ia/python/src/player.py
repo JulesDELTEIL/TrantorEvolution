@@ -12,6 +12,7 @@ class PlayerState:
     def __init__(self):
         self.level = 1
         self.food = 10
+        self.egg_left = -1
         self.inventory = {}
         self.vision = []
         self.motivation = Motivation()
