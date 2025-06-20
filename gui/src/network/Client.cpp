@@ -59,8 +59,15 @@ bool Client::pollEvent(NetEventPack& event)
         event = _events.front();
         _events.pop();
         return true;
-    } else 
-        return false;
+    }
+    event.event = network::NONE;
+    event.pack.clear();
+    return false;
+}
+
+void Client::sendData(const std::string& msg) const
+{
+    write(_socket.getFd(), msg.data(), msg.size());
 }
 
 } // namespace network
