@@ -25,6 +25,8 @@ namespace visual {
     #define CENTER_MAP(map_height) (sf::Vector2f(1280.0f / 2, (780.0f - map_height * TILE_SIZE) / 2))
     #define MAP_POS(middle, x, y) (sf::Vector2f((middle.x - (TILE_SIZE / 2) * (x + y)) + (TILE_SIZE * y), middle.y + (8 * (x + y))))
 
+    #define ACT_TIME(x) ((x / this->_time_unit_speed) * 1000)
+
 struct ClearTile {
     float time;
     sf::Vector2i tile;
@@ -41,6 +43,8 @@ class Land : public ALayer {
 
     private:
         sf::Clock _clock;
+        size_t _time_unit_speed = 2;
+
         void loadTile(const network::NetPack&);
         BiomeTypes_e readBiomeType(const network::NetPack& pack);
         void updateTile(const network::NetPack&);

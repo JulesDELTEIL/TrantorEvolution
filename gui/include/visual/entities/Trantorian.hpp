@@ -20,18 +20,25 @@
 namespace gui {
 namespace visual {
 
+    #define NB_TRANTORS 7
+    #define TRANTOR_SCALE 0.15f
+
 enum BodyAnimIndex {
     IDLE = 0,
     WALK,
     COLLECT,
+    PICKAXE,
+    AXE,
 };
 
-    #define NB_BODY_ANIM 3
+    #define NB_BODY_ANIM 5
 
 static const std::vector<AnimationInfos> BODY_ANIM_INFOS = {
     {"assets/trantorians/body/Idle_Side-Sheet.png", {64, 64}, {4, 1}, {0, 0}, 0.3, sf::Clock()},
     {"assets/trantorians/body/Walk_Side-Sheet.png", {64, 64}, {6, 1}, {0, 0}, 0.1, sf::Clock()},
-    {"assets/trantorians/body/Collect_Side-Sheet.png", {64, 64}, {8, 1}, {0, 0}, 0.2, sf::Clock()}
+    {"assets/trantorians/body/Collect_Side-Sheet.png", {64, 64}, {8, 1}, {0, 0}, 0.2, sf::Clock()},
+    {"assets/trantorians/body/Crush_Side-Sheet.png", {64, 64}, {8, 1}, {0, 0}, 0.2, sf::Clock()},
+    {"assets/trantorians/body/Slice_Side-Sheet.png", {64, 64}, {8, 1}, {0, 0}, 0.2, sf::Clock()}
 };
 
 class Trantorian {
@@ -44,12 +51,12 @@ class Trantorian {
         void move(const sf::Vector2f&, float);
 
         sf::Vector2i map_pos;
+        size_t lvl;
     private:
-        BodyAnimIndex _type;
-        size_t _lvl;
-        Drawable _body;
-        Animation _body_animation;
-        Movement _body_movement;
+        std::vector<Drawable> _body;
+        std::vector<BodyAnimIndex> _type;
+        std::vector<Animation> _body_animation;
+        std::vector<Movement> _body_movement;
 };
 
 } // visual
