@@ -18,4 +18,14 @@ enum ressources_e {
     ANTIMATTER
 };
 
+static const char *RESOURCES_NAMES[] = {
+    "food",
+    "wood",
+    "rock",
+    "clay",
+    "metal",
+    "petrol",
+    "antimatter"
+};
+
 #endif /* !ITEMS_H_ */

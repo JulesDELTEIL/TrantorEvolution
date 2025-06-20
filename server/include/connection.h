@@ -36,12 +36,6 @@ Returns EXIT_SUCCESS or EXIT_FAILURE
 int server(arguments_t *args);
 
 /*
-Function to call at end of ftp server, used to destroy entities
-Returns EXIT_SUCCESS
-*/
-int close_server(serverdata_t *sdata, fdarray_t *fdarray);
-
-/*
 Setup the fdarray_t struct used to store all fds
 Returns a fdarray_t
 */
