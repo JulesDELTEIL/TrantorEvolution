@@ -20,18 +20,7 @@ DIMENSION_X = 0
 DIMENSION_Y = 1
 PLAYER_LEFT = 1
 
-def get_dimension(dimension_str) :
-    dimension_split = dimension_str.split()
-    if len(dimension_split) != 2 or not all([val.isdigit() for val in dimension_split]) :
-        raise Exception("Invalid dimension from server: %s" % dimension_str)
-    dimension_tuple = (int(dimension_split[DIMENSION_X]), int(dimension_split[DIMENSION_Y]))
-    return dimension_tuple
 
-def get_client_num(client_num_str) :
-    client_num_strip = client_num_str.strip()
-    if not client_num_strip.isdigit() :
-        raise Exception("Invalid client number left from server: %s" % client_num_str)
-    return int(client_num_strip)
 
 class Trantorian (ServerManager) :
     def __init__(self, host, port, team_name):
@@ -42,15 +31,44 @@ class Trantorian (ServerManager) :
         self.dimension = None
         self.player_num = None
         self.player = Nobody()
+        self.connect_function = [
+            self.get_welcome,
+            self.get_client_num,
+            self.get_dimension,
+        ]
         self.connect()
-        
-    def connect(self):
-        welcome = self.recv()
-        if welcome.strip() != "WELCOME":
+
+    def get_client_num(self, client_num_str) :
+        client_num_strip = client_num_str.strip()
+        if not client_num_strip.isdigit() :
+            raise Exception("Invalid client number left from server: %s" % client_num_str)
+        self.player_num = int(client_num_strip)
+
+    def get_dimension(self, dimension_str) :
+        dimension_split = dimension_str.split()
+        if len(dimension_split) != 2 or not all([val.isdigit() for val in dimension_split]) :
+            raise Exception("Invalid dimension from server: %s" % dimension_str)
+        dimension_tuple = (int(dimension_split[DIMENSION_X]), int(dimension_split[DIMENSION_Y]))
+        self.dimension = dimension_tuple
+
+    def get_welcome(self, welcome_str):
+        if welcome_str.strip() != "WELCOME":
             raise ConnectionError("Expected WELCOME message.")
-        self.sock.sendall(f"{self.team_name}\n".encode())
-        self.player_num = get_client_num(self.recv())
-        self.dimension = get_dimension(self.recv()) #je ne crois pas qu'on en ait besoin pour le moment mais c'est dans le protocole
+        self.send(f"{self.team_name}\n".encode())
+
+    def connect(self):
+        i = 0
+        message = ""
+        while i < 3 :
+            message += self.recv()
+            while message :
+                index = message.find("\n")
+                if index == -1:
+                    break
+                print("Turn, " , i)
+                self.connect_function[i](message[:index + 1])
+                message = message[index + 1:]
+                i += 1
 
     def send_action(self):
         if not self.player.queue :
@@ -65,7 +83,7 @@ class Trantorian (ServerManager) :
             index = message_left.find("\n")
             if index == -1:
                 break
-            if self.handle_response(message_left) :
+            if self.handle_response(message_left[:index + 1]) :
                 self.send_action()
             message_left = message_left[index + 1:]
         return message_left
