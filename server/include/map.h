@@ -7,7 +7,7 @@
 
 #ifndef MAP_H_
     #define MAP_H_
-    #include "mapTools.h"
+    #include "map_tools.h"
     #define FOOD_DENS 0.5
     #define WOOD_DENS 0.3
     #define ROCK_DENS 0.15
