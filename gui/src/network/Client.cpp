@@ -39,12 +39,12 @@ void Client::setSocket(const std::string &server, const int &port)
 
 void Client::checkEvent(void)
 {
-    char *buffer;
+    char *buffer = NULL;
     size_t len = BUFF_SIZE;
     Command command;
 
     _socket.pollServer();
-    if (_socket.fds().revents & POLLIN) {
+    if (_socket.fds().revents & POLLIN) {        
         getline(&buffer, &len, _stream.get());
         command = splitCodeAndArg(buffer);
         if (CODE_EVENT_LINK.contains(command.first)) {
@@ -59,8 +59,15 @@ bool Client::pollEvent(NetEventPack& event)
         event = _events.front();
         _events.pop();
         return true;
-    } else 
-        return false;
+    }
+    event.event = network::NONE;
+    event.pack.clear();
+    return false;
+}
+
+void Client::sendData(const std::string& msg) const
+{
+    write(_socket.getFd(), msg.data(), msg.size());
 }
 
 } // namespace network

@@ -50,12 +50,20 @@ void Core::display(void)
 void Core::events(void)
 {
     network::NetEventPack net_event;
+    sf::Event default_event;
 
-    _client.checkEvent();
-    while (_engine.window.pollEvent(_engine.events) || _client.pollEvent(net_event)) {
+    while (_engine.window.pollEvent(_engine.events)) {
         if (_engine.events.type == sf::Event::Closed)
-            _engine.window.close();
+        _engine.window.close();
         _scenes.at(_selected_scene)->event(_engine.events, net_event);
+    }
+    _client.checkEvent();
+    default_event.type = sf::Event::SensorChanged;
+    while (_client.pollEvent(net_event)) {
+        if (net_event.event == network::CON) {
+            _client.sendData("graphic\n");
+        }
+        _scenes.at(_selected_scene)->event(default_event, net_event);
     }
 }
 
