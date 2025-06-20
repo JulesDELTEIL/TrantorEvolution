@@ -32,3 +32,6 @@ class Foreman(BaseRole):
             self.queue.appendleft(Commands(Action.BROADCAST, 'kamikaze'))
         else:
             self.queue.appendleft(Commands(Action.BROADCAST, 'worker'))
+
+    def handle_broadcast(self, response_list):
+        return False

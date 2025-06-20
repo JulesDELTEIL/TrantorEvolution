@@ -23,7 +23,6 @@ class Nobody(BaseRole):
             return False
         return False
 
-
     def decide_action(self):
         self.cycle += 1
         if len(self.queue) == 0:

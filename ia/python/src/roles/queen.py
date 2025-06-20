@@ -50,3 +50,6 @@ class Queen(BaseRole):
             if current.count(stone) < needed:
                 return False
         return True
+
+    def handle_broadcast(self, response_list):
+        return False

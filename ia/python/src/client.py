@@ -93,7 +93,7 @@ class Trantorian (ServerManager) :
         if response_list[0] == "message":
             if isinstance(self.player, Nobody): # response du serveur -> "message K, text envoyé" -> ex avec notre protocol: "message K, [Queen] role Queen"
                 return self.handle_nobody(response_list)
-            return False
+            return self.player.handle_broadcast(response_list)
         else:
             self.player.state.update(response)
             return True

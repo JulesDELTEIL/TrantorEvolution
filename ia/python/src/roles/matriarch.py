@@ -26,3 +26,6 @@ class Matriarch(BaseRole):
         
         self._fork_count += 1
         self.queue.appendleft(Commands(Action.BROADCAST, 'kamikaze'))
+        
+    def handle_broadcast(self, response_list):
+        return False

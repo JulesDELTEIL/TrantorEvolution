@@ -38,4 +38,6 @@ class Worker(BaseRole):
                self.queue.appendleft(Commands(Action.SET, self.carry))
                self.carry = None
             # logique pour aller jusqu'au queens
-        
+
+    def handle_broadcast(self, response_list):
+        return False
