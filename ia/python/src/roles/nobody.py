@@ -15,12 +15,13 @@ class Nobody(BaseRole):
         super().__init__()
 
     def handle_broadcast(self, response_list):
-        if response_list[3] == "role" and (response_list[3][:1] == "0"):
-            return True
-        if response_list[3] == "stop":
-            self.sock.shutdown(socket.SHUT_RDWR)
-            self.sock.close()
-            return False
+        if len(response_list) >= 3:
+            if response_list[3] == "role" and (response_list[2][0] == "0"):
+                return True
+            if response_list[3] == "stop":
+                self.sock.shutdown(socket.SHUT_RDWR)
+                self.sock.close()
+                return False
         return False
 
     def decide_action(self):
