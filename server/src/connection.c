@@ -29,7 +29,7 @@ int closeconnection(serverdata_t *sdata, client_t *client)
     if (client->type == AI)
         del_player(&(sdata->game_data), client->player->id);
     setempty_client(client);
-    return EXIT_SUCCESS;
+    return 12;
 }
 
 static int set_new_client(serverdata_t *sdata, fdarray_t *fdarray,
