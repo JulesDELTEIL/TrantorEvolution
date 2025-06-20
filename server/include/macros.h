@@ -43,4 +43,6 @@ enum client_type_e {
     GUI = 1,
 };
 
+static const char GRAPHIC_TEAM[] = "GRAPHIC";
+
 #endif

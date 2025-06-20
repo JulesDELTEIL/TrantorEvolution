@@ -13,44 +13,56 @@
 #include "commands.h"
 #include "debug.h"
 #include "transmission.h"
+#include "functions.h"
 
-static int set_teamname(char **args_teamnames, client_t *client, char *data)
+static void send_c_data_gui(serverdata_t *sdata, client_t *client)
 {
-    if (strcmp(data, "graphic") == 0) {
-        client->team = strdup(data);
-        return EXIT_SUCCESS;
-    }
-    for (uint_t k = 0; args_teamnames[k] != NULL; k++) {
-        if (strcmp(data, args_teamnames[k]) == 0) {
-            client->team = strdup(data);
-            return EXIT_SUCCESS;
-        }
-    }
-    return EXIT_FAILURE;
-}
+    char data[BUFFSIZE] = {0};
 
-static int send_connection_datas(serverdata_t *sdata, client_t *client)
-{
-    char data[BUFFSIZE];
-
-    sprintf(data, "%d", client->id);
+    sprintf(data, "%d", -1);
     send_data(client, data, NULL, sdata->debug);
     sprintf(data, "%d %d", sdata->args->width, sdata->args->height);
     send_data(client, data, NULL, sdata->debug);
 }
 
-static void handle_unrecognized_code(serverdata_t *sdata, client_t *client,
-    char *data)
+static void send_c_data_ai(serverdata_t *sdata, client_t *client)
 {
-    if (client->team != NULL) {
-        send_data(client, "ko", NULL, sdata->debug);
-        return;
+    char data[BUFFSIZE] = {0};
+
+    sprintf(data, "%d", client->player->team->space_left);
+    send_data(client, data, NULL, sdata->debug);
+    sprintf(data, "%d %d", sdata->args->width, sdata->args->height);
+    send_data(client, data, NULL, sdata->debug);
+}
+
+static int set_teamname(serverdata_t *sdata, fdarray_t *fdarray,
+    client_t *client, char *data)
+{
+    if (strcmp(data, GRAPHIC_TEAM) == 0) {
+        client->type = GUI;
+        send_c_data_gui(sdata, client);
+        return EXIT_SUCCESS;
     }
-    if (set_teamname(sdata->args->team_name, client, data) == EXIT_FAILURE) {
-        send_data(client, "ko", NULL, sdata->debug);
-        return;
+    for (uint_t k = 0; sdata->args->team_name[k] != NULL; k++) {
+        if (strcmp(data, sdata->args->team_name[k]) == 0 &&
+            new_player(sdata, fdarray, client, data) == EXIT_SUCCESS) {
+            client->type = AI;
+            send_c_data_ai(sdata, client);
+            return EXIT_SUCCESS;
+        }
     }
-    send_connection_datas(sdata, client);
+    send_data(client, "ko", NULL, sdata->debug);
+    return EXIT_FAILURE;
+}
+
+static void handle_unrecognized_code(serverdata_t *sdata, fdarray_t *fdarray,
+    client_t *client)
+{
+    if (client->type == GUI)
+        send_data(client, "suc", NULL, sdata->debug);
+    else
+        send_data(client, "ko", NULL, sdata->debug);
+    return;
 }
 
 static int empty_client_buff(client_t *client, uint_t index)
@@ -90,8 +102,10 @@ static int parse_cmd(client_t *client, char *cmd, bool *nl_presence)
     return -1;
 }
 
-static int remove_end_spaces(char *data, uint_t end)
+static int remove_end_spaces(char *data, int end)
 {
+    if (end < 0)
+        return EXIT_FAILURE;
     for (uint_t k = end; k > 0; k++) {
         if (data[k] != ' ')
             return 0;
@@ -137,24 +151,23 @@ static int packet_parser(client_t *client, char *cmd, char *data)
     return EXIT_SUCCESS;
 }
 
-int buffer_handler(serverdata_t *sdata, client_t *client)
+int buffer_handler(serverdata_t *sdata, fdarray_t *fdarray, client_t *client)
 {
     char cmd[BUFFSIZE] = {0};
     char data[BUFFSIZE] = {0};
 
-    if (client == NULL)
-        return EXIT_FAILURE;
-    if (client->buffer == NULL)
+    if (client == NULL || client->buffer == NULL)
         return EXIT_FAILURE;
     if (sdata->debug)
         debug_buffer(client);
     if (packet_parser(client, cmd, data) == EXIT_FAILURE)
         return EXIT_FAILURE;
-    for (uint_t k = 0; k < NB_USER_COMMANDS; k++)
-        if (strcmp(cmd, USER_COMMANDS[k].command) == 0) {
-            USER_COMMANDS[k].handler(sdata, client, data);
-            return EXIT_SUCCESS;
-        }
-    handle_unrecognized_code(sdata, client, cmd);
+    if (client->type == UNSET)
+        return set_teamname(sdata, fdarray, client, cmd);
+    for (uint_t k = 0; k < NB_COMMANDS[client->type]; k++)
+        if (strcmp(cmd, COMMANDS[client->type][k].command) == 0)
+            return COMMANDS[client->type][k].handler(sdata,
+                fdarray, client, data);
+    handle_unrecognized_code(sdata, fdarray, client);
     return EXIT_FAILURE;
 }
