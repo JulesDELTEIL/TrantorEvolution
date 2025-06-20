@@ -11,7 +11,8 @@
 
 #include "transmission.h"
 
-int cmd_tna(serverdata_t *sdata, client_t *client, char *data)
+int cmd_tna(serverdata_t *sdata, fdarray_t *fdarray,
+    client_t *client, char *data)
 {
     int rc = DEFAULTRC;
 

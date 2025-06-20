@@ -25,6 +25,18 @@ typedef enum player_dir_e {
     W
 } player_dir_t;
 
+typedef enum action_status_e {
+    NONE,
+    ONGOING,
+    DONE,
+} action_status_t;
+
+typedef struct action_s {
+    action_status_t status;
+    size_t end;
+    char *cmd;
+} action_t;
+
 /*
 struct player_t :
 - size_t level
@@ -38,6 +50,7 @@ typedef struct player_s {
     size_t level;
     pos_t pos;
     player_dir_t orientation;
+    action_t action;
     uint_t inventory[NB_DIFF_ITEMS];
     struct player_s *next;
 } player_t;
@@ -57,7 +70,6 @@ typedef struct client_s {
     int fd;
     int type;
     char *buffer;
-    size_t act_end;
     player_t *player;
 } client_t;
 

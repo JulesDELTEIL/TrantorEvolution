@@ -1,8 +1,8 @@
 /*
-** EPITECH PROJECT, 2025
+** EPITECH PROJECT, 2024
 ** zappy
 ** File description:
-** idn.c
+** fork.c
 */
 
 #include <unistd.h>
@@ -11,8 +11,9 @@
 #include <stdio.h>
 
 #include "transmission.h"
+#include "commands.h"
 
-int cmd_msz(serverdata_t *sdata, fdarray_t *fdarray,
+int cmd_connect_nbr(serverdata_t *sdata, fdarray_t *fdarray,
     client_t *client, char *data)
 {
     char answer[BUFFSIZE] = {0};
@@ -22,7 +23,7 @@ int cmd_msz(serverdata_t *sdata, fdarray_t *fdarray,
         send_data(client, "ko", NULL, sdata->debug);
         return EXIT_FAILURE;
     }
-    sprintf(answer, "%d %d", sdata->args->width, sdata->args->height);
-    send_data(client, "msz", answer, sdata->debug);
+    sprintf(answer, "%d", client->player->team->space_left);
+    send_data(client, answer, NULL, sdata->debug);
     return EXIT_SUCCESS;
 }

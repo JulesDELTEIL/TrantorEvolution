@@ -17,13 +17,13 @@ static int fill_answer(char *answer, serverdata_t *sdata, int x, int y)
     sprintf(answer, "%d %d %d %d %d %d %d %d %d",
         x,
         y,
-        sdata->game_data.trantor_map[x][y].resources[0],
-        sdata->game_data.trantor_map[x][y].resources[1],
-        sdata->game_data.trantor_map[x][y].resources[2],
-        sdata->game_data.trantor_map[x][y].resources[3],
-        sdata->game_data.trantor_map[x][y].resources[4],
-        sdata->game_data.trantor_map[x][y].resources[5],
-        sdata->game_data.trantor_map[x][y].resources[6]
+        sdata->game_data.map.tiles[x][y].resources[0],
+        sdata->game_data.map.tiles[x][y].resources[1],
+        sdata->game_data.map.tiles[x][y].resources[2],
+        sdata->game_data.map.tiles[x][y].resources[3],
+        sdata->game_data.map.tiles[x][y].resources[4],
+        sdata->game_data.map.tiles[x][y].resources[5],
+        sdata->game_data.map.tiles[x][y].resources[6]
     );
 }
 
@@ -51,7 +51,8 @@ static int extract_positions(char *data, int *x, int *y)
     return EXIT_SUCCESS;
 }
 
-int cmd_bct(serverdata_t *sdata, client_t *client, char *data)
+int cmd_bct(serverdata_t *sdata, fdarray_t *fdarray,
+    client_t *client, char *data)
 {
     char answer[BUFFSIZE] = {0};
     int rc = DEFAULTRC;

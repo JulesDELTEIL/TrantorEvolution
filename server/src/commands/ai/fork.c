@@ -22,7 +22,8 @@ static int add_egg(player_t *player)
     return EXIT_SUCCESS;
 }
 
-int cmd_fork(serverdata_t *sdata, client_t *client, char *data)
+int cmd_fork(serverdata_t *sdata, fdarray_t *fdarray,
+    client_t *client, char *data)
 {
     int rc = DEFAULTRC;
 

@@ -44,7 +44,7 @@ static int init_spawn(game_t *game, uint_t w, uint_t h)
     try.x = x;
     try.y = y;
     game->spawn = try;
-    game->trantor_map[x][y].biome = PLAINS;
+    game->map.tiles[x][y].biome = PLAINS;
     return EXIT_SUCCESS;
 }
 
@@ -53,7 +53,8 @@ game_t init_game(arguments_t *args)
     game_t game_data;
 
     game_data.nb_of_teams = get_nb_of_teams(args);
-    game_data.trantor_map = init_map(args->width, args->height);
+    game_data.map.tiles = init_map(args->width, args->height);
+    pthread_mutex_init(&(game_data.map.mutex), NULL);
     game_data.players = NULL;
     game_data.next = 0;
     game_data.teams = init_teams(args->team_name,

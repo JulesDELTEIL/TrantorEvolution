@@ -7,7 +7,7 @@
 
 #ifndef MAP_H_
     #define MAP_H_
-    #include "map_tools.h"
+
     #define FOOD_DENS 0.5
     #define WOOD_DENS 0.3
     #define ROCK_DENS 0.15
@@ -24,15 +24,20 @@ struct map_t :
  - unsigned int resources = array of every resources avaible
  - unsigned int biome = current biome
 */
-typedef struct map_s {
+typedef struct tile_s {
     unsigned int resources[NB_RESOURCES];
     unsigned int biome;
+} tile_t;
+
+typedef struct map_s {
+    tile_t **tiles;
+    pthread_mutex_t mutex;
 } map_t;
 
 /*
 init the map depending of the width and heigt
 */
-map_t **init_map(int X, int Y);
+tile_t **init_map(int X, int Y);
 
 /*
 init the thread for the map

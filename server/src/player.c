@@ -69,6 +69,9 @@ static int add_player(game_t *game, client_t *client, team_t *team)
     } else
         new->pos = game->spawn;
     new->orientation = N;
+    new->action.status = NONE;
+    new->action.end = 0;
+    new->action.cmd = NULL;
     for (uint_t k = 0; k < NB_DIFF_ITEMS; k++)
         new->inventory[k] = 0;
     new->next = game->players;
@@ -106,10 +109,8 @@ int new_player(serverdata_t *sdata, fdarray_t *fdarray, client_t *client,
 {
     int team_idx = find_team_idx(&(sdata->game_data), team_name);
 
-    if (team_idx < 0 || sdata->game_data.teams[team_idx].space_left <= 0) {
-        send_data(client, "ko", NULL, sdata->debug);
+    if (team_idx < 0 || sdata->game_data.teams[team_idx].space_left <= 0)
         return EXIT_FAILURE;
-    }
     add_player(&(sdata->game_data), client,
         &(sdata->game_data.teams[team_idx]));
     client->player->team->space_left -= 1;

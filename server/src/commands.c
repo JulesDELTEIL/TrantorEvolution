@@ -44,9 +44,9 @@ static int set_teamname(serverdata_t *sdata, fdarray_t *fdarray,
         return EXIT_SUCCESS;
     }
     for (uint_t k = 0; sdata->args->team_name[k] != NULL; k++) {
-        if (strcmp(data, sdata->args->team_name[k]) == 0) {
+        if (strcmp(data, sdata->args->team_name[k]) == 0 &&
+            new_player(sdata, fdarray, client, data) == EXIT_SUCCESS) {
             client->type = AI;
-            new_player(sdata, fdarray, client, data);
             send_c_data_ai(sdata, client);
             return EXIT_SUCCESS;
         }
@@ -166,7 +166,8 @@ int buffer_handler(serverdata_t *sdata, fdarray_t *fdarray, client_t *client)
         return set_teamname(sdata, fdarray, client, cmd);
     for (uint_t k = 0; k < NB_COMMANDS[client->type]; k++)
         if (strcmp(cmd, COMMANDS[client->type][k].command) == 0)
-            return COMMANDS[client->type][k].handler(sdata, client, data);
+            return COMMANDS[client->type][k].handler(sdata,
+                fdarray, client, data);
     handle_unrecognized_code(sdata, fdarray, client);
     return EXIT_FAILURE;
 }
