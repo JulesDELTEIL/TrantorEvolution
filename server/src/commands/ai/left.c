@@ -19,7 +19,8 @@ static void rotate_player(player_t *player)
         player->orientation = N;
 }
 
-int cmd_left(serverdata_t *sdata, client_t *client, char *data)
+int cmd_left(serverdata_t *sdata, fdarray_t *fdarray,
+    client_t *client, char *data)
 {
     int rc = DEFAULTRC;
 

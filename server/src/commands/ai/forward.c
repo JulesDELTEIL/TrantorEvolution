@@ -45,7 +45,8 @@ static int move_player(player_t *player)
     return EXIT_FAILURE;
 }
 
-int cmd_forward(serverdata_t *sdata, client_t *client, char *data)
+int cmd_forward(serverdata_t *sdata, fdarray_t *fdarray,
+    client_t *client, char *data)
 {
     int rc = DEFAULTRC;
 
