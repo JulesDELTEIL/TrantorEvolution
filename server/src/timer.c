@@ -16,5 +16,5 @@ void set_action_end(client_t *client, int freq, int ticks)
     struct timeval tp;
 
     gettimeofday(&tp, NULL);
-    client->act_end = (tp.tv_sec * 1000 + tp.tv_usec / 1000) + (size_t)delay;
+    client->player->action.end = (tp.tv_sec * 1000 + tp.tv_usec / 1000) + (size_t)delay;
 }

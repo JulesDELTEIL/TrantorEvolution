@@ -69,6 +69,9 @@ static int add_player(game_t *game, client_t *client, team_t *team)
     } else
         new->pos = game->spawn;
     new->orientation = N;
+    new->action.status = NONE;
+    new->action.end = 0;
+    new->action.cmd = NULL;
     for (uint_t k = 0; k < NB_DIFF_ITEMS; k++)
         new->inventory[k] = 0;
     new->next = game->players;
