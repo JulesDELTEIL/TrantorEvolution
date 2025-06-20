@@ -44,6 +44,7 @@ class Commands:
         Action.FORK: {"time": 42, "response success": ["ok"], "response error": ""},
         Action.INCANTATION: {"time": 300, "response success": ["Elevation underway", "Current level: "], "response error": "ko"},
         Action.CONNECT_NBR: {"time:": 0, "response success": ["value"]},
-        Action.EJECT: {"time": 7, "response success": ["ok"], "response error": "ko"}
+        Action.EJECT: {"time": 7, "response success": ["ok"], "response error": "ko"},
+        Action.NONE: {"time": 0, "response success": ["ok"], "response error": ""}
     }
     
