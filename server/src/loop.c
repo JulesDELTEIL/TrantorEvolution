@@ -71,8 +71,11 @@ static int check_client_buffer(serverdata_t *sdata, fdarray_t *fdarray,
     struct timeval tp;
 
     gettimeofday(&tp, NULL);
-    if ((tp.tv_sec * 1000 + tp.tv_usec / 1000) >= client->act_end) {
-        client->act_end = 0;
+    if (client->player == NULL) {
+        buffer_handler(sdata, fdarray, client);
+    } else if ((tp.tv_sec * 1000 + tp.tv_usec / 1000) >=
+        client->player->action.end) {
+        client->player->action.end = 0;
         buffer_handler(sdata, fdarray, client);
     }
     return EXIT_SUCCESS;
