@@ -13,7 +13,7 @@ from sqlite3 import connect
 from src.roles.role_map import ROLE_MAP
 from src.roles.nobody import Nobody
 from src.utils import recv_until_newline
-from src.action import Action
+from src.action import Action, Commands
 from src.server_manager import ServerManager
 
 DIMENSION_X = 0
@@ -43,6 +43,21 @@ class Trantorian (ServerManager) :
         self.player_num = None
         self.player = Nobody()
         self.connect()
+        self.COMMANDS = {
+            Action.FORWARD: self.void(),
+            Action.LEFT: self.void(),
+            Action.RIGHT: self.void(),
+            Action.LOOK: self.void(),
+            Action.INVENTORY: self.void(),
+            Action.BROADCAST: self.void(),
+            Action.TAKE: self.void(),
+            Action.SET: self.void(),
+            Action.FORK: self._spawn_new_client(),
+            Action.INCANTATION: self.void(),
+            Action.CONNECT_NBR: self.void(),
+            Action.EJECT: self.void(),
+            Action.NONE:self.void()
+        }
         
     def connect(self):
         welcome = self.recv()
@@ -58,6 +73,7 @@ class Trantorian (ServerManager) :
         if self.player.queue :
             action = self.player.queue.pop()
             self.send((action.__str__() + "\n").encode())
+            self.player.last_sent = action.action
 
     def analyse_requests(self, message):
         message_left = message
@@ -81,7 +97,7 @@ class Trantorian (ServerManager) :
 
     def handle_nobody(self, response_list):
         if self.player.handle_broadcast(response_list):
-            self.player = ROLE_MAP[response_list[4]]
+            self.player = ROLE_MAP[response_list[3]]
             return True
         return False
 
@@ -95,9 +111,14 @@ class Trantorian (ServerManager) :
             if isinstance(self.player, Nobody): # response du serveur -> "message K, text envoyé" -> ex avec notre protocol: "message K, [Queen] role Queen"
                 return self.handle_nobody(response_list)
             return self.player.handle_broadcast(response_list)
-        else:
+        elif self.player.last_sent:
+            if response_list[0] == Commands.COMMANDS[self.player.last_sent]["response success"][0]:
+                self.COMMANDS[self.player.last_sent]
             self.player.state.update(response)
             return True
 
     def _spawn_new_client(self):
-        subprocess.Popen(["./zappy_ai", "-p", self.port, "-n", self.team_name, "-h", self.host])
+        subprocess.Popen(["./zappy_ai", "-p", str(self.port), "-n", self.team_name, "-h", self.host])
+        
+    def void(self):
+        return
