@@ -60,7 +60,7 @@ void Core::events(void)
     default_event.type = sf::Event::SensorChanged;
     while (_client.pollEvent(net_event)) {
         if (net_event.event == network::CON) {
-            _client.sendData("graphic\n");
+            _client.sendData(AUTHENTIFICATOR);
         }
         _scenes.at(_selected_scene)->event(default_event, net_event);
     }

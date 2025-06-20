@@ -67,8 +67,8 @@ bool Client::pollEvent(NetEventPack& event)
 
 void Client::sendData(const std::string& msg) const
 {
-    write(_socket.getFd(), msg.data(), msg.size());
+    std::string to_send(msg);
+    write(_socket.getFd(), to_send.append("\n").data(), msg.size());
 }
-
 } // namespace network
 } // namespace gui

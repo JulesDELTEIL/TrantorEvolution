@@ -15,6 +15,7 @@
     
     #define CODE_LEN 3
     #define BUFF_SIZE 1024
+    #define AUTHENTIFICATOR "GRAPHIC"
 
 namespace gui {
 namespace network {
