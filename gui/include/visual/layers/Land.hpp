@@ -9,6 +9,7 @@
     #define LAND_HPP_
 
     #include <map>
+    #include <SFML/System/Clock.hpp>
 
     #include "visual/interfaces/ALayer.hpp"
 
@@ -24,6 +25,11 @@ namespace visual {
     #define CENTER_MAP(map_height) (sf::Vector2f(1280.0f / 2, (780.0f - map_height * TILE_SIZE) / 2))
     #define MAP_POS(middle, x, y) (sf::Vector2f((middle.x - (TILE_SIZE / 2) * (x + y)) + (TILE_SIZE * y), middle.y + (8 * (x + y))))
 
+struct ClearTile {
+    float time;
+    sf::Vector2i tile;
+};
+
 class Land : public ALayer {
     public:
         Land();
@@ -34,13 +40,16 @@ class Land : public ALayer {
     
 
     private:
+        sf::Clock _clock;
         void loadTile(const network::NetPack&);
         BiomeTypes_e readBiomeType(const network::NetPack& pack);
         void updateTile(const network::NetPack&);
         sf::Vector2f _map_size = {-1, -1};
         bool _map_set = false;
 
-        void addResourceInTile(int, int, const sf::Vector2f&, ResourceType_e);
+        void addResourceInTile(int, int, const sf::Vector2f&, ResourceType_e, size_t);
+        void clearResources(void);
+        std::vector<ClearTile> _clear_resources;
 
         void addTrantorian(const network::NetPack& pack);
         void posTrantorian(const network::NetPack& pack);

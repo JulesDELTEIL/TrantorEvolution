@@ -9,6 +9,9 @@
     #define TRANTORIAN_HPP_
 
     #include <SFML/Graphics/RenderTarget.hpp>
+    #include <memory>
+
+    #include "visual/entities/ResourceNode.hpp"
 
     #include "visual/Drawable.hpp"
     #include "visual/Animation.hpp"
@@ -33,14 +36,17 @@ static const std::vector<AnimationInfos> BODY_ANIM_INFOS = {
 
 class Trantorian {
     public:
-        Trantorian(const sf::Vector2f& pos);
+        Trantorian(const sf::Vector2f& pos, const sf::Vector2i& pos_in_map, size_t level);
         ~Trantorian() = default;
 
         void draw(sf::RenderTarget&);
-        void collect(void);
+        void collect(const std::vector<std::shared_ptr<ResourceNode>>&, float);
         void move(const sf::Vector2f&, float);
 
+        sf::Vector2i map_pos;
     private:
+        BodyAnimIndex _type;
+        size_t _lvl;
         Drawable _body;
         Animation _body_animation;
         Movement _body_movement;

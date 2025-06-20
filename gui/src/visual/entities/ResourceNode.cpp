@@ -10,7 +10,7 @@
 namespace gui {
 namespace visual {
 
-ResourceNode::ResourceNode(const sf::Vector2f& pos, ResourceType_e type)
+ResourceNode::ResourceNode(const sf::Vector2f& pos, ResourceType_e type, size_t quantity)
 {
     sf::Vector2f res_pos = {
         pos.x + std::rand() % RES_RANGE_X + RES_MIN_X,
@@ -21,12 +21,34 @@ ResourceNode::ResourceNode(const sf::Vector2f& pos, ResourceType_e type)
     _resource.sprite.setTexture(_resource.texture);
     _resource.sprite.setTextureRect(RESOURCE_RECT);
     _resource.sprite.setOrigin(sf::Vector2f(RESOURCE_RECT.width / 2, RESOURCE_RECT.height));
-    _resource.sprite.setScale(0.4, 0.4);
+    _quantity = quantity;
+    _resource.sprite.setScale(
+        MIN_SCALE + _quantity / SCALE_RATIO,
+        MIN_SCALE + _quantity / SCALE_RATIO
+    );
 }
 
 void ResourceNode::draw(sf::RenderTarget& target)
 {
     target.draw(_resource.sprite);
+}
+
+sf::Vector2f ResourceNode::getCollectPosition(void)
+{
+    return _resource.sprite.getPosition() + sf::Vector2f(-5, 0);
+}
+
+void ResourceNode::addQuantity(size_t to_add)
+{
+    sf::Vector2f scale;
+    size_t new_quantity = to_add + _quantity;
+
+    _quantity = new_quantity;
+    if (new_quantity > SCALE_RATIO)
+        new_quantity = SCALE_RATIO;
+    scale.x = MIN_SCALE + new_quantity / SCALE_RATIO;
+    scale.y = MIN_SCALE + new_quantity / SCALE_RATIO;
+    _resource.sprite.setScale(scale);
 }
 
 } // visual

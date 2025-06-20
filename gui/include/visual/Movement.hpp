@@ -20,7 +20,7 @@ class Movement {
         ~Movement() = default;
 
         void changeDestination(const sf::Vector2f&, float);
-        void move(void);
+        bool move(void);
 
     private:
         std::reference_wrapper<Drawable> _drawable;

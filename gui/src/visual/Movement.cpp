@@ -27,7 +27,7 @@ void Movement::changeDestination(const sf::Vector2f& new_pos, float time_ms)
     _clock.restart();
 }
 
-void Movement::move(void)
+bool Movement::move(void)
 {
     float time_elapsed = _clock.getElapsedTime().asMilliseconds();
     float percent = 0;
@@ -38,7 +38,9 @@ void Movement::move(void)
             _drawable.get().sprite.getPosition() + _direction * percent
         );
         _last_time = time_elapsed;
+        return true;
     }
+    return false;
 }
 
 } // visual
