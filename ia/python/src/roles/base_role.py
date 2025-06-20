@@ -13,6 +13,7 @@ from src.action import Commands
 class BaseRole(ABC):
     def __init__(self):
         self.cycle: int = 0
+        self.last_sent = None
         self.queue = deque()
         self.state: PlayerState = PlayerState()
         
