@@ -13,29 +13,46 @@
 
     #include "macros.h"
     #include "items.h"
+    #include "team.h"
+    #include "pos.h"
 
     #define NB_DIFF_ITEMS 7
 
 typedef enum player_dir_e {
-    UP,
-    DOWN,
-    RIGHT,
-    LEFT
+    N = 1,
+    E,
+    S,
+    W
 } player_dir_t;
+
+typedef enum action_status_e {
+    NONE,
+    ONGOING,
+    DONE,
+} action_status_t;
+
+typedef struct action_s {
+    action_status_t status;
+    size_t end;
+    char *cmd;
+} action_t;
 
 /*
 struct player_t :
 - size_t level
 - uint_t x
 - uint_t y
-- uint_t direction
+- uint_t orientation
 */
 typedef struct player_s {
+    int id;
+    team_t *team;
     size_t level;
-    uint_t x;
-    uint_t y;
-    player_dir_t direction;
+    pos_t pos;
+    player_dir_t orientation;
+    action_t action;
     uint_t inventory[NB_DIFF_ITEMS];
+    struct player_s *next;
 } player_t;
 
 /*
@@ -51,12 +68,9 @@ struct client_t :
 */
 typedef struct client_s {
     int fd;
-    int id;
     int type;
-    char *team;
     char *buffer;
-    size_t act_end;
-    player_t player;
+    player_t *player;
 } client_t;
 
 /*

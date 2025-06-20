@@ -8,6 +8,8 @@
 #ifndef MAP_H_
     #define MAP_H_
 
+    #include <pthread.h>
+
     #define FOOD_DENS 0.5
     #define WOOD_DENS 0.3
     #define ROCK_DENS 0.15
@@ -16,7 +18,9 @@
     #define PETROL_DENS 0.08
     #define ANTIMATTER_DENS 0.05
     #define NB_RESOURCES 7
-    #define TICKS_REFILLS 20
+    #define NB_BIOMES 5
+    #define NOT_DEFINED -1
+    #define TICKS_REFILLS 20000
     #define WORLD_DENS(args) ((args)->width * (args)->height)
     #define X_COORD(i, heigt) (i / height)
     #define Y_COORD(i, heigt) (i % height)
@@ -34,15 +38,25 @@ struct map_t :
  - unsigned int resources = array of every resources avaible
  - unsigned int biome = current biome
 */
-typedef struct map_s {
+typedef struct tile_s {
     unsigned int resources[NB_RESOURCES];
     unsigned int biome;
+} tile_t;
+
+typedef struct map_s {
+    tile_t **tiles;
+    pthread_mutex_t mutex;
 } map_t;
 
 /*
 init the map depending of the width and heigt
 */
-map_t **init_map(int X, int Y);
+tile_t **init_map(int X, int Y);
+
+/*
+init the thread for the map
+*/
+void *map_thread(void *arg);
 
 /*
 struct biome_distribution_t :
@@ -64,23 +78,23 @@ typedef struct density_s {
 const static biome_distribution_t biome_distributions[] = {
     [SEA] = {
         .biome_start = {3, 0, 0, 0, 0, 2, 0},
-        .refill = {0, 1, 0, 1, 2, 0, 1}
+        .refill = {3, 1, 1, 1, 2, 1, 1}
     },
     [FOREST] = {
         .biome_start = {3, 2, 0, 0, 0, 0, 0},
-        .refill = {0, 3, 1, 0, 0, 0, 1}
+        .refill = {3, 3, 1, 1, 1, 1, 1}
     },
     [MOUNTAINS] = {
         .biome_start = {3, 0, 2, 0, 0, 0, 0},
-        .refill = {0, 1, 2, 0, 0, 1, 1}
+        .refill = {3, 1, 2, 1, 1, 1, 1}
     },
     [PLAINS] = {
         .biome_start = {3, 0, 0, 2, 0, 0, 0},
-        .refill = {0, 1, 1, 3, 0, 1, 1}
+        .refill = {3, 1, 1, 3, 1, 1, 1}
     },
     [BEACH] = {
         .biome_start = {3, 0, 0, 2, 0, 2, 0},
-        .refill = {0, 0, 0, 2, 2, 1, 1}
+        .refill = {3, 1, 1, 2, 2, 1, 1}
     }
 };
 

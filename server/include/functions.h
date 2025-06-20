@@ -13,6 +13,7 @@
     #include <sys/wait.h>
     #include <netinet/in.h>
     #include <poll.h>
+    #include <pthread.h>
 
     #include "serverdata.h"
     #include "fdarray.h"
@@ -33,7 +34,7 @@ int setup_server(serverdata_t *sdata, arguments_t *args);
 Function to call at end of ftp server, used to destroy entities
 Returns EXIT_SUCCESS
 */
-int close_server(serverdata_t *sdata, fdarray_t *fdarray);
+int close_server(serverdata_t *sdata, fdarray_t *fdarray, pthread_t *mapthr);
 
 /*
 Destroy client datas, will not set it to default values
@@ -66,5 +67,23 @@ Displays an error message MSG on the error output
 Returns ERRORCODE
 */
 int returnwitherror(const char *msg, int errorcode);
+
+/*
+Setup the pthread arg for the map thread
+Returns O if working
+*/
+int setup_map_thread(serverdata_t *sdata, pthread_t *mapthr);
+
+/*
+Set a new player in SDATA which will be
+linked to CLIENT and be part of TEAM_NAME
+*/
+int new_player(serverdata_t *sdata, fdarray_t *fdarray, client_t *client,
+    char *team_name);
+
+/*
+Deletes a player from the list in GAME depending on its ID
+*/
+int del_player(game_t *game, int id);
 
 #endif
