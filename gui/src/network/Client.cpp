@@ -15,8 +15,13 @@
 namespace gui {
 namespace network {
 
-static Command splitCodeAndArg
-    (const std::string &string)
+Client::~Client()
+{
+    _network_runing = false;
+    _network.join();
+}
+
+static Command splitCodeAndArg(const std::string &string)
 {
     std::string temp;
     std::string code;
@@ -35,33 +40,49 @@ void Client::setSocket(const std::string &server, const int &port)
 {
     _socket.setSocket(server, port);
     _stream.reset(fdopen(_socket.getFd(), "r"));
+    _network_runing = true;
+    _network = std::thread(&Client::checkEvent, this);
 }
 
 void Client::checkEvent(void)
 {
-    char *buffer = NULL;
-    size_t len = BUFF_SIZE;
-    Command command;
+    int rc = 0;
 
-    _socket.pollServer();
-    if (_socket.fds().revents & POLLIN) {
-        getline(&buffer, &len, _stream.get());
-        command = splitCodeAndArg(buffer);
-        if (CODE_EVENT_LINK.contains(command.first)) {
-            _events.push({CODE_EVENT_LINK.at(command.first), command.second});
+    while (_network_runing) {
+        _socket.pollServer();
+        if (_socket.fds().revents & POLLIN) {
+            char tempBuffer[BUFSIZ] = {0};
+            rc = read(_socket.getFd(), tempBuffer, BUFSIZ);
+            if (rc > 0) {
+                for (int k = 0; k < rc; k++)
+                    _buffer.push_back(tempBuffer[k]);
+            }
         }
     }
 }
 
 bool Client::pollEvent(NetEventPack& event)
 {
-    if (_events.size() > 0) {
-        event = _events.front();
-        _events.pop();
+    size_t size = _buffer.size();
+    std::vector<char> tempV = _buffer;
+    size_t k = 0;
+    std::string command;
+
+    event.event = network::NONE;
+    event.pack = {};
+    if (size == 0)
+        return false;
+    for (k = 0; _buffer[k] != '\n'; ++k)
+        command.push_back(_buffer[k]);
+    _buffer.clear();
+    for (size_t i = k + 1; i < tempV.size(); i++)
+        _buffer.push_back(tempV[i]);
+    Command infos = splitCodeAndArg(command);
+    if (CODE_EVENT_LINK.contains(infos.first)) {
+        event.event = CODE_EVENT_LINK.at(infos.first);
+        event.pack = infos.second;
         return true;
     }
-    event.event = network::NONE;
-    event.pack.clear();
     return false;
 }
 

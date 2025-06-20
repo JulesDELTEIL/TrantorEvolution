@@ -113,7 +113,6 @@ void Land::addTrantorian(const network::NetPack& pack)
     int x = pack[1].getInt();
     int y = pack[2].getInt();
     sf::Vector2f pos = MAP_POS(CENTER_MAP(_map_size.y), x, y);
-    pos.y += TILE_SIZE / 4;
     std::shared_ptr<Trantorian> newT = std::make_shared<Trantorian>(pos, sf::Vector2i(x, y), pack[4].getSize_t());
 
     _tiles[x][y].trantorians[pack[0].getSize_t()] = newT;

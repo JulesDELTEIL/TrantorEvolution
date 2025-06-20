@@ -56,11 +56,12 @@ void Core::events(void)
         _engine.window.close();
         _scenes.at(_selected_scene)->event(_engine.events, net_event);
     }
-    _client.checkEvent();
     default_event.type = sf::Event::SensorChanged;
     while (_client.pollEvent(net_event)) {
         if (net_event.event == network::CON) {
-            _client.sendData("graphic\n");
+            _client.sendData("GRAPHIC\n");
+            _client.sendData("msz\n");
+            _client.sendData("mct\n");
         }
         _scenes.at(_selected_scene)->event(default_event, net_event);
     }
