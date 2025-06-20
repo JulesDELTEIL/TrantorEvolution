@@ -16,7 +16,7 @@
 
 static int get_random_biome(void)
 {
-    return rand() % 5;
+    return rand() % NB_BIOMES;
 }
 
 static void refill_tiles(map_t *tile)
