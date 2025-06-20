@@ -9,39 +9,54 @@
     #define TRANTORIAN_HPP_
 
     #include <SFML/Graphics/RenderTarget.hpp>
+    #include <memory>
+
+    #include "visual/entities/ResourceNode.hpp"
 
     #include "visual/Drawable.hpp"
     #include "visual/Animation.hpp"
+    #include "visual/Movement.hpp"
 
 namespace gui {
 namespace visual {
+
+    #define NB_TRANTORS 6
+    #define TRANTOR_SCALE 0.08f
 
 enum BodyAnimIndex {
     IDLE = 0,
     WALK,
     COLLECT,
+    PICKAXE,
+    AXE,
 };
 
-    #define NB_BODY_ANIM 3
+    #define NB_BODY_ANIM 5
 
 static const std::vector<AnimationInfos> BODY_ANIM_INFOS = {
     {"assets/trantorians/body/Idle_Side-Sheet.png", {64, 64}, {4, 1}, {0, 0}, 0.3, sf::Clock()},
     {"assets/trantorians/body/Walk_Side-Sheet.png", {64, 64}, {6, 1}, {0, 0}, 0.1, sf::Clock()},
-    {"assets/trantorians/body/Collect_Side-Sheet.png", {64, 64}, {8, 1}, {0, 0}, 0.2, sf::Clock()}
+    {"assets/trantorians/body/Collect_Side-Sheet.png", {64, 64}, {8, 1}, {0, 0}, 0.2, sf::Clock()},
+    {"assets/trantorians/body/Crush_Side-Sheet.png", {64, 64}, {8, 1}, {0, 0}, 0.2, sf::Clock()},
+    {"assets/trantorians/body/Slice_Side-Sheet.png", {64, 64}, {8, 1}, {0, 0}, 0.2, sf::Clock()}
 };
 
 class Trantorian {
     public:
-        Trantorian(const sf::Vector2f& pos);
+        Trantorian(const sf::Vector2f& pos, const sf::Vector2i& pos_in_map, size_t level);
         ~Trantorian() = default;
 
         void draw(sf::RenderTarget&);
-        void collect(void);
+        void collect(const std::vector<std::shared_ptr<ResourceNode>>&, float);
+        void move(const sf::Vector2f&, float);
 
+        sf::Vector2i map_pos;
+        size_t lvl;
     private:
-        Drawable _body;
-        Animation _body_animation;
-
+        std::vector<Drawable> _body;
+        std::vector<BodyAnimIndex> _type;
+        std::vector<Animation> _body_animation;
+        std::vector<Movement> _body_movement;
 };
 
 } // visual

@@ -44,7 +44,7 @@ void Client::checkEvent(void)
     Command command;
 
     _socket.pollServer();
-    if (_socket.fds().revents & POLLIN) {        
+    if (_socket.fds().revents & POLLIN) {
         getline(&buffer, &len, _stream.get());
         command = splitCodeAndArg(buffer);
         if (CODE_EVENT_LINK.contains(command.first)) {

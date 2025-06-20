@@ -36,7 +36,8 @@ void Animation::addAnimation(const std::string& path, size_t frame_sizeX, size_t
 
 void Animation::changeAnimation(int index)
 {
-    if (index >= static_cast<int>(_animation.size()) && index < NO_ANIM)
+    if (index >= static_cast<int>(_animation.size()) && index < NO_ANIM &&
+        index == _anim_index)
         return;
     _anim_index = index;
     if (_anim_index == NO_ANIM)

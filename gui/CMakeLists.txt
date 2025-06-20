@@ -15,6 +15,7 @@ add_executable( ${PROJECT_NAME}
     ${GUI_SRC_DIR}core/Parser.cpp
     ${GUI_SRC_DIR}visual/AScene.cpp
     ${GUI_SRC_DIR}visual/Animation.cpp
+    ${GUI_SRC_DIR}visual/Movement.cpp
 
     # NETWORK
     ${GUI_SRC_DIR}network/Client.cpp
