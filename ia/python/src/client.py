@@ -131,8 +131,6 @@ class Trantorian (ServerManager) :
         elif self.player.last_sent:
             if response_list[0] == Commands.COMMANDS[self.player.last_sent]["response success"][0]:
                 self.COMMANDS[self.player.last_sent]()
-                print(str(self.player.last_sent))
-                print("worst if EUW")
             self.player.state.update(response)
             return True
 
