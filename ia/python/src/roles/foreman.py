@@ -11,6 +11,7 @@ from src.action import Commands, Action
 class Foreman(BaseRole):
     def __init__(self):
         super().__init__()
+        self.direction = Direction.UP
         self._initial_moves = 3
         self._fork_count = 0
     
@@ -21,6 +22,7 @@ class Foreman(BaseRole):
             self.queue.appendleft(Commands(Action.FORWARD))
 
         if self.cycle % 4 == 0:
+            self.queue.appendleft(Commands(Action.BROADCAST, "here"))
             self.queue.appendleft(Commands(Action.TAKE, 'food'))
 
         self.queue.appendleft(Commands(Action.FORK))
