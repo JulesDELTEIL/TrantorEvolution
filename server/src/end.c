@@ -65,6 +65,10 @@ static void destroy_players(player_t *head)
 
     while (head != NULL) {
         temp = head->next;
+        if (head->action.cmd != NULL)
+            free(head->action.cmd);
+        if (head->action.data != NULL)
+            free(head->action.data);
         free(head);
         head = temp;
     }

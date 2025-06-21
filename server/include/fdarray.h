@@ -35,6 +35,7 @@ typedef struct action_s {
     action_status_t status;
     size_t end;
     char *cmd;
+    char *data;
 } action_t;
 
 /*
