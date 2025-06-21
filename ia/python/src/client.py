@@ -138,5 +138,4 @@ class Trantorian (ServerManager) :
         subprocess.Popen(["./zappy_ai", "-p", str(self.port), "-n", self.team_name, "-h", self.host])
         
     def void(self):
-        print("left")
         return
