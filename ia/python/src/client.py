@@ -38,19 +38,19 @@ class Trantorian (ServerManager) :
         ]
         self.connect()
         self.COMMANDS = {
-            Action.FORWARD: self.void(),
-            Action.LEFT: self.void(),
-            Action.RIGHT: self.void(),
-            Action.LOOK: self.void(),
-            Action.INVENTORY: self.void(),
-            Action.BROADCAST: self.void(),
-            Action.TAKE: self.void(),
-            Action.SET: self.void(),
-            Action.FORK: self._spawn_new_client(),
-            Action.INCANTATION: self.void(),
-            Action.CONNECT_NBR: self.void(),
-            Action.EJECT: self.void(),
-            Action.NONE:self.void()
+            Action.FORWARD: self.void,
+            Action.LEFT: self.void,
+            Action.RIGHT: self.void,
+            Action.LOOK: self.void,
+            Action.INVENTORY: self.void,
+            Action.BROADCAST: self.void,
+            Action.TAKE: self.void,
+            Action.SET: self.void,
+            Action.FORK: self._spawn_new_client,
+            Action.INCANTATION: self.void,
+            Action.CONNECT_NBR: self.void,
+            Action.EJECT: self.void,
+            Action.NONE:self.void
         }
 
     def get_client_num(self, client_num_str: str) -> None:
@@ -130,7 +130,9 @@ class Trantorian (ServerManager) :
             return self.player.handle_broadcast(response_list)
         elif self.player.last_sent:
             if response_list[0] == Commands.COMMANDS[self.player.last_sent]["response success"][0]:
-                self.COMMANDS[self.player.last_sent]
+                self.COMMANDS[self.player.last_sent]()
+                print(str(self.player.last_sent))
+                print("worst if EUW")
             self.player.state.update(response)
             return True
 
@@ -138,4 +140,5 @@ class Trantorian (ServerManager) :
         subprocess.Popen(["./zappy_ai", "-p", str(self.port), "-n", self.team_name, "-h", self.host])
         
     def void(self):
+        print("left")
         return
