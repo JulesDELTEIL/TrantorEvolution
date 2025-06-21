@@ -14,13 +14,15 @@
 #include "macros.h"
 #include "commands.h"
 #include "transmission.h"
+#include "debug.h"
 
 int search_events(serverdata_t *sdata, fdarray_t *fdarray, int k)
 {
     if (fdarray->clients[k].fd == NOFD)
         return EXIT_SUCCESS;
     if (fdarray->fds[k].revents & POLLIN)
-        receive_data(sdata, &(fdarray->clients[k]));
+        if (receive_data(sdata, &(fdarray->clients[k])) == CLOSE_CONNECTION)
+            fdarray->fds[k].fd = NOFD;
 }
 
 static int getnb_fd(fdarray_t *fdarray)
@@ -47,11 +49,8 @@ static bool check_stdin(void)
 int listen_fds(serverdata_t *sdata, fdarray_t *fdarray)
 {
     int rc = DEFAULTRC;
-    int nbfds = getnb_fd(fdarray);
 
-    if (nbfds < NB_SERVER_FD)
-        return EXIT_FAILURE;
-    rc = poll(fdarray->fds, nbfds, POLLTIMEOUT);
+    rc = poll(fdarray->fds, NBTOTAL_FD, 10000);
     if (rc < 0)
         return returnwitherror(ERROR_POLL, EXIT_FAILURE);
     else if (rc == 0)
@@ -60,7 +59,7 @@ int listen_fds(serverdata_t *sdata, fdarray_t *fdarray)
         openconnection(sdata, fdarray);
     if (fdarray->fds[SERVER_STDIN_INDEX].revents & POLLIN && check_stdin())
         return CLOSE_PROCESS;
-    for (size_t k = NB_SERVER_FD; k < nbfds; k++)
+    for (size_t k = NB_SERVER_FD; k < NBTOTAL_FD; k++)
         search_events(sdata, fdarray, k);
     return EXIT_SUCCESS;
 }
@@ -71,8 +70,11 @@ static int check_client_buffer(serverdata_t *sdata, fdarray_t *fdarray,
     struct timeval tp;
 
     gettimeofday(&tp, NULL);
-    if ((tp.tv_sec * 1000 + tp.tv_usec / 1000) >= client->act_end) {
-        client->act_end = 0;
+    if (client->player == NULL) {
+        buffer_handler(sdata, fdarray, client);
+    } else if ((tp.tv_sec * 1000 + tp.tv_usec / 1000) >=
+        client->player->action.end) {
+        client->player->action.end = 0;
         buffer_handler(sdata, fdarray, client);
     }
     return EXIT_SUCCESS;
