@@ -35,12 +35,24 @@ static void send_c_data_ai(serverdata_t *sdata, client_t *client)
     send_data(client, data, NULL, sdata->debug);
 }
 
+static int send_players_infos(serverdata_t *sdata, fdarray_t *fdarray,
+    client_t *client)
+{
+    player_t *head = sdata->game_data.players;
+
+    while (head != NULL) {
+        send_pnw(sdata, head, client);
+        head = head->next;
+    }
+}
+
 static int set_teamname(serverdata_t *sdata, fdarray_t *fdarray,
     client_t *client, char *data)
 {
     if (strcmp(data, GRAPHIC_TEAM) == 0) {
         client->type = GUI;
         send_c_data_gui(sdata, client);
+        send_players_infos(sdata, fdarray, client);
         return EXIT_SUCCESS;
     }
     for (uint_t k = 0; sdata->args->team_name[k] != NULL; k++) {
