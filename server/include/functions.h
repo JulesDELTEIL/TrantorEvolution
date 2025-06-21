@@ -86,4 +86,9 @@ Deletes a player from the list in GAME depending on its ID
 */
 int del_player(game_t *game, int id);
 
+/*
+Checks the clients and executes commands
+*/
+int clients_buffers(serverdata_t *sdata, fdarray_t *fdarray);
+
 #endif

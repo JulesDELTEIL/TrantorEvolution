@@ -11,6 +11,7 @@
 
 #include "transmission.h"
 #include "commands.h"
+#include "actions.h"
 
 static void rotate_player(player_t *player)
 {
@@ -19,17 +20,25 @@ static void rotate_player(player_t *player)
         player->orientation = W;
 }
 
+// ACTION
+int action_right(serverdata_t *sdata, fdarray_t *fdarray,
+    client_t *client, char *data)
+{
+    rotate_player(client->player);
+    send_data(client, "ok", NULL, sdata->debug);
+}
+
+// COMMAND
 int cmd_right(serverdata_t *sdata, fdarray_t *fdarray,
     client_t *client, char *data)
 {
-    int rc = DEFAULTRC;
-
     if (strlen(data) != 0) {
         send_data(client, "ko", NULL, sdata->debug);
         return EXIT_FAILURE;
     }
-    rotate_player(client->player);
+    client->player->action.cmd = strdup(ACTIONS_ARR[RIGHT].name);
+    client->player->action.data = strdup(data);
+    client->player->action.status = ONGOING;
     set_action_end(client, sdata->args->freq, 7);
-    send_data(client, "ok", NULL, sdata->debug);
     return EXIT_SUCCESS;
 }

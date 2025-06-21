@@ -12,6 +12,7 @@
 
 #include "transmission.h"
 #include "commands.h"
+#include "actions.h"
 
 static int take_resource(serverdata_t *sdata, client_t *client, int resource)
 {
@@ -36,20 +37,27 @@ static int idt_resource(char *data)
     return -1;
 }
 
+// ACTION
+int action_take(serverdata_t *sdata, fdarray_t *fdarray,
+    client_t *client, char *data)
+{
+    if (take_resource(sdata, client, idt_resource(data)) == EXIT_FAILURE)
+        send_data(client, "ko", NULL, sdata->debug);
+    else
+        send_data(client, "ok", NULL, sdata->debug);
+}
+
+// COMMAND
 int cmd_take(serverdata_t *sdata, fdarray_t *fdarray,
     client_t *client, char *data)
 {
-    int rc = DEFAULTRC;
-
     if (strlen(data) == 0) {
         send_data(client, "ko", NULL, sdata->debug);
         return EXIT_FAILURE;
     }
-    rc = idt_resource(data);
-    if (take_resource(sdata, client, rc) == EXIT_FAILURE)
-        send_data(client, "ko", NULL, sdata->debug);
-    else
-        send_data(client, "ok", NULL, sdata->debug);
+    client->player->action.cmd = strdup(ACTIONS_ARR[TAKE].name);
+    client->player->action.data = strdup(data);
+    client->player->action.status = ONGOING;
     set_action_end(client, sdata->args->freq, 7);
     return EXIT_SUCCESS;
 }

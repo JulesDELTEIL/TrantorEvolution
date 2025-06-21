@@ -12,6 +12,7 @@
 
 #include "transmission.h"
 #include "commands.h"
+#include "actions.h"
 
 static int send_inventory(serverdata_t *sdata, client_t *client)
 {
@@ -30,16 +31,25 @@ static int send_inventory(serverdata_t *sdata, client_t *client)
     send_data(client, answer, NULL, sdata->debug);
 }
 
+// ACTION
+int action_inventory(serverdata_t *sdata, fdarray_t *fdarray,
+    client_t *client, char *data)
+{
+    send_inventory(sdata, client);
+    return EXIT_SUCCESS;
+}
+
+// COMMAND
 int cmd_inventory(serverdata_t *sdata, fdarray_t *fdarray,
     client_t *client, char *data)
 {
-    int rc = DEFAULTRC;
-
     if (strlen(data) != 0) {
         send_data(client, "ko", NULL, sdata->debug);
         return EXIT_FAILURE;
     }
-    send_inventory(sdata, client);
+    client->player->action.cmd = strdup(ACTIONS_ARR[INVENTORY].name);
+    client->player->action.data = strdup(data);
+    client->player->action.status = ONGOING;
     set_action_end(client, sdata->args->freq, 1);
     return EXIT_SUCCESS;
 }

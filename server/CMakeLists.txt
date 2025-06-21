@@ -23,6 +23,7 @@ add_executable( ${PROJECT_NAME}
     ${SERVER_SRC_DIR}end.c
     ${SERVER_SRC_DIR}player.c
     ${SERVER_SRC_DIR}init_game.c
+    ${SERVER_SRC_DIR}actions.c
     ${SERVER_AI_CMD_DIR}forward.c
     ${SERVER_AI_CMD_DIR}left.c
     ${SERVER_AI_CMD_DIR}right.c

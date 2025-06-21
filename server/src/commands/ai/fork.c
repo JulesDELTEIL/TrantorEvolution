@@ -11,6 +11,7 @@
 
 #include "transmission.h"
 #include "commands.h"
+#include "actions.h"
 
 static int add_egg(player_t *player)
 {
@@ -22,18 +23,27 @@ static int add_egg(player_t *player)
     return EXIT_SUCCESS;
 }
 
+// ACTION
+int action_fork(serverdata_t *sdata, fdarray_t *fdarray,
+    client_t *client, char *data)
+{
+    add_egg(client->player);
+    client->player->team->space_left++;
+    send_data(client, "ok", NULL, sdata->debug);
+    return EXIT_SUCCESS;
+}
+
+// COMMAND
 int cmd_fork(serverdata_t *sdata, fdarray_t *fdarray,
     client_t *client, char *data)
 {
-    int rc = DEFAULTRC;
-
     if (strlen(data) != 0) {
         send_data(client, "ko", NULL, sdata->debug);
         return EXIT_FAILURE;
     }
-    add_egg(client->player);
-    client->player->team->space_left++;
-    set_action_end(client, sdata->args->freq, 42);
-    send_data(client, "ok", NULL, sdata->debug);
+    client->player->action.cmd = strdup(ACTIONS_ARR[FORK].name);
+    client->player->action.data = strdup(data);
+    client->player->action.status = ONGOING;
+    set_action_end(client, sdata->args->freq, 42);    
     return EXIT_SUCCESS;
 }
