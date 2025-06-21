@@ -28,6 +28,7 @@ struct action_t :
 typedef struct action_handler_s {
     char *name;
     int (*handler)(serverdata_t *, fdarray_t *, client_t *, char *);
+    unsigned int delay;
 } action_handler_t;
 
 int action_forward(serverdata_t *, fdarray_t *, client_t *, char *);
@@ -53,15 +54,15 @@ enum actions_e {
 };
 
 static const action_handler_t ACTIONS_ARR[] = {
-    {"Forward", action_forward},
-    {"Left", action_left},
-    {"Right", action_right},
-    {"Fork", action_fork},
-    {"Inventory", action_inventory},
-    {"Take", action_take},
-    {"Set", action_set},
-    {"Connect_nbr", action_connect_nbr},
-    {"Broadcast", action_broadcast},
+    {"Forward", action_forward, 7},
+    {"Left", action_left, 7},
+    {"Right", action_right, 7},
+    {"Fork", action_fork, 42},
+    {"Inventory", action_inventory, 1},
+    {"Take", action_take, 7},
+    {"Set", action_set, 7},
+    {"Connect_nbr", action_connect_nbr, 0},
+    {"Broadcast", action_broadcast, 7},
 };
 
 static const int NB_ACTIONS = sizeof(ACTIONS_ARR) / sizeof(action_handler_t);

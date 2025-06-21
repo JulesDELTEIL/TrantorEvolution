@@ -58,6 +58,6 @@ int cmd_take(serverdata_t *sdata, fdarray_t *fdarray,
     client->player->action.cmd = strdup(ACTIONS_ARR[TAKE].name);
     client->player->action.data = strdup(data);
     client->player->action.status = ONGOING;
-    set_action_end(client, sdata->args->freq, 7);
+    set_action_end(client, sdata->args->freq, ACTIONS_ARR[TAKE].delay);
     return EXIT_SUCCESS;
 }

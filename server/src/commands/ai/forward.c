@@ -70,6 +70,6 @@ int cmd_forward(serverdata_t *sdata, fdarray_t *fdarray,
     client->player->action.cmd = strdup(ACTIONS_ARR[FORWARD].name);
     client->player->action.data = strdup(data);
     client->player->action.status = ONGOING;
-    set_action_end(client, sdata->args->freq, 7);
+    set_action_end(client, sdata->args->freq, ACTIONS_ARR[FORWARD].delay);
     return EXIT_SUCCESS;
 }

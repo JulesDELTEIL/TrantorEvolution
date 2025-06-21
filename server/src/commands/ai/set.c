@@ -56,6 +56,6 @@ int cmd_set(serverdata_t *sdata, fdarray_t *fdarray,
     client->player->action.cmd = strdup(ACTIONS_ARR[SET].name);
     client->player->action.data = strdup(data);
     client->player->action.status = ONGOING;
-    set_action_end(client, sdata->args->freq, 7);
+    set_action_end(client, sdata->args->freq, ACTIONS_ARR[SET].delay);
     return EXIT_SUCCESS;
 }
