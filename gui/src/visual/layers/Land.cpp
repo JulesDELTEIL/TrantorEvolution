@@ -51,11 +51,13 @@ void Land::event(const sf::Event&, const network::NetEventPack& net_pack)
         case network::PPOS:
             posTrantorian(net_pack.pack);
             break;
+        case network::TIME:
+            _time_unit_speed = net_pack.pack[0].getSize_t();
+            break;
         case network::PGET:
-            float time = ACT_TIME(7.0f);
             sf::Vector2i tile_pos = _trantorians.at(net_pack.pack[0].getSize_t())->map_pos;
-            _trantorians.at(net_pack.pack[0].getSize_t())->collect(_tiles[tile_pos.x][tile_pos.y].resources, time / 2);
-            _clear_resources.push_back({time + _clock.getElapsedTime().asMilliseconds(), tile_pos});
+            _trantorians.at(net_pack.pack[0].getSize_t())->collect(_tiles[tile_pos.x][tile_pos.y].resources, ACT_TIME(7.0f) / 2);
+            _clear_resources.push_back({ACT_TIME(7.0f) + _clock.getElapsedTime().asMilliseconds(), tile_pos});
             break;
     }
 }
@@ -129,7 +131,7 @@ void Land::posTrantorian(const network::NetPack& pack)
 
     if (trantor->map_pos.x != x || trantor->map_pos.y != y) {
         pos = MAP_POS(CENTER_MAP(_map_size.y), x, y);
-        trantor->move(pos, ACT_TIME(7.0f));
+        trantor->changeTile(pos, ACT_TIME(7.0f));
         _tiles[trantor->map_pos.x][trantor->map_pos.y].trantorians.erase(id);
         trantor->map_pos = {x, y};
         _tiles[x][y].trantorians[id] = trantor;

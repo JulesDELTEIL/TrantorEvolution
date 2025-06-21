@@ -38,7 +38,8 @@ static const std::vector<AnimationInfos> BODY_ANIM_INFOS = {
     {"assets/trantorians/body/Walk_Side-Sheet.png", {64, 64}, {6, 1}, {0, 0}, 0.1, sf::Clock()},
     {"assets/trantorians/body/Collect_Side-Sheet.png", {64, 64}, {8, 1}, {0, 0}, 0.2, sf::Clock()},
     {"assets/trantorians/body/Crush_Side-Sheet.png", {64, 64}, {8, 1}, {0, 0}, 0.2, sf::Clock()},
-    {"assets/trantorians/body/Slice_Side-Sheet.png", {64, 64}, {8, 1}, {0, 0}, 0.2, sf::Clock()}
+    {"assets/trantorians/body/Slice_Side-Sheet.png", {64, 64}, {8, 1}, {0, 0}, 0.2, sf::Clock()},
+    {"assets/trantorians/body/Death_Side-Sheet.png", {64, 64}, {8, 1}, {0, 0}, 0.2, sf::Clock()},
 };
 
 class Trantorian {
@@ -47,14 +48,17 @@ class Trantorian {
         ~Trantorian() = default;
 
         void draw(sf::RenderTarget&);
+        void move(int index, const sf::Vector2f&, float);
+
+        void changeTile(const sf::Vector2f&, float);
         void collect(const std::vector<std::shared_ptr<ResourceNode>>&, float);
-        void move(const sf::Vector2f&, float);
 
         sf::Vector2i map_pos;
         size_t lvl;
     private:
         std::vector<Drawable> _body;
         std::vector<BodyAnimIndex> _type;
+        std::vector<Direction> _body_direction;
         std::vector<Animation> _body_animation;
         std::vector<Movement> _body_movement;
 };

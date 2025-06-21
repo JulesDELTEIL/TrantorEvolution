@@ -53,7 +53,7 @@ void Core::events(void)
 
     while (_engine.window.pollEvent(_engine.events)) {
         if (_engine.events.type == sf::Event::Closed)
-        _engine.window.close();
+            _engine.window.close();
         _scenes.at(_selected_scene)->event(_engine.events, net_event);
     }
     default_event.type = sf::Event::SensorChanged;
@@ -62,6 +62,7 @@ void Core::events(void)
             _client.sendData("GRAPHIC\n");
             _client.sendData("msz\n");
             _client.sendData("mct\n");
+            _client.sendData("sgt\n");
         }
         _scenes.at(_selected_scene)->event(default_event, net_event);
     }
