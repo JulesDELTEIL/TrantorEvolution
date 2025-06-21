@@ -7,6 +7,7 @@
 
 #include <stdlib.h>
 #include <sys/time.h>
+#include <stdio.h>
 
 #include "functions.h"
 
@@ -16,9 +17,6 @@ void set_action_end(client_t *client, int freq, int ticks)
     struct timeval tp;
 
     gettimeofday(&tp, NULL);
-    client->player->action = (action_t){
-        .status = ONGOING,
-        .end = (tp.tv_sec * 1000 + tp.tv_usec / 1000) + (size_t)delay,
-        .cmd = NULL
-    };
+    client->player->action.end =
+    (tp.tv_sec * 1000 + tp.tv_usec / 1000) + (size_t)delay;
 }

@@ -11,8 +11,9 @@
 
 #include "transmission.h"
 #include "commands.h"
+#include "actions.h"
 
-static int keep_player_in(player_t *player, int width, int height)
+static void keep_player_in(player_t *player, int width, int height)
 {
     if (player->pos.x < 0)
         player->pos.x = width - 1;
@@ -45,21 +46,30 @@ static int move_player(player_t *player)
     return EXIT_FAILURE;
 }
 
-int cmd_forward(serverdata_t *sdata, fdarray_t *fdarray,
+// ACTION
+int action_forward(serverdata_t *sdata, fdarray_t *fdarray,
     client_t *client, char *data)
 {
-    int rc = DEFAULTRC;
-
-    if (strlen(data) != 0) {
-        send_data(client, "ko", NULL, sdata->debug);
-        return EXIT_FAILURE;
-    }
     if (move_player(client->player) == EXIT_FAILURE) {
         send_data(client, "ko", NULL, sdata->debug);
         return EXIT_FAILURE;
     }
     keep_player_in(client->player, sdata->args->width, sdata->args->height);
-    set_action_end(client, sdata->args->freq, 7);
     send_data(client, "ok", NULL, sdata->debug);
+    return EXIT_SUCCESS;
+}
+
+// COMMAND
+int cmd_forward(serverdata_t *sdata, fdarray_t *fdarray,
+    client_t *client, char *data)
+{
+    if (strlen(data) != 0) {
+        send_data(client, "ko", NULL, sdata->debug);
+        return EXIT_FAILURE;
+    }
+    client->player->action.cmd = strdup(ACTIONS_ARR[FORWARD].name);
+    client->player->action.data = strdup(data);
+    client->player->action.status = ONGOING;
+    set_action_end(client, sdata->args->freq, ACTIONS_ARR[FORWARD].delay);
     return EXIT_SUCCESS;
 }

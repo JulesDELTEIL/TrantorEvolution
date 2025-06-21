@@ -12,6 +12,7 @@
 
 #include "transmission.h"
 #include "commands.h"
+#include "actions.h"
 
 static int send_message_to_all(serverdata_t *sdata, fdarray_t *fdarray,
     client_t *client, char *msg)
@@ -32,17 +33,23 @@ static int prepare_answer_message(serverdata_t *sdata, fdarray_t *fdarray,
     send_message_to_all(sdata, fdarray, client, answer);
 }
 
+int action_broadcast(serverdata_t *sdata, fdarray_t *fdarray,
+    client_t *client, char *data)
+{
+    prepare_answer_message(sdata, fdarray, client, data);
+    send_data(client, "ok", NULL, sdata->debug);
+}
+
 int cmd_broadcast(serverdata_t *sdata, fdarray_t *fdarray,
     client_t *client, char *data)
 {
-    int rc = DEFAULTRC;
-
     if (strlen(data) == 0) {
         send_data(client, "ko", NULL, sdata->debug);
         return EXIT_FAILURE;
     }
-    prepare_answer_message(sdata, fdarray, client, data);
-    send_data(client, "ok", NULL, sdata->debug);
-    set_action_end(client, sdata->args->freq, 7);
+    client->player->action.cmd = strdup(ACTIONS_ARR[BROADCAST].name);
+    client->player->action.data = strdup(data);
+    client->player->action.status = ONGOING;
+    set_action_end(client, sdata->args->freq, ACTIONS_ARR[BROADCAST].delay);
     return EXIT_SUCCESS;
 }
