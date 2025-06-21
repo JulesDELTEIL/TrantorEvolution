@@ -71,6 +71,7 @@ typedef struct client_s {
     int fd;
     int type;
     char *buffer;
+    bool buffin_addition;
     player_t *player;
 } client_t;
 
