@@ -33,5 +33,5 @@ class Foreman(BaseRole):
         else:
             self.queue.appendleft(Commands(Action.BROADCAST, 'worker'))
 
-    def handle_broadcast(self, response_list):
+    def handle_broadcast(self, response_list: list[str]) -> bool:
         return False

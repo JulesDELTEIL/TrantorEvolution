@@ -53,25 +53,25 @@ class Trantorian (ServerManager) :
             Action.NONE:self.void()
         }
 
-    def get_client_num(self, client_num_str) :
+    def get_client_num(self, client_num_str: str) -> None:
         client_num_strip = client_num_str.strip()
         if not client_num_strip.isdigit() :
             raise Exception("Invalid client number left from server: %s" % client_num_str)
         self.player_num = int(client_num_strip)
 
-    def get_dimension(self, dimension_str) :
+    def get_dimension(self, dimension_str: str) -> None:
         dimension_split = dimension_str.split()
         if len(dimension_split) != 2 or not all([val.isdigit() for val in dimension_split]) :
             raise Exception("Invalid dimension from server: %s" % dimension_str)
         dimension_tuple = (int(dimension_split[DIMENSION_X]), int(dimension_split[DIMENSION_Y]))
         self.dimension = dimension_tuple
 
-    def get_welcome(self, welcome_str):
+    def get_welcome(self, welcome_str: str) -> None:
         if welcome_str.strip() != "WELCOME":
             raise ConnectionError("Expected WELCOME message.")
         self.send(f"{self.team_name}\n".encode())
 
-    def connect(self):
+    def connect(self) -> None:
         i = 0
         message = ""
         while i < 3 :
@@ -85,7 +85,7 @@ class Trantorian (ServerManager) :
                 message = message[index + 1:]
                 i += 1
 
-    def send_action(self):
+    def send_action(self) -> None:
         if not self.player.queue :
             self.player.decide_action()
         if self.player.queue :
@@ -93,7 +93,7 @@ class Trantorian (ServerManager) :
             self.send((action.__str__() + "\n").encode())
             self.player.last_sent = action.action
 
-    def analyse_requests(self, message):
+    def analyse_requests(self, message: str) -> str:
         message_left = message
         while message_left:
             index = message_left.find("\n")
@@ -104,7 +104,7 @@ class Trantorian (ServerManager) :
             message_left = message_left[index + 1:]
         return message_left
 
-    def run(self):
+    def run(self) -> None:
         self.send_action()
         while True:
             response = self.recv()
@@ -112,14 +112,13 @@ class Trantorian (ServerManager) :
                 break
             self.analyse_requests(response)
 
-
-    def handle_nobody(self, response_list):
+    def handle_nobody(self, response_list: list[str]) -> bool:
         if self.player.handle_broadcast(response_list):
             self.player = ROLE_MAP[response_list[3]]
             return True
         return False
 
-    def handle_response(self, response):
+    def handle_response(self, response: str) -> bool:
         response_list = response.split()
         if isinstance(self.player, Nobody):
             if self.player.cycle > 5:
@@ -135,7 +134,7 @@ class Trantorian (ServerManager) :
             self.player.state.update(response)
             return True
 
-    def _spawn_new_client(self):
+    def _spawn_new_client(self) -> None:
         subprocess.Popen(["./zappy_ai", "-p", str(self.port), "-n", self.team_name, "-h", self.host])
         
     def void(self):

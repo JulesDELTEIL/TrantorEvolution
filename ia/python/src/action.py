@@ -27,7 +27,7 @@ class Commands:
         self.action = action
         self.argument = argument
         
-    def __str__(self):
+    def __str__(self) -> str:
         if self.argument:
             return f"{self.action.value} {self.argument}"
         return self.action.value

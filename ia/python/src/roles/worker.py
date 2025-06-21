@@ -39,5 +39,5 @@ class Worker(BaseRole):
                self.carry = None
             # logique pour aller jusqu'au queens
 
-    def handle_broadcast(self, response_list):
+    def handle_broadcast(self, response_list: list[str]) -> bool:
         return False

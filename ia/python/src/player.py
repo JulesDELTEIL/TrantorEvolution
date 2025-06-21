@@ -18,7 +18,7 @@ class PlayerState:
         self.motivation = Motivation()
         self.sent_queue = []
     
-    def update(self, response):
+    def update(self, response: str) -> None:
         #toutes ces conditions doivent être gérer via la sent_queue -> on doit regarder quel est le premier élément de la liste et traiter la réponse en fonction
         if response.startswith("[") and "food" in response:
             self.parse_inventory(response)
@@ -29,7 +29,7 @@ class PlayerState:
             exit(0)
         self.motivation.update(self.food, self.inventory, self.level)
     
-    def parse_inventory(self, response):
+    def parse_inventory(self, response: str) -> None:
         self.inventory = {}
         for item in response.strip("[]").split(","):
             if item.strip():
@@ -37,12 +37,12 @@ class PlayerState:
                 self.inventory[key] = int(val)
         self.food = self.inventory.get("food", 0)
         
-    def parse_vision(self, response):
+    def parse_vision(self, response: str) -> None:
         content = response.strip("[]")
         tiles = content.split(",")
         self.vision = [tile.strip().split() for tile in tiles]
         
-    def vision_coords(level):
+    def vision_coords(level: int) -> None:
         coords = [(0, 0)]
         for r in range(1, level + 1):
             y = -r
@@ -50,7 +50,7 @@ class PlayerState:
                 coords.append((x, y))
         return coords
     
-    def get_movements(start, end, direction):
+    def get_movements(start: list[int], end: list[int], direction: str) -> list[Commands]:
         commands_queue = []
         dx = end[0] - start[0]
         dy = end[1] - start[1]
@@ -85,4 +85,3 @@ class PlayerState:
             direction = target_dir
 
         return commands_queue
-            

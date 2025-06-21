@@ -69,7 +69,7 @@ class Queen(BaseRole):
                 return False
         return True
 
-    def handle_broadcast(self, response_list):
+    def handle_broadcast(self, response_list: list[str]) -> bool:
         if len(response_list) == 3 and response_list[2] == "quitting":
             self.player_killed += 1
             return True

@@ -14,7 +14,7 @@ class Nobody(BaseRole):
     def __init__(self):
         super().__init__()
 
-    def handle_broadcast(self, response_list):
+    def handle_broadcast(self, response_list: list[str]) -> bool:
         if len(response_list) >= 3:
             if response_list[2] == "role" and (response_list[1][0] == "0"):
                 return True

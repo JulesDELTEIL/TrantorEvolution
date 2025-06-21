@@ -14,6 +14,6 @@ class Kamikaze(BaseRole):
     
     def decide_action(self):
         if self.queue.empty():
-            for i in range(10):
+            for _ in range(10):
                 self.queue.appendleft(Commands(Action.SET, 'food'))
         self.queue.appendleft(Commands(Action.NONE))

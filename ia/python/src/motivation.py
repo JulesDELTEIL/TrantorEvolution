@@ -11,11 +11,11 @@ class Motivation:
         self.evolution = 0.0 # 1 = want to evolve
         self.last_food = 10
     
-    def update(self, food_remaining, inventory, level):
+    def update(self, food_remaining: int, inventory: dict, level: int):
         self.hunger = min(1.0, max(0.0, 1 - food_remaining / 10))
         self.evolution = self._compute_evolution_score(inventory, level)
         
-    def _compute_evolution_score(self, inventory, level):
+    def _compute_evolution_score(self, inventory: dict, level: int):
         requirements = Motivation.LEVEL_REQUIREMENTS.get(level)
         if not requirements:
             return 0.0
