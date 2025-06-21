@@ -44,6 +44,6 @@ int cmd_fork(serverdata_t *sdata, fdarray_t *fdarray,
     client->player->action.cmd = strdup(ACTIONS_ARR[FORK].name);
     client->player->action.data = strdup(data);
     client->player->action.status = ONGOING;
-    set_action_end(client, sdata->args->freq, 42);    
+    set_action_end(client, sdata->args->freq, 42);
     return EXIT_SUCCESS;
 }

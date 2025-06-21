@@ -79,4 +79,3 @@ int clients_buffers(serverdata_t *sdata, fdarray_t *fdarray)
     }
     return EXIT_SUCCESS;
 }
-

@@ -43,7 +43,6 @@ int action_set(serverdata_t *sdata, fdarray_t *fdarray,
         send_data(client, "ko", NULL, sdata->debug);
     else
         send_data(client, "ok", NULL, sdata->debug);
-
 }
 
 // COMMAND
@@ -59,5 +58,4 @@ int cmd_set(serverdata_t *sdata, fdarray_t *fdarray,
     client->player->action.status = ONGOING;
     set_action_end(client, sdata->args->freq, 7);
     return EXIT_SUCCESS;
-
 }
