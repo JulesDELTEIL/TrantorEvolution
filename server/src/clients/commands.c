@@ -15,58 +15,6 @@
 #include "transmission.h"
 #include "functions.h"
 
-static void send_c_data_gui(serverdata_t *sdata, client_t *client)
-{
-    char data[BUFFSIZE] = {0};
-
-    sprintf(data, "%d", -1);
-    send_data(client, data, NULL, sdata->debug);
-    sprintf(data, "%d %d", sdata->args->width, sdata->args->height);
-    send_data(client, data, NULL, sdata->debug);
-}
-
-static void send_c_data_ai(serverdata_t *sdata, client_t *client)
-{
-    char data[BUFFSIZE] = {0};
-
-    sprintf(data, "%d", client->player->team->space_left);
-    send_data(client, data, NULL, sdata->debug);
-    sprintf(data, "%d %d", sdata->args->width, sdata->args->height);
-    send_data(client, data, NULL, sdata->debug);
-}
-
-static int send_players_infos(serverdata_t *sdata, fdarray_t *fdarray,
-    client_t *client)
-{
-    player_t *head = sdata->game_data.players;
-
-    while (head != NULL) {
-        send_pnw(sdata, head, client);
-        head = head->next;
-    }
-}
-
-static int set_teamname(serverdata_t *sdata, fdarray_t *fdarray,
-    client_t *client, char *data)
-{
-    if (strcmp(data, GRAPHIC_TEAM) == 0) {
-        client->type = GUI;
-        send_c_data_gui(sdata, client);
-        send_players_infos(sdata, fdarray, client);
-        return EXIT_SUCCESS;
-    }
-    for (uint_t k = 0; sdata->args->team_name[k] != NULL; k++) {
-        if (strcmp(data, sdata->args->team_name[k]) == 0 &&
-            new_player(sdata, fdarray, client, data) == EXIT_SUCCESS) {
-            client->type = AI;
-            send_c_data_ai(sdata, client);
-            return EXIT_SUCCESS;
-        }
-    }
-    send_data(client, "ko", NULL, sdata->debug);
-    return EXIT_FAILURE;
-}
-
 static void handle_unrecognized_code(serverdata_t *sdata, fdarray_t *fdarray,
     client_t *client)
 {
@@ -175,7 +123,7 @@ int buffer_handler(serverdata_t *sdata, fdarray_t *fdarray, client_t *client)
     if (packet_parser(client, cmd, data) == EXIT_FAILURE)
         return EXIT_FAILURE;
     if (client->type == UNSET)
-        return set_teamname(sdata, fdarray, client, cmd);
+        return set_team(sdata, fdarray, client, cmd);
     for (uint_t k = 0; k < NB_COMMANDS[client->type]; k++)
         if (strcmp(cmd, COMMANDS[client->type][k].command) == 0)
             return COMMANDS[client->type][k].handler(sdata,
