@@ -20,7 +20,7 @@ add_executable( ${PROJECT_NAME}
     ${SERVER_SRC_DIR}clients/commands.c
     ${SERVER_SRC_DIR}clients/actions.c
     ${SERVER_SRC_DIR}clients/set_team.c
-    ${SERVER_SRC_DIR}clients/timer.c
+    ${SERVER_SRC_DIR}utils/timer.c
     ${SERVER_SRC_DIR}utils/debug.c
     ${SERVER_SRC_DIR}utils/returnwitherror.c
     ${SERVER_SRC_DIR}game/player.c

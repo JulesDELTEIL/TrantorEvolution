@@ -19,7 +19,7 @@ int buffer_handler(serverdata_t *sdata, fdarray_t *fdarray, client_t *client);
 /*
 Sets the timeout end timer of the client depending on FREQ and TICKS
 */
-void set_action_end(client_t *client, int freq, int ticks);
+size_t set_timer_end(int freq, int ticks);
 
 /*
 Command structure designed for the function pointer array by
