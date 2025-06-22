@@ -22,6 +22,11 @@ Sets the timeout end timer of the client depending on FREQ and TICKS
 size_t set_timer_end(int freq, int ticks);
 
 /*
+Sends pnw code of PLAYER to UI_CLIENT
+*/
+int send_pnw(serverdata_t *sdata, player_t *player, client_t *ui_client);
+
+/*
 Command structure designed for the function pointer array by
     matching the char *COMMAND
 
@@ -34,8 +39,6 @@ typedef struct command_s {
     char *command;
     int (*handler)(serverdata_t *, fdarray_t *, client_t *, char *);
 } command_t;
-
-int send_pnw(serverdata_t *sdata, player_t *player, client_t *ui_client);
 
 int cmd_forward(serverdata_t *, fdarray_t *, client_t *, char *);
 int cmd_fork(serverdata_t *, fdarray_t *, client_t *, char *);

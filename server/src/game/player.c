@@ -56,6 +56,16 @@ int del_player(game_t *game, int id)
     return EXIT_FAILURE;
 }
 
+int kill_player(serverdata_t *sdata, client_t *client)
+{
+    if (client->player == NULL)
+        return EXIT_FAILURE;
+    del_player(&(sdata->game_data), client->player->id);
+    client->player = NULL;
+    client->type = UNSET;
+    return EXIT_SUCCESS;
+}
+
 static int set_action(player_t *player)
 {
     player->action.status = NONE;
@@ -80,6 +90,7 @@ static int add_player(game_t *game, client_t *client, team_t *team)
     set_action(new);
     for (uint_t k = 0; k < NB_DIFF_ITEMS; k++)
         new->inventory[k] = 0;
+    new->inventory[FOOD] = NB_FOOD_BEGIN;
     new->next = game->players;
     game->players = new;
     client->player = new;
