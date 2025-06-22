@@ -35,7 +35,7 @@ static int prepare_answer_message(serverdata_t *sdata, fdarray_t *fdarray,
     for (uint_t k = NB_SERVER_FD; k < NBTOTAL_FD; k++) {
         if (fdarray->clients[k].type == AI &&
             (fdarray->clients[k].player->id != client->player->id))
-            send_msg(sdata, client, &(fdarray->clients[k]),data);
+            send_msg(sdata, client, &(fdarray->clients[k]), data);
     }
 }
 
