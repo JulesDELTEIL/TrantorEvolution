@@ -46,6 +46,9 @@ int cmd_take(serverdata_t *, fdarray_t *, client_t *, char *);
 int cmd_set(serverdata_t *, fdarray_t *, client_t *, char *);
 int cmd_connect_nbr(serverdata_t *, fdarray_t *, client_t *, char *);
 int cmd_broadcast(serverdata_t *, fdarray_t *, client_t *, char *);
+int cmd_look(serverdata_t *, fdarray_t *, client_t *, char *);
+int cmd_eject(serverdata_t *, fdarray_t *, client_t *, char *);
+int cmd_incantation(serverdata_t *, fdarray_t *, client_t *, char *);
 
 int cmd_tna(serverdata_t *, fdarray_t *, client_t *, char *);
 int cmd_msz(serverdata_t *, fdarray_t *, client_t *, char *);
@@ -69,6 +72,9 @@ static const command_t AI_COMMANDS[] = {
     {"Set", cmd_set},
     {"Connect_nbr", cmd_connect_nbr},
     {"Broadcast", cmd_broadcast},
+    {"Look", cmd_look},
+    {"Eject", cmd_eject},
+    {"Incantation", cmd_incantation},
 };
 
 static const command_t *COMMANDS[] = {
