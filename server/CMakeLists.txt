@@ -5,25 +5,26 @@ set(SERVER_SRC_DIR "${PROJECT_SOURCE_DIR}/src/")
 set(SERVER_AI_CMD_DIR "${PROJECT_SOURCE_DIR}/src/commands/ai/")
 set(SERVER_GUI_CMD_DIR "${PROJECT_SOURCE_DIR}/src/commands/gui/")
 set(SERVER_HDR_DIR "${PROJECT_SOURCE_DIR}/include/")
-set(SERVER_THR_DIR "${PROJECT_SOURCE_DIR}/src/map_thread/") 
+set(SERVER_THR_DIR "${PROJECT_SOURCE_DIR}/src/game/map_thread/") 
 
 ########## BINARY ##########
 add_executable( ${PROJECT_NAME}
     ${SERVER_SRC_DIR}main.c
-    ${SERVER_SRC_DIR}args.c
-    ${SERVER_SRC_DIR}usage.c
-    ${SERVER_SRC_DIR}setup.c
-    ${SERVER_SRC_DIR}loop.c
-    ${SERVER_SRC_DIR}connection.c
-    ${SERVER_SRC_DIR}transmission.c
-    ${SERVER_SRC_DIR}commands.c
-    ${SERVER_SRC_DIR}timer.c
-    ${SERVER_SRC_DIR}debug.c
-    ${SERVER_SRC_DIR}returnwitherror.c
-    ${SERVER_SRC_DIR}end.c
-    ${SERVER_SRC_DIR}player.c
-    ${SERVER_SRC_DIR}init_game.c
-    ${SERVER_SRC_DIR}actions.c
+    ${SERVER_SRC_DIR}app/args.c
+    ${SERVER_SRC_DIR}app/usage.c
+    ${SERVER_SRC_DIR}network/setup.c
+    ${SERVER_SRC_DIR}network/loop.c
+    ${SERVER_SRC_DIR}network/connection.c
+    ${SERVER_SRC_DIR}network/transmission.c
+    ${SERVER_SRC_DIR}network/end.c
+    ${SERVER_SRC_DIR}clients/commands.c
+    ${SERVER_SRC_DIR}clients/actions.c
+    ${SERVER_SRC_DIR}clients/set_team.c
+    ${SERVER_SRC_DIR}clients/timer.c
+    ${SERVER_SRC_DIR}utils/debug.c
+    ${SERVER_SRC_DIR}utils/returnwitherror.c
+    ${SERVER_SRC_DIR}game/player.c
+    ${SERVER_SRC_DIR}game/init_game.c
     ${SERVER_AI_CMD_DIR}forward.c
     ${SERVER_AI_CMD_DIR}left.c
     ${SERVER_AI_CMD_DIR}right.c

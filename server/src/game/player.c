@@ -86,7 +86,7 @@ static int add_player(game_t *game, client_t *client, team_t *team)
     game->next++;
 }
 
-static int send_pnw(serverdata_t *sdata, player_t *player, client_t *ui_client)
+int send_pnw(serverdata_t *sdata, player_t *player, client_t *ui_client)
 {
     char buff[BUFFSIZE] = {0};
 

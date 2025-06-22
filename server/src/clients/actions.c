@@ -43,6 +43,39 @@ static int action_handler(serverdata_t *sdata, fdarray_t *fdarray,
     }
 }
 
+static int buff_max_idx(client_t *client)
+{
+    uint_t nbcmd = 0;
+
+    for (uint_t k = 0; client->buffer[k] != 0; k++) {
+        if (client->buffer[k] == '\n')
+            nbcmd++;
+        if (nbcmd >= 10)
+            return k;
+    }
+    return -1;
+}
+
+static int cap_player_buff(client_t *client)
+{
+    int buffmax_idx = 0;
+    char *newbuff = NULL;
+
+    if (client->buffer == NULL || client->buffin_addition == false)
+        return EXIT_FAILURE;
+    buffmax_idx = buff_max_idx(client);
+    if (buffmax_idx != -1) {
+        newbuff = malloc(sizeof(char) * (buffmax_idx + 1));
+        for (uint_t k = 0; k < buffmax_idx; k++)
+            newbuff[k] = client->buffer[k];
+        newbuff[buffmax_idx] = 0;
+        free(client->buffer);
+        client->buffer = newbuff;
+    }
+    client->buffin_addition = false;
+    return EXIT_SUCCESS;
+}
+
 static int check_timed_buffer(serverdata_t *sdata, fdarray_t *fdarray,
     client_t *client)
 {

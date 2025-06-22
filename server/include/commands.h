@@ -35,6 +35,8 @@ typedef struct command_s {
     int (*handler)(serverdata_t *, fdarray_t *, client_t *, char *);
 } command_t;
 
+int send_pnw(serverdata_t *sdata, player_t *player, client_t *ui_client);
+
 int cmd_forward(serverdata_t *, fdarray_t *, client_t *, char *);
 int cmd_fork(serverdata_t *, fdarray_t *, client_t *, char *);
 int cmd_left(serverdata_t *, fdarray_t *, client_t *, char *);
