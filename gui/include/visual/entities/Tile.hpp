@@ -20,6 +20,7 @@ namespace gui {
 namespace visual {
 
    #define BIOME_TEXTURE_PATH "assets/tiles/BiomTiles.png"
+   #define NB_TYPE 3
 
 static const std::map<biome_e, sf::IntRect> TEXTURE_RECT = {
     {SEA, sf::IntRect(64, 0, 32, 32)},
