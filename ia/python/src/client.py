@@ -92,10 +92,7 @@ class Trantorian (ServerManager) :
                 i += 1
 
     def send_action(self) -> None:
-        if isinstance(self.player, Queen):
-            if self.player.all_alone == True:
-                self.player.queue.clear()
-        if not self.player.queue :
+        if not self.player.queue:
             self.player.decide_action()
         if self.player.queue :
             action = self.player.queue.pop()
