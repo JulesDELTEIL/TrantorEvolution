@@ -6,8 +6,12 @@
 */
 
 #include "project_tools.h"
+#include "core/Core.hpp"
 
-int main(int, const char **)
+int main(int argc, const char *argv[])
 {
+    gui::core::Core core(argc, argv);
+
+    core.run();
     return PROJECT_SUCCESS;
 }

@@ -1,13 +1,30 @@
 /*
 ** EPITECH PROJECT, 2025
-** TrantorEvolution
+** zappy
 ** File description:
 ** main.c
 */
 
-#include "project_tools.h"
+#include <stdlib.h>
 
-int main(int, const char **)
+#include "app.h"
+
+int main(int ac, char *av[])
 {
-    return PROJECT_SUCCESS;
+    arguments_t args = {0};
+    int rc = DEFAULTRC;
+
+    if (ac < MIN_NB_ARGS) {
+        display_usage();
+        return 84;
+    }
+    get_args(ac, av, &args);
+    if (check_args(&args) == EXIT_FAILURE) {
+        display_usage();
+        return PROCESS_FAILURE;
+    }
+    rc = server(&args);
+    if (rc == EXIT_FAILURE)
+        return PROCESS_FAILURE;
+    return PROCESS_SUCCESS;
 }
