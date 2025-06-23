@@ -52,16 +52,17 @@ class Worker(BaseRole):
 
     def handle_broadcast(self, response_list: list[str]) -> bool:
         if self.direction is None:
-            if response_list[1][0] == "2":
-                self.queue.appendleft(Commands(Action.LEFT))
-                self.queue.appendleft(Commands(Action.LEFT))
-                self.queens_pos = [0, -2]
-            if response_list[1][0] == "4":
-                self.queue.appendleft(Commands(Action.RIGHT))
-                self.queens_pos = [1, -3]
-            if response_list[1][0] == "8":
-                self.queue.appendleft(Commands(Action.LEFT))
-                self.queens_pos = [-1, -3]
-            self.direction = "up"
-            return True
+            if response_list[1][0] != "0" and response_list[2] == "here":
+                if response_list[1][0] == "1":
+                    self.queue.appendleft(Commands(Action.LEFT))
+                    self.queue.appendleft(Commands(Action.LEFT))
+                    self.queens_pos = [0, -2]
+                if response_list[1][0] == "3":
+                    self.queue.appendleft(Commands(Action.RIGHT))
+                    self.queens_pos = [1, -3]
+                if response_list[1][0] == "7":
+                    self.queue.appendleft(Commands(Action.RIGHT))
+                    self.queens_pos = [-1, -3]
+                self.direction = "up"
+                return True
         return False
