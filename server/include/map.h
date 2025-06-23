@@ -57,6 +57,9 @@ static const int hash[] = {208, 34, 231, 213, 32, 248, 233, 56, 161, 78, 24,
     114, 20, 218, 113, 154, 27, 127, 246, 250, 1, 8, 198, 250,
     209, 92, 222, 173, 21, 88, 102, 219};
 
+    #define HASH_SIZE 256
+    #define FOLLOWING_ONE 1
+
 /*
 struct map_t :
  - unsigned int resources = array of every resources avaible
