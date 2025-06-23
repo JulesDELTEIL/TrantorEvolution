@@ -123,7 +123,7 @@ class Trantorian (ServerManager) :
         broadcast = self.player.handle_broadcast(response_list)
         if broadcast == "ROLE":
             print("---------------- %s -----------------" % response_list[2])
-            self.player = ROLE_MAP[response_list[2]]()
+            self.player = ROLE_MAP[response_list[3]]()
             return False
         if broadcast == "QUIT":
             action = Commands(Action.BROADCAST, 'quitting')

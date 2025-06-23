@@ -11,6 +11,7 @@ from src.action import Commands, Action
 class Matriarch(BaseRole):
     def __init__(self):
         super().__init__()
+        print("----- Je suis Matriarch ------")
     
     def decide_action(self):
         commands_queue = []
@@ -25,7 +26,7 @@ class Matriarch(BaseRole):
         # à faire -> Connecter nouveau client
         
         self._fork_count += 1
-        self.queue.appendleft(Commands(Action.BROADCAST, 'kamikaze'))
+        self.queue.appendleft(Commands(Action.BROADCAST, 'role kamikaze'))
         
     def handle_broadcast(self, response_list: list[str]) -> bool:
         return False

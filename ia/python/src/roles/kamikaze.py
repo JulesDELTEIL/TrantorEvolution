@@ -11,6 +11,7 @@ from src.action import Commands, Action
 class Kamikaze(BaseRole):
     def __init__(self):
         super().__init__()
+        print("----- Je suis kamikaze ------")
     
     def decide_action(self):
         if self.queue.empty():

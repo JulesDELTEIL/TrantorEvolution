@@ -12,6 +12,7 @@ from src.stones import STONES
 class Worker(BaseRole):
     def __init__(self):
         super().__init__()
+        print("----- Je suis Worker ------")
         self.mode = 'GATHERING' # GATHERING or DELIVERING
         self.carry = None
         self.queens_pos = None

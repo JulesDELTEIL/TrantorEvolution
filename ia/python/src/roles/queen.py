@@ -11,6 +11,7 @@ from src.action import Commands, Action
 class Queen(BaseRole):
     def __init__(self, *inp):
         super().__init__()
+        print("------------- JE SUIS UNE REINE ------------")
         if len(inp) == 1 :
             print("MORE THAN ONE ARG")
             self.birth_function = inp[0]
@@ -23,14 +24,14 @@ class Queen(BaseRole):
 
     def create_kingdom(self):
         print("len queue --------------- %i ------" % len(self.queue))
-        for _ in range(2):
+        for _ in range(5):
             self.queue.appendleft(Commands(Action.FORK))
-            self.queue.appendleft(Commands(Action.BROADCAST, 'queen'))
+            self.queue.appendleft(Commands(Action.BROADCAST, 'role queen'))
             print("FOOOOOOOOOOOOOOOORK QUEEEEEEEEEEEEN")
-        #self.queue.appendleft(Commands(Action.FORK))
-        #self.queue.appendleft(Commands(Action.BROADCAST, 'foreman'))
-        #self.queue.appendleft(Commands(Action.FORK))
-        #self.queue.appendleft(Commands(Action.BROADCAST, 'matriarch'))
+        self.queue.appendleft(Commands(Action.FORK))
+        self.queue.appendleft(Commands(Action.BROADCAST, 'role foreman'))
+        self.queue.appendleft(Commands(Action.FORK))
+        self.queue.appendleft(Commands(Action.BROADCAST, 'role matriarch'))
         self.give_birth = False
 
 

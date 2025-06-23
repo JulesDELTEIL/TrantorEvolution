@@ -11,6 +11,7 @@ from src.action import Commands, Action
 class Foreman(BaseRole):
     def __init__(self):
         super().__init__()
+        print("----- Je suis Foreman ------")
         self.direction = "up"
         self._initial_moves = 3
         self._fork_count = 0
@@ -31,9 +32,9 @@ class Foreman(BaseRole):
         
         self._fork_count += 1
         if self._fork_count % 4 == 0:
-            self.queue.appendleft(Commands(Action.BROADCAST, 'kamikaze'))
+            self.queue.appendleft(Commands(Action.BROADCAST, 'role kamikaze'))
         else:
-            self.queue.appendleft(Commands(Action.BROADCAST, 'worker'))
+            self.queue.appendleft(Commands(Action.BROADCAST, 'role worker'))
 
     def handle_broadcast(self, response_list: list[str]) -> bool:
         return False
