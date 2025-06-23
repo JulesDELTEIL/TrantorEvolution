@@ -5,6 +5,7 @@ then
     if [ -d "./build/" ]
     then
         rm -rf ./build/ ./zappy_*
+        rm -f ./ECS/ECS.a
     fi
     mkdir ./build/ && cd ./build/
     cmake .. -G "Unix Makefiles" -DCMAKE_BUILD_TYPE=Release
@@ -18,6 +19,7 @@ then
     if [ -d "./build/" ]
     then
         rm -rf ./build/ ./zappy_*
+        rm -f ./ECS/ECS.a
     fi
     mkdir ./build/ && cd ./build/
     cmake .. -G "Unix Makefiles" -DCMAKE_BUILD_TYPE=Debug
@@ -29,6 +31,7 @@ elif [[ $1 == "c" ]]
 then
     echo "------------CLEAR------------"
     rm -rf ./build/ ./zappy_*
+    rm -f ./ECS/ECS.a
     echo "------------END------------"
 
 else

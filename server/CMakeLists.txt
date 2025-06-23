@@ -46,6 +46,7 @@ add_executable( ${PROJECT_NAME}
     ${SERVER_GUI_CMD_DIR}mct.c
     ${SERVER_THR_DIR}init_map.c
     ${SERVER_THR_DIR}init_thread.c
+    ${SERVER_THR_DIR}perlin.c
 )
 
 ########## LINKAGE ##########
@@ -53,4 +54,8 @@ target_include_directories( ${PROJECT_NAME}
     PRIVATE
         ${HDR_DIR}
         ${SERVER_HDR_DIR}
+)
+
+target_link_libraries( ${PROJECT_NAME}
+    m
 )
