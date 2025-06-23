@@ -11,7 +11,10 @@ from src.action import Commands, Action
 class Queen(BaseRole):
     def __init__(self, *inp):
         super().__init__()
-        if len(inp) == 1 and inp[0] :
+        if len(inp) == 1 :
+            print("MORE THAN ONE ARG")
+            self.birth_function = inp[0]
+            self.waiting_for_slot_number = True
             self.give_birth = True
         else :
             self.give_birth = False
@@ -28,16 +31,30 @@ class Queen(BaseRole):
         self.queue.appendleft(Commands(Action.BROADCAST, 'matriarch'))
         self.give_birth = False
 
+
+    def fill_egg_left(self):
+        for _ in range(self.state.egg_left) :
+            self.birth_function()
+
     def handle_mother_queen(self):
         if not self.all_alone :
-            if self.player_killed >= self.state.egg_left or not self.state.egg_left:
-                self.all_alone = True
-                return
-            if self.state.egg_left == -1 :
+            if self.state.egg_left == -1 and self.waiting_for_slot_number:
+                print("Asking for whoes still here")
                 self.queue.appendleft(Commands(Action.CONNECT_NBR))
+                return
             else :
+                if self.player_killed >= self.state.egg_left or self.waiting_for_slot_number and not self.state.egg_left:
+                    print("Finally alone with", self.state.egg_left, "left")
+                    self.all_alone = True
+                    return
+                if self.waiting_for_slot_number :
+                    print("Filling slots left")
+                    self.fill_egg_left()
+                print("Asking them to kys")
                 self.queue.appendleft(Commands(Action.BROADCAST, 'quit'))
+            print("Not alone")
         else :
+            print("Creating kingdom")
             self.create_kingdom()
 
     def decide_action(self):

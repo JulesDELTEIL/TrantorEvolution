@@ -12,6 +12,7 @@ from sqlite3 import connect
 
 from src.roles.role_map import ROLE_MAP
 from src.roles.nobody import Nobody
+from src.roles.queen import Queen
 from src.utils import recv_until_newline
 from src.action import Action, Commands
 from src.server_manager import ServerManager
@@ -48,7 +49,7 @@ class Trantorian (ServerManager) :
             Action.SET: self.void,
             Action.FORK: self._spawn_new_client,
             Action.INCANTATION: self.void,
-            Action.CONNECT_NBR: self.void,
+            Action.CONNECT_NBR: self.update_connect_nbr,
             Action.EJECT: self.void,
             Action.NONE:self.void
         }
@@ -122,20 +123,31 @@ class Trantorian (ServerManager) :
         response_list = response.split()
         if isinstance(self.player, Nobody):
             if self.player.cycle > 5:
-                self.player = ROLE_MAP["First_Queen"]
+                print("Becoming a queen")
+                self.player = Queen(lambda : self._spawn_new_client())
                 return True
+
         if response_list[0] == "message":
             if isinstance(self.player, Nobody): # response du serveur -> "message K, text envoyé" -> ex avec notre protocol: "message K, [Queen] role Queen"
                 return self.handle_nobody(response_list)
             return self.player.handle_broadcast(response_list)
         elif self.player.last_sent:
+            if self.player.last_sent == Action.CONNECT_NBR and response_list[0].isdigit():
+                return self.COMMANDS[self.player.last_sent](response_list[0])
             if response_list[0] == Commands.COMMANDS[self.player.last_sent]["response success"][0]:
                 self.COMMANDS[self.player.last_sent]()
             self.player.state.update(response)
             return True
+        return False
 
     def _spawn_new_client(self) -> None:
+        print("SPAWNING NEW CLIENT")
         subprocess.Popen(["./zappy_ai", "-p", str(self.port), "-n", self.team_name, "-h", self.host])
-        
+
+    def update_connect_nbr(self, connect_nbr: str) -> bool:
+        print("UPDATING CONNECT NBR gotten", connect_nbr)
+        self.player.state.egg_left = int(connect_nbr)
+        return True
+
     def void(self):
         return
