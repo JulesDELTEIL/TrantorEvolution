@@ -17,24 +17,24 @@
 
 static int get_biome(double noise)
 {
-    if (noise <= 0.25)
+    if (noise <= SEA_NOISE)
         return SEA;
-    if (noise <= 0.40)
+    if (noise <= BEACH_NOISE)
         return BEACH;
-    if (noise <= 0.60)
+    if (noise <= PLAINS_NOISE)
         return PLAINS;
-    if (noise <= 0.70)
+    if (noise <= FOREST_NOISE)
         return FOREST;
     return MOUNTAINS;
 }
 
 static int get_spawn_biome(float noise)
 {
-    if (noise <= 0.40)
+    if (noise <= BEACH_NOISE)
         return BEACH;
-    if (noise <= 0.60)
+    if (noise <= PLAINS_NOISE)
         return PLAINS;
-    if (noise <= 0.70)
+    if (noise <= FOREST_NOISE)
         return FOREST;
     return MOUNTAINS;
 }
@@ -122,7 +122,7 @@ static void generate_noise(tile_t **map_tiles, int Y)
 
     for (int x = 0; map_tiles[x] != NULL; x++) {
         for (int y = 0; y < Y; y++) {
-                map_tiles[x][y].noise = perlin_2d(x, y, 0.2, 4);
+                map_tiles[x][y].noise = perlin_2d(x, y, 0.3, 4);
         }
     }
 }
