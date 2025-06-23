@@ -11,6 +11,7 @@ from src.action import Commands, Action
 class Foreman(BaseRole):
     def __init__(self):
         super().__init__()
+        self.direction = "up"
         self._initial_moves = 3
         self._fork_count = 0
     

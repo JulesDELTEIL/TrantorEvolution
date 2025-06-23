@@ -23,7 +23,7 @@ class PlayerState:
         if response == "dead":
             print("I'm dead lol")
             exit(0)
-        self.motivation.update(self.food, self.inventory, self.level)
+        self.motivation.update(self.food, self.last_inventory, self.level)
     
     def parse_inventory(self, response: str) -> None:
         self.last_inventory = {}

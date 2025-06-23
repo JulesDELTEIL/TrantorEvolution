@@ -140,8 +140,10 @@ class Trantorian (ServerManager) :
             if self.player.last_sent == Action.CONNECT_NBR and response_list[0].isdigit():
                 return self.COMMANDS[self.player.last_sent](response_list[0])
             if response_list[0][0] == '[':
-                if self.player.last_sent == Action.LOOK or self.player.last_sent == Action.INVENTORY or self.player.last_sent == Action.INCANTATION:
+                if self.player.last_sent == Action.LOOK or self.player.last_sent == Action.INVENTORY:
                     self.COMMANDS[self.player.last_sent](response)
+            if self.player.last_sent == Action.INCANTATION:
+                self.COMMANDS[self.player.last_sent](response)
             if response_list[0] == Commands.COMMANDS[self.player.last_sent]["response success"][0]:
                 self.COMMANDS[self.player.last_sent]()
             self.player.state.update(response)
@@ -162,12 +164,14 @@ class Trantorian (ServerManager) :
         self.map.update_mindmap(response_formatted, self.player.state.level, self.player.cycle, self.player.pos)
         
     def _turn_left(self):
-        mapping = {Direction.UP: Direction.LEFT, Direction.LEFT: Direction.DOWN, Direction.DOWN: Direction.RIGHT, Direction.RIGHT: Direction.UP}
-        self.player.direction = mapping[self.player.direction]
+        if self.player.direction is not None:
+            mapping = {Direction.UP: Direction.LEFT, Direction.LEFT: Direction.DOWN, Direction.DOWN: Direction.RIGHT, Direction.RIGHT: Direction.UP}
+            self.player.direction = mapping[self.player.direction]
 
     def _turn_right(self):
-        mapping = {Direction.UP: Direction.RIGHT, Direction.RIGHT: Direction.DOWN, Direction.DOWN: Direction.LEFT, Direction.LEFT: Direction.UP}
-        self.player.direction = mapping[self.player.direction]
+        if self.player.direction is not None:
+            mapping = {Direction.UP: Direction.RIGHT, Direction.RIGHT: Direction.DOWN, Direction.DOWN: Direction.LEFT, Direction.LEFT: Direction.UP}
+            self.player.direction = mapping[self.player.direction]
 
     def _move_forward(self):
         if self.player.direction == Direction.UP:
