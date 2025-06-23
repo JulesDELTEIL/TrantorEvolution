@@ -52,8 +52,10 @@ void Core::events(void)
     sf::Event default_event;
 
     while (_engine.window.pollEvent(_engine.events)) {
-        if (_engine.events.type == sf::Event::Closed)
+        if (_engine.events.type == sf::Event::Closed) {
             _engine.window.close();
+            return;
+        }
         _scenes.at(_selected_scene)->event(_engine.events, net_event);
     }
     default_event.type = sf::Event::SensorChanged;
