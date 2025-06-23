@@ -30,13 +30,13 @@ namespace gui {
 namespace visual {
 
 static const std::map<resource_e, std::string> RESOURCE_NODE_TEXTURE  = {
-    {FOOD, "assets/ressources/Grass_Biom_Tree.png"},
+    {FOOD, "assets/ressources/Deer.png"},
     {WOOD, "assets/ressources/Grass_Biom_Tree.png"},
     {STONE, "assets/ressources/Stone.png"},
     {CLAY, "assets/ressources/Clay.png"},
     {METAL, "assets/ressources/Metal.png"},
-    {OIL, "assets/ressources/Grass_Biom_Tree.png"},
-    {ANTI_MATTER, "assets/ressources/Grass_Biom_Tree.png"}
+    {OIL, "assets/ressources/Oil.png"},
+    {ANTI_MATTER, "assets/ressources/Anti_Matter.png"}
 };
 
 static const sf::IntRect RESOURCE_RECT(0, 0, 30, 30);
