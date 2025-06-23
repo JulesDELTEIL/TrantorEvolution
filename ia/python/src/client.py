@@ -41,7 +41,7 @@ class Trantorian (ServerManager) :
             Action.FORWARD: self.void,
             Action.LEFT: self.void,
             Action.RIGHT: self.void,
-            Action.LOOK: self.void,
+            Action.LOOK: self._update_mindmap,
             Action.INVENTORY: self.void,
             Action.BROADCAST: self.void,
             Action.TAKE: self.void,
@@ -131,11 +131,18 @@ class Trantorian (ServerManager) :
         elif self.player.last_sent:
             if response_list[0] == Commands.COMMANDS[self.player.last_sent]["response success"][0]:
                 self.COMMANDS[self.player.last_sent]()
+            if response_list[0][0] == '[':
+                if self.player.last_sent == Action.LOOK:
+                    self._update_mindmap(response_list[0])
             self.player.state.update(response)
             return True
 
     def _spawn_new_client(self) -> None:
         subprocess.Popen(["./zappy_ai", "-p", str(self.port), "-n", self.team_name, "-h", self.host])
-        
+
+    def _update_mindmap(self, response: str) -> None:
+        response_formatted = self.state.parse_vision(response)
+        self.map.update_mindmap(response_formatted, self.player.state.level, self.player.cycle, self.player.pos)
+
     def void(self):
         return

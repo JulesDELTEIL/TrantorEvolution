@@ -14,36 +14,38 @@ class Worker(BaseRole):
         super().__init__()
         self.mode = 'GATHERING' # GATHERING or DELIVERING
         self.carry = None
-        self.foreman_direction = None
-        self.pos = [0, 0]
         self.queens_pos = None
         
-    def decide_action(self):
-        if self.direction is None:
-            if self.cycle == 0:
-                self.queue.appendleft(Commands(Action.FORWARD))
-                self.cycle += 1
-            return
+    def decide_action(self) -> None:
+        self.cycle += 1
         # if self.state.motivation.hunger > 0.7:
             # logique pour chercher de la food (vision...)
-        
         if self.mode == 'GATHERING':
-            coords = self.state.level
-            for index, objects in enumerate(self.state.vision):
-                for stone in STONES:
-                    if stone in objects:
-                        self.carry = stone
-                        self.mode = 'DELIVERING'
-                        self.queue.appendleft(Commands(Action.TAKE, stone))
-                    # return logique d'exploration
-            # return logique d'exploration
+            for visions in self.state.last_vision:
+                for objects in visions:
+                    for stone in STONES.keys():
+                        if stone in objects:
+                            self.carry = stone
+                            self.mode = 'DELIVERING'
+                            self.queue.appendleft(Commands(Action.TAKE, stone))
+                            return
             
-        if self.mode == 'DELIVERING':
+            self.queue.appendleft(Commands(Action.FORWARD))
+            if self.cycle % 2 == 0:
+                self.queue.appendleft(Commands(Action.LEFT))
+            else:
+                self.queue.appendleft(Commands(Action.RIGHT))
+            self.queue.appendleft(Commands(Action.FORWARD))
+            self.queue.appendleft(Commands(Action.LOOK))
+            return
+
+        elif self.mode == 'DELIVERING':
             if self.pos == self.queens_pos:
                self.mode = 'GATHERING'
                self.queue.appendleft(Commands(Action.SET, self.carry))
                self.carry = None
-            # logique pour aller jusqu'au queens
+            else:
+                self.state.get_movements(self.pos, self.queens_pos, self.direction)
     
     def setup_direction(self) -> None:
         self.queue.appendleft(Commands(Action.FORWARD))
@@ -60,7 +62,6 @@ class Worker(BaseRole):
             if response_list[1][0] == "8":
                 self.queue.appendleft(Commands(Action.LEFT))
                 self.queens_pos = [-1, -3]
-                
             self.direction = "up"
-            
+            return True
         return False
