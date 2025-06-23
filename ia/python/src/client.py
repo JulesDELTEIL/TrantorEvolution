@@ -47,12 +47,12 @@ class Trantorian (ServerManager) :
             Action.LEFT: self._turn_left,
             Action.RIGHT: self._turn_right,
             Action.LOOK: self._update_mindmap,
-            Action.INVENTORY: self.void,
+            Action.INVENTORY: self.player.state.parse_inventory,
             Action.BROADCAST: self.void,
             Action.TAKE: self.void,
             Action.SET: self.void,
             Action.FORK: self._spawn_new_client,
-            Action.INCANTATION: self.void,
+            Action.INCANTATION: self._incatation_succes,
             Action.CONNECT_NBR: self.void,
             Action.EJECT: self.void,
             Action.NONE:self.void
@@ -134,11 +134,11 @@ class Trantorian (ServerManager) :
                 return self.handle_nobody(response_list)
             return self.player.handle_broadcast(response_list)
         elif self.player.last_sent:
+            if response_list[0][0] == '[':
+                if self.player.last_sent == Action.LOOK or self.player.last_sent == Action.INVENTORY or self.player.last_sent == Action.INCANTATION:
+                    self.COMMANDS[self.player.last_sent](response)
             if response_list[0] == Commands.COMMANDS[self.player.last_sent]["response success"][0]:
                 self.COMMANDS[self.player.last_sent]()
-            if response_list[0][0] == '[':
-                if self.player.last_sent == Action.LOOK:
-                    self._update_mindmap(response_list[0])
             self.player.state.update(response)
             return True
 
@@ -166,6 +166,13 @@ class Trantorian (ServerManager) :
             self.pos[1] += 1
         elif self.player.direction == Direction.LEFT:
             self.pos[0] -= 1
+            
+    def _incatation_succes(self, response: str):
+        if response == "Elevation underway":
+            return
+        response_list = response.split()
+        if response_list[0] == "Current":
+            self.player.state.level = int(response_list[2])
 
     def void(self):
         return

@@ -13,7 +13,7 @@ class PlayerState:
         self.level = 1
         self.food = 10
         self.egg_left = -1
-        self.inventory = {}
+        self.last_inventory = {}
         self.last_vision = []
         self.motivation = Motivation()
         self.sent_queue = []
@@ -26,12 +26,12 @@ class PlayerState:
         self.motivation.update(self.food, self.inventory, self.level)
     
     def parse_inventory(self, response: str) -> None:
-        self.inventory = {}
+        self.last_inventory = {}
         for item in response.strip("[]").split(","):
             if item.strip():
                 key, val = item.strip().split()
-                self.inventory[key] = int(val)
-        self.food = self.inventory.get("food", 0)
+                self.last_inventory[key] = int(val)
+        self.food = self.last_inventory.get("food", 0)
         
     def parse_vision(response: str) -> list[list[str]]:
         s = response.strip()
