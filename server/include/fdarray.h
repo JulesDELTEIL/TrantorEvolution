@@ -21,7 +21,7 @@
     #define TICKS_FOOD_USE 126
 
 typedef enum player_dir_e {
-    N = 1,
+    N = 0,
     E,
     S,
     W

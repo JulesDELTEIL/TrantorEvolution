@@ -14,7 +14,7 @@
     #define ROCK_DENS 0.15
     #define CLAY_DENS 0.1
     #define METAL_DENS 0.1
-    #define PETROL_DENS 0.08
+    #define OIL_DENS 0.08
     #define ANTIMATTER_DENS 0.05
     #define WORLD_DENS(args) ((args)->width * (args)->height)
     #define X_COORD(i, heigt) (i / height)

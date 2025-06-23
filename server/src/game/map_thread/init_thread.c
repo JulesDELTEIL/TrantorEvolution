@@ -49,7 +49,7 @@ static density_t init_density(int map_dens)
     all_dens.dens[WOOD] = map_dens * WOOD_DENS;
     all_dens.dens[ROCK] = map_dens * ROCK_DENS;
     all_dens.dens[CLAY] = map_dens * CLAY_DENS;
-    all_dens.dens[PETROL] = map_dens * PETROL_DENS;
+    all_dens.dens[OIL] = map_dens * OIL_DENS;
     all_dens.dens[METAL] = map_dens * METAL_DENS;
     all_dens.dens[ANTIMATTER] = map_dens * ANTIMATTER_DENS;
     return all_dens;
