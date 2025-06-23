@@ -16,12 +16,17 @@ from src.roles.queen import Queen
 from src.utils import recv_until_newline
 from src.action import Action, Commands
 from src.server_manager import ServerManager
+from enum import Enum
 
 DIMENSION_X = 0
 DIMENSION_Y = 1
 PLAYER_LEFT = 1
 
-
+class Direction(Enum):
+    UP = "up"
+    DOWN = "down"
+    LEFT = "left"
+    RIGHT = "right"
 
 class Trantorian (ServerManager) :
     def __init__(self, host, port, team_name):
@@ -39,16 +44,16 @@ class Trantorian (ServerManager) :
         ]
         self.connect()
         self.COMMANDS = {
-            Action.FORWARD: self.void,
-            Action.LEFT: self.void,
-            Action.RIGHT: self.void,
-            Action.LOOK: self.void,
-            Action.INVENTORY: self.void,
+            Action.FORWARD: self._move_forward,
+            Action.LEFT: self._turn_left,
+            Action.RIGHT: self._turn_right,
+            Action.LOOK: self._update_mindmap,
+            Action.INVENTORY: self.player.state.parse_inventory,
             Action.BROADCAST: self.void,
             Action.TAKE: self.void,
             Action.SET: self.void,
             Action.FORK: self._spawn_new_client,
-            Action.INCANTATION: self.void,
+            Action.INCANTATION: self._incatation_succes,
             Action.CONNECT_NBR: self.update_connect_nbr,
             Action.EJECT: self.void,
             Action.NONE:self.void
@@ -134,6 +139,9 @@ class Trantorian (ServerManager) :
         elif self.player.last_sent:
             if self.player.last_sent == Action.CONNECT_NBR and response_list[0].isdigit():
                 return self.COMMANDS[self.player.last_sent](response_list[0])
+            if response_list[0][0] == '[':
+                if self.player.last_sent == Action.LOOK or self.player.last_sent == Action.INVENTORY or self.player.last_sent == Action.INCANTATION:
+                    self.COMMANDS[self.player.last_sent](response)
             if response_list[0] == Commands.COMMANDS[self.player.last_sent]["response success"][0]:
                 self.COMMANDS[self.player.last_sent]()
             self.player.state.update(response)
@@ -148,6 +156,35 @@ class Trantorian (ServerManager) :
         print("UPDATING CONNECT NBR gotten", connect_nbr)
         self.player.state.egg_left = int(connect_nbr)
         return True
+
+    def _update_mindmap(self, response: str) -> None:
+        response_formatted = self.state.parse_vision(response)
+        self.map.update_mindmap(response_formatted, self.player.state.level, self.player.cycle, self.player.pos)
+        
+    def _turn_left(self):
+        mapping = {Direction.UP: Direction.LEFT, Direction.LEFT: Direction.DOWN, Direction.DOWN: Direction.RIGHT, Direction.RIGHT: Direction.UP}
+        self.player.direction = mapping[self.player.direction]
+
+    def _turn_right(self):
+        mapping = {Direction.UP: Direction.RIGHT, Direction.RIGHT: Direction.DOWN, Direction.DOWN: Direction.LEFT, Direction.LEFT: Direction.UP}
+        self.player.direction = mapping[self.player.direction]
+
+    def _move_forward(self):
+        if self.player.direction == Direction.UP:
+            self.pos[1] -= 1
+        elif self.player.direction == Direction.RIGHT:
+            self.pos[0] += 1
+        elif self.player.direction == Direction.DOWN:
+            self.pos[1] += 1
+        elif self.player.direction == Direction.LEFT:
+            self.pos[0] -= 1
+            
+    def _incatation_succes(self, response: str):
+        if response == "Elevation underway":
+            return
+        response_list = response.split()
+        if response_list[0] == "Current":
+            self.player.state.level = int(response_list[2])
 
     def void(self):
         return

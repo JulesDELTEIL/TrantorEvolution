@@ -13,42 +13,46 @@ class PlayerState:
         self.level = 1
         self.food = 10
         self.egg_left = -1
-        self.inventory = {}
-        self.vision = []
+        self.last_inventory = {}
+        self.last_vision = []
         self.motivation = Motivation()
         self.sent_queue = []
     
     def update(self, response: str) -> None:
         #toutes ces conditions doivent être gérer via la sent_queue -> on doit regarder quel est le premier élément de la liste et traiter la réponse en fonction
-        if response.startswith("[") and "food" in response:
-            self.parse_inventory(response)
-        elif response.startswith("[") and "player" in response:
-            self.parse_vision(response)
-        elif response == "dead":
+        if response == "dead":
             print("I'm dead lol")
             exit(0)
         self.motivation.update(self.food, self.inventory, self.level)
     
     def parse_inventory(self, response: str) -> None:
-        self.inventory = {}
+        self.last_inventory = {}
         for item in response.strip("[]").split(","):
             if item.strip():
                 key, val = item.strip().split()
-                self.inventory[key] = int(val)
-        self.food = self.inventory.get("food", 0)
+                self.last_inventory[key] = int(val)
+        self.food = self.last_inventory.get("food", 0)
         
-    def parse_vision(self, response: str) -> None:
-        content = response.strip("[]")
-        tiles = content.split(",")
-        self.vision = [tile.strip().split() for tile in tiles]
-        
-    def vision_coords(level: int) -> None:
-        coords = [(0, 0)]
-        for r in range(1, level + 1):
-            y = -r
-            for x in range(-r, r + 1):
-                coords.append((x, y))
-        return coords
+    def parse_vision(response: str) -> list[list[str]]:
+        s = response.strip()
+        if not (s.startswith('[') and s.endswith(']')):
+            raise ValueError("Format inattendu")
+        inner = s[1:-1]
+
+        raw_tiles = inner.split('],')
+        vision = []
+        for raw in raw_tiles:
+            t = raw.strip()
+            if t.startswith('['):
+                t = t[1:]
+            if t.endswith(']'):
+                t = t[:-1]
+            if t == '':
+                vision.append([])
+            else:
+                parts = [w.strip() for w in t.split(' ') if w.strip()]
+                vision.append([w.strip(',') for w in parts])
+        return vision
     
     def get_movements(start: list[int], end: list[int], direction: str) -> list[Commands]:
         commands_queue = []

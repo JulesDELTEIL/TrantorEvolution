@@ -5,4 +5,4 @@
 ## stones.py
 ##
 
-STONES = ['linemate', 'deraumere', 'sibur', 'mendiane', 'phiras', 'thystame']
+STONES = {'linemate': 0.5, 'deraumere': 0.55, 'sibur': 0.6, 'mendiane': 0.7, 'phiras': 0.7, 'thystame': 0.9}

@@ -66,14 +66,12 @@ class Queen(BaseRole):
             if self._can_incant():
                 self.queue.appendleft(Commands(Action.INCANTATION))
                 return
-            if self.state.inventory.get("food", 0) < 2:
-                self.queue.appendleft(Commands(Action.TAKE, "food"))
-                return
             if self.cycle < 4:
                 self.queue.appendleft(Commands(Action.TAKE, "food"))
                 return
             else:
                 self.cycle = 0
+                self.queue.appendleft(Commands(Action.BROADCAST, "here"))
                 self.queue.appendleft(Commands(Action.LOOK))
 
     def _can_incant(self) -> bool:
