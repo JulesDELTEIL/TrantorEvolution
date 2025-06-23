@@ -12,7 +12,7 @@
 #include "serverdata.h"
 #include "transmission.h"
 
-int del_egg(team_t *team, pos_t pos)
+static int del_egg(team_t *team, pos_t pos)
 {
     egg_t *node = team->eggs->next;
     egg_t *prev = team->eggs;
@@ -113,7 +113,7 @@ int send_pnw(serverdata_t *sdata, player_t *player, client_t *ui_client)
     return EXIT_SUCCESS;
 }
 
-int find_team_idx(game_t *game, char *team_name)
+static int find_team_idx(game_t *game, char *team_name)
 {
     for (uint_t k = 0; k < game->nb_of_teams; k++)
         if (strcmp(game->teams[k].name, team_name) == 0)

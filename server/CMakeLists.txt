@@ -17,9 +17,12 @@ add_executable( ${PROJECT_NAME}
     ${SERVER_SRC_DIR}network/connection.c
     ${SERVER_SRC_DIR}network/transmission.c
     ${SERVER_SRC_DIR}network/end.c
-    ${SERVER_SRC_DIR}clients/commands.c
-    ${SERVER_SRC_DIR}clients/actions.c
     ${SERVER_SRC_DIR}clients/set_team.c
+    ${SERVER_SRC_DIR}clients/check_clients.c
+    ${SERVER_SRC_DIR}clients/parse_data.c
+    ${SERVER_SRC_DIR}clients/ai/check_ai_client.c
+    ${SERVER_SRC_DIR}clients/gui/check_gui_client.c
+    ${SERVER_SRC_DIR}clients/unknown/check_unknown_client.c
     ${SERVER_SRC_DIR}utils/timer.c
     ${SERVER_SRC_DIR}utils/debug.c
     ${SERVER_SRC_DIR}utils/returnwitherror.c

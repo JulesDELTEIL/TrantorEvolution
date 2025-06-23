@@ -12,11 +12,6 @@
     #include "fdarray.h"
 
 /*
-Function called to handle the first valid command found in the client buffer
-*/
-int buffer_handler(serverdata_t *sdata, fdarray_t *fdarray, client_t *client);
-
-/*
 Sets the timeout end timer of the client depending on FREQ and TICKS
 */
 size_t set_timer_end(int freq, int ticks);
