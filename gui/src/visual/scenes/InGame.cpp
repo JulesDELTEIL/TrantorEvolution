@@ -6,27 +6,51 @@
 */
 
 #include "visual/scenes/InGame.hpp"
+#include "core/Engine.hpp"
 
 #include "visual/layers/Land.hpp"
 
 namespace gui {
 namespace visual {
 
-InGame::InGame() : AScene()
+InGame::InGame() : AScene(core::DEFAULT_VIEW)
 {
     _layers.emplace_back(std::make_unique<Land>());
 }
 
-void InGame::display(sf::RenderTarget& target) const
+void InGame::display(sf::RenderTarget& target)
 {
     for (const std::unique_ptr<ILayer>& layer : _layers)
         layer->display(target);
 }
 
-void InGame::event(const sf::Event& event)
+void InGame::event(const sf::Event& event, const network::NetEventPack& net_events)
 {
     for (const std::unique_ptr<ILayer>& layer : _layers)
-        layer->event(event);
+        layer->event(event, net_events);
+    if (event.type == sf::Event::KeyPressed) {
+        if (event.key.code == sf::Keyboard::D)
+            move(10, 0);
+        if (event.key.code == sf::Keyboard::Q)
+            move(-10, 0);
+        if (event.key.code == sf::Keyboard::S)
+            move(0, 10);
+        if (event.key.code == sf::Keyboard::Z)
+            move(0, -10);
+        if (event.key.code == sf::Keyboard::E)
+            zoom(0.9);
+        if (event.key.code == sf::Keyboard::A)
+            zoom(1.1);
+    }
+    switch (static_cast<int>(net_events.event)) {
+    case network::TEAMS:
+        writeTeams("teamName");
+    }
+}
+
+void InGame::writeTeams(const std::string& name)
+{
+    _teams.push_back(name);
 }
 
 } // visual

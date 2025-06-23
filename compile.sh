@@ -6,7 +6,6 @@ then
     then
         rm -rf ./build/ ./zappy_*
         rm -f ./ECS/ECS.a
-        rm -f ./gui/plugins/*.so
     fi
     mkdir ./build/ && cd ./build/
     cmake .. -G "Unix Makefiles" -DCMAKE_BUILD_TYPE=Release
@@ -21,7 +20,6 @@ then
     then
         rm -rf ./build/ ./zappy_*
         rm -f ./ECS/ECS.a
-        rm -f ./gui/plugins/*.so
     fi
     mkdir ./build/ && cd ./build/
     cmake .. -G "Unix Makefiles" -DCMAKE_BUILD_TYPE=Debug
@@ -34,7 +32,6 @@ then
     echo "------------CLEAR------------"
     rm -rf ./build/ ./zappy_*
     rm -f ./ECS/ECS.a
-    rm -f ./gui/plugins/*.so
     echo "------------END------------"
 
 else
