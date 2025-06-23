@@ -1,18 +1,40 @@
 /*
-** EPITECH PROJECT, 2025
+** EPITECH PROJECT, 2024
 ** zappy
 ** File description:
-** loop.c
+** check_player.c
 */
 
 #include <stdlib.h>
 #include <stdio.h>
-#include <pthread.h>
 #include <sys/time.h>
 #include <string.h>
 
 #include "commands.h"
 #include "actions.h"
+#include "debug.h"
+#include "functions.h"
+#include "transmission.h"
+
+static int buffer_handler(serverdata_t *sdata, fdarray_t *fdarray,
+    client_t *client)
+{
+    char cmd[BUFFSIZE] = {0};
+    char data[BUFFSIZE] = {0};
+
+    if (client == NULL || client->buffer == NULL)
+        return EXIT_FAILURE;
+    if (sdata->debug)
+        debug_buffer(client);
+    if (packet_parser(client, cmd, data) == EXIT_FAILURE)
+        return EXIT_FAILURE;
+    for (uint_t k = 0; k < NB_COMMANDS[client->type]; k++)
+        if (strcmp(cmd, COMMANDS[client->type][k].command) == 0)
+            return COMMANDS[client->type][k].handler(sdata,
+                fdarray, client, data);
+    send_data(client, "ko", NULL, sdata->debug);
+    return EXIT_FAILURE;
+}
 
 static int destroy_action(player_t *player)
 {
@@ -76,39 +98,24 @@ static int cap_player_buff(client_t *client)
     return EXIT_SUCCESS;
 }
 
-static int check_timed_buffer(serverdata_t *sdata, fdarray_t *fdarray,
+static int check_player_timer(serverdata_t *sdata, fdarray_t *fdarray,
     client_t *client)
 {
     struct timeval tp;
 
     gettimeofday(&tp, NULL);
-    if (client->player == NULL)
-        return EXIT_FAILURE;
-    if (client->player->action.status != ONGOING) {
-        return buffer_handler(sdata, fdarray, client);
-    } else if (
-        (tp.tv_sec * 1000 + tp.tv_usec / 1000) >= client->player->action.end) {
-        action_handler(sdata, fdarray, client);
-        return EXIT_SUCCESS;
-    }
+    if ((tp.tv_sec * 1000 + tp.tv_usec / 1000) >= client->player->action.end)
+        return action_handler(sdata, fdarray, client);
     return EXIT_FAILURE;
 }
 
-static int check_untimed_buffer(serverdata_t *sdata, fdarray_t *fdarray,
+int check_ai_client(serverdata_t *sdata, fdarray_t *fdarray,
     client_t *client)
 {
-    if (client->buffer == NULL)
+    if (client->player == NULL)
         return EXIT_FAILURE;
-    return buffer_handler(sdata, fdarray, client);
-}
-
-int clients_buffers(serverdata_t *sdata, fdarray_t *fdarray)
-{
-    for (uint_t k = NB_SERVER_FD; k < NBTOTAL_FD; k++) {
-        if (fdarray->clients[k].type == AI)
-            check_timed_buffer(sdata, fdarray, &(fdarray->clients[k]));
-        else
-            check_untimed_buffer(sdata, fdarray, &(fdarray->clients[k]));
-    }
-    return EXIT_SUCCESS;
+    if (client->player->action.status != ONGOING)
+        return buffer_handler(sdata, fdarray, client);
+    else
+        return check_player_timer(sdata, fdarray, client);
 }
