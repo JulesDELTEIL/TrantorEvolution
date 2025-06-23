@@ -18,7 +18,7 @@ class Nobody(BaseRole):
         if len(response_list) >= 3:
             if response_list[2] == "role" and (response_list[1][0] == "0"):
                 return True
-            if response_list[3] == "quit":
+            if response_list[2] == "quit":
                 self.sock.shutdown(socket.SHUT_RDWR)
                 self.sock.close()
                 return False
