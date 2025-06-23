@@ -161,7 +161,7 @@ class Trantorian (ServerManager) :
                 self.COMMANDS[self.player.last_sent]()
             self.player.state.update(response)
             return True
-        return False
+        return True
 
     def _spawn_new_client(self) -> None:
         subprocess.Popen(["./zappy_ai", "-p", str(self.port), "-n", self.team_name, "-h", self.host])

@@ -24,8 +24,7 @@ class Matriarch(BaseRole):
         self.queue.appendleft(Commands(Action.FORK))
         
         # à faire -> Connecter nouveau client
-        
-        self._fork_count += 1
+
         self.queue.appendleft(Commands(Action.BROADCAST, 'role kamikaze'))
         
     def handle_broadcast(self, response_list: list[str]) -> bool:
