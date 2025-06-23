@@ -14,18 +14,16 @@ class Nobody(BaseRole):
     def __init__(self):
         super().__init__()
 
-    def handle_broadcast(self, response_list: list[str]) -> bool:
+    def handle_broadcast(self, response_list: list[str]) -> str:
         if len(response_list) >= 3:
             print("Reponse list" , response_list)
             if response_list[2] == "role" and (response_list[1][0] == "0"):
-                return True
+                return "ROLE"
             if response_list[2] == "quit":
                 print("KILLING MYSELF")
-                self.queue.appendleft(Commands(Action.BROADCAST, 'quitting'))
-                self.sock.shutdown(socket.SHUT_RDWR)
-                self.sock.close()
-                return False
-        return False
+
+                return "QUIT"
+        return "NOTHING"
 
     def decide_action(self):
         print("New cycle")

@@ -25,6 +25,7 @@ class Queen(BaseRole):
         for _ in range(5):
             self.queue.appendleft(Commands(Action.FORK))
             self.queue.appendleft(Commands(Action.BROADCAST, 'queen'))
+            print("FOOOOOOOOOOOOOOOORK QUEEEEEEEEEEEEN")
         self.queue.appendleft(Commands(Action.FORK))
         self.queue.appendleft(Commands(Action.BROADCAST, 'foreman'))
         self.queue.appendleft(Commands(Action.FORK))
@@ -34,6 +35,7 @@ class Queen(BaseRole):
 
     def fill_egg_left(self):
         for _ in range(self.state.egg_left) :
+            print("FIll egg new")
             self.birth_function()
 
     def handle_mother_queen(self):
@@ -50,11 +52,12 @@ class Queen(BaseRole):
                 if self.waiting_for_slot_number :
                     print("Filling slots left")
                     self.fill_egg_left()
-                print("Asking them to kys")
+                    self.waiting_for_slot_number = False
+                print("Asking them to kys", self.player_killed)
                 self.queue.appendleft(Commands(Action.BROADCAST, 'quit'))
             print("Not alone")
         else :
-            print("Creating kingdom")
+            print("Creating kingdom------------------------------------------------------------------")
             self.create_kingdom()
 
     def decide_action(self):

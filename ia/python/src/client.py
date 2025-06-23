@@ -86,7 +86,6 @@ class Trantorian (ServerManager) :
                 index = message.find("\n")
                 if index == -1:
                     break
-                print("Turn, " , i)
                 self.connect_function[i](message[:index + 1])
                 message = message[index + 1:]
                 i += 1
@@ -119,10 +118,14 @@ class Trantorian (ServerManager) :
             self.analyse_requests(response)
 
     def handle_nobody(self, response_list: list[str]) -> bool:
-        if self.player.handle_broadcast(response_list):
+     broadcast = self.player.handle_broadcast(response_list)
+     if broadcast  == "ROLE":
             self.player = ROLE_MAP[response_list[3]]
             return True
-        return False
+     if broadcast == "QUIT":
+         action = Commands(Action.BROADCAST, 'quitting')
+         self.send((action.__str__() + "\n").encode())
+     return False
 
     def handle_response(self, response: str) -> bool:
         response_list = response.split()
@@ -131,7 +134,6 @@ class Trantorian (ServerManager) :
                 print("Becoming a queen")
                 self.player = Queen(lambda : self._spawn_new_client())
                 return True
-
         if response_list[0] == "message":
             if isinstance(self.player, Nobody): # response du serveur -> "message K, text envoyé" -> ex avec notre protocol: "message K, [Queen] role Queen"
                 return self.handle_nobody(response_list)
@@ -142,6 +144,9 @@ class Trantorian (ServerManager) :
             if response_list[0][0] == '[':
                 if self.player.last_sent == Action.LOOK or self.player.last_sent == Action.INVENTORY:
                     self.COMMANDS[self.player.last_sent](response)
+            if self.player.last_sent == Action.BROADCAST and response_list[0] == "ok" and isinstance(self.player, Nobody)  :
+                self.sock.shutdown(socket.SHUT_RDWR)
+                self.sock.close()
             if self.player.last_sent == Action.INCANTATION:
                 self.COMMANDS[self.player.last_sent](response)
             if response_list[0] == Commands.COMMANDS[self.player.last_sent]["response success"][0]:
@@ -151,7 +156,6 @@ class Trantorian (ServerManager) :
         return False
 
     def _spawn_new_client(self) -> None:
-        print("SPAWNING NEW CLIENT")
         subprocess.Popen(["./zappy_ai", "-p", str(self.port), "-n", self.team_name, "-h", self.host])
 
     def update_connect_nbr(self, connect_nbr: str) -> bool:
