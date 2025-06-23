@@ -73,7 +73,7 @@ static int server_loop(serverdata_t *sdata, fdarray_t *fdarray)
         rc = listen_fds(sdata, fdarray);
         if (rc == EXIT_FAILURE || rc == CLOSE_PROCESS)
             run = false;
-        clients_buffers(sdata, fdarray);
+        check_clients(sdata, fdarray);
     }
     return rc;
 }
