@@ -8,6 +8,7 @@
 #include "visual/scenes/InGame.hpp"
 #include "core/Engine.hpp"
 
+#include "visual/layers/Background.hpp"
 #include "visual/layers/Land.hpp"
 
 namespace gui {
@@ -15,6 +16,7 @@ namespace visual {
 
 InGame::InGame() : AScene(core::DEFAULT_VIEW)
 {
+    _layers.emplace_back(std::make_unique<Background>(core::DEFAULT_VIEW));
     _layers.emplace_back(std::make_unique<Land>());
 }
 
@@ -44,7 +46,7 @@ void InGame::event(const sf::Event& event, const network::NetEventPack& net_even
     }
     switch (static_cast<int>(net_events.event)) {
     case network::TEAMS:
-        writeTeams("teamName");
+        writeTeams(net_events.pack[0].getString());
     }
 }
 

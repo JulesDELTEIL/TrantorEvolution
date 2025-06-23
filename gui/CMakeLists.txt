@@ -28,6 +28,7 @@ add_executable( ${PROJECT_NAME}
     ${GUI_SRC_DIR}visual/entities/ResourceNode.cpp
 
     # LAYERS
+    ${GUI_SRC_DIR}visual/layers/Background.cpp
     ${GUI_SRC_DIR}visual/layers/Land.cpp
 
     # SCENES
