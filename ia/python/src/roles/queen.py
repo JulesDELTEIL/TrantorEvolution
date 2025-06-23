@@ -22,7 +22,7 @@ class Queen(BaseRole):
         self.player_killed = 0
 
     def create_kingdom(self):
-        self.queue.clear()
+        print("len queue --------------- %i ------" % len(self.queue))
         for _ in range(2):
             self.queue.appendleft(Commands(Action.FORK))
             self.queue.appendleft(Commands(Action.BROADCAST, 'queen'))
@@ -49,7 +49,7 @@ class Queen(BaseRole):
                 if self.player_killed >= self.state.egg_left or self.waiting_for_slot_number and not self.state.egg_left:
                     print("Finally alone with", self.state.egg_left, "left")
                     self.all_alone = True
-                    self.queue.clear()
+                    self.create_kingdom()
                     return
                 if self.waiting_for_slot_number :
                     print("Filling slots left")

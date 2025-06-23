@@ -124,7 +124,7 @@ class Trantorian (ServerManager) :
         if broadcast == "ROLE":
             print("---------------- %s -----------------" % response_list[2])
             self.player = ROLE_MAP[response_list[2]]()
-            return True
+            return False
         if broadcast == "QUIT":
             action = Commands(Action.BROADCAST, 'quitting')
             self.player.last_sent = action.action
@@ -142,7 +142,8 @@ class Trantorian (ServerManager) :
         if response_list[0] == "message":
             if isinstance(self.player, Nobody): # response du serveur -> "message K, text envoyé" -> ex avec notre protocol: "message K, [Queen] role Queen"
                 return self.handle_nobody(response_list)
-            return self.player.handle_broadcast(response_list)
+            self.player.handle_broadcast(response_list)
+            return False
         elif self.player.last_sent:
             if self.player.last_sent == Action.CONNECT_NBR and response_list[0].isdigit():
                 return self.COMMANDS[self.player.last_sent](response_list[0])
@@ -156,6 +157,7 @@ class Trantorian (ServerManager) :
             if self.player.last_sent == Action.INCANTATION:
                 self.COMMANDS[self.player.last_sent](response)
             if response_list[0] == Commands.COMMANDS[self.player.last_sent]["response success"][0]:
+                print(self.player.last_sent.__str__())
                 self.COMMANDS[self.player.last_sent]()
             self.player.state.update(response)
             return True
