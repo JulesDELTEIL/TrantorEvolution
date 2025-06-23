@@ -15,12 +15,17 @@ from src.roles.nobody import Nobody
 from src.utils import recv_until_newline
 from src.action import Action, Commands
 from src.server_manager import ServerManager
+from enum import Enum
 
 DIMENSION_X = 0
 DIMENSION_Y = 1
 PLAYER_LEFT = 1
 
-
+class Direction(Enum):
+    UP = "up"
+    DOWN = "down"
+    LEFT = "left"
+    RIGHT = "right"
 
 class Trantorian (ServerManager) :
     def __init__(self, host, port, team_name):
@@ -38,9 +43,9 @@ class Trantorian (ServerManager) :
         ]
         self.connect()
         self.COMMANDS = {
-            Action.FORWARD: self.void,
-            Action.LEFT: self.void,
-            Action.RIGHT: self.void,
+            Action.FORWARD: self._move_forward,
+            Action.LEFT: self._turn_left,
+            Action.RIGHT: self._turn_right,
             Action.LOOK: self._update_mindmap,
             Action.INVENTORY: self.void,
             Action.BROADCAST: self.void,
@@ -143,6 +148,24 @@ class Trantorian (ServerManager) :
     def _update_mindmap(self, response: str) -> None:
         response_formatted = self.state.parse_vision(response)
         self.map.update_mindmap(response_formatted, self.player.state.level, self.player.cycle, self.player.pos)
+        
+    def _turn_left(self):
+        mapping = {Direction.UP: Direction.LEFT, Direction.LEFT: Direction.DOWN, Direction.DOWN: Direction.RIGHT, Direction.RIGHT: Direction.UP}
+        self.player.direction = mapping[self.player.direction]
+
+    def _turn_right(self):
+        mapping = {Direction.UP: Direction.RIGHT, Direction.RIGHT: Direction.DOWN, Direction.DOWN: Direction.LEFT, Direction.LEFT: Direction.UP}
+        self.player.direction = mapping[self.player.direction]
+
+    def _move_forward(self):
+        if self.player.direction == Direction.UP:
+            self.pos[1] -= 1
+        elif self.player.direction == Direction.RIGHT:
+            self.pos[0] += 1
+        elif self.player.direction == Direction.DOWN:
+            self.pos[1] += 1
+        elif self.player.direction == Direction.LEFT:
+            self.pos[0] -= 1
 
     def void(self):
         return

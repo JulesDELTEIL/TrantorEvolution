@@ -10,14 +10,6 @@ from collections import deque
 from src.player import PlayerState
 from src.action import Commands
 from src.roles.map_memory import MapMemory
-from enum import Enum
-
-class Direction(Enum):
-    UP = "up"
-    DOWN = "down"
-    LEFT = "left"
-    RIGHT = "right"
-    
 
 class BaseRole(ABC):
     def __init__(self):
