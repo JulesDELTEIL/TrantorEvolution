@@ -22,14 +22,15 @@ class Queen(BaseRole):
         self.player_killed = 0
 
     def create_kingdom(self):
-        for _ in range(5):
+        self.queue.clear()
+        for _ in range(2):
             self.queue.appendleft(Commands(Action.FORK))
             self.queue.appendleft(Commands(Action.BROADCAST, 'queen'))
             print("FOOOOOOOOOOOOOOOORK QUEEEEEEEEEEEEN")
-        self.queue.appendleft(Commands(Action.FORK))
-        self.queue.appendleft(Commands(Action.BROADCAST, 'foreman'))
-        self.queue.appendleft(Commands(Action.FORK))
-        self.queue.appendleft(Commands(Action.BROADCAST, 'matriarch'))
+        #self.queue.appendleft(Commands(Action.FORK))
+        #self.queue.appendleft(Commands(Action.BROADCAST, 'foreman'))
+        #self.queue.appendleft(Commands(Action.FORK))
+        #self.queue.appendleft(Commands(Action.BROADCAST, 'matriarch'))
         self.give_birth = False
 
 
@@ -48,6 +49,7 @@ class Queen(BaseRole):
                 if self.player_killed >= self.state.egg_left or self.waiting_for_slot_number and not self.state.egg_left:
                     print("Finally alone with", self.state.egg_left, "left")
                     self.all_alone = True
+                    self.queue.clear()
                     return
                 if self.waiting_for_slot_number :
                     print("Filling slots left")
@@ -78,16 +80,17 @@ class Queen(BaseRole):
                 self.queue.appendleft(Commands(Action.LOOK))
 
     def _can_incant(self) -> bool:
-        if not self.state.vision :
+        if not self.state.last_vision :
             return False
         requirements = self.state.motivation.LEVEL_REQUIREMENTS.get(self.state.level, {})
-        current = self.state.vision[0].split()
+        current = self.state.last_vision[0].split()
         for stone, needed in requirements.items():
             if current.count(stone) < needed:
                 return False
         return True
 
     def handle_broadcast(self, response_list: list[str]) -> bool:
+        print("queen received ", response_list)
         if len(response_list) == 3 and response_list[2] == "quitting":
             self.player_killed += 1
             return True

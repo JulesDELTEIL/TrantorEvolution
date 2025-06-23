@@ -9,6 +9,7 @@ import socket
 import subprocess
 from curses.ascii import isdigit
 from sqlite3 import connect
+from time import sleep
 
 from src.roles.role_map import ROLE_MAP
 from src.roles.nobody import Nobody
@@ -91,6 +92,9 @@ class Trantorian (ServerManager) :
                 i += 1
 
     def send_action(self) -> None:
+        if isinstance(self.player, Queen):
+            if self.player.all_alone == True:
+                self.player.queue.clear()
         if not self.player.queue :
             self.player.decide_action()
         if self.player.queue :
@@ -118,14 +122,18 @@ class Trantorian (ServerManager) :
             self.analyse_requests(response)
 
     def handle_nobody(self, response_list: list[str]) -> bool:
-     broadcast = self.player.handle_broadcast(response_list)
-     if broadcast  == "ROLE":
-            self.player = ROLE_MAP[response_list[3]]
+        print('handle_nobody --- %s ---', response_list)
+        broadcast = self.player.handle_broadcast(response_list)
+        if broadcast == "ROLE":
+            print("---------------- %s -----------------" % response_list[2])
+            self.player = ROLE_MAP[response_list[2]]()
             return True
-     if broadcast == "QUIT":
-         action = Commands(Action.BROADCAST, 'quitting')
-         self.send((action.__str__() + "\n").encode())
-     return False
+        if broadcast == "QUIT":
+            action = Commands(Action.BROADCAST, 'quitting')
+            self.player.last_sent = action.action
+            self.send((action.__str__() + "\n").encode())
+            sleep(4)
+        return False
 
     def handle_response(self, response: str) -> bool:
         response_list = response.split()
@@ -147,6 +155,7 @@ class Trantorian (ServerManager) :
             if self.player.last_sent == Action.BROADCAST and response_list[0] == "ok" and isinstance(self.player, Nobody)  :
                 self.sock.shutdown(socket.SHUT_RDWR)
                 self.sock.close()
+                exit()
             if self.player.last_sent == Action.INCANTATION:
                 self.COMMANDS[self.player.last_sent](response)
             if response_list[0] == Commands.COMMANDS[self.player.last_sent]["response success"][0]:

@@ -13,11 +13,11 @@ from src.roles.nobody import Nobody
 from src.roles.matriarch import Matriarch
 
 ROLE_MAP = {
-    "Queen": Queen(),
+    "queen": Queen,
     "First_Queen": Queen(True),
-    "Foreman": Foreman(),
-    "Matriarch": Matriarch(),
-    "Worker": Worker(),
-    "Kamikaze": Kamikaze(),
-    "Nobody": Nobody()
+    "foreman": Foreman,
+    "matriarch": Matriarch,
+    "worker": Worker,
+    "kamikaze": Kamikaze,
+    "Nobody": Nobody
 }
