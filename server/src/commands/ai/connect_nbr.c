@@ -12,12 +12,20 @@
 
 #include "transmission.h"
 #include "commands.h"
+#include "actions.h"
 
+// ACTION
+int action_connect_nbr(serverdata_t *sdata, fdarray_t *fdarray,
+    client_t *client, char *data)
+{
+    return EXIT_SUCCESS;
+}
+
+// COMMAND
 int cmd_connect_nbr(serverdata_t *sdata, fdarray_t *fdarray,
     client_t *client, char *data)
 {
     char answer[BUFFSIZE] = {0};
-    int rc = DEFAULTRC;
 
     if (strlen(data) != 0) {
         send_data(client, "ko", NULL, sdata->debug);

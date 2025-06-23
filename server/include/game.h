@@ -14,6 +14,8 @@
     #include "team.h"
     #include "pos.h"
 
+    #define NB_FOOD_BEGIN 10
+
 typedef struct game_s {
     map_t map;
     player_t *players;

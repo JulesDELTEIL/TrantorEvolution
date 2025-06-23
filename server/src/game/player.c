@@ -12,7 +12,7 @@
 #include "serverdata.h"
 #include "transmission.h"
 
-int del_egg(team_t *team, pos_t pos)
+static int del_egg(team_t *team, pos_t pos)
 {
     egg_t *node = team->eggs->next;
     egg_t *prev = team->eggs;
@@ -56,6 +56,24 @@ int del_player(game_t *game, int id)
     return EXIT_FAILURE;
 }
 
+int kill_player(serverdata_t *sdata, client_t *client)
+{
+    if (client->player == NULL)
+        return EXIT_FAILURE;
+    del_player(&(sdata->game_data), client->player->id);
+    client->player = NULL;
+    client->type = UNSET;
+    return EXIT_SUCCESS;
+}
+
+static int set_action(player_t *player)
+{
+    player->action.status = NONE;
+    player->action.end = 0;
+    player->action.cmd = NULL;
+    player->action.data = NULL;
+}
+
 static int add_player(game_t *game, client_t *client, team_t *team)
 {
     player_t *new = malloc(sizeof(player_t));
@@ -69,18 +87,17 @@ static int add_player(game_t *game, client_t *client, team_t *team)
     } else
         new->pos = game->spawn;
     new->orientation = N;
-    new->action.status = NONE;
-    new->action.end = 0;
-    new->action.cmd = NULL;
+    set_action(new);
     for (uint_t k = 0; k < NB_DIFF_ITEMS; k++)
         new->inventory[k] = 0;
+    new->inventory[FOOD] = NB_FOOD_BEGIN;
     new->next = game->players;
     game->players = new;
     client->player = new;
     game->next++;
 }
 
-static int send_pnw(serverdata_t *sdata, player_t *player, client_t *ui_client)
+int send_pnw(serverdata_t *sdata, player_t *player, client_t *ui_client)
 {
     char buff[BUFFSIZE] = {0};
 
@@ -96,7 +113,7 @@ static int send_pnw(serverdata_t *sdata, player_t *player, client_t *ui_client)
     return EXIT_SUCCESS;
 }
 
-int find_team_idx(game_t *game, char *team_name)
+static int find_team_idx(game_t *game, char *team_name)
 {
     for (uint_t k = 0; k < game->nb_of_teams; k++)
         if (strcmp(game->teams[k].name, team_name) == 0)
