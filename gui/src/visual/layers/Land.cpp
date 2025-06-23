@@ -66,7 +66,7 @@ void Land::loadTile(const network::NetPack& pack)
 {
     static int index = 0;
     sf::Vector2f pos = {0, 0};
-    BiomeTypes_e type = EMPTY;
+    biome_e type = EMPTY;
 
     int x = pack[0].getInt();
     int y = pack[1].getInt();
@@ -74,15 +74,26 @@ void Land::loadTile(const network::NetPack& pack)
     type = readBiomeType(pack);
     _tiles[x][y].tile = std::make_unique<Tile>(pos, type);
     for (size_t i = 2; i < NB_MAP_ARG; ++i)
-        addResourceInTile(x, y, pos, static_cast<ResourceType_e>(i - 2), pack[i].getSize_t());
+        addResourceInTile(x, y, pos, static_cast<resource_e>(i - 2), pack[i].getSize_t());
     index += 1;
     if (index >= (_map_size.x * _map_size.y))
         _map_set = true;
 }
 
-BiomeTypes_e Land::readBiomeType(const network::NetPack&)
+biome_e Land::readBiomeType(const network::NetPack& pack)
 {
-    return BiomeTypes_e::GRASS;
+    int biome_pack[NB_RESOURCES] = {};
+
+    for (short i = 2; i < NB_RESOURCES + 2; ++i)
+        biome_pack[i - 2] = pack[i].getInt();
+    for (short b = 0; b < NB_BIOMES; ++b)
+        for (short i = 0; i < NB_RESOURCES; ++i) {
+            if (biome_distributions[b].biome_start[i] != biome_pack[i])
+                break;
+            else if (i + 1 == NB_RESOURCES)
+                return static_cast<biome_e>(b);
+        }
+    return biome_e::EMPTY;
 }
 
 void Land::updateTile(const network::NetPack& pack)
@@ -93,10 +104,10 @@ void Land::updateTile(const network::NetPack& pack)
     int y = pack[1].getInt();
     pos = MAP_POS(CENTER_MAP(_map_size.y), x, y);
     for (size_t i = 2; i < NB_MAP_ARG; ++i)
-        addResourceInTile(x, y, pos, static_cast<ResourceType_e>(i - 2), pack[i].getSize_t());
+        addResourceInTile(x, y, pos, static_cast<resource_e>(i - 2), pack[i].getSize_t());
 }
 
-void Land::addResourceInTile(int x, int y, const sf::Vector2f& pos, ResourceType_e type, size_t quantity)
+void Land::addResourceInTile(int x, int y, const sf::Vector2f& pos, resource_e type, size_t quantity)
 {
     if (quantity > 0)
         _tiles[x][y].resources.emplace_back(std::make_shared<ResourceNode>(pos, type, quantity));

@@ -10,7 +10,7 @@
 namespace gui {
 namespace visual {
 
-ResourceNode::ResourceNode(const sf::Vector2f& pos, ResourceType_e type, size_t quantity)
+ResourceNode::ResourceNode(const sf::Vector2f& pos, resource_e type, size_t quantity)
 {
     _type = type;
     sf::Vector2f res_pos = {
@@ -52,7 +52,7 @@ void ResourceNode::addQuantity(size_t to_add)
     _resource.sprite.setScale(scale);
 }
 
-ResourceType_e ResourceNode::getType(void)
+resource_e ResourceNode::getType(void)
 {
     return _type;
 }

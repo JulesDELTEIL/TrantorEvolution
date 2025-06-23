@@ -8,11 +8,12 @@
 #ifndef TRANTORIAN_HPP_
     #define TRANTORIAN_HPP_
 
-    #include <SFML/Graphics/RenderTarget.hpp>
     #include <memory>
+    #include <SFML/Graphics/RenderTarget.hpp>
 
     #include "visual/entities/ResourceNode.hpp"
 
+    #include "map_tools.h"
     #include "visual/Drawable.hpp"
     #include "visual/Animation.hpp"
     #include "visual/Movement.hpp"

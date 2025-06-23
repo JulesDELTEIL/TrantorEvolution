@@ -12,7 +12,7 @@
 namespace gui {
 namespace visual {
 
-Tile::Tile(const sf::Vector2f& pos, BiomeTypes_e type)
+Tile::Tile(const sf::Vector2f& pos, biome_e type)
 {
     _biome.texture.loadFromFile(BIOME_TEXTURE_PATH);
     _biome.sprite.setTexture(_biome.texture);

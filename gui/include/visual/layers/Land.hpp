@@ -13,6 +13,7 @@
 
     #include "visual/interfaces/ALayer.hpp"
 
+    #include "map_tools.h"
     #include "visual/entities/Tile.hpp"
     #include "visual/entities/Trantorian.hpp"
     #include "visual/entities/ResourceNode.hpp"
@@ -46,12 +47,12 @@ class Land : public ALayer {
         size_t _time_unit_speed = 4;
 
         void loadTile(const network::NetPack&);
-        BiomeTypes_e readBiomeType(const network::NetPack& pack);
+        biome_e readBiomeType(const network::NetPack& pack);
         void updateTile(const network::NetPack&);
         sf::Vector2f _map_size = {-1, -1};
         bool _map_set = false;
 
-        void addResourceInTile(int, int, const sf::Vector2f&, ResourceType_e, size_t);
+        void addResourceInTile(int, int, const sf::Vector2f&, resource_e, size_t);
         void clearResources(void);
         std::vector<ClearTile> _clear_resources;
 

@@ -9,10 +9,11 @@
     #define TILE_HPP_
 
     #include <memory>
+    #include <map>
     #include <SFML/Graphics/Rect.hpp>
     #include <SFML/Graphics/RenderTarget.hpp>
 
-    #include "visual/visual.hpp"
+    #include "map_tools.h"
     #include "visual/Drawable.hpp"
 
 namespace gui {
@@ -20,15 +21,18 @@ namespace visual {
 
    #define BIOME_TEXTURE_PATH "assets/tiles/BiomTiles.png"
 
-static const std::map<BiomeTypes_e, sf::IntRect> TEXTURE_RECT = {
-    {GRASS, sf::IntRect(0, 0, 32, 32)},
-    {SAND, sf::IntRect(32, 0, 32, 32)},
+static const std::map<biome_e, sf::IntRect> TEXTURE_RECT = {
     {SEA, sf::IntRect(64, 0, 32, 32)},
+    {FOREST, sf::IntRect(64, 0, 32, 32)},
+    {MOUNTAINS, sf::IntRect(64, 0, 32, 32)},
+    {PLAINS, sf::IntRect(0, 0, 32, 32)},
+    {BEACH, sf::IntRect(32, 0, 32, 32)},
+    {EMPTY, sf::IntRect(0, 0, 32, 32)}
 };
 
 class Tile {
     public:
-        Tile(const sf::Vector2f& pos, BiomeTypes_e type);
+        Tile(const sf::Vector2f& pos, biome_e type);
         ~Tile() = default;
 
         void draw(sf::RenderTarget&);
