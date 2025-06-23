@@ -18,6 +18,8 @@
 
     #define NB_DIFF_ITEMS 7
 
+    #define TICKS_FOOD_USE 126
+
 typedef enum player_dir_e {
     N = 1,
     E,
@@ -53,6 +55,7 @@ typedef struct player_s {
     player_dir_t orientation;
     action_t action;
     uint_t inventory[NB_DIFF_ITEMS];
+    size_t time_use_life;
     struct player_s *next;
 } player_t;
 
