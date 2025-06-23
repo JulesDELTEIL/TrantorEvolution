@@ -86,4 +86,16 @@ Deletes a player from the list in GAME depending on its ID
 */
 int del_player(game_t *game, int id);
 
+/*
+Checks the clients and executes commands
+*/
+int clients_buffers(serverdata_t *sdata, fdarray_t *fdarray);
+
+/*
+Called when the client sends its first ever data after its connection.
+will be used to set client type (AI / GUI)
+*/
+int set_team(serverdata_t *sdata, fdarray_t *fdarray,
+    client_t *client, char *data);
+
 #endif

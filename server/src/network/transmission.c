@@ -30,19 +30,8 @@ static int add_circular(client_t *client, char *buffer)
     if (client->buffer != NULL)
         free(client->buffer);
     client->buffer = newbuff;
+    client->buffin_addition = true;
     return EXIT_SUCCESS;
-}
-
-static int count_nl(char *buff)
-{
-    int count = 0;
-
-    if (buff == NULL)
-        return 0;
-    for (uint_t k = 0; buff[k] != 0; k++)
-        if (buff[k] == '\n')
-            count++;
-    return count;
 }
 
 int receive_data(serverdata_t *sdata, client_t *client)
@@ -59,7 +48,7 @@ int receive_data(serverdata_t *sdata, client_t *client)
         return EXIT_FAILURE;
     if (sdata->debug)
         debug_input(client, buffer, rc);
-    if (rc < 2 || count_nl(client->buffer) >= 10)
+    if (rc < 2)
         return EXIT_FAILURE;
     add_circular(client, buffer);
     return EXIT_SUCCESS;

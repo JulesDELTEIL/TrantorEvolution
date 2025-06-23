@@ -16,6 +16,7 @@ typedef unsigned int uint_t;
     #define TEMPBUFFSIZE 1024
     #define BUFFSIZE 1024
     #define POLLTIMEOUT 1 //milliseconds
+    #define CLOSE_CONNECTION 12
 
     #define CLIENT_BUFFER_SIZE 1024
 

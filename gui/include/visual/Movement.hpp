@@ -14,12 +14,17 @@
 namespace gui {
 namespace visual {
 
+enum Direction {
+    FACE_LEFT = 0,
+    FACE_RIGHT
+};
+
 class Movement {
     public:
         Movement(std::reference_wrapper<Drawable>);
         ~Movement() = default;
 
-        void changeDestination(const sf::Vector2f&, float);
+        int changeDestination(const sf::Vector2f&, float);
         bool move(void);
 
     private:

@@ -17,7 +17,7 @@ Movement::Movement(std::reference_wrapper<Drawable> drawable) : _drawable(drawab
 
 }
 
-void Movement::changeDestination(const sf::Vector2f& new_pos, float time_ms)
+int Movement::changeDestination(const sf::Vector2f& new_pos, float time_ms)
 {
     sf::Vector2f sprite_pos = _drawable.get().sprite.getPosition();
 
@@ -25,6 +25,9 @@ void Movement::changeDestination(const sf::Vector2f& new_pos, float time_ms)
     _time = time_ms;
     _last_time = 0.0f;
     _clock.restart();
+    if (new_pos.x < sprite_pos.x)
+        return FACE_RIGHT;
+    return FACE_LEFT;
 }
 
 bool Movement::move(void)
