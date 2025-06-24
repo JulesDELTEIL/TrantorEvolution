@@ -28,8 +28,8 @@ int cmd_pin(serverdata_t *sdata, fdarray_t *fdarray,
         send_data(client, "sbp", NULL, sdata->debug);
         return EXIT_FAILURE;
     }
-    sprintf(answer, "%d %d %d %d %d %d %d %d %d",
-    player->pos.x, player->pos.y,
+    sprintf(answer, "%d %d %d %d %d %d %d %d %d %d",
+    player->id, player->pos.x, player->pos.y,
     player->inventory[FOOD], player->inventory[WOOD], player->inventory[ROCK],
     player->inventory[CLAY], player->inventory[METAL], player->inventory[OIL],
     player->inventory[ANTIMATTER]);
