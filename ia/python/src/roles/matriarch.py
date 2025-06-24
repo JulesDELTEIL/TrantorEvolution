@@ -14,18 +14,13 @@ class Matriarch(BaseRole):
         print("----- Je suis Matriarch ------")
     
     def decide_action(self):
-        commands_queue = []
         self.cycle += 1
 
         if self.cycle % 4 == 0:
             self.queue.appendleft(Commands(Action.TAKE, 'food'))
 
-
         self.queue.appendleft(Commands(Action.FORK))
-        
-        # à faire -> Connecter nouveau client
-
         self.queue.appendleft(Commands(Action.BROADCAST, 'role kamikaze'))
-        
+
     def handle_broadcast(self, response_list: list[str]) -> bool:
         return False

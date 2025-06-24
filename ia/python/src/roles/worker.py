@@ -15,7 +15,11 @@ class Worker(BaseRole):
         print("----- Je suis Worker ------")
         self.mode = 'GATHERING' # GATHERING or DELIVERING
         self.carry = None
-        self.queens_pos = None
+        #self.queens_pos = None
+        
+        #test
+        self.queens_pos = [0, 0]
+        self.direction = "up"
         
     def decide_action(self) -> None:
         self.cycle += 1
@@ -52,18 +56,18 @@ class Worker(BaseRole):
         self.queue.appendleft(Commands(Action.FORWARD))
 
     def handle_broadcast(self, response_list: list[str]) -> bool:
-        if self.direction is None:
-            if response_list[1][0] != "0" and response_list[2] == "here":
-                if response_list[1][0] == "1":
-                    self.queue.appendleft(Commands(Action.LEFT))
-                    self.queue.appendleft(Commands(Action.LEFT))
-                    self.queens_pos = [0, -2]
-                if response_list[1][0] == "3":
-                    self.queue.appendleft(Commands(Action.RIGHT))
-                    self.queens_pos = [1, -3]
-                if response_list[1][0] == "7":
-                    self.queue.appendleft(Commands(Action.RIGHT))
-                    self.queens_pos = [-1, -3]
-                self.direction = "up"
-                return True
+        #if self.direction is None:
+        #    if response_list[1][0] != "0" and response_list[2] == "here":
+        #        if response_list[1][0] == "1":
+        #            self.queue.appendleft(Commands(Action.LEFT))
+        #            self.queue.appendleft(Commands(Action.LEFT))
+        #            self.queens_pos = [0, -2]
+        #        if response_list[1][0] == "3":
+        #            self.queue.appendleft(Commands(Action.RIGHT))
+        #            self.queens_pos = [1, -3]
+        #        if response_list[1][0] == "7":
+        #            self.queue.appendleft(Commands(Action.RIGHT))
+        #            self.queens_pos = [-1, -3]
+        #        self.direction = "up"
+        #        return True
         return False

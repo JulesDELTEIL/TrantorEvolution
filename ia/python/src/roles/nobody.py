@@ -21,7 +21,6 @@ class Nobody(BaseRole):
                 return "ROLE"
             if response_list[2] == "quit":
                 print("KILLING MYSELF")
-
                 return "QUIT"
         return "NOTHING"
 

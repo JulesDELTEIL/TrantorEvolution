@@ -172,28 +172,28 @@ class Trantorian (ServerManager) :
         return True
 
     def _update_mindmap(self, response: str) -> None:
-        response_formatted = self.state.parse_vision(response)
-        self.map.update_mindmap(response_formatted, self.player.state.level, self.player.cycle, self.player.pos)
+        response_formatted = self.player.state.parse_vision(response)
+        self.player.map.update_mindmap(response_formatted, self.player.state.level, self.player.cycle, self.player.pos)
         
     def _turn_left(self):
         if self.player.direction is not None:
-            mapping = {Direction.UP: Direction.LEFT, Direction.LEFT: Direction.DOWN, Direction.DOWN: Direction.RIGHT, Direction.RIGHT: Direction.UP}
+            mapping = {"up": "left", "left": "down", "down": "right", "right": "up"}
             self.player.direction = mapping[self.player.direction]
 
     def _turn_right(self):
         if self.player.direction is not None:
-            mapping = {Direction.UP: Direction.RIGHT, Direction.RIGHT: Direction.DOWN, Direction.DOWN: Direction.LEFT, Direction.LEFT: Direction.UP}
+            mapping = {"up": "right", "right": "down", "down": "left", "left": "up"}
             self.player.direction = mapping[self.player.direction]
 
     def _move_forward(self):
-        if self.player.direction == Direction.UP:
-            self.pos[1] -= 1
-        elif self.player.direction == Direction.RIGHT:
-            self.pos[0] += 1
-        elif self.player.direction == Direction.DOWN:
-            self.pos[1] += 1
-        elif self.player.direction == Direction.LEFT:
-            self.pos[0] -= 1
+        if self.player.direction == "up":
+            self.player.pos[1] -= 1
+        elif self.player.direction == "right":
+            self.player.pos[0] += 1
+        elif self.player.direction == "down":
+            self.player.pos[1] += 1
+        elif self.player.direction == "left":
+            self.player.pos[0] -= 1
             
     def _incatation_succes(self, response: str):
         if response == "Elevation underway":

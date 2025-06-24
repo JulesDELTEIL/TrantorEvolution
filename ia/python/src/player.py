@@ -33,7 +33,7 @@ class PlayerState:
                 self.last_inventory[key] = int(val)
         self.food = self.last_inventory.get("food", 0)
         
-    def parse_vision(response: str) -> list[list[str]]:
+    def parse_vision(self, response: str) -> list[list[str]]:
         s = response.strip()
         if not (s.startswith('[') and s.endswith(']')):
             raise ValueError("Format inattendu")
