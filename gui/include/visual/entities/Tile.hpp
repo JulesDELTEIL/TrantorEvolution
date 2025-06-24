@@ -25,6 +25,8 @@ namespace visual {
     #define NB_TYPE 3
     #define ANIMATION_CLOCK 500
     #define ANIMATION_GAP 288
+    #define SKIN_GAP 96
+    #define TILE_SKIN_NB 3
     #define GET_ANIMATION(clock) (clock / ANIMATION_CLOCK % 2)
 
 static const std::map<biome_e, sf::IntRect> TEXTURE_RECT = {
@@ -45,7 +47,7 @@ class Tile {
 
     private:
         std::reference_wrapper<Drawable> _biome;
-        size_t _animation_state;
+        uint8_t _tile_skin;
         sf::Vector2f _pos;
         biome_e _type;
 
