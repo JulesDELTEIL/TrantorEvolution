@@ -91,6 +91,7 @@ static const pos_t W_LOOK_TILES[] = {
 };
 
 static const pos_t *LOOK_TILES[] = {
+    NULL,
     N_LOOK_TILES,
     E_LOOK_TILES,
     S_LOOK_TILES,
