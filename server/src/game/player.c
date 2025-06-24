@@ -57,11 +57,21 @@ int del_player(game_t *game, int id)
     return EXIT_FAILURE;
 }
 
+static void drop_inventory(game_t *game, player_t *player)
+{
+    tile_t *tile = &(game->map.tiles[player->pos.x][player->pos.y]);
+
+    for (uint_t k = 0; k < NB_RESOURCES; k++) {
+        tile->resources[k] += player->inventory[k];
+    }
+}
+
 int kill_player(serverdata_t *sdata, client_t *client)
 {
     if (client->player == NULL)
         return EXIT_FAILURE;
     send_data(client, "dead", NULL, sdata->debug);
+    drop_inventory(&(sdata->game_data), client->player);
     if (client->player->action.cmd != NULL)
         free(client->player->action.cmd);
     if (client->player->action.data != NULL)
