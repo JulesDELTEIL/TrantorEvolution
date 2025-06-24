@@ -11,6 +11,7 @@
 
 #include "serverdata.h"
 #include "transmission.h"
+#include "commands.h"
 
 static int del_egg(team_t *team, pos_t pos)
 {
@@ -60,6 +61,11 @@ int kill_player(serverdata_t *sdata, client_t *client)
 {
     if (client->player == NULL)
         return EXIT_FAILURE;
+    send_data(client, "dead", NULL, sdata->debug);
+    if (client->player->action.cmd != NULL)
+        free(client->player->action.cmd);
+    if (client->player->action.data != NULL)
+        free(client->player->action.data);
     del_player(&(sdata->game_data), client->player->id);
     client->player = NULL;
     client->type = UNSET;
@@ -131,6 +137,8 @@ int new_player(serverdata_t *sdata, fdarray_t *fdarray, client_t *client,
     add_player(&(sdata->game_data), client,
         &(sdata->game_data.teams[team_idx]));
     client->player->team->space_left -= 1;
+    client->player->time_use_life = set_timer_end(sdata->args->freq,
+        TICKS_FOOD_USE);
     for (uint_t k = NB_SERVER_FD; k < NBTOTAL_FD; k++) {
         if (fdarray->clients[k].type == GUI) {
             send_pnw(sdata, client->player, &(fdarray->clients[k]));

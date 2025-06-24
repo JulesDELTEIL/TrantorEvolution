@@ -15,17 +15,17 @@ NetType::NetType(const std::string& value)
 
 size_t NetType::getSize_t(void) const
 {
-    return std::stoi(_value);
+    return std::stol(_value);
 }
 
 float NetType::getFloat(void) const
 {
-    return std::stol(_value);
+    return std::stof(_value);
 }
 
 int NetType::getInt(void) const
 {
-    return std::stof(_value);
+    return std::stoi(_value);
 }
 
 std::string NetType::getString(void) const

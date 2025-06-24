@@ -109,13 +109,34 @@ static int check_player_timer(serverdata_t *sdata, fdarray_t *fdarray,
     return EXIT_FAILURE;
 }
 
+static int check_player_life(serverdata_t *sdata, client_t *client)
+{
+    struct timeval tp;
+    size_t timenow = 0;
+
+    gettimeofday(&tp, NULL);
+    timenow = (tp.tv_sec * 1000 + tp.tv_usec / 1000);
+    if (timenow >= client->player->time_use_life) {
+        client->player->inventory[FOOD] -= 1;
+        client->player->time_use_life = set_timer_end(sdata->args->freq,
+            TICKS_FOOD_USE);
+        if (client->player->inventory[FOOD] <= 0) {
+            kill_player(sdata, client);
+            return EXIT_FAILURE;
+        }
+    }
+    return EXIT_SUCCESS;
+}
+
 int check_ai_client(serverdata_t *sdata, fdarray_t *fdarray,
     client_t *client)
 {
     if (client->player == NULL)
         return EXIT_FAILURE;
-    if (client->player->action.status != ONGOING)
-        return buffer_handler(sdata, fdarray, client);
-    else
-        return check_player_timer(sdata, fdarray, client);
+    if (check_player_life(sdata, client) == EXIT_SUCCESS) {
+        if (client->player->action.status != ONGOING)
+            return buffer_handler(sdata, fdarray, client);
+        else
+            return check_player_timer(sdata, fdarray, client);
+    }
 }
