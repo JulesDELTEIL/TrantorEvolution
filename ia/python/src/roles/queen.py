@@ -75,12 +75,15 @@ class Queen(BaseRole):
     def _can_incant(self) -> bool:
         if not self.state.last_vision :
             return False
+        ("chek incant")
         requirements = self.state.motivation.LEVEL_REQUIREMENTS.get(self.state.level, {})
-        current = self.state.last_vision[0].split()
-        for stone, needed in requirements.items():
-            if current.count(stone) < needed:
-                return False
-        return True
+        print("requirements", requirements)
+        current = self.state.last_vision
+        for stone in requirements.keys():
+            print("stone, current,quantity", stone, current, requirements[stone])
+            if stone in current:
+                return True
+        return False
 
     def handle_broadcast(self, response_list: list[str]) -> bool:
         if len(response_list) == 3 and response_list[2] == "quitting":
