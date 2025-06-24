@@ -76,16 +76,18 @@ void Client::checkEvent(void)
                     _buffer.push_back(tempBuffer[k]);
             }
         }
-        for (size_t size = 0; _buffer[size] != '\n'; ++size) {
-            if (size >= _buffer.size()) {
-                command.clear();
-                break;
+        if (_buffer.size() != 0) {
+            for (size_t size = 0; _buffer[size] != '\n'; ++size) {
+                if (size >= _buffer.size()) {
+                    command.clear();
+                    break;
+                }
+                command.push_back(_buffer[size]);
             }
-            command.push_back(_buffer[size]);
-        }
-        if (!command.empty()) {
-            pushNetpackEvent(command);
-            command.clear();
+            if (!command.empty()) {
+                pushNetpackEvent(command);
+                command.clear();
+            }
         }
     }
 }

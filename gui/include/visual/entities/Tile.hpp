@@ -20,7 +20,7 @@
 namespace gui {
 namespace visual {
 
-    #define TILE_SIZE 32
+    #define TILE_SIZE 96
     #define BIOME_TEXTURE_PATH "assets/tiles/BiomTiles.png"
     #define NB_TYPE 3
 
