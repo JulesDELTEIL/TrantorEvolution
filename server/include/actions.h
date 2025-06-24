@@ -12,11 +12,6 @@
     #include "fdarray.h"
 
 /*
-Function called to handle the first valid command found in the client buffer
-*/
-int buffer_handler(serverdata_t *sdata, fdarray_t *fdarray, client_t *client);
-
-/*
 Command structure designed for the function pointer array by
     matching the char *ACTION
 
@@ -40,6 +35,9 @@ int action_take(serverdata_t *, fdarray_t *, client_t *, char *);
 int action_set(serverdata_t *, fdarray_t *, client_t *, char *);
 int action_connect_nbr(serverdata_t *, fdarray_t *, client_t *, char *);
 int action_broadcast(serverdata_t *, fdarray_t *, client_t *, char *);
+int action_look(serverdata_t *, fdarray_t *, client_t *, char *);
+int action_eject(serverdata_t *, fdarray_t *, client_t *, char *);
+int action_incantation(serverdata_t *, fdarray_t *, client_t *, char *);
 
 enum actions_e {
     FORWARD = 0,
@@ -50,7 +48,10 @@ enum actions_e {
     TAKE,
     SET,
     CONNECT_NBR,
-    BROADCAST
+    BROADCAST,
+    LOOK,
+    EJECT,
+    INCANTATION
 };
 
 static const action_handler_t ACTIONS_ARR[] = {
@@ -63,6 +64,9 @@ static const action_handler_t ACTIONS_ARR[] = {
     {"Set", action_set, 7},
     {"Connect_nbr", action_connect_nbr, 0},
     {"Broadcast", action_broadcast, 7},
+    {"Look", action_look, 7},
+    {"Eject", action_eject, 7},
+    {"Incantation", action_incantation, 300},
 };
 
 static const int NB_ACTIONS = sizeof(ACTIONS_ARR) / sizeof(action_handler_t);
