@@ -18,7 +18,10 @@ namespace core {
 
     #define FRAMERATE_LIMIT 60
 
-static const sf::FloatRect DEFAULT_VIEW = {0, 0, 1920, 1080};
+    #define VIEW_WIDTH 1920.0f
+    #define VIEW_HEIGHT 1080.0f
+
+static const sf::FloatRect DEFAULT_VIEW = {VIEW_WIDTH / 2, VIEW_HEIGHT / 2, VIEW_WIDTH, VIEW_HEIGHT};
 
 struct Engine {
     Engine();

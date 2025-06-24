@@ -19,7 +19,7 @@ namespace visual {
 
 class Background : public ALayer {
     public:
-        Background(const sf::FloatRect&);
+        Background();
         ~Background() = default;
     
         void display(sf::RenderTarget& render) override;

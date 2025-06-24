@@ -14,6 +14,7 @@
     #include "visual/interfaces/ALayer.hpp"
 
     #include "map_tools.h"
+    #include "core/Engine.hpp"
     #include "visual/entities/Tile.hpp"
     #include "visual/entities/Trantorian.hpp"
     #include "visual/entities/ResourceNode.hpp"
@@ -23,7 +24,7 @@ namespace visual {
 
     #define TILE_SIZE 32
     #define NB_MAP_ARG 9
-    #define CENTER_MAP(map_height) (sf::Vector2f(1920.0f / 2, (1080.0f - map_height * TILE_SIZE) / 2))
+    #define CENTER_MAP(map_height) (sf::Vector2f(VIEW_WIDTH, (VIEW_HEIGHT * 2 - map_height * TILE_SIZE) / 2))
     #define MAP_POS(middle, x, y) (sf::Vector2f((middle.x - (TILE_SIZE / 2) * (x + y)) + (TILE_SIZE * y), middle.y + (8 * (x + y))))
 
     #define ACT_TIME(x) float((x / this->_time_unit_speed) * 1000)
