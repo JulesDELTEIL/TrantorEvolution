@@ -8,6 +8,8 @@
 #ifndef PROJECT_TOOLS_H_
     #define PROJECT_TOOLS_H_
 
+    #define PROJECT_NAME "TrantorEvolution"
+
     #define UNUSED(obj) (void)obj
 
     #define PROJECT_ERROR 84

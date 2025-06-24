@@ -14,7 +14,7 @@ enum ressources_e {
     ROCK,
     CLAY,
     METAL,
-    PETROL,
+    OIL,
     ANTIMATTER
 };
 
@@ -24,7 +24,7 @@ static const char *RESOURCES_NAMES[] = {
     "rock",
     "clay",
     "metal",
-    "petrol",
+    "oil",
     "antimatter"
 };
 

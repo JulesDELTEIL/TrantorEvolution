@@ -24,7 +24,7 @@ static int send_tile(serverdata_t *sdata, client_t *client, int x, int y)
         sdata->game_data.map.tiles[x][y].resources[ROCK],
         sdata->game_data.map.tiles[x][y].resources[CLAY],
         sdata->game_data.map.tiles[x][y].resources[METAL],
-        sdata->game_data.map.tiles[x][y].resources[PETROL],
+        sdata->game_data.map.tiles[x][y].resources[OIL],
         sdata->game_data.map.tiles[x][y].resources[ANTIMATTER]
     );
     send_data(client, "bct", answer, sdata->debug);

@@ -19,13 +19,13 @@ static int send_inventory(serverdata_t *sdata, client_t *client)
     char answer[BUFFSIZE] = {0};
 
     sprintf(answer,
-    "[food %d, wood %d, rock %d, clay %d, metal %d, petrol %d, antimatter %d]",
+    "[food %d, wood %d, rock %d, clay %d, metal %d, OIL %d, antimatter %d]",
     client->player->inventory[FOOD],
     client->player->inventory[WOOD],
     client->player->inventory[ROCK],
     client->player->inventory[CLAY],
     client->player->inventory[METAL],
-    client->player->inventory[PETROL],
+    client->player->inventory[OIL],
     client->player->inventory[ANTIMATTER]
     );
     send_data(client, answer, NULL, sdata->debug);

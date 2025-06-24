@@ -17,7 +17,8 @@ enum biome_e {
     FOREST,
     MOUNTAINS,
     PLAINS,
-    BEACH
+    BEACH,
+    EMPTY
 };
 
 /*
