@@ -13,9 +13,9 @@
 namespace gui {
 namespace visual {
 
-InGame::InGame() : AScene(core::DEFAULT_VIEW)
+InGame::InGame(std::reference_wrapper<network::Client> client) : AScene(core::DEFAULT_VIEW)
 {
-    _layers.emplace_back(std::make_unique<Land>());
+    _layers.emplace_back(std::make_unique<Land>(client));
 }
 
 void InGame::display(sf::RenderTarget& target)
@@ -42,15 +42,6 @@ void InGame::event(const sf::Event& event, const network::NetEventPack& net_even
         if (event.key.code == sf::Keyboard::A)
             zoom(1.1);
     }
-    switch (static_cast<int>(net_events.event)) {
-    case network::TEAMS:
-        writeTeams("teamName");
-    }
-}
-
-void InGame::writeTeams(const std::string& name)
-{
-    _teams.push_back(name);
 }
 
 } // visual

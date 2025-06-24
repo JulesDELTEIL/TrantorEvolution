@@ -11,22 +11,21 @@
     #include <string>
     #include <vector>
 
-    #include <visual/interfaces/AScene.hpp>
+    #include "visual/interfaces/AScene.hpp"
+    #include "network/Client.hpp"
 
 namespace gui {
 namespace visual {
 
 class InGame : public AScene {
     public:
-        InGame();
+        InGame(std::reference_wrapper<network::Client> client);
         ~InGame() = default;
 
         void display(sf::RenderTarget&) override;
         void event(const sf::Event&, const network::NetEventPack&) override;
 
     private:
-        void writeTeams(const std::string&);
-        std::vector<std::string> _teams;
 
 };
 

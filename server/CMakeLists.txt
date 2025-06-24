@@ -44,6 +44,11 @@ add_executable( ${PROJECT_NAME}
     ${SERVER_GUI_CMD_DIR}msz.c
     ${SERVER_GUI_CMD_DIR}bct.c
     ${SERVER_GUI_CMD_DIR}mct.c
+    ${SERVER_GUI_CMD_DIR}ppo.c
+    ${SERVER_GUI_CMD_DIR}plv.c
+    ${SERVER_GUI_CMD_DIR}sgt.c
+    ${SERVER_GUI_CMD_DIR}sst.c
+    ${SERVER_GUI_CMD_DIR}pin.c
     ${SERVER_THR_DIR}init_map.c
     ${SERVER_THR_DIR}init_thread.c
     ${SERVER_THR_DIR}perlin.c

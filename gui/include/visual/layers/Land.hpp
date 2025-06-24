@@ -9,11 +9,14 @@
     #define LAND_HPP_
 
     #include <map>
+    #include <thread>
     #include <SFML/System/Clock.hpp>
 
     #include "visual/interfaces/ALayer.hpp"
 
     #include "map_tools.h"
+    #include "core/Engine.hpp"
+    #include "network/Client.hpp"
     #include "visual/entities/Tile.hpp"
     #include "visual/entities/Trantorian.hpp"
     #include "visual/entities/ResourceNode.hpp"
@@ -21,10 +24,9 @@
 namespace gui {
 namespace visual {
 
-    #define TILE_SIZE 32
     #define NB_MAP_ARG 9
     #define CENTER_MAP(map_height) (sf::Vector2f(1280.0f / 2, (780.0f - map_height * TILE_SIZE) / 2))
-    #define MAP_POS(middle, x, y) (sf::Vector2f((middle.x - (TILE_SIZE / 2) * (x + y)) + (TILE_SIZE * y), middle.y + (8 * (x + y))))
+    #define MAP_POS(middle, x, y) (sf::Vector2f((middle.x - (TILE_SIZE / 2) * (x + y)) + (TILE_SIZE * y), middle.y + (24 * (x + y))))
 
     #define ACT_TIME(x) float((x / this->_time_unit_speed) * 1000)
 
@@ -35,8 +37,8 @@ struct ClearTile {
 
 class Land : public ALayer {
     public:
-        Land();
-        ~Land() = default;
+        Land(std::reference_wrapper<network::Client> client);
+        ~Land();
 
         void display(sf::RenderTarget& render) override;
         void event(const sf::Event& event, const network::NetEventPack&) override;
@@ -46,9 +48,16 @@ class Land : public ALayer {
         sf::Clock _clock;
         size_t _time_unit_speed = 4;
 
+        std::thread _ask_thread;
+        bool _runing = false;
+        void askGameInfo(std::reference_wrapper<network::Client> client);
+        void askPosition(std::reference_wrapper<network::Client> client, size_t id) const;
+        void askResource(std::reference_wrapper<network::Client> client, size_t x, size_t y) const;
+
         void loadTile(const network::NetPack&);
         biome_e readBiomeType(const network::NetPack& pack);
         void updateTile(const network::NetPack&);
+        Drawable _tile;
         sf::Vector2f _map_size = {-1, -1};
         bool _map_set = false;
 

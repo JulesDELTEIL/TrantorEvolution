@@ -23,4 +23,10 @@ Returns number of bytes written
 */
 int send_data(client_t *client, char *cmd, char *data, bool debug);
 
+/*
+Used to find a player based on his id
+*/
+player_t *get_player_pos(serverdata_t *sdata, int player_id);
+
+
 #endif
