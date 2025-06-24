@@ -19,16 +19,17 @@
 namespace gui {
 namespace visual {
 
-   #define BIOME_TEXTURE_PATH "assets/tiles/BiomTiles.png"
-   #define NB_TYPE 3
+    #define TILE_SIZE 32
+    #define BIOME_TEXTURE_PATH "assets/tiles/BiomTiles.png"
+    #define NB_TYPE 3
 
 static const std::map<biome_e, sf::IntRect> TEXTURE_RECT = {
-    {SEA, sf::IntRect(64, 0, 32, 32)},
-    {FOREST, sf::IntRect(128, 0, 32, 32)},
-    {MOUNTAINS, sf::IntRect(96, 0, 32, 32)},
-    {PLAINS, sf::IntRect(0, 0, 32, 32)},
-    {BEACH, sf::IntRect(32, 0, 32, 32)},
-    {EMPTY, sf::IntRect(160, 0, 32, 32)}
+    {PLAINS, sf::IntRect(0, 0, TILE_SIZE, TILE_SIZE)},
+    {BEACH, sf::IntRect(32, 0, TILE_SIZE, TILE_SIZE)},
+    {SEA, sf::IntRect(64, 0, TILE_SIZE, TILE_SIZE)},
+    {MOUNTAINS, sf::IntRect(96, 0, TILE_SIZE, TILE_SIZE)},
+    {FOREST, sf::IntRect(128, 0, TILE_SIZE, TILE_SIZE)},
+    {EMPTY, sf::IntRect(160, 0, TILE_SIZE, TILE_SIZE)}
 };
 
 class Tile {
