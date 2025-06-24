@@ -15,6 +15,7 @@
     #include "visual/interfaces/ALayer.hpp"
 
     #include "map_tools.h"
+    #include "core/Engine.hpp"
     #include "network/Client.hpp"
     #include "visual/entities/Tile.hpp"
     #include "visual/entities/Trantorian.hpp"
