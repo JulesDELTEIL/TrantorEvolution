@@ -65,7 +65,6 @@ void Land::event(const sf::Event&, const network::NetEventPack& net_pack)
             break;
         case network::TIME:
             _time_unit_speed = net_pack.pack[0].getSize_t();
-            std::cout << _time_unit_speed << std::endl;
             break;
         case network::PGET:
             trantorCollect(net_pack.pack);
@@ -83,12 +82,12 @@ void Land::askGameInfo(std::reference_wrapper<network::Client> client)
 
     _runing = true;
     while (_runing) {
-        if (_clock.getElapsedTime().asMilliseconds() > trantor_last + ACT_TIME(6)) {
+        if (_clock.getElapsedTime().asMilliseconds() > trantor_last + ACT_TIME(7)) {
             for (const auto& trantor : _trantorians)
                 askPosition(client, trantor.first);
             trantor_last = _clock.getElapsedTime().asMilliseconds();
         }
-        if (_clock.getElapsedTime().asMilliseconds() > map_last + ACT_TIME(19)) {
+        if (_clock.getElapsedTime().asMilliseconds() > map_last + ACT_TIME(20)) {
             for (size_t y = 0; y < _map_size.y; ++y)
                 for (size_t x = 0; x < _map_size.x; ++x)
                     askResource(client, x, y);
@@ -154,8 +153,13 @@ void Land::updateTile(const network::NetPack& pack)
     int x = pack[0].getInt();
     int y = pack[1].getInt();
     pos = MAP_POS(CENTER_MAP(_map_size.y), x, y);
-    for (size_t i = 2; i < NB_MAP_ARG; ++i)
-        addResourceInTile(x, y, pos, static_cast<resource_e>(i - 2), pack[i].getSize_t());
+    for (size_t i = 2; i < NB_MAP_ARG; ++i) {
+        if (!_map_set)
+            addResourceInTile(x, y, pos, static_cast<resource_e>(i - 2), pack[i].getSize_t());
+        else {   
+            // _tiles[x][y].resources[i - 2]->updateQuantity(pack[i].getSize_t());
+        }
+    }
 }
 
 void Land::addResourceInTile(int x, int y, const sf::Vector2f& pos, resource_e type, size_t quantity)

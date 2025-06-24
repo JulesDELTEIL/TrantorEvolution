@@ -48,7 +48,7 @@ class ResourceNode {
 
         void draw(sf::RenderTarget&);
         sf::Vector2f getCollectPosition(void);
-        void addQuantity(size_t);
+        void updateQuantity(size_t);
         resource_e getType(void);
 
     private:
