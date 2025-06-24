@@ -40,20 +40,16 @@ class PlayerState:
             raise ValueError("Format inattendu")
         inner = s[1:-1]
 
-        raw_tiles = inner.split('],')
+        raw_tiles = inner.split(',')
         vision = []
         for raw in raw_tiles:
-            t = raw.strip()
-            if t.startswith('['):
-                t = t[1:]
-            if t.endswith(']'):
-                t = t[:-1]
-            if t == '':
+            raw = raw.strip()
+            if raw == '':
                 vision.append([])
             else:
-                parts = [w.strip() for w in t.split(' ') if w.strip()]
-                vision.append([w.strip(',') for w in parts])
-            self.last_vision = vision[0]
+                objs = [obj for obj in raw.split() if obj]
+                vision.append(objs)
+        self.last_vision = vision[0]
         return vision
     
     def get_movements(self, start: list[int], end: list[int], direction: str) -> list[Commands]:
