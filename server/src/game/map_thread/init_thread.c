@@ -7,6 +7,7 @@
 
 #include <stdlib.h>
 #include <unistd.h>
+#include <math.h>
 #include <pthread.h>
 #include <stdio.h>
 
@@ -14,17 +15,39 @@
 #include "map.h"
 #include "serverdata.h"
 
-static int get_random_biome(void)
+static int get_biome(double noise)
 {
-    return rand() % NB_BIOMES;
+    if (noise <= 0.25)
+        return SEA;
+    if (noise <= 0.40)
+        return BEACH;
+    if (noise <= 0.60)
+        return PLAINS;
+    if (noise <= 0.70)
+        return FOREST;
+    return MOUNTAINS;
+}
+
+static int get_spawn_biome(float noise)
+{
+    if (noise <= 0.40)
+        return BEACH;
+    if (noise <= 0.60)
+        return PLAINS;
+    if (noise <= 0.70)
+        return FOREST;
+    return MOUNTAINS;
 }
 
 static void refill_tiles(tile_t *tile)
 {
     biome_distribution_t dist;
 
-    if (tile->biome != PLAINS)
-        tile->biome = get_random_biome();
+    if (tile->biome != PLAINS) {
+        tile->biome = get_biome(tile->noise);
+    } else {
+        tile->biome = get_spawn_biome(tile->noise);
+    }
     for (int i = 0; i < NB_RESOURCES; i++)
         tile->resources[i] = 0;
     dist = biome_distributions[tile->biome];
@@ -49,7 +72,7 @@ static density_t init_density(int map_dens)
     all_dens.dens[WOOD] = map_dens * WOOD_DENS;
     all_dens.dens[ROCK] = map_dens * ROCK_DENS;
     all_dens.dens[CLAY] = map_dens * CLAY_DENS;
-    all_dens.dens[PETROL] = map_dens * PETROL_DENS;
+    all_dens.dens[OIL] = map_dens * OIL_DENS;
     all_dens.dens[METAL] = map_dens * METAL_DENS;
     all_dens.dens[ANTIMATTER] = map_dens * ANTIMATTER_DENS;
     return all_dens;
@@ -93,11 +116,23 @@ static void refill_map(tile_t **tiles, int width, int height,
     }
 }
 
+static void generate_noise(tile_t **map_tiles, int Y)
+{
+    int tmp = 0;
+
+    for (int x = 0; map_tiles[x] != NULL; x++) {
+        for (int y = 0; y < Y; y++) {
+                map_tiles[x][y].noise = perlin_2d(x, y, 0.2, 4);
+        }
+    }
+}
+
 void *map_thread(void *arg)
 {
     serverdata_t *server = (serverdata_t *)arg;
     density_t all_dens = init_density(WORLD_DENS(server->args));
 
+    generate_noise(server->game_data.map.tiles, server->args->height);
     first_map_refill(server->args->height,
     server->game_data.map.tiles);
     while (server->is_running == true) {
