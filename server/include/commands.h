@@ -12,14 +12,14 @@
     #include "fdarray.h"
 
 /*
-Function called to handle the first valid command found in the client buffer
-*/
-int buffer_handler(serverdata_t *sdata, fdarray_t *fdarray, client_t *client);
-
-/*
 Sets the timeout end timer of the client depending on FREQ and TICKS
 */
-void set_action_end(client_t *client, int freq, int ticks);
+size_t set_timer_end(int freq, int ticks);
+
+/*
+Sends pnw code of PLAYER to UI_CLIENT
+*/
+int send_pnw(serverdata_t *sdata, player_t *player, client_t *ui_client);
 
 /*
 Command structure designed for the function pointer array by
@@ -44,6 +44,9 @@ int cmd_take(serverdata_t *, fdarray_t *, client_t *, char *);
 int cmd_set(serverdata_t *, fdarray_t *, client_t *, char *);
 int cmd_connect_nbr(serverdata_t *, fdarray_t *, client_t *, char *);
 int cmd_broadcast(serverdata_t *, fdarray_t *, client_t *, char *);
+int cmd_look(serverdata_t *, fdarray_t *, client_t *, char *);
+int cmd_eject(serverdata_t *, fdarray_t *, client_t *, char *);
+int cmd_incantation(serverdata_t *, fdarray_t *, client_t *, char *);
 
 int cmd_tna(serverdata_t *, fdarray_t *, client_t *, char *);
 int cmd_msz(serverdata_t *, fdarray_t *, client_t *, char *);
@@ -67,6 +70,9 @@ static const command_t AI_COMMANDS[] = {
     {"Set", cmd_set},
     {"Connect_nbr", cmd_connect_nbr},
     {"Broadcast", cmd_broadcast},
+    {"Look", cmd_look},
+    {"Eject", cmd_eject},
+    {"Incantation", cmd_incantation},
 };
 
 static const command_t *COMMANDS[] = {

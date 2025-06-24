@@ -53,14 +53,16 @@ void Core::events(void)
 
     while (_engine.window.pollEvent(_engine.events)) {
         if (_engine.events.type == sf::Event::Closed)
-        _engine.window.close();
+            _engine.window.close();
         _scenes.at(_selected_scene)->event(_engine.events, net_event);
     }
-    _client.checkEvent();
     default_event.type = sf::Event::SensorChanged;
     while (_client.pollEvent(net_event)) {
         if (net_event.event == network::CON) {
             _client.sendData(AUTHENTIFICATOR);
+            _client.sendData("msz\n");
+            _client.sendData("mct\n");
+            _client.sendData("sgt\n");
         }
         _scenes.at(_selected_scene)->event(default_event, net_event);
     }

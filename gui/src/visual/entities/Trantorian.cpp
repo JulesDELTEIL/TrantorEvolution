@@ -13,6 +13,7 @@ namespace visual {
 Trantorian::Trantorian(const sf::Vector2f& pos, const sf::Vector2i& pos_in_map, size_t level) :
     _body(NB_TRANTORS),
     _type(NB_TRANTORS),
+    _body_direction(NB_TRANTORS, FACE_RIGHT),
     _body_animation({
         std::ref(_body[0]), std::ref(_body[1]), std::ref(_body[2]), std::ref(_body[3]), std::ref(_body[4]), std::ref(_body[5])
     }),
@@ -56,6 +57,19 @@ void Trantorian::draw(sf::RenderTarget& target)
     }
 }
 
+void Trantorian::move(int index, const sf::Vector2f& new_pos, float time)
+{
+    _body_animation[index].changeAnimation(WALK);
+    if (_body_movement[index].changeDestination(new_pos, time) != _body_direction[index]) {
+        sf::Vector2f scale = _body[index].sprite.getScale();
+        _body[index].sprite.setScale(-scale.x, scale.y);
+        if (_body_direction[index] == FACE_RIGHT)
+            _body_direction[index] = FACE_LEFT;
+        else
+            _body_direction[index] = FACE_RIGHT;
+    }
+}
+
 void Trantorian::collect(const std::vector<std::shared_ptr<ResourceNode>>& resources, float time)
 {
     if (resources.size() > 0) {
@@ -67,13 +81,12 @@ void Trantorian::collect(const std::vector<std::shared_ptr<ResourceNode>>& resou
                 _type[i] = PICKAXE;
             else
                 _type[i] = COLLECT;
-            _body_animation[i].changeAnimation(WALK);
-            _body_movement[i].changeDestination(resources[i]->getCollectPosition(), time);
+            move(i, resources[i]->getCollectPosition(), time);
         }
     }
 }
 
-void Trantorian::move(const sf::Vector2f& new_pos, float time)
+void Trantorian::changeTile(const sf::Vector2f& new_pos, float time)
 {
     for (size_t i = 0; i < NB_TRANTORS; ++i) {
         _type[i] = IDLE;
@@ -81,8 +94,7 @@ void Trantorian::move(const sf::Vector2f& new_pos, float time)
             new_pos.x + std::rand() % RES_RANGE_X + RES_MIN_X,
             new_pos.y + std::rand() % RES_RANGE_Y + RES_MIN_Y
         };
-        _body_animation[i].changeAnimation(WALK);
-        _body_movement[i].changeDestination(random_pos, time);
+        move(i, random_pos, time);
     }
 }
 

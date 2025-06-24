@@ -86,4 +86,39 @@ Deletes a player from the list in GAME depending on its ID
 */
 int del_player(game_t *game, int id);
 
+/*
+Parse the first command found in CLIENT into CMD and DATA
+*/
+int packet_parser(client_t *client, char *cmd, char *data);
+
+/*
+Checks the clients and executes commands
+*/
+int check_clients(serverdata_t *sdata, fdarray_t *fdarray);
+
+/*
+Checks the ai client CLIENT for related events and incoming commands
+*/
+int check_ai_client(serverdata_t *sdata, fdarray_t *fdarray,
+    client_t *client);
+
+/*
+Checks the gui client CLIENT for related events and incoming commands
+*/
+int check_gui_client(serverdata_t *sdata, fdarray_t *fdarray,
+    client_t *client);
+
+/*
+Checks the unset client CLIENT for related events and incoming commands
+*/
+int check_unknown_client(serverdata_t *sdata, fdarray_t *fdarray,
+    client_t *client);
+
+/*
+Called when the client sends its first ever data after its connection.
+will be used to set client type (AI / GUI)
+*/
+int set_team(serverdata_t *sdata, fdarray_t *fdarray,
+    client_t *client, char *data);
+
 #endif

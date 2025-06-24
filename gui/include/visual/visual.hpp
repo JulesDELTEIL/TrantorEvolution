@@ -8,10 +8,6 @@
 #ifndef VISUAL_HPP_
     #define VISUAL_HPP_
 
-    #include <map>
-    #include <vector>
-    #include <array>
-
 namespace gui {
 namespace visual {
 
@@ -22,23 +18,14 @@ enum Scene_e {
     IN_GAME,
 };
 
-enum ResourceType_e {
-    WOOD = 0,
+enum resource_e {
+    FOOD = 0,
+    WOOD,
     STONE,
     CLAY,
     METAL,
     OIL,
     ANTI_MATTER
-};
-
-    #define NB_RESOURCES 6
-
-/*  Tile  */
-enum BiomeTypes_e {
-    EMPTY = 0,
-    GRASS,
-    SAND,
-    SEA
 };
 
 } // visual

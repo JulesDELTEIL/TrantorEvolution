@@ -9,6 +9,7 @@
     #define CLIENT_HPP_
 
     #include <memory>
+    #include <thread>
 
     #include "network/events.hpp"
     #include "network/Socket.hpp"
@@ -23,7 +24,7 @@ namespace network {
 class Client {
     public:
         Client() = default;
-        ~Client() = default;
+        ~Client();
 
         void checkEvent(void);
         void setSocket(const std::string &server, const int &port);
@@ -32,9 +33,10 @@ class Client {
 
     private:
         Socket _socket;
-        PackQueue _events;
         std::unique_ptr<FILE> _stream;
-
+        std::vector<char> _buffer;
+        std::thread _network;
+        bool _network_runing = false;
 };
 
 } // namespace network

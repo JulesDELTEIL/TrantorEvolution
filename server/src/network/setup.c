@@ -59,8 +59,8 @@ int setempty_client(client_t *client)
     client->fd = NOFD;
     client->type = UNSET;
     client->buffer = NULL;
-    client->act_end = 0;
     client->player = NULL;
+    client->buffin_addition = false;
 }
 
 fdarray_t setup_fds(int sockfd)
