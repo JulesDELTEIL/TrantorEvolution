@@ -25,9 +25,9 @@ class Foreman(BaseRole):
         self.queue.appendleft(Commands(Action.FORK))
         self._fork_count += 1
         if self._fork_count % 4 == 0:
-            self.queue.appendleft(Commands(Action.BROADCAST, 'role kamikaze'))
+            self.queue.appendleft(Commands(Action.BROADCAST, 'role;kamikaze'))
         else:
-            self.queue.appendleft(Commands(Action.BROADCAST, 'role worker'))
+            self.queue.appendleft(Commands(Action.BROADCAST, 'role;worker'))
 
     def handle_broadcast(self, response_list: list[str]) -> bool:
         return False

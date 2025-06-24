@@ -16,7 +16,7 @@ class Nobody(BaseRole):
 
     def handle_broadcast(self, response_list: list[str]) -> str:
         if len(response_list) >= 3:
-            if response_list[2] == "role" and (response_list[1][0] == "0"):
+            if response_list[2][:4] == "role" and (response_list[1][0] == "0"):
                 return "ROLE"
             if response_list[2] == "quit":
                 return "QUIT"

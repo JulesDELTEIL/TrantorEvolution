@@ -15,9 +15,8 @@ class Kamikaze(BaseRole):
     
     def decide_action(self):
         self.cycle += 1
-        if len(self.queue) == 0:
-            for _ in range(10):
-                self.queue.appendleft(Commands(Action.SET, 'food'))
+        for _ in range(10):
+            self.queue.appendleft(Commands(Action.SET, 'food'))
         self.queue.appendleft(Commands(Action.NONE))
 
     def handle_broadcast(self, response_list: list[str]) -> bool:
