@@ -20,27 +20,30 @@
 namespace gui {
 namespace visual {
 
-   #define BIOME_TEXTURE_PATH "assets/tiles/BiomTiles.png"
-   #define NB_TYPE 3
+    #define TILE_SIZE 32
+    #define BIOME_TEXTURE_PATH "assets/tiles/BiomTiles.png"
+    #define NB_TYPE 3
 
 static const std::map<biome_e, sf::IntRect> TEXTURE_RECT = {
-    {PLAINS, sf::IntRect(0, 0, 96, 96)},
-    {BEACH, sf::IntRect(96, 0, 96, 96)},
-    {SEA, sf::IntRect(192, 0, 96, 96)},
-    {MOUNTAINS, sf::IntRect(288, 0, 96, 96)},
-    {FOREST, sf::IntRect(384, 0, 96, 96)},
-    {EMPTY, sf::IntRect(480, 0, 96, 96)}
+    {PLAINS, sf::IntRect(0, 0, TILE_SIZE, TILE_SIZE)},
+    {BEACH, sf::IntRect(96, 0, TILE_SIZE, TILE_SIZE)},
+    {SEA, sf::IntRect(192, 0, TILE_SIZE, TILE_SIZE)},
+    {MOUNTAINS, sf::IntRect(288, 0, TILE_SIZE, TILE_SIZE)},
+    {FOREST, sf::IntRect(384, 0, TILE_SIZE, TILE_SIZE)},
+    {EMPTY, sf::IntRect(480, 0, TILE_SIZE, TILE_SIZE)}
 };
 
 class Tile {
     public:
-        Tile(const sf::Vector2f& pos, biome_e type);
+        Tile(std::reference_wrapper<Drawable> biome, const sf::Vector2f& pos, biome_e type);
         ~Tile() = default;
 
         void draw(sf::RenderTarget&, const sf::Clock&);
 
     private:
-        Drawable _biome;
+        std::reference_wrapper<Drawable> _biome;
+        sf::Vector2f _pos;
+        biome_e _type;
 
 };
 

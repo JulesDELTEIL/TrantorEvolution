@@ -5,6 +5,8 @@
 ** Land.cpp
 */
 
+#include <iostream>
+
 #include <cstdlib>
 #include <ctime>
 
@@ -14,9 +16,19 @@
 namespace gui {
 namespace visual {
 
-Land::Land()
+Land::Land(std::reference_wrapper<network::Client> client)
 {
     std::srand(std::time({}));
+    _tile.sprite.setOrigin({TILE_SIZE / 2, 0.0f});
+    _tile.texture.loadFromFile(BIOME_TEXTURE_PATH);
+    _tile.sprite.setTexture(_tile.texture);
+    _ask_thread = std::thread(&Land::askGameInfo, this, client);
+}
+
+Land::~Land()
+{
+    _runing = false;
+    _ask_thread.join();
 }
 
 void Land::display(sf::RenderTarget& render)
@@ -63,6 +75,43 @@ void Land::event(const sf::Event&, const network::NetEventPack& net_pack)
     }
 }
 
+void Land::askGameInfo(std::reference_wrapper<network::Client> client)
+{
+    float trantor_last = _clock.getElapsedTime().asMilliseconds();
+    float map_last = _clock.getElapsedTime().asMilliseconds();
+
+    _runing = true;
+    while (_runing) {
+        if (_clock.getElapsedTime().asMilliseconds() > trantor_last + ACT_TIME(7)) {
+            for (const auto& trantor : _trantorians)
+                askPosition(client, trantor.first);
+            trantor_last = _clock.getElapsedTime().asMilliseconds();
+        }
+        if (_clock.getElapsedTime().asMilliseconds() > map_last + ACT_TIME(20)) {
+            for (size_t y = 0; y < _map_size.y; ++y)
+                for (size_t x = 0; x < _map_size.x; ++x)
+                    askResource(client, x, y);
+            map_last = _clock.getElapsedTime().asMilliseconds();
+        }
+    }
+}
+
+void Land::askPosition(std::reference_wrapper<network::Client> client, size_t id) const
+{
+    std::string send = "ppo ";
+
+    send.append(std::to_string(id));
+    client.get().sendData(send);
+}
+
+void Land::askResource(std::reference_wrapper<network::Client> client, size_t x, size_t y) const
+{
+    std::string send = "bct ";
+
+    send.append(std::to_string(x) + " " + std::to_string(y));
+    client.get().sendData(send);
+}
+
 void Land::loadTile(const network::NetPack& pack)
 {
     static int index = 0;
@@ -73,7 +122,7 @@ void Land::loadTile(const network::NetPack& pack)
     int y = pack[1].getInt();
     pos = MAP_POS(CENTER_MAP(_map_size.y), x, y);
     type = readBiomeType(pack);
-    _tiles[x][y].tile = std::make_unique<Tile>(pos, type);
+    _tiles[x][y].tile = std::make_unique<Tile>(std::ref(_tile), pos, type);
     for (size_t i = 2; i < NB_MAP_ARG; ++i)
         addResourceInTile(x, y, pos, static_cast<resource_e>(i - 2), pack[i].getSize_t());
     index += 1;
@@ -104,8 +153,13 @@ void Land::updateTile(const network::NetPack& pack)
     int x = pack[0].getInt();
     int y = pack[1].getInt();
     pos = MAP_POS(CENTER_MAP(_map_size.y), x, y);
-    for (size_t i = 2; i < NB_MAP_ARG; ++i)
-        addResourceInTile(x, y, pos, static_cast<resource_e>(i - 2), pack[i].getSize_t());
+    for (size_t i = 2; i < NB_MAP_ARG; ++i) {
+        if (!_map_set)
+            addResourceInTile(x, y, pos, static_cast<resource_e>(i - 2), pack[i].getSize_t());
+        else {   
+            // _tiles[x][y].resources[i - 2]->updateQuantity(pack[i].getSize_t());
+        }
+    }
 }
 
 void Land::addResourceInTile(int x, int y, const sf::Vector2f& pos, resource_e type, size_t quantity)
