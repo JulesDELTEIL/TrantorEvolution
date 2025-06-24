@@ -86,7 +86,7 @@ static int add_player(game_t *game, client_t *client, team_t *team)
 
     new->id = game->next;
     new->team = team;
-    new->level = 0;
+    new->level = 1;
     if (team->eggs != NULL) {
         new->pos = team->eggs->pos;
         del_egg(team, new->pos);
