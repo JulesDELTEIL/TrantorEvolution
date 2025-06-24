@@ -49,6 +49,7 @@ class Land : public ALayer {
         void loadTile(const network::NetPack&);
         biome_e readBiomeType(const network::NetPack& pack);
         void updateTile(const network::NetPack&);
+        Drawable _tile;
         sf::Vector2f _map_size = {-1, -1};
         bool _map_set = false;
 

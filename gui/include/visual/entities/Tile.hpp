@@ -33,13 +33,15 @@ static const std::map<biome_e, sf::IntRect> TEXTURE_RECT = {
 
 class Tile {
     public:
-        Tile(const sf::Vector2f& pos, biome_e type);
+        Tile(std::reference_wrapper<Drawable> biome, const sf::Vector2f& pos, biome_e type);
         ~Tile() = default;
 
         void draw(sf::RenderTarget&);
 
     private:
-        Drawable _biome;
+        std::reference_wrapper<Drawable> _biome;
+        sf::Vector2f _pos;
+        biome_e _type;
 
 };
 

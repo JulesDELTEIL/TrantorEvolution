@@ -12,22 +12,17 @@
 namespace gui {
 namespace visual {
 
-Tile::Tile(const sf::Vector2f& pos, biome_e type)
+Tile::Tile(std::reference_wrapper<Drawable> biome, const sf::Vector2f& pos, biome_e type) : _biome(biome)
 {
-    int random = std::rand() % NB_TYPE;
-    sf::IntRect rect = TEXTURE_RECT.at(type);
-
-    rect.top += 32 * random;
-    _biome.texture.loadFromFile(BIOME_TEXTURE_PATH);
-    _biome.sprite.setTexture(_biome.texture);
-    _biome.sprite.setTextureRect(rect);
-    _biome.sprite.setPosition(pos);
-    _biome.sprite.setOrigin({16.0f, 0.0f});
+    _pos = pos;
+    _type = type;
 }
 
 void Tile::draw(sf::RenderTarget& target)
 {
-    target.draw(_biome.sprite);
+    _biome.get().sprite.setTextureRect(TEXTURE_RECT.at(_type));
+    _biome.get().sprite.setPosition(_pos);
+    target.draw(_biome.get().sprite);
 }
 
 } // visual

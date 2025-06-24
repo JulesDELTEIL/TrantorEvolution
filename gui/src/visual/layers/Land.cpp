@@ -17,6 +17,9 @@ namespace visual {
 Land::Land()
 {
     std::srand(std::time({}));
+    _tile.sprite.setOrigin({TILE_SIZE / 2, 0.0f});
+    _tile.texture.loadFromFile(BIOME_TEXTURE_PATH);
+    _tile.sprite.setTexture(_tile.texture);
 }
 
 void Land::display(sf::RenderTarget& render)
@@ -72,7 +75,7 @@ void Land::loadTile(const network::NetPack& pack)
     int y = pack[1].getInt();
     pos = MAP_POS(CENTER_MAP(_map_size.y), x, y);
     type = readBiomeType(pack);
-    _tiles[x][y].tile = std::make_unique<Tile>(pos, type);
+    _tiles[x][y].tile = std::make_unique<Tile>(std::ref(_tile), pos, type);
     for (size_t i = 2; i < NB_MAP_ARG; ++i)
         addResourceInTile(x, y, pos, static_cast<resource_e>(i - 2), pack[i].getSize_t());
     index += 1;
