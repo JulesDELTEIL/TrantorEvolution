@@ -12,7 +12,8 @@
 namespace gui {
 namespace visual {
 
-Tile::Tile(std::reference_wrapper<Drawable> biome, const sf::Vector2f& pos, biome_e type) : _biome(biome)
+Tile::Tile(std::reference_wrapper<Drawable> biome, const sf::Vector2f& pos, biome_e type)
+: _biome(biome)
 {
     _pos = pos;
     _type = type;
@@ -20,7 +21,10 @@ Tile::Tile(std::reference_wrapper<Drawable> biome, const sf::Vector2f& pos, biom
 
 void Tile::draw(sf::RenderTarget& target, const sf::Clock& clock)
 {
-    _biome.get().sprite.setTextureRect(TEXTURE_RECT.at(_type));
+    sf::IntRect texture_rect = TEXTURE_RECT.at(_type);
+
+    texture_rect.top = GET_ANIMATION(clock.getElapsedTime().asMilliseconds()) * ANIMATION_GAP;
+    _biome.get().sprite.setTextureRect(texture_rect);
     _biome.get().sprite.setPosition(_pos);
     target.draw(_biome.get().sprite);
 }
