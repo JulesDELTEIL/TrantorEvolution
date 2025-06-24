@@ -13,7 +13,7 @@
 namespace gui {
 namespace visual {
 
-InGame::InGame(const network::Client& client) : AScene(core::DEFAULT_VIEW)
+InGame::InGame(std::reference_wrapper<network::Client> client) : AScene(core::DEFAULT_VIEW)
 {
     _layers.emplace_back(std::make_unique<Land>(client));
 }

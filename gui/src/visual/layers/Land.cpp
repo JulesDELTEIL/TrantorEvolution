@@ -5,6 +5,8 @@
 ** Land.cpp
 */
 
+#include <iostream>
+
 #include <cstdlib>
 #include <ctime>
 
@@ -14,13 +16,13 @@
 namespace gui {
 namespace visual {
 
-Land::Land(const network::Client& client)
+Land::Land(std::reference_wrapper<network::Client> client)
 {
     std::srand(std::time({}));
     _tile.sprite.setOrigin({TILE_SIZE / 2, 0.0f});
     _tile.texture.loadFromFile(BIOME_TEXTURE_PATH);
     _tile.sprite.setTexture(_tile.texture);
-    _ask_thread = std::thread(&Land::askGameInfo, this, std::cref(client));
+    _ask_thread = std::thread(&Land::askGameInfo, this, client);
 }
 
 Land::~Land()
@@ -63,6 +65,7 @@ void Land::event(const sf::Event&, const network::NetEventPack& net_pack)
             break;
         case network::TIME:
             _time_unit_speed = net_pack.pack[0].getSize_t();
+            std::cout << _time_unit_speed << std::endl;
             break;
         case network::PGET:
             trantorCollect(net_pack.pack);
@@ -73,39 +76,41 @@ void Land::event(const sf::Event&, const network::NetEventPack& net_pack)
     }
 }
 
-void Land::askGameInfo(const network::Client& client)
+void Land::askGameInfo(std::reference_wrapper<network::Client> client)
 {
-    float last_time = _clock.getElapsedTime().asMilliseconds();
+    float trantor_last = _clock.getElapsedTime().asMilliseconds();
+    float map_last = _clock.getElapsedTime().asMilliseconds();
 
     _runing = true;
     while (_runing) {
-        if (_clock.getElapsedTime().asMilliseconds() > last_time + ACT_TIME(6)) {
+        if (_clock.getElapsedTime().asMilliseconds() > trantor_last + ACT_TIME(6)) {
             for (const auto& trantor : _trantorians)
                 askPosition(client, trantor.first);
+            trantor_last = _clock.getElapsedTime().asMilliseconds();
         }
-        if (_clock.getElapsedTime().asMilliseconds() > last_time + ACT_TIME(19)) {
+        if (_clock.getElapsedTime().asMilliseconds() > map_last + ACT_TIME(19)) {
             for (size_t y = 0; y < _map_size.y; ++y)
                 for (size_t x = 0; x < _map_size.x; ++x)
                     askResource(client, x, y);
+            map_last = _clock.getElapsedTime().asMilliseconds();
         }
-        last_time = _clock.getElapsedTime().asMilliseconds();
     }
 }
 
-void Land::askPosition(const network::Client& client, size_t id) const
+void Land::askPosition(std::reference_wrapper<network::Client> client, size_t id) const
 {
     std::string send = "ppo ";
 
     send.append(std::to_string(id));
-    client.sendData(send);
+    client.get().sendData(send);
 }
 
-void Land::askResource(const network::Client& client, size_t x, size_t y) const
+void Land::askResource(std::reference_wrapper<network::Client> client, size_t x, size_t y) const
 {
     std::string send = "bct ";
 
     send.append(std::to_string(x) + " " + std::to_string(y));
-    client.sendData(send);
+    client.get().sendData(send);
 }
 
 void Land::loadTile(const network::NetPack& pack)

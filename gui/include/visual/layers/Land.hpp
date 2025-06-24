@@ -36,7 +36,7 @@ struct ClearTile {
 
 class Land : public ALayer {
     public:
-        Land(const network::Client& client);
+        Land(std::reference_wrapper<network::Client> client);
         ~Land();
 
         void display(sf::RenderTarget& render) override;
@@ -49,9 +49,9 @@ class Land : public ALayer {
 
         std::thread _ask_thread;
         bool _runing = false;
-        void askGameInfo(const network::Client& client);
-        void askPosition(const network::Client& client, size_t id) const;
-        void askResource(const network::Client& client, size_t x, size_t y) const;
+        void askGameInfo(std::reference_wrapper<network::Client> client);
+        void askPosition(std::reference_wrapper<network::Client> client, size_t id) const;
+        void askResource(std::reference_wrapper<network::Client> client, size_t x, size_t y) const;
 
         void loadTile(const network::NetPack&);
         biome_e readBiomeType(const network::NetPack& pack);

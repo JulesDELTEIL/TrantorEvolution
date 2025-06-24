@@ -21,7 +21,7 @@ Core::Core(int argc, const char *argv[])
         std::cerr << e.what() << std::endl;
         exit(84);
     }
-    _scenes[visual::Scene_e::IN_GAME] = std::make_unique<visual::InGame>(_client);
+    _scenes[visual::Scene_e::IN_GAME] = std::make_unique<visual::InGame>(std::ref(_client));
     changeScene(visual::Scene_e::IN_GAME);
     try {
         _client.setSocket(_parser.getHostName(), _parser.getPortNb());
