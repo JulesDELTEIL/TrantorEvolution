@@ -9,14 +9,11 @@
 #include <sys/time.h>
 #include <stdio.h>
 
-#include "functions.h"
-
-void set_action_end(client_t *client, int freq, int ticks)
+size_t set_timer_end(int freq, int ticks)
 {
     float delay = ((float)ticks / (float)freq) * 1000;
     struct timeval tp;
 
     gettimeofday(&tp, NULL);
-    client->player->action.end =
-    (tp.tv_sec * 1000 + tp.tv_usec / 1000) + (size_t)delay;
+    return (size_t)(tp.tv_sec * 1000 + tp.tv_usec / 1000) + (size_t)delay;
 }

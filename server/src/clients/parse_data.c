@@ -1,8 +1,8 @@
 /*
-** EPITECH PROJECT, 2025
+** EPITECH PROJECT, 2024
 ** zappy
 ** File description:
-** commands.c
+** parse_data.c
 */
 
 #include <stdio.h>
@@ -12,18 +12,7 @@
 
 #include "commands.h"
 #include "debug.h"
-#include "transmission.h"
 #include "functions.h"
-
-static void handle_unrecognized_code(serverdata_t *sdata, fdarray_t *fdarray,
-    client_t *client)
-{
-    if (client->type == GUI)
-        send_data(client, "suc", NULL, sdata->debug);
-    else
-        send_data(client, "ko", NULL, sdata->debug);
-    return;
-}
 
 static int empty_client_buff(client_t *client, uint_t index)
 {
@@ -95,7 +84,7 @@ static int parse_data(client_t *client, char *data, uint_t cmdend_idx,
     return -1;
 }
 
-static int packet_parser(client_t *client, char *cmd, char *data)
+int packet_parser(client_t *client, char *cmd, char *data)
 {
     int end_idx = 0;
     bool nl_presence = false;
@@ -109,25 +98,4 @@ static int packet_parser(client_t *client, char *cmd, char *data)
         return EXIT_FAILURE;
     empty_client_buff(client, end_idx);
     return EXIT_SUCCESS;
-}
-
-int buffer_handler(serverdata_t *sdata, fdarray_t *fdarray, client_t *client)
-{
-    char cmd[BUFFSIZE] = {0};
-    char data[BUFFSIZE] = {0};
-
-    if (client == NULL || client->buffer == NULL)
-        return EXIT_FAILURE;
-    if (sdata->debug)
-        debug_buffer(client);
-    if (packet_parser(client, cmd, data) == EXIT_FAILURE)
-        return EXIT_FAILURE;
-    if (client->type == UNSET)
-        return set_team(sdata, fdarray, client, cmd);
-    for (uint_t k = 0; k < NB_COMMANDS[client->type]; k++)
-        if (strcmp(cmd, COMMANDS[client->type][k].command) == 0)
-            return COMMANDS[client->type][k].handler(sdata,
-                fdarray, client, data);
-    handle_unrecognized_code(sdata, fdarray, client);
-    return EXIT_FAILURE;
 }
