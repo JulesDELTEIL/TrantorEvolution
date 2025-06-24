@@ -20,7 +20,7 @@
     #define MIN_MAP_SIZE 5
     #define MAX_MAP_SIZE 100
     #define MIN_CLIENTS 6
-    #define MIN_FREQ 0
+    #define MIN_FREQ 1
     #define MIN_NB_ARGS 12
     #define FIRST_CHAR 0
     #define NEXT_ARG 1
@@ -38,8 +38,9 @@ static const char ARG_FREQ[] = "-f";
 static const char ARG_TNAME[] = "-n";
 
 static const char *USAGE_MSG[] = {
-    "./zappy_server -p <port> -x <width max 100> -y <height max 100> ",
-    "-n <name1 name2 ...> -c <clientsNb> -f <freq> [-d]\n"
+    "./zappy_server -p <port 1025-65535> -x ",
+    "<width max 100> -y <height max 100> ",
+    "-n <name1 name2 ...> -c <clientsNb min 6> -f <freq min 1> [-d]\n"
 };
 
 /*

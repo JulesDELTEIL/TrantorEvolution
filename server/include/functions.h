@@ -87,6 +87,11 @@ Deletes a player from the list in GAME depending on its ID
 int del_player(game_t *game, int id);
 
 /*
+Kills a player from CLIENT
+*/
+int kill_player(serverdata_t *sdata, client_t *client);
+
+/*
 Parse the first command found in CLIENT into CMD and DATA
 */
 int packet_parser(client_t *client, char *cmd, char *data);
