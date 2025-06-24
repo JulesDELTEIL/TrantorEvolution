@@ -15,9 +15,11 @@
 
 static void rotate_player(player_t *player)
 {
-    player->orientation += 1;
-    if (player->orientation > W)
-        player->orientation = N;
+    int res = player->orientation - 1;
+
+    if (res < N)
+        res = W;
+    player->orientation = res;
 }
 
 // ACTION

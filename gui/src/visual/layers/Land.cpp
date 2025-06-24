@@ -58,9 +58,10 @@ void Land::event(const sf::Event&, const network::NetEventPack& net_pack)
             _time_unit_speed = net_pack.pack[0].getSize_t();
             break;
         case network::PGET:
-            sf::Vector2i tile_pos = _trantorians.at(net_pack.pack[0].getSize_t())->map_pos;
-            _trantorians.at(net_pack.pack[0].getSize_t())->collect(_tiles[tile_pos.x][tile_pos.y].resources, ACT_TIME(7.0f) / 2);
-            _clear_resources.push_back({ACT_TIME(7.0f) + _clock.getElapsedTime().asMilliseconds(), tile_pos});
+            trantorCollect(net_pack.pack);
+            break;
+        case network::PDEAD:
+            removeTrantorian(net_pack.pack);
             break;
     }
 }
@@ -133,6 +134,22 @@ void Land::addTrantorian(const network::NetPack& pack)
 
     _tiles[x][y].trantorians[pack[0].getSize_t()] = newT;
     _trantorians[pack[0].getSize_t()] = newT;
+}
+
+void Land::removeTrantorian(const network::NetPack& pack)
+{
+    size_t id = pack[0].getSize_t();
+    std::shared_ptr<Trantorian> trantor = _trantorians.at(id);
+
+    _tiles[trantor->map_pos.x][trantor->map_pos.y].trantorians.erase(id);
+    _trantorians.erase(id);
+}
+
+void Land::trantorCollect(const network::NetPack& pack)
+{
+    sf::Vector2i tile_pos = _trantorians.at(pack[0].getSize_t())->map_pos;
+    _trantorians.at(pack[0].getSize_t())->collect(_tiles[tile_pos.x][tile_pos.y].resources, ACT_TIME(7.0f) / 2);
+    _clear_resources.push_back({ACT_TIME(7.0f) + _clock.getElapsedTime().asMilliseconds(), tile_pos});
 }
 
 void Land::posTrantorian(const network::NetPack& pack)

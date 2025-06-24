@@ -58,6 +58,8 @@ class Land : public ALayer {
         std::vector<ClearTile> _clear_resources;
 
         void addTrantorian(const network::NetPack& pack);
+        void removeTrantorian(const network::NetPack& pack);
+        void trantorCollect(const network::NetPack& pack);
         void posTrantorian(const network::NetPack& pack);
 
         struct TileInfo {
