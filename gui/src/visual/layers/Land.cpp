@@ -24,7 +24,7 @@ void Land::display(sf::RenderTarget& render)
     clearResources();
     for (auto& tileY : _tiles) {
         for (auto& tileX : tileY.second) {
-            tileX.second.tile->draw(render);
+            tileX.second.tile->draw(render, _clock);
             for (auto& trantor : tileX.second.trantorians)
                 trantor.second->draw(render);
             for (auto& resource : tileX.second.resources)

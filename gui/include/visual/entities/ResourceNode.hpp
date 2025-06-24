@@ -15,15 +15,15 @@
     #include "visual/visual.hpp"
     #include "visual/Drawable.hpp"
 
-    #define RES_MAX_X 8
-    #define RES_MIN_X -8
-    #define RES_MAX_Y 13
-    #define RES_MIN_Y 3
+    #define RES_MAX_X 24
+    #define RES_MIN_X -24
+    #define RES_MAX_Y 39
+    #define RES_MIN_Y 9
 
 static const int RES_RANGE_X = RES_MAX_X - RES_MIN_X + 1;
 static const int RES_RANGE_Y = RES_MAX_Y - RES_MIN_Y + 1;
 
-    #define MIN_SCALE 0.15f
+    #define MIN_SCALE 0.6f
     #define SCALE_RATIO 100
 
 namespace gui {
