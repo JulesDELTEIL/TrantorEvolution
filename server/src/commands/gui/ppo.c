@@ -40,9 +40,8 @@ int cmd_ppo(serverdata_t *sdata, fdarray_t *fdarray,
         send_data(client, "sbp", NULL, sdata->debug);
         return EXIT_FAILURE;
     }
-    sprintf(answer, "%d %d %d", player->pos.x,
-    player->pos.y,
-    player->orientation);
+    sprintf(answer, "%d %d %d %d", player->id, player->pos.x, player->pos.y,
+        player->orientation);
     send_data(client, "ppo", answer, sdata->debug);
     return EXIT_SUCCESS;
 }

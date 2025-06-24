@@ -28,7 +28,7 @@ int cmd_plv(serverdata_t *sdata, fdarray_t *fdarray,
         send_data(client, "sbp", NULL, sdata->debug);
         return EXIT_FAILURE;
     }
-    sprintf(answer, "%d", player->level);
+    sprintf(answer, "%d %d", player->id, player->level);
     send_data(client, "plv", answer, sdata->debug);
     return EXIT_SUCCESS;
 }
