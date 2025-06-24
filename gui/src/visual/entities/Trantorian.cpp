@@ -10,7 +10,8 @@
 namespace gui {
 namespace visual {
 
-Trantorian::Trantorian(const sf::Vector2f& pos, const sf::Vector2i& pos_in_map, size_t level) :
+Trantorian::Trantorian(const sf::Vector2f& pos, const sf::Vector2i& pos_in_map,
+    size_t level, const std::string& team_name) :
     _body(NB_TRANTORS),
     _type(NB_TRANTORS),
     _body_direction(NB_TRANTORS, FACE_RIGHT),
@@ -21,7 +22,10 @@ Trantorian::Trantorian(const sf::Vector2f& pos, const sf::Vector2i& pos_in_map, 
         std::ref(_body[0]), std::ref(_body[1]), std::ref(_body[2]), std::ref(_body[3]), std::ref(_body[4]), std::ref(_body[5])
     })
 {
+    sf::Color team_color = generateTeamColor(team_name);
+
     lvl = level;
+    team = team_name;
     map_pos = pos_in_map;
     for (size_t i = 0; i < NB_TRANTORS; ++i) {
         sf::Vector2f random_pos = {
@@ -30,9 +34,9 @@ Trantorian::Trantorian(const sf::Vector2f& pos, const sf::Vector2i& pos_in_map, 
         };
         _body[i].sprite.setOrigin(sf::Vector2f(32, 48));
         _body[i].sprite.setPosition(random_pos);
-        for (int d = 0; d < NB_BODY_ANIM; ++d) {
+        _body[i].sprite.setColor(team_color);
+        for (int d = 0; d < NB_BODY_ANIM; ++d)
             _body_animation[i].addAnimation(BODY_ANIM_INFOS[d]);
-        }
         _type[i] = IDLE;
         _body_animation[i].changeAnimation(_type[i]);
         _body[i].sprite.setScale(TRANTOR_SCALE, TRANTOR_SCALE);
@@ -68,6 +72,17 @@ void Trantorian::move(int index, const sf::Vector2f& new_pos, float time)
         else
             _body_direction[index] = FACE_RIGHT;
     }
+}
+
+sf::Color Trantorian::generateTeamColor(const std::string& team_name)
+{
+    size_t code = 0;
+    sf::Color color;
+
+    for (const char& chara : team_name)
+        code += chara;
+    code /= team_name.size();
+    return sf::Color(code, code, code, 255);
 }
 
 void Trantorian::collect(const std::vector<std::shared_ptr<ResourceNode>>& resources, float time)
