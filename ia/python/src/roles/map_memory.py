@@ -34,5 +34,4 @@ class MapMemory:
             y = r
             for x in range(-r, r + 1):
                 coords.append([x, y])
-        print(type(coords), coords)
         return coords

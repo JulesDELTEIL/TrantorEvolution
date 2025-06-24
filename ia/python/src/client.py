@@ -85,7 +85,7 @@ class Trantorian (ServerManager) :
             message += self.recv()
             while message :
                 index = message.find("\n")
-                if index == -1:
+                if index == -1 or i >= 3:
                     break
                 self.connect_function[i](message[:index + 1])
                 message = message[index + 1:]
@@ -96,8 +96,9 @@ class Trantorian (ServerManager) :
             self.player.decide_action()
         if self.player.queue :
             action = self.player.queue.pop()
-            self.send((action.__str__() + "\n").encode())
-            self.player.last_sent = action.action
+            if action.action != Action.NONE:
+                self.send((action.__str__() + "\n").encode())
+                self.player.last_sent = action.action
 
     def analyse_requests(self, message: str) -> str:
         message_left = message
@@ -119,10 +120,8 @@ class Trantorian (ServerManager) :
             self.analyse_requests(response)
 
     def handle_nobody(self, response_list: list[str]) -> bool:
-        print('handle_nobody --- %s ---', response_list)
         broadcast = self.player.handle_broadcast(response_list)
         if broadcast == "ROLE":
-            print("---------------- %s -----------------" % response_list[2])
             self.player = ROLE_MAP[response_list[3]]()
             return False
         if broadcast == "QUIT":
@@ -136,7 +135,6 @@ class Trantorian (ServerManager) :
         response_list = response.split()
         if isinstance(self.player, Nobody):
             if self.player.cycle > 5:
-                print("Becoming a queen")
                 self.player = Queen(lambda : self._spawn_new_client())
                 return True
         if response_list[0] == "message":
@@ -157,7 +155,6 @@ class Trantorian (ServerManager) :
             if self.player.last_sent == Action.INCANTATION:
                 self.COMMANDS[self.player.last_sent](response)
             if response_list[0] == Commands.COMMANDS[self.player.last_sent]["response success"][0]:
-                print(self.player.last_sent.__str__())
                 self.COMMANDS[self.player.last_sent]()
             self.player.state.update(response)
             return True
