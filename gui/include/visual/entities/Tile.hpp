@@ -23,6 +23,9 @@ namespace visual {
     #define TILE_SIZE 96
     #define BIOME_TEXTURE_PATH "assets/tiles/BiomTiles.png"
     #define NB_TYPE 3
+    #define ANIMATION_CLOCK 500
+    #define ANIMATION_GAP 288
+    #define GET_ANIMATION(clock) (clock / ANIMATION_CLOCK % 2)
 
 static const std::map<biome_e, sf::IntRect> TEXTURE_RECT = {
     {PLAINS, sf::IntRect(0, 0, TILE_SIZE, TILE_SIZE)},
@@ -42,6 +45,7 @@ class Tile {
 
     private:
         std::reference_wrapper<Drawable> _biome;
+        size_t _animation_state;
         sf::Vector2f _pos;
         biome_e _type;
 
