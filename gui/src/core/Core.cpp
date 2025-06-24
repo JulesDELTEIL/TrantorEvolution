@@ -60,9 +60,9 @@ void Core::events(void)
     while (_client.pollEvent(net_event)) {
         if (net_event.event == network::CON) {
             _client.sendData(AUTHENTIFICATOR);
-            _client.sendData("msz\n");
-            _client.sendData("mct\n");
-            _client.sendData("sgt\n");
+            _client.sendData("msz");
+            _client.sendData("mct");
+            _client.sendData("sgt");
         }
         _scenes.at(_selected_scene)->event(default_event, net_event);
     }
