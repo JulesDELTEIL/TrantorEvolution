@@ -14,12 +14,12 @@ class Foreman(BaseRole):
         print("----- Je suis Foreman ------")
         self._initial_moves = 3
         self._fork_count = 0
+        self.queue.append(Commands(Action.TAKE, 'food'))
     
     def decide_action(self):
         self.cycle += 1
 
         if self.cycle % 4 == 0:
-            self.queue.appendleft(Commands(Action.BROADCAST, "here"))
             self.queue.appendleft(Commands(Action.TAKE, 'food'))
 
         self.queue.appendleft(Commands(Action.FORK))
