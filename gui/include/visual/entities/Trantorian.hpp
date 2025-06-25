@@ -52,8 +52,8 @@ class Trantorian {
         void draw(sf::RenderTarget&, const sf::Clock&);
         void move(int index, const sf::Vector2f&, float);
 
-        void changeTile(const sf::Vector2f&, float, const sf::Clock&);
-        void collect(const std::vector<std::shared_ptr<ResourceNode>>&, float, const sf::Clock&);
+        void changeTile(const sf::Vector2f&, float);
+        void collect(const std::vector<std::shared_ptr<ResourceNode>>&, float);
 
         sf::Vector2i map_pos;
         size_t lvl;
