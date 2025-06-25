@@ -5,18 +5,16 @@
 ** Land.cpp
 */
 
-#include <iostream>
-
 #include <cstdlib>
 #include <ctime>
 
-#include "visual/layers/Land.hpp"
+#include "visual/scenes/Land.hpp"
 #include "visual/visual.hpp"
 
 namespace gui {
 namespace visual {
 
-Land::Land()
+Land::Land() : AScene(core::DEFAULT_VIEW)
 {
     std::srand(std::time({}));
     _tile.sprite.setOrigin({TILE_SIZE / 2, 0.0f});
@@ -31,15 +29,17 @@ void Land::display(sf::RenderTarget& render)
         for (auto& tileX : tileY.second) {
             tileX.second.tile->draw(render, _clock);
             for (auto& resource : tileX.second.resources)
-                resource->draw(render);
+                resource.second->draw(render);
         }
     }
     for (auto& trantor : _trantorians)
         trantor.second->draw(render, _clock);
 }
 
-void Land::event(const sf::Event&, const network::NetEventPack& net_pack)
+void Land::event(const core::Engine& engine, const network::NetEventPack& net_pack)
 {
+    viewEvent(engine.events);
+    checkHudEvent(engine);
     switch (static_cast<int>(net_pack.event)) {
         case network::MSIZE:
             _map_size = sf::Vector2f(net_pack.pack[0].getFloat(), net_pack.pack[1].getFloat());
@@ -68,6 +68,24 @@ void Land::event(const sf::Event&, const network::NetEventPack& net_pack)
     }
 }
 
+void Land::viewEvent(const sf::Event& event)
+{
+    if (event.type == sf::Event::KeyPressed) {
+        if (event.key.code == sf::Keyboard::D)
+            move(10, 0);
+        if (event.key.code == sf::Keyboard::Q)
+            move(-10, 0);
+        if (event.key.code == sf::Keyboard::S)
+            move(0, 10);
+        if (event.key.code == sf::Keyboard::Z)
+            move(0, -10);
+        if (event.key.code == sf::Keyboard::E)
+            zoom(0.9);
+        if (event.key.code == sf::Keyboard::A)
+            zoom(1.1);
+    }
+}
+
 void Land::loadTile(const network::NetPack& pack)
 {
     static int index = 0;
@@ -80,7 +98,8 @@ void Land::loadTile(const network::NetPack& pack)
     type = readBiomeType(pack);
     _tiles[x][y].tile = std::make_unique<Tile>(std::ref(_tile), pos, type);
     for (size_t i = 2; i < NB_MAP_ARG; ++i)
-        addResourceInTile(x, y, pos, static_cast<resource_e>(i - 2), pack[i].getSize_t());
+        _tiles[x][y].resources[static_cast<resource_e>(i - 2)] =
+            std::make_shared<ResourceNode>(pos, static_cast<resource_e>(i - 2), pack[i].getSize_t());
     index += 1;
     if (index >= (_map_size.x * _map_size.y))
         _map_set = true;
@@ -109,26 +128,16 @@ void Land::updateTile(const network::NetPack& pack)
     int x = pack[0].getInt();
     int y = pack[1].getInt();
     pos = MAP_POS(CENTER_MAP(_map_size.y), x, y);
-    for (size_t i = 2; i < NB_MAP_ARG; ++i) {
-        if (!_map_set)
-            addResourceInTile(x, y, pos, static_cast<resource_e>(i - 2), pack[i].getSize_t());
-        else {   
-            // _tiles[x][y].resources[i - 2]->updateQuantity(pack[i].getSize_t());
-        }
-    }
-}
-
-void Land::addResourceInTile(int x, int y, const sf::Vector2f& pos, resource_e type, size_t quantity)
-{
-    if (quantity > 0)
-        _tiles[x][y].resources.emplace_back(std::make_shared<ResourceNode>(pos, type, quantity));
+    for (size_t i = 2; i < NB_MAP_ARG; ++i)
+        _tiles[x][y].resources.at(static_cast<resource_e>(i - 2))->updateQuantity(pack[i].getSize_t());
 }
 
 void Land::clearResources(void)
 {
     for (ClearTile& to_clear : _clear_resources) {
-        if (_clock.getElapsedTime().asMilliseconds() >= to_clear.time)
-            _tiles[to_clear.tile.x][to_clear.tile.y].resources.clear();
+        if (_clock.getElapsedTime().asMilliseconds() >= to_clear.time) {
+            _tiles[to_clear.tile.x][to_clear.tile.y].resources[to_clear.type]->updateQuantity(0);
+        }
     }
 }
 
@@ -150,13 +159,16 @@ void Land::removeTrantorian(const network::NetPack& pack)
 
     _tiles[trantor->map_pos.x][trantor->map_pos.y].trantorians.erase(id);
     _trantorians.erase(id);
+    trantor = nullptr;
 }
 
 void Land::trantorCollect(const network::NetPack& pack)
 {
     sf::Vector2i tile_pos = _trantorians.at(pack[0].getSize_t())->map_pos;
+    resource_e type = static_cast<resource_e>(pack[1].getInt());
+
     _trantorians.at(pack[0].getSize_t())->collect(_tiles[tile_pos.x][tile_pos.y].resources, ACT_TIME(7.0f) / 2, _clock);
-    _clear_resources.push_back({ACT_TIME(7.0f) + _clock.getElapsedTime().asMilliseconds(), tile_pos});
+    _clear_resources.push_back({ACT_TIME(7.0f) + _clock.getElapsedTime().asMilliseconds(), type, tile_pos});
 }
 
 void Land::posTrantorian(const network::NetPack& pack)
@@ -173,6 +185,15 @@ void Land::posTrantorian(const network::NetPack& pack)
         _tiles[trantor->map_pos.x][trantor->map_pos.y].trantorians.erase(id);
         trantor->map_pos = {x, y};
         _tiles[x][y].trantorians[id] = trantor;
+    }
+}
+
+void Land::checkHudEvent(const core::Engine& engine)
+{
+    if (engine.events.type == sf::Event::MouseButtonPressed) {
+        if (engine.events.mouseButton.button == sf::Mouse::Left) {
+            
+        }
     }
 }
 

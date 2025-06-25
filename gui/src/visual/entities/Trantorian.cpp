@@ -27,6 +27,7 @@ Trantorian::Trantorian(const sf::Vector2f& pos, const sf::Vector2i& pos_in_map,
     lvl = level;
     team = team_name;
     map_pos = pos_in_map;
+    actual_pos = pos;
     for (size_t i = 0; i < NB_TRANTORS; ++i) {
         sf::Vector2f random_pos = {
             pos.x + std::rand() % RES_RANGE_X + RES_MIN_X,
@@ -84,24 +85,34 @@ sf::Color Trantorian::generateTeamColor(const std::string& team_name)
     return sf::Color(code, code, code, 255);
 }
 
-void Trantorian::collect(const std::vector<std::shared_ptr<ResourceNode>>& resources, float time, const sf::Clock& clock)
+void Trantorian::collect(const std::map<resource_e, std::shared_ptr<ResourceNode>>& resources,
+    float time, const sf::Clock& clock)
 {
+    int i = 0;
+
     if (resources.size() > 0) {
-        for (size_t i = 0; i < resources.size(); ++i) {
-            int type = resources[i]->getType();
-            if (type == 0)
+        for (const auto& resource : resources) {
+            if (resource.first == WOOD)
                 _type[i] = AXE;
-            else if (type == 1 || type == 2 || type == 3)
+            else if (resource.first == STONE || resource.first == CLAY ||
+                resource.first == METAL)
                 _type[i] = PICKAXE;
             else
                 _type[i] = COLLECT;
-            move(i, resources[i]->getCollectPosition(), time, clock);
+            move(i, resource.second->getCollectPosition(), time, clock);
+            i += 1;
         }
     }
 }
 
+ResourceGroup Trantorian::getInventory(void) const
+{
+    return _inventory;
+}
+
 void Trantorian::changeTile(const sf::Vector2f& new_pos, float time, const sf::Clock& clock)
 {
+    actual_pos = new_pos;
     for (size_t i = 0; i < NB_TRANTORS; ++i) {
         _type[i] = IDLE;
         sf::Vector2f random_pos = {

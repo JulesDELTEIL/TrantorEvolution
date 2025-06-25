@@ -8,7 +8,7 @@
 #include <iostream>
 
 #include "core/Core.hpp"
-#include "visual/scenes/InGame.hpp"
+#include "visual/scenes/Land.hpp"
 
 namespace gui {
 namespace core {
@@ -21,7 +21,7 @@ Core::Core(int argc, const char *argv[])
         std::cerr << e.what() << std::endl;
         exit(84);
     }
-    _scenes[visual::Scene_e::IN_GAME] = std::make_unique<visual::InGame>();
+    _scenes[visual::Scene_e::IN_GAME] = std::make_unique<visual::Land>();
     changeScene(visual::Scene_e::IN_GAME);
     try {
         _client.setSocket(_parser.getHostName(), _parser.getPortNb());
@@ -49,16 +49,15 @@ void Core::display(void)
 void Core::events(void)
 {
     network::NetEventPack net_event;
-    sf::Event default_event;
 
     while (_engine.window.pollEvent(_engine.events)) {
         if (_engine.events.type == sf::Event::Closed) {
             _engine.window.close();
             return;
         }
-        _scenes.at(_selected_scene)->event(_engine.events, net_event);
+        _scenes.at(_selected_scene)->event(_engine, net_event);
     }
-    default_event.type = sf::Event::SensorChanged;
+    _engine.events.type = sf::Event::SensorChanged;
     while (_client.pollEvent(net_event)) {
         if (net_event.event == network::CON) {
             _client.sendData(AUTHENTIFICATOR);
@@ -66,7 +65,7 @@ void Core::events(void)
             _client.sendData("mct");
             _client.sendData("sgt");
         }
-        _scenes.at(_selected_scene)->event(default_event, net_event);
+        _scenes.at(_selected_scene)->event(_engine, net_event);
     }
 }
 

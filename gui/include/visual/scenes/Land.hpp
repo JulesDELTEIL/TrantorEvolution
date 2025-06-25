@@ -12,11 +12,12 @@
     #include <thread>
     #include <SFML/System/Clock.hpp>
 
-    #include "visual/interfaces/ALayer.hpp"
+    #include "visual/AScene.hpp"
 
     #include "map_tools.h"
     #include "core/Engine.hpp"
     #include "network/Client.hpp"
+    #include "visual/entities/Hud.hpp"
     #include "visual/entities/Tile.hpp"
     #include "visual/entities/Trantorian.hpp"
     #include "visual/entities/ResourceNode.hpp"
@@ -32,21 +33,23 @@ namespace visual {
 
 struct ClearTile {
     float time;
+    resource_e type;
     sf::Vector2i tile;
 };
 
-class Land : public ALayer {
+class Land : public AScene {
     public:
         Land();
         ~Land() = default;
 
         void display(sf::RenderTarget& render) override;
-        void event(const sf::Event& event, const network::NetEventPack&) override;
-    
+        void event(const core::Engine&, const network::NetEventPack&) override;
 
     private:
         sf::Clock _clock;
         size_t _time_unit_speed = 4;
+
+        void viewEvent(const sf::Event&);
 
         void loadTile(const network::NetPack&);
         biome_e readBiomeType(const network::NetPack& pack);
@@ -55,7 +58,6 @@ class Land : public ALayer {
         sf::Vector2f _map_size = {-1, -1};
         bool _map_set = false;
 
-        void addResourceInTile(int, int, const sf::Vector2f&, resource_e, size_t);
         void clearResources(void);
         std::vector<ClearTile> _clear_resources;
 
@@ -64,10 +66,13 @@ class Land : public ALayer {
         void trantorCollect(const network::NetPack& pack);
         void posTrantorian(const network::NetPack& pack);
 
+        Hud _hud;
+        void checkHudEvent(const core::Engine& engine);
+
         struct TileInfo {
             std::unique_ptr<Tile> tile;
             std::map<size_t, std::shared_ptr<Trantorian>> trantorians;
-            std::vector<std::shared_ptr<ResourceNode>> resources;
+            std::map<resource_e, std::shared_ptr<ResourceNode>> resources;
         };
 
         std::map<size_t, std::map<size_t, TileInfo>> _tiles;

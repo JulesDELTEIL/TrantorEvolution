@@ -15,7 +15,7 @@
     #include "core/Engine.hpp"
     #include "visual/visual.hpp"
     #include "core/Parser.hpp"
-    #include "visual/interfaces/IScene.hpp"
+    #include "visual/IScene.hpp"
     #include "network/Client.hpp"
 
 namespace gui {

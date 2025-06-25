@@ -31,7 +31,8 @@ ResourceNode::ResourceNode(const sf::Vector2f& pos, resource_e type, size_t quan
 
 void ResourceNode::draw(sf::RenderTarget& target)
 {
-    target.draw(_resource.sprite);
+    if (_quantity > 0)
+        target.draw(_resource.sprite);
 }
 
 sf::Vector2f ResourceNode::getCollectPosition(void)
