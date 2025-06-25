@@ -21,7 +21,7 @@ Core::Core(int argc, const char *argv[])
         std::cerr << e.what() << std::endl;
         exit(84);
     }
-    _scenes[visual::Scene_e::IN_GAME] = std::make_unique<visual::InGame>();
+    _scenes[visual::Scene_e::IN_GAME] = std::make_unique<visual::InGame>(std::ref(_client));
     changeScene(visual::Scene_e::IN_GAME);
     try {
         _client.setSocket(_parser.getHostName(), _parser.getPortNb());
@@ -52,17 +52,19 @@ void Core::events(void)
     sf::Event default_event;
 
     while (_engine.window.pollEvent(_engine.events)) {
-        if (_engine.events.type == sf::Event::Closed)
+        if (_engine.events.type == sf::Event::Closed) {
             _engine.window.close();
+            return;
+        }
         _scenes.at(_selected_scene)->event(_engine.events, net_event);
     }
     default_event.type = sf::Event::SensorChanged;
     while (_client.pollEvent(net_event)) {
         if (net_event.event == network::CON) {
-            _client.sendData("GRAPHIC\n");
-            _client.sendData("msz\n");
-            _client.sendData("mct\n");
-            _client.sendData("sgt\n");
+            _client.sendData(AUTHENTIFICATOR);
+            _client.sendData("msz");
+            _client.sendData("mct");
+            _client.sendData("sgt");
         }
         _scenes.at(_selected_scene)->event(default_event, net_event);
     }

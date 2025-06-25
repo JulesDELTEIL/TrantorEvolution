@@ -10,6 +10,7 @@
 
     #include <memory>
     #include <map>
+    #include <SFML/System/Clock.hpp>
     #include <SFML/Graphics/Rect.hpp>
     #include <SFML/Graphics/RenderTarget.hpp>
 
@@ -19,27 +20,34 @@
 namespace gui {
 namespace visual {
 
-   #define BIOME_TEXTURE_PATH "assets/tiles/BiomTiles.png"
-   #define NB_TYPE 3
+    #define TILE_SIZE 96
+    #define BIOME_TEXTURE_PATH "assets/tiles/BiomTiles.png"
+    #define NB_TYPE 3
+    #define ANIMATION_CLOCK 500
+    #define ANIMATION_GAP 288
+    #define GET_ANIMATION(clock) (clock / ANIMATION_CLOCK % 2)
 
 static const std::map<biome_e, sf::IntRect> TEXTURE_RECT = {
-    {SEA, sf::IntRect(64, 0, 32, 32)},
-    {FOREST, sf::IntRect(128, 0, 32, 32)},
-    {MOUNTAINS, sf::IntRect(96, 0, 32, 32)},
-    {PLAINS, sf::IntRect(0, 0, 32, 32)},
-    {BEACH, sf::IntRect(32, 0, 32, 32)},
-    {EMPTY, sf::IntRect(160, 0, 32, 32)}
+    {PLAINS, sf::IntRect(0, 0, TILE_SIZE, TILE_SIZE)},
+    {BEACH, sf::IntRect(96, 0, TILE_SIZE, TILE_SIZE)},
+    {SEA, sf::IntRect(192, 0, TILE_SIZE, TILE_SIZE)},
+    {MOUNTAINS, sf::IntRect(288, 0, TILE_SIZE, TILE_SIZE)},
+    {FOREST, sf::IntRect(384, 0, TILE_SIZE, TILE_SIZE)},
+    {EMPTY, sf::IntRect(480, 0, TILE_SIZE, TILE_SIZE)}
 };
 
 class Tile {
     public:
-        Tile(const sf::Vector2f& pos, biome_e type);
+        Tile(std::reference_wrapper<Drawable> biome, const sf::Vector2f& pos, biome_e type);
         ~Tile() = default;
 
-        void draw(sf::RenderTarget&);
+        void draw(sf::RenderTarget&, const sf::Clock&);
 
     private:
-        Drawable _biome;
+        std::reference_wrapper<Drawable> _biome;
+        size_t _animation_state;
+        sf::Vector2f _pos;
+        biome_e _type;
 
 };
 

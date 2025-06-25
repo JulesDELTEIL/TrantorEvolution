@@ -39,10 +39,9 @@ sf::Vector2f ResourceNode::getCollectPosition(void)
     return _resource.sprite.getPosition() + sf::Vector2f(-2, 0);
 }
 
-void ResourceNode::addQuantity(size_t to_add)
+void ResourceNode::updateQuantity(size_t new_quantity)
 {
-    sf::Vector2f scale;
-    size_t new_quantity = to_add + _quantity;
+    sf::Vector2f scale = {0, 0};
 
     _quantity = new_quantity;
     if (new_quantity > SCALE_RATIO)
