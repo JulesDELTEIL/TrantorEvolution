@@ -18,10 +18,14 @@ Returns EXIT_SUCCESS or EXIT_FAILURE
 int receive_data(serverdata_t *sdata, client_t *client);
 
 /*
-Used to write data to client FD
-Returns number of bytes written
+Used to write client buffer output and send it to client
 */
-int send_data(client_t *client, char *cmd, char *data, bool debug);
+int send_data(client_t *client, bool debug);
+
+/*
+Used to write DATA to client buffer output
+*/
+int set_message(client_t *client, char *cmd, char *data, bool debug);
 
 /*
 Used to find a player based on his id

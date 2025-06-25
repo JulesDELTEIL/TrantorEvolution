@@ -21,7 +21,7 @@ static int buffer_handler(serverdata_t *sdata, fdarray_t *fdarray,
     char cmd[BUFFSIZE] = {0};
     char data[BUFFSIZE] = {0};
 
-    if (client == NULL || client->buffer == NULL)
+    if (client == NULL || client->buffin == NULL)
         return EXIT_FAILURE;
     if (sdata->debug)
         debug_buffer(client);
@@ -31,7 +31,7 @@ static int buffer_handler(serverdata_t *sdata, fdarray_t *fdarray,
         if (strcmp(cmd, COMMANDS[client->type][k].command) == 0)
             return COMMANDS[client->type][k].handler(sdata,
                 fdarray, client, data);
-    send_data(client, "suc", NULL, sdata->debug);
+    set_message(client, "suc", NULL, sdata->debug);
     return EXIT_FAILURE;
 }
 

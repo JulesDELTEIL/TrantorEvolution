@@ -32,16 +32,16 @@ int cmd_ppo(serverdata_t *sdata, fdarray_t *fdarray,
     player_t *player = NULL;
 
     if (strlen(data) == 0) {
-        send_data(client, "sbp", NULL, sdata->debug);
+        set_message(client, "sbp", NULL, sdata->debug);
         return EXIT_FAILURE;
     }
     player = get_player_pos(sdata, atoi(data));
     if (player == NULL) {
-        send_data(client, "sbp", NULL, sdata->debug);
+        set_message(client, "sbp", NULL, sdata->debug);
         return EXIT_FAILURE;
     }
     sprintf(answer, "%d %d %d %d", player->id, player->pos.x, player->pos.y,
         player->orientation);
-    send_data(client, "ppo", answer, sdata->debug);
+    set_message(client, "ppo", answer, sdata->debug);
     return EXIT_SUCCESS;
 }

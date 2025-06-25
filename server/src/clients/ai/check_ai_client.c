@@ -22,7 +22,7 @@ static int buffer_handler(serverdata_t *sdata, fdarray_t *fdarray,
     char cmd[BUFFSIZE] = {0};
     char data[BUFFSIZE] = {0};
 
-    if (client == NULL || client->buffer == NULL)
+    if (client == NULL || client->buffin == NULL)
         return EXIT_FAILURE;
     if (sdata->debug)
         debug_buffer(client);
@@ -32,7 +32,7 @@ static int buffer_handler(serverdata_t *sdata, fdarray_t *fdarray,
         if (strcmp(cmd, COMMANDS[client->type][k].command) == 0)
             return COMMANDS[client->type][k].handler(sdata,
                 fdarray, client, data);
-    send_data(client, "ko", NULL, sdata->debug);
+    set_message(client, "ko", NULL, sdata->debug);
     return EXIT_FAILURE;
 }
 
@@ -69,8 +69,8 @@ static int buff_max_idx(client_t *client)
 {
     uint_t nbcmd = 0;
 
-    for (uint_t k = 0; client->buffer[k] != 0; k++) {
-        if (client->buffer[k] == '\n')
+    for (uint_t k = 0; client->buffin[k] != 0; k++) {
+        if (client->buffin[k] == '\n')
             nbcmd++;
         if (nbcmd >= 10)
             return k;
@@ -83,16 +83,16 @@ static int cap_player_buff(client_t *client)
     int buffmax_idx = 0;
     char *newbuff = NULL;
 
-    if (client->buffer == NULL || client->buffin_addition == false)
+    if (client->buffin == NULL || client->buffin_addition == false)
         return EXIT_FAILURE;
     buffmax_idx = buff_max_idx(client);
     if (buffmax_idx != -1) {
         newbuff = malloc(sizeof(char) * (buffmax_idx + 1));
         for (uint_t k = 0; k < buffmax_idx; k++)
-            newbuff[k] = client->buffer[k];
+            newbuff[k] = client->buffin[k];
         newbuff[buffmax_idx] = 0;
-        free(client->buffer);
-        client->buffer = newbuff;
+        free(client->buffin);
+        client->buffin = newbuff;
     }
     client->buffin_addition = false;
     return EXIT_SUCCESS;

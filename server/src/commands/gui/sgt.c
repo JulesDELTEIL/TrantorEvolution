@@ -19,10 +19,10 @@ int cmd_sgt(serverdata_t *sdata, fdarray_t *fdarray,
     int rc = DEFAULTRC;
 
     if (strlen(data) != 0) {
-        send_data(client, "sbp", NULL, sdata->debug);
+        set_message(client, "sbp", NULL, sdata->debug);
         return EXIT_FAILURE;
     }
     sprintf(answer, "%d", sdata->args->freq);
-    send_data(client, "sgt", answer, sdata->debug);
+    set_message(client, "sgt", answer, sdata->debug);
     return EXIT_SUCCESS;
 }

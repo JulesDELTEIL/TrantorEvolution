@@ -16,8 +16,8 @@ int destroy_client(client_t *client)
 {
     if (client == NULL)
         return EXIT_FAILURE;
-    if (client->buffer != NULL)
-        free(client->buffer);
+    if (client->buffin != NULL)
+        free(client->buffin);
     return EXIT_SUCCESS;
 }
 
