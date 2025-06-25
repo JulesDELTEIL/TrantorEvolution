@@ -30,12 +30,12 @@ void Land::display(sf::RenderTarget& render)
     for (auto& tileY : _tiles) {
         for (auto& tileX : tileY.second) {
             tileX.second.tile->draw(render, _clock);
-            for (auto& trantor : tileX.second.trantorians)
-                trantor.second->draw(render);
             for (auto& resource : tileX.second.resources)
                 resource->draw(render);
         }
     }
+    for (auto& trantor : _trantorians)
+        trantor.second->draw(render, _clock);
 }
 
 void Land::event(const sf::Event&, const network::NetEventPack& net_pack)
@@ -155,7 +155,7 @@ void Land::removeTrantorian(const network::NetPack& pack)
 void Land::trantorCollect(const network::NetPack& pack)
 {
     sf::Vector2i tile_pos = _trantorians.at(pack[0].getSize_t())->map_pos;
-    _trantorians.at(pack[0].getSize_t())->collect(_tiles[tile_pos.x][tile_pos.y].resources, ACT_TIME(7.0f) / 2);
+    _trantorians.at(pack[0].getSize_t())->collect(_tiles[tile_pos.x][tile_pos.y].resources, ACT_TIME(7.0f) / 2, _clock);
     _clear_resources.push_back({ACT_TIME(7.0f) + _clock.getElapsedTime().asMilliseconds(), tile_pos});
 }
 
@@ -168,9 +168,8 @@ void Land::posTrantorian(const network::NetPack& pack)
     sf::Vector2f pos;
 
     if (trantor->map_pos.x != x || trantor->map_pos.y != y) {
-        std::cout << "move" << std::endl;
         pos = MAP_POS(CENTER_MAP(_map_size.y), x, y);
-        trantor->changeTile(pos, ACT_TIME(7.0f));
+        trantor->changeTile(pos, ACT_TIME(7.0f), _clock);
         _tiles[trantor->map_pos.x][trantor->map_pos.y].trantorians.erase(id);
         trantor->map_pos = {x, y};
         _tiles[x][y].trantorians[id] = trantor;
