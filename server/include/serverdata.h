@@ -12,9 +12,7 @@
     #include <arpa/inet.h>
     #include <stdbool.h>
     #include "macros.h"
-    #include "map.h"
     #include "game.h"
-
 
 /*
 struct serverdata_t :
@@ -30,12 +28,14 @@ struct serverdata_t :
 typedef struct serverdata_s {
     int port;
     int sockfd;
-    struct sockaddr_in address;
-    socklen_t addrlen;
     int opt;
-    bool debug;
+    socklen_t addrlen;
+    struct sockaddr_in address;
     arguments_t *args;
     game_t game_data;
+    bool debug;
+    bool is_running;
 } serverdata_t;
+
 
 #endif
