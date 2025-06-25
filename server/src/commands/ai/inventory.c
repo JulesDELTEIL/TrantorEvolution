@@ -28,7 +28,7 @@ static int send_inventory(serverdata_t *sdata, client_t *client)
     RESOURCES_NAMES[OIL], client->player->inventory[OIL],
     RESOURCES_NAMES[ANTIMATTER], client->player->inventory[ANTIMATTER]
     );
-    set_message(client, answer, NULL, sdata->debug);
+    set_message(client, answer, NULL);
 }
 
 // ACTION
@@ -44,7 +44,7 @@ int cmd_inventory(serverdata_t *sdata, fdarray_t *fdarray,
     client_t *client, char *data)
 {
     if (strlen(data) != 0) {
-        set_message(client, "ko", NULL, sdata->debug);
+        set_message(client, "ko", NULL);
         return EXIT_FAILURE;
     }
     client->player->action.cmd = strdup(ACTIONS_ARR[INVENTORY].name);

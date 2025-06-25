@@ -66,11 +66,11 @@ int action_forward(serverdata_t *sdata, fdarray_t *fdarray,
     client_t *client, char *data)
 {
     if (move_player(client->player) == EXIT_FAILURE) {
-        set_message(client, "ko", NULL, sdata->debug);
+        set_message(client, "ko", NULL);
         return EXIT_FAILURE;
     }
     keep_player_in(client->player, sdata->args->width, sdata->args->height);
-    set_message(client, "ok", NULL, sdata->debug);
+    set_message(client, "ok", NULL);
     send_gui_p_moved(sdata, fdarray, client);
     return EXIT_SUCCESS;
 }
@@ -80,7 +80,7 @@ int cmd_forward(serverdata_t *sdata, fdarray_t *fdarray,
     client_t *client, char *data)
 {
     if (strlen(data) != 0) {
-        set_message(client, "ko", NULL, sdata->debug);
+        set_message(client, "ko", NULL);
         return EXIT_FAILURE;
     }
     client->player->action.cmd = strdup(ACTIONS_ARR[FORWARD].name);

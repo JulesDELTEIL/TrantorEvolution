@@ -20,7 +20,7 @@ int action_eject(serverdata_t *sdata, fdarray_t *fdarray,
 {
     char answer[BUFSIZ] = {0};
 
-    set_message(client, "ok", NULL, sdata->debug);
+    set_message(client, "ok", NULL);
 }
 
 // COMMAND
@@ -28,7 +28,7 @@ int cmd_eject(serverdata_t *sdata, fdarray_t *fdarray,
     client_t *client, char *data)
 {
     if (strlen(data) != 0) {
-        set_message(client, "ko", NULL, sdata->debug);
+        set_message(client, "ko", NULL);
         return EXIT_FAILURE;
     }
     client->player->action.cmd = strdup(ACTIONS_ARR[EJECT].name);
