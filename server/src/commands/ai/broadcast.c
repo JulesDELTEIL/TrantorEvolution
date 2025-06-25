@@ -39,11 +39,24 @@ static int prepare_answer_message(serverdata_t *sdata, fdarray_t *fdarray,
     }
 }
 
+static void send_gui_p_broadcast(serverdata_t *sdata, fdarray_t *fdarray,
+    client_t *client, char *msg)
+{
+    char data[BUFFSIZE] = {0};
+
+    sprintf(data, "%d %s",
+        client->player->id,
+        msg
+    );
+    send_guis(sdata, fdarray, "pbc", data);
+}
+
 int action_broadcast(serverdata_t *sdata, fdarray_t *fdarray,
     client_t *client, char *data)
 {
     prepare_answer_message(sdata, fdarray, client, data);
     set_message(client, "ok", NULL, sdata->debug);
+    send_gui_p_broadcast(sdata, fdarray, client, data);
 }
 
 int cmd_broadcast(serverdata_t *sdata, fdarray_t *fdarray,
