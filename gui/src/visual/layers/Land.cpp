@@ -16,19 +16,12 @@
 namespace gui {
 namespace visual {
 
-Land::Land(std::reference_wrapper<network::Client> client)
+Land::Land()
 {
     std::srand(std::time({}));
     _tile.sprite.setOrigin({TILE_SIZE / 2, 0.0f});
     _tile.texture.loadFromFile(BIOME_TEXTURE_PATH);
     _tile.sprite.setTexture(_tile.texture);
-    _ask_thread = std::thread(&Land::askGameInfo, this, client);
-}
-
-Land::~Land()
-{
-    _runing = false;
-    _ask_thread.join();
 }
 
 void Land::display(sf::RenderTarget& render)
@@ -73,43 +66,6 @@ void Land::event(const sf::Event&, const network::NetEventPack& net_pack)
             removeTrantorian(net_pack.pack);
             break;
     }
-}
-
-void Land::askGameInfo(std::reference_wrapper<network::Client> client)
-{
-    float trantor_last = _clock.getElapsedTime().asMilliseconds();
-    float map_last = _clock.getElapsedTime().asMilliseconds();
-
-    _runing = true;
-    while (_runing) {
-        if (_clock.getElapsedTime().asMilliseconds() > trantor_last + ACT_TIME(7)) {
-            for (const auto& trantor : _trantorians)
-                askPosition(client, trantor.first);
-            trantor_last = _clock.getElapsedTime().asMilliseconds();
-        }
-        if (_clock.getElapsedTime().asMilliseconds() > map_last + ACT_TIME(20)) {
-            for (size_t y = 0; y < _map_size.y; ++y)
-                for (size_t x = 0; x < _map_size.x; ++x)
-                    askResource(client, x, y);
-            map_last = _clock.getElapsedTime().asMilliseconds();
-        }
-    }
-}
-
-void Land::askPosition(std::reference_wrapper<network::Client> client, size_t id) const
-{
-    std::string send = "ppo ";
-
-    send.append(std::to_string(id));
-    client.get().sendData(send);
-}
-
-void Land::askResource(std::reference_wrapper<network::Client> client, size_t x, size_t y) const
-{
-    std::string send = "bct ";
-
-    send.append(std::to_string(x) + " " + std::to_string(y));
-    client.get().sendData(send);
 }
 
 void Land::loadTile(const network::NetPack& pack)
@@ -212,6 +168,7 @@ void Land::posTrantorian(const network::NetPack& pack)
     sf::Vector2f pos;
 
     if (trantor->map_pos.x != x || trantor->map_pos.y != y) {
+        std::cout << "move" << std::endl;
         pos = MAP_POS(CENTER_MAP(_map_size.y), x, y);
         trantor->changeTile(pos, ACT_TIME(7.0f));
         _tiles[trantor->map_pos.x][trantor->map_pos.y].trantorians.erase(id);

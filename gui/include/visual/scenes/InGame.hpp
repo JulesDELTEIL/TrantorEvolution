@@ -19,7 +19,7 @@ namespace visual {
 
 class InGame : public AScene {
     public:
-        InGame(std::reference_wrapper<network::Client> client);
+        InGame();
         ~InGame() = default;
 
         void display(sf::RenderTarget&) override;

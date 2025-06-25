@@ -13,9 +13,9 @@
 namespace gui {
 namespace visual {
 
-InGame::InGame(std::reference_wrapper<network::Client> client) : AScene(core::DEFAULT_VIEW)
+InGame::InGame() : AScene(core::DEFAULT_VIEW)
 {
-    _layers.emplace_back(std::make_unique<Land>(client));
+    _layers.emplace_back(std::make_unique<Land>());
 }
 
 void InGame::display(sf::RenderTarget& target)
