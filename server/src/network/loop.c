@@ -22,7 +22,8 @@ int search_listen_events(serverdata_t *sdata, fdarray_t *fdarray, int k)
     if (fdarray->clients[k].fd == NOFD)
         return EXIT_SUCCESS;
     if (fdarray->fds[k].revents & POLLIN)
-        if (receive_data(sdata, &(fdarray->clients[k])) == CLOSE_CONNECTION)
+        if (receive_data(sdata, fdarray,
+            &(fdarray->clients[k])) == CLOSE_CONNECTION)
             fdarray->fds[k].fd = NOFD;
 }
 
