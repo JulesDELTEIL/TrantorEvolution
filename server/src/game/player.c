@@ -69,11 +69,21 @@ static void drop_inventory(game_t *game, player_t *player)
     pthread_mutex_unlock(&(game->map.mutex));
 }
 
-int kill_player(serverdata_t *sdata, client_t *client)
+static int send_gui_p_death(serverdata_t *sdata, fdarray_t *fdarray,
+    client_t *client)
+{
+    char answer[BUFFSIZE] = {0};
+
+    sprintf(answer, "%d", client->player->id);
+    send_guis(sdata, fdarray, "pdi", answer);
+}
+
+int kill_player(serverdata_t *sdata, fdarray_t *fdarray, client_t *client)
 {
     if (client->player == NULL)
         return EXIT_FAILURE;
     set_message(client, "dead", NULL, sdata->debug);
+    send_gui_p_death(sdata, fdarray, client);
     drop_inventory(&(sdata->game_data), client->player);
     if (client->player->action.cmd != NULL)
         free(client->player->action.cmd);
