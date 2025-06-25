@@ -50,7 +50,7 @@ int action_incantation(serverdata_t *sdata, fdarray_t *fdarray,
     if (level_up_ok(sdata, client->player))
         client->player->level += 1;
     sprintf(answer, "Current level: %d", client->player->level);
-    send_data(client, answer, NULL, sdata->debug);
+    set_message(client, answer, NULL, sdata->debug);
 }
 
 // COMMAND
@@ -58,7 +58,7 @@ int cmd_incantation(serverdata_t *sdata, fdarray_t *fdarray,
     client_t *client, char *data)
 {
     if (strlen(data) != 0) {
-        send_data(client, "ko", NULL, sdata->debug);
+        set_message(client, "ko", NULL, sdata->debug);
         return EXIT_FAILURE;
     }
     if (level_up_ok(sdata, client->player)) {
@@ -67,9 +67,9 @@ int cmd_incantation(serverdata_t *sdata, fdarray_t *fdarray,
         client->player->action.status = ONGOING;
         client->player->action.end = set_timer_end(sdata->args->freq,
             ACTIONS_ARR[INCANTATION].delay);
-        send_data(client, "Elevation underway", NULL, sdata->debug);
+        set_message(client, "Elevation underway", NULL, sdata->debug);
     } else {
-        send_data(client, "ko", NULL, sdata->debug);
+        set_message(client, "ko", NULL, sdata->debug);
     }
     return EXIT_SUCCESS;
 }

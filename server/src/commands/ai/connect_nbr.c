@@ -28,10 +28,10 @@ int cmd_connect_nbr(serverdata_t *sdata, fdarray_t *fdarray,
     char answer[BUFFSIZE] = {0};
 
     if (strlen(data) != 0) {
-        send_data(client, "ko", NULL, sdata->debug);
+        set_message(client, "ko", NULL, sdata->debug);
         return EXIT_FAILURE;
     }
     sprintf(answer, "%d", client->player->team->space_left);
-    send_data(client, answer, NULL, sdata->debug);
+    set_message(client, answer, NULL, sdata->debug);
     return EXIT_SUCCESS;
 }

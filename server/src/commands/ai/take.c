@@ -42,9 +42,9 @@ int action_take(serverdata_t *sdata, fdarray_t *fdarray,
     client_t *client, char *data)
 {
     if (take_resource(sdata, client, idt_resource(data)) == EXIT_FAILURE)
-        send_data(client, "ko", NULL, sdata->debug);
+        set_message(client, "ko", NULL, sdata->debug);
     else
-        send_data(client, "ok", NULL, sdata->debug);
+        set_message(client, "ok", NULL, sdata->debug);
 }
 
 // COMMAND
@@ -52,7 +52,7 @@ int cmd_take(serverdata_t *sdata, fdarray_t *fdarray,
     client_t *client, char *data)
 {
     if (strlen(data) == 0) {
-        send_data(client, "ko", NULL, sdata->debug);
+        set_message(client, "ko", NULL, sdata->debug);
         return EXIT_FAILURE;
     }
     client->player->action.cmd = strdup(ACTIONS_ARR[TAKE].name);
