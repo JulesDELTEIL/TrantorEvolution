@@ -26,6 +26,7 @@ class InGame : public AScene {
         void event(const sf::Event&, const network::NetEventPack&) override;
 
     private:
+        void checkHudHit(const sf::Vector2i& mpos);
 
 };
 

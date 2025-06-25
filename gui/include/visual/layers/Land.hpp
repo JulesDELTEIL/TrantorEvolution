@@ -42,7 +42,6 @@ class Land : public ALayer {
 
         void display(sf::RenderTarget& render) override;
         void event(const sf::Event& event, const network::NetEventPack&) override;
-    
 
     private:
         sf::Clock _clock;
