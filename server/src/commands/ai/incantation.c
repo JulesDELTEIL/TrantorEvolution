@@ -31,8 +31,11 @@ static const bool level_up_ok(serverdata_t *sdata, player_t *player)
 {
     int nb_players = get_nb_tile_players(sdata->game_data.players,
         player->pos);
-    tile_t tile = sdata->game_data.map.tiles[player->pos.x][player->pos.y];
+    tile_t tile;
 
+    pthread_mutex_lock(&(sdata->game_data.map.mutex));
+    tile = sdata->game_data.map.tiles[player->pos.x][player->pos.y];
+    pthread_mutex_unlock(&(sdata->game_data.map.mutex));
     if (nb_players < ELEVATION_REQ[player->level].players)
         return false;
     for (uint_t k = 0; k < NB_RESOURCES; k++)
@@ -61,7 +64,7 @@ int cmd_incantation(serverdata_t *sdata, fdarray_t *fdarray,
         set_message(client, "ko", NULL, sdata->debug);
         return EXIT_FAILURE;
     }
-    if (level_up_ok(sdata, client->player)) {
+    if (client->player->level < 8 && level_up_ok(sdata, client->player)) {
         client->player->action.cmd = strdup(ACTIONS_ARR[INCANTATION].name);
         client->player->action.data = strdup(data);
         client->player->action.status = ONGOING;

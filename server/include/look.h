@@ -12,7 +12,22 @@
 
     #include "pos.h"
 
-    #define NB_TILES_LOOK 16
+static const int NB_TILES_LOOK[] = {
+    0,
+    4,
+    9,
+    16,
+    16,
+    16,
+    16,
+    16,
+    16,
+    25,
+    36,
+    49,
+    64,
+    81
+};
 
 static const pos_t N_LOOK_TILES[] = {
     {0, 0},

@@ -96,7 +96,7 @@ static void refill_map(tile_t **tiles, int width, int height,
     density_t *max_dens)
 {
     biome_distribution_t dist = {{0}, {0}};
-    int total[NB_RESOURCES] = {0, 0, 0, 0, 0, 0};
+    int total[NB_RESOURCES] = {0, 0, 0, 0, 0, 0, 0};
     int area = width * height;
     int x = 0;
     int y = 0;
@@ -133,8 +133,10 @@ void *map_thread(void *arg)
     density_t all_dens = init_density(WORLD_DENS(server->args));
 
     generate_noise(server->game_data.map.tiles, server->args->height);
+    pthread_mutex_lock(&(server->game_data.map.mutex));
     first_map_refill(server->args->height,
-    server->game_data.map.tiles);
+        server->game_data.map.tiles);
+        pthread_mutex_unlock(&(server->game_data.map.mutex));
     while (server->is_running == true) {
         usleep(TICKS_REFILLS / server->args->freq);
         pthread_mutex_lock(&(server->game_data.map.mutex));

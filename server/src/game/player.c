@@ -59,11 +59,14 @@ int del_player(game_t *game, int id)
 
 static void drop_inventory(game_t *game, player_t *player)
 {
-    tile_t *tile = &(game->map.tiles[player->pos.x][player->pos.y]);
+    tile_t *tile = NULL;
 
+    pthread_mutex_lock(&(game->map.mutex));
+    tile = &(game->map.tiles[player->pos.x][player->pos.y]);
     for (uint_t k = 0; k < NB_RESOURCES; k++) {
         tile->resources[k] += player->inventory[k];
     }
+    pthread_mutex_unlock(&(game->map.mutex));
 }
 
 int kill_player(serverdata_t *sdata, client_t *client)
