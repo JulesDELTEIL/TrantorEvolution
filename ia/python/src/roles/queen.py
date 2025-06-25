@@ -12,7 +12,6 @@ class Queen(BaseRole):
     def __init__(self, *inp):
         super().__init__()
         if len(inp) == 1 :
-            print("")
             print("------------- JE SUIS UNE REINE MERE------------")
             self.birth_function = inp[0]
             self.waiting_for_slot_number = True
@@ -73,7 +72,7 @@ class Queen(BaseRole):
                 self.queue.appendleft(Commands(Action.LOOK))
 
     def _can_incant(self) -> bool:
-        if not self.state.last_vision :
+        if not self.state.last_vision or self.state.last_vision.count('player') < 8:
             return False
         requirements = self.state.motivation.LEVEL_REQUIREMENTS.get(self.state.level, {})
         current = self.state.last_vision
