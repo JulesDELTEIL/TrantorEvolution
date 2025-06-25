@@ -24,13 +24,14 @@ class Movement {
         Movement(std::reference_wrapper<Drawable>);
         ~Movement() = default;
 
-        int changeDestination(const sf::Vector2f&, float);
+        int changeDestination(const sf::Vector2f&, float, float);
         bool move(const sf::Clock&);
 
     private:
         std::reference_wrapper<Drawable> _drawable;
         sf::Vector2f _direction;
         float _last_time;
+        float _start;
         float _time;
 };
 

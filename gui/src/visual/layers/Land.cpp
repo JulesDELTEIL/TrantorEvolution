@@ -30,12 +30,12 @@ void Land::display(sf::RenderTarget& render)
     for (auto& tileY : _tiles) {
         for (auto& tileX : tileY.second) {
             tileX.second.tile->draw(render, _clock);
-            for (auto& trantor : tileX.second.trantorians)
-                trantor.second->draw(render, _clock);
             for (auto& resource : tileX.second.resources)
                 resource->draw(render);
         }
     }
+    for (auto& trantor : _trantorians)
+        trantor.second->draw(render, _clock);
 }
 
 void Land::event(const sf::Event&, const network::NetEventPack& net_pack)
