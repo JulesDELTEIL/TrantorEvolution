@@ -61,10 +61,11 @@ void Trantorian::draw(sf::RenderTarget& target, const sf::Clock& clock)
     }
 }
 
-void Trantorian::move(int index, const sf::Vector2f& new_pos, float time)
+void Trantorian::move(int index, const sf::Vector2f& new_pos, float time, const sf::Clock& clock)
 {
     _body_animation[index].changeAnimation(WALK);
-    if (_body_movement[index].changeDestination(new_pos, time) != _body_direction[index]) {
+    if (_body_movement[index].changeDestination(new_pos, time +
+        clock.getElapsedTime().asMilliseconds()) != _body_direction[index]) {
         sf::Vector2f scale = _body[index].sprite.getScale();
         _body[index].sprite.setScale(-scale.x, scale.y);
         if (_body_direction[index] == FACE_RIGHT)
@@ -85,7 +86,7 @@ sf::Color Trantorian::generateTeamColor(const std::string& team_name)
     return sf::Color(code, code, code, 255);
 }
 
-void Trantorian::collect(const std::vector<std::shared_ptr<ResourceNode>>& resources, float time)
+void Trantorian::collect(const std::vector<std::shared_ptr<ResourceNode>>& resources, float time, const sf::Clock& clock)
 {
     if (resources.size() > 0) {
         for (size_t i = 0; i < resources.size(); ++i) {
@@ -96,12 +97,12 @@ void Trantorian::collect(const std::vector<std::shared_ptr<ResourceNode>>& resou
                 _type[i] = PICKAXE;
             else
                 _type[i] = COLLECT;
-            move(i, resources[i]->getCollectPosition(), time);
+            move(i, resources[i]->getCollectPosition(), time, clock);
         }
     }
 }
 
-void Trantorian::changeTile(const sf::Vector2f& new_pos, float time)
+void Trantorian::changeTile(const sf::Vector2f& new_pos, float time, const sf::Clock& clock)
 {
     for (size_t i = 0; i < NB_TRANTORS; ++i) {
         _type[i] = IDLE;
@@ -109,7 +110,7 @@ void Trantorian::changeTile(const sf::Vector2f& new_pos, float time)
             new_pos.x + std::rand() % RES_RANGE_X + RES_MIN_X,
             new_pos.y + std::rand() % RES_RANGE_Y + RES_MIN_Y
         };
-        move(i, random_pos, time);
+        move(i, random_pos, time, clock);
     }
 }
 
