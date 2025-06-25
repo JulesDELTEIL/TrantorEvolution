@@ -28,11 +28,8 @@ add_executable( ${PROJECT_NAME}
     ${GUI_SRC_DIR}visual/entities/ResourceNode.cpp
     ${GUI_SRC_DIR}visual/entities/Hud.cpp
 
-    # LAYERS
-    ${GUI_SRC_DIR}visual/layers/Land.cpp
-
     # SCENES
-    ${GUI_SRC_DIR}visual/scenes/InGame.cpp
+    ${GUI_SRC_DIR}visual/scenes/Land.cpp
 )
 
 ########## LINKAGE ##########

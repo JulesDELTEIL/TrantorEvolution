@@ -5,7 +5,7 @@
 ** AScene.cpp
 */
 
-#include "visual/interfaces/AScene.hpp"
+#include "visual/AScene.hpp"
 
 namespace gui {
 namespace visual {

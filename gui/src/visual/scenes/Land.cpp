@@ -5,30 +5,21 @@
 ** Land.cpp
 */
 
-#include <iostream>
-
 #include <cstdlib>
 #include <ctime>
 
-#include "visual/layers/Land.hpp"
+#include "visual/scenes/Land.hpp"
 #include "visual/visual.hpp"
 
 namespace gui {
 namespace visual {
 
-Land::Land(std::reference_wrapper<network::Client> client)
+Land::Land() : AScene(core::DEFAULT_VIEW)
 {
     std::srand(std::time({}));
     _tile.sprite.setOrigin({TILE_SIZE / 2, 0.0f});
     _tile.texture.loadFromFile(BIOME_TEXTURE_PATH);
     _tile.sprite.setTexture(_tile.texture);
-    _ask_thread = std::thread(&Land::askGameInfo, this, client);
-}
-
-Land::~Land()
-{
-    _runing = false;
-    _ask_thread.join();
 }
 
 void Land::display(sf::RenderTarget& render)
@@ -45,8 +36,10 @@ void Land::display(sf::RenderTarget& render)
     }
 }
 
-void Land::event(const sf::Event&, const network::NetEventPack& net_pack)
+void Land::event(const core::Engine& engine, const network::NetEventPack& net_pack)
 {
+    viewEvent(engine.events);
+    checkHudEvent(engine);
     switch (static_cast<int>(net_pack.event)) {
         case network::MSIZE:
             _map_size = sf::Vector2f(net_pack.pack[0].getFloat(), net_pack.pack[1].getFloat());
@@ -75,41 +68,22 @@ void Land::event(const sf::Event&, const network::NetEventPack& net_pack)
     }
 }
 
-void Land::askGameInfo(std::reference_wrapper<network::Client> client)
+void Land::viewEvent(const sf::Event& event)
 {
-    float trantor_last = _clock.getElapsedTime().asMilliseconds();
-    float map_last = _clock.getElapsedTime().asMilliseconds();
-
-    _runing = true;
-    while (_runing) {
-        if (_clock.getElapsedTime().asMilliseconds() > trantor_last + ACT_TIME(7)) {
-            for (const auto& trantor : _trantorians)
-                askPosition(client, trantor.first);
-            trantor_last = _clock.getElapsedTime().asMilliseconds();
-        }
-        if (_clock.getElapsedTime().asMilliseconds() > map_last + ACT_TIME(20)) {
-            for (size_t y = 0; y < _map_size.y; ++y)
-                for (size_t x = 0; x < _map_size.x; ++x)
-                    askResource(client, x, y);
-            map_last = _clock.getElapsedTime().asMilliseconds();
-        }
+    if (event.type == sf::Event::KeyPressed) {
+        if (event.key.code == sf::Keyboard::D)
+            move(10, 0);
+        if (event.key.code == sf::Keyboard::Q)
+            move(-10, 0);
+        if (event.key.code == sf::Keyboard::S)
+            move(0, 10);
+        if (event.key.code == sf::Keyboard::Z)
+            move(0, -10);
+        if (event.key.code == sf::Keyboard::E)
+            zoom(0.9);
+        if (event.key.code == sf::Keyboard::A)
+            zoom(1.1);
     }
-}
-
-void Land::askPosition(std::reference_wrapper<network::Client> client, size_t id) const
-{
-    std::string send = "ppo ";
-
-    send.append(std::to_string(id));
-    client.get().sendData(send);
-}
-
-void Land::askResource(std::reference_wrapper<network::Client> client, size_t x, size_t y) const
-{
-    std::string send = "bct ";
-
-    send.append(std::to_string(x) + " " + std::to_string(y));
-    client.get().sendData(send);
 }
 
 void Land::loadTile(const network::NetPack& pack)
@@ -161,8 +135,9 @@ void Land::updateTile(const network::NetPack& pack)
 void Land::clearResources(void)
 {
     for (ClearTile& to_clear : _clear_resources) {
-        if (_clock.getElapsedTime().asMilliseconds() >= to_clear.time)
-            _tiles[to_clear.tile.x][to_clear.tile.y].resources.clear();
+        if (_clock.getElapsedTime().asMilliseconds() >= to_clear.time) {
+            _tiles[to_clear.tile.x][to_clear.tile.y].resources[to_clear.type]->updateQuantity(0);
+        }
     }
 }
 
@@ -190,9 +165,10 @@ void Land::removeTrantorian(const network::NetPack& pack)
 void Land::trantorCollect(const network::NetPack& pack)
 {
     sf::Vector2i tile_pos = _trantorians.at(pack[0].getSize_t())->map_pos;
+    resource_e type = static_cast<resource_e>(pack[1].getInt());
 
     _trantorians.at(pack[0].getSize_t())->collect(_tiles[tile_pos.x][tile_pos.y].resources, ACT_TIME(7.0f) / 2);
-    _clear_resources.push_back({ACT_TIME(7.0f) + _clock.getElapsedTime().asMilliseconds(), tile_pos});
+    _clear_resources.push_back({ACT_TIME(7.0f) + _clock.getElapsedTime().asMilliseconds(), type, tile_pos});
 }
 
 void Land::posTrantorian(const network::NetPack& pack)
@@ -209,6 +185,15 @@ void Land::posTrantorian(const network::NetPack& pack)
         _tiles[trantor->map_pos.x][trantor->map_pos.y].trantorians.erase(id);
         trantor->map_pos = {x, y};
         _tiles[x][y].trantorians[id] = trantor;
+    }
+}
+
+void Land::checkHudEvent(const core::Engine& engine)
+{
+    if (engine.events.type == sf::Event::MouseButtonPressed) {
+        if (engine.events.mouseButton.button == sf::Mouse::Left) {
+            
+        }
     }
 }
 

@@ -12,7 +12,7 @@
     #include <thread>
     #include <SFML/System/Clock.hpp>
 
-    #include "visual/interfaces/ALayer.hpp"
+    #include "visual/AScene.hpp"
 
     #include "map_tools.h"
     #include "core/Engine.hpp"
@@ -33,26 +33,23 @@ namespace visual {
 
 struct ClearTile {
     float time;
+    resource_e type;
     sf::Vector2i tile;
 };
 
-class Land : public ALayer {
+class Land : public AScene {
     public:
-        Land(std::reference_wrapper<network::Client> client);
-        ~Land();
+        Land();
+        ~Land() = default;
 
         void display(sf::RenderTarget& render) override;
-        void event(const sf::Event& event, const network::NetEventPack&) override;
+        void event(const core::Engine&, const network::NetEventPack&) override;
 
     private:
         sf::Clock _clock;
         size_t _time_unit_speed = 4;
 
-        std::thread _ask_thread;
-        bool _runing = false;
-        void askGameInfo(std::reference_wrapper<network::Client> client);
-        void askPosition(std::reference_wrapper<network::Client> client, size_t id) const;
-        void askResource(std::reference_wrapper<network::Client> client, size_t x, size_t y) const;
+        void viewEvent(const sf::Event&);
 
         void loadTile(const network::NetPack&);
         biome_e readBiomeType(const network::NetPack& pack);
@@ -70,6 +67,7 @@ class Land : public ALayer {
         void posTrantorian(const network::NetPack& pack);
 
         Hud _hud;
+        void checkHudEvent(const core::Engine& engine);
 
         struct TileInfo {
             std::unique_ptr<Tile> tile;

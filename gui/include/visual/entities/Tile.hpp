@@ -46,8 +46,10 @@ class Tile {
 
         void draw(sf::RenderTarget&, const sf::Clock&);
 
-        ResourceGroup getInventory(void) const;
+        ResourceGroup getResources(void) const;
         void updateResource(resource_e, int);
+
+        sf::Vector2f getPos(void) const;
 
     private:
         std::reference_wrapper<Drawable> _biome;

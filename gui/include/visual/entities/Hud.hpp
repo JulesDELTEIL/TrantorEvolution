@@ -19,7 +19,7 @@
 namespace gui {
 namespace visual {
 
-    #define UPDATE_INFO 1000.0f
+    #define UPDATE_INFO 500.0f
     #define BG_HUD_TEXTURE "assets/hud/hud_bg.jpg"
 
 enum HudType_e {
@@ -29,6 +29,7 @@ enum HudType_e {
 };
 
 struct HudInfos {
+    std::string type;
     sf::Vector2i position;
     ResourceGroup resources;
 };
