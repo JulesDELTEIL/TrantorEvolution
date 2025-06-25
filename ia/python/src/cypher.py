@@ -6,6 +6,7 @@
 ##
 import base64
 
+import cryptography
 from cryptography.fernet import Fernet
 from cryptography.hazmat.primitives import hashes
 from cryptography.hazmat.primitives.kdf.pbkdf2 import PBKDF2HMAC
@@ -20,12 +21,15 @@ def create_key(code : str) -> Fernet :
 
 def cypher(message : str, key : str) :
    f = create_key(key)
-   return f.encrypt(message.encode(encoding="utf-8"))
+   return f.encrypt(message.encode(encoding="utf-8")).decode("utf-8")
 
 
 def decypher(message : str, key : str) :
     f = create_key(key)
-    return f.decrypt(bytes(message, "utf-8"))
+    try :
+        return f.decrypt(bytes(message, "utf-8")).decode("utf-8")
+    except cryptography.fernet.InvalidToken :
+        return None
 
 def main() :
     print(sys.argv)
