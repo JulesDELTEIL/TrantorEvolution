@@ -5,6 +5,8 @@
 ** Land.cpp
 */
 
+#include <iostream> // test purpose (to delete)
+
 #include <cstdlib>
 #include <ctime>
 
@@ -24,6 +26,7 @@ Land::Land() : AScene(core::DEFAULT_VIEW)
 
 void Land::display(sf::RenderTarget& render)
 {
+    render.setView(_camera);
     clearResources();
     for (auto& tileY : _tiles) {
         for (auto& tileX : tileY.second) {
@@ -34,6 +37,8 @@ void Land::display(sf::RenderTarget& render)
     }
     for (auto& trantor : _trantorians)
         trantor.second->draw(render, _clock);
+    // render.setView(render.getDefaultView());
+    _hud.display(render, _clock);
 }
 
 void Land::event(const core::Engine& engine, const network::NetEventPack& net_pack)
@@ -190,11 +195,36 @@ void Land::posTrantorian(const network::NetPack& pack)
 
 void Land::checkHudEvent(const core::Engine& engine)
 {
+    _hud.event(engine.events);
     if (engine.events.type == sf::Event::MouseButtonPressed) {
         if (engine.events.mouseButton.button == sf::Mouse::Left) {
-            
+            sf::Vector2i mpos = sf::Mouse::getPosition(engine.window);
+            if (hitTile(mpos))
+                _hud.changeStatus(HudType_e::TILE_INFO);
+            if (hitTrantor(mpos))
+                _hud.changeStatus(HudType_e::TRANTOR_INFO);
         }
     }
+}
+
+bool Land::hitTrantor(const sf::Vector2i&)
+{
+    for (const auto& trantor : _trantorians) {
+        _hud.changeTrantorInfo(trantor.second);
+        return true;
+    }
+    return false;
+}
+
+bool Land::hitTile(const sf::Vector2i&)
+{
+    for (const auto& tileY : _tiles) {
+        for (const auto& tileX : tileY.second) {
+            _hud.changeTileInfo(tileX.second.tile);
+            return true;
+        }
+    }
+    return true;
 }
 
 } // visual

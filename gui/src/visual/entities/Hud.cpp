@@ -5,22 +5,24 @@
 ** Hud.cpp
 */
 
+#include <iostream> // test purpose (to delete)
+
 #include "visual/entities/Hud.hpp"
 
 namespace gui {
 namespace visual {
 
 HudDisplay::HudDisplay()
-{
-    sf::Texture bg_texture;
-    
-    bg_texture.loadFromFile(BG_HUD_TEXTURE);
-    bg.setTexture(bg_texture);
+{   
+    bg.texture.loadFromFile(BG_HUD_TEXTURE);
+    bg.sprite.setTexture(bg.texture);
+    bg.sprite.setScale(BG_HUD_SCALE, BG_HUD_SCALE);
+    bg.sprite.setOrigin(bg.texture.getSize().x / 2, bg.texture.getSize().y);
 }
 
 void HudDisplay::move(const sf::Vector2f& pos)
 {
-    bg.setPosition(pos);
+    bg.sprite.setPosition(pos);
 }
 
 void Hud::display(sf::RenderTarget& target, const sf::Clock& clock)
@@ -28,7 +30,15 @@ void Hud::display(sf::RenderTarget& target, const sf::Clock& clock)
     if (clock.getElapsedTime().asMilliseconds() > _last_time + UPDATE_INFO)
         updateInfo();
     if (_status != NO_INFO) {
-        target.draw(_display.bg);
+        target.draw(_display.bg.sprite);
+    }
+}
+
+void Hud::event(const sf::Event& event)
+{
+    if (event.type == sf::Event::KeyPressed) {
+        if (event.key.code == sf::Keyboard::Escape)
+            _status = NO_INFO;
     }
 }
 

@@ -68,9 +68,11 @@ class Land : public AScene {
 
         Hud _hud;
         void checkHudEvent(const core::Engine& engine);
+        bool hitTrantor(const sf::Vector2i&);
+        bool hitTile(const sf::Vector2i&);
 
         struct TileInfo {
-            std::unique_ptr<Tile> tile;
+            std::shared_ptr<Tile> tile;
             std::map<size_t, std::shared_ptr<Trantorian>> trantorians;
             std::map<resource_e, std::shared_ptr<ResourceNode>> resources;
         };

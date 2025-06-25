@@ -10,6 +10,7 @@
 
     #include <SFML/Window/Event.hpp>
 
+    #include "visual/Drawable.hpp"
     #include "network/events.hpp"
     #include "visual/visual.hpp"
 
@@ -21,6 +22,7 @@ namespace visual {
 
     #define UPDATE_INFO 500.0f
     #define BG_HUD_TEXTURE "assets/hud/hud_bg.jpg"
+    #define BG_HUD_SCALE 0.6f
 
 enum HudType_e {
     NO_INFO = -1,
@@ -37,7 +39,7 @@ struct HudInfos {
 struct HudDisplay {
     HudDisplay();
     void move(const sf::Vector2f& pos);
-    sf::Sprite bg;
+    Drawable bg;
 };
 
 class Hud {
@@ -46,7 +48,7 @@ class Hud {
         ~Hud() = default;
 
         void display(sf::RenderTarget& target, const sf::Clock& clock);
-        void event(const sf::Event&, const network::NetEventPack&);
+        void event(const sf::Event&);
         
         void changeStatus(HudType_e);
         void changeTrantorInfo(std::shared_ptr<Trantorian>);
