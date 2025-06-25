@@ -25,12 +25,11 @@ class Movement {
         ~Movement() = default;
 
         int changeDestination(const sf::Vector2f&, float);
-        bool move(void);
+        bool move(const sf::Clock&);
 
     private:
         std::reference_wrapper<Drawable> _drawable;
         sf::Vector2f _direction;
-        sf::Clock _clock;
         float _last_time;
         float _time;
 };

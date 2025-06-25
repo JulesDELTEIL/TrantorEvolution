@@ -24,15 +24,14 @@ int Movement::changeDestination(const sf::Vector2f& new_pos, float time_ms)
     _direction = {new_pos.x - sprite_pos.x, new_pos.y - sprite_pos.y};
     _time = time_ms;
     _last_time = 0.0f;
-    _clock.restart();
     if (new_pos.x < sprite_pos.x)
         return FACE_RIGHT;
     return FACE_LEFT;
 }
 
-bool Movement::move(void)
+bool Movement::move(const sf::Clock& clock)
 {
-    float time_elapsed = _clock.getElapsedTime().asMilliseconds();
+    float time_elapsed = clock.getElapsedTime().asMilliseconds();
     float percent = 0;
 
     if (time_elapsed < _time) {

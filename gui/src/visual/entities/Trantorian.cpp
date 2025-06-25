@@ -44,12 +44,12 @@ Trantorian::Trantorian(const sf::Vector2f& pos, const sf::Vector2i& pos_in_map,
     }
 }
 
-void Trantorian::draw(sf::RenderTarget& target)
+void Trantorian::draw(sf::RenderTarget& target, const sf::Clock& clock)
 {
     static std::vector<bool> asked_type(NB_TRANTORS, false);
 
     for (size_t i = 0; i < NB_TRANTORS; ++i) {
-        if (!_body_movement[i].move()) {
+        if (!_body_movement[i].move(clock)) {
             if (!asked_type[i]) {
                 asked_type[i] = true;
                 _body_animation[i].changeAnimation(_type[i]);
@@ -85,7 +85,7 @@ sf::Color Trantorian::generateTeamColor(const std::string& team_name)
     return sf::Color(code, code, code, 255);
 }
 
-void Trantorian::collect(const std::vector<std::shared_ptr<ResourceNode>>& resources, float time)
+void Trantorian::collect(const std::vector<std::shared_ptr<ResourceNode>>& resources, float time, const sf::Clock& clock)
 {
     if (resources.size() > 0) {
         for (size_t i = 0; i < resources.size(); ++i) {
@@ -101,7 +101,7 @@ void Trantorian::collect(const std::vector<std::shared_ptr<ResourceNode>>& resou
     }
 }
 
-void Trantorian::changeTile(const sf::Vector2f& new_pos, float time)
+void Trantorian::changeTile(const sf::Vector2f& new_pos, float time, const sf::Clock& clock)
 {
     for (size_t i = 0; i < NB_TRANTORS; ++i) {
         _type[i] = IDLE;
