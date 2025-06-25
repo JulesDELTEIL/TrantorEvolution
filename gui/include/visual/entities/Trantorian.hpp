@@ -50,21 +50,27 @@ class Trantorian {
         ~Trantorian() = default;
 
         void draw(sf::RenderTarget&);
-        void move(int index, const sf::Vector2f&, float);
 
         void changeTile(const sf::Vector2f&, float);
-        void collect(const std::vector<std::shared_ptr<ResourceNode>>&, float);
+        void collect(const std::map<resource_e, std::shared_ptr<ResourceNode>>&, float);
+
+        ResourceGroup getInventory(void) const;
 
         sf::Vector2i map_pos;
+        sf::Vector2f actual_pos;
         size_t lvl;
         std::string team;
     private:
+        void move(int index, const sf::Vector2f&, float);
         sf::Color generateTeamColor(const std::string&);
+
         std::vector<Drawable> _body;
         std::vector<BodyAnimIndex> _type;
         std::vector<Direction> _body_direction;
         std::vector<Animation> _body_animation;
         std::vector<Movement> _body_movement;
+
+        ResourceGroup _inventory;
 };
 
 } // visual

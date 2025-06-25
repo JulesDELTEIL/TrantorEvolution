@@ -30,5 +30,16 @@ void Tile::draw(sf::RenderTarget& target, const sf::Clock& clock)
     target.draw(_biome.get().sprite);
 }
 
+ResourceGroup Tile::getInventory(void) const
+{
+    return _resources;
+}
+
+void Tile::updateResource(resource_e type, int factor)
+{
+    _resources.at(type) += factor;
+}
+
+
 } // visual
 } // gui

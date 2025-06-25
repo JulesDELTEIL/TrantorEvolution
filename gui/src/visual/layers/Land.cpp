@@ -40,7 +40,7 @@ void Land::display(sf::RenderTarget& render)
             for (auto& trantor : tileX.second.trantorians)
                 trantor.second->draw(render);
             for (auto& resource : tileX.second.resources)
-                resource->draw(render);
+                resource.second->draw(render);
         }
     }
 }
@@ -124,7 +124,8 @@ void Land::loadTile(const network::NetPack& pack)
     type = readBiomeType(pack);
     _tiles[x][y].tile = std::make_unique<Tile>(std::ref(_tile), pos, type);
     for (size_t i = 2; i < NB_MAP_ARG; ++i)
-        addResourceInTile(x, y, pos, static_cast<resource_e>(i - 2), pack[i].getSize_t());
+        _tiles[x][y].resources[static_cast<resource_e>(i - 2)] =
+            std::make_shared<ResourceNode>(pos, static_cast<resource_e>(i - 2), pack[i].getSize_t());
     index += 1;
     if (index >= (_map_size.x * _map_size.y))
         _map_set = true;
@@ -153,19 +154,8 @@ void Land::updateTile(const network::NetPack& pack)
     int x = pack[0].getInt();
     int y = pack[1].getInt();
     pos = MAP_POS(CENTER_MAP(_map_size.y), x, y);
-    for (size_t i = 2; i < NB_MAP_ARG; ++i) {
-        if (!_map_set)
-            addResourceInTile(x, y, pos, static_cast<resource_e>(i - 2), pack[i].getSize_t());
-        else {   
-            // _tiles[x][y].resources[i - 2]->updateQuantity(pack[i].getSize_t());
-        }
-    }
-}
-
-void Land::addResourceInTile(int x, int y, const sf::Vector2f& pos, resource_e type, size_t quantity)
-{
-    if (quantity > 0)
-        _tiles[x][y].resources.emplace_back(std::make_shared<ResourceNode>(pos, type, quantity));
+    for (size_t i = 2; i < NB_MAP_ARG; ++i)
+        _tiles[x][y].resources.at(static_cast<resource_e>(i - 2))->updateQuantity(pack[i].getSize_t());
 }
 
 void Land::clearResources(void)
@@ -194,11 +184,13 @@ void Land::removeTrantorian(const network::NetPack& pack)
 
     _tiles[trantor->map_pos.x][trantor->map_pos.y].trantorians.erase(id);
     _trantorians.erase(id);
+    trantor = nullptr;
 }
 
 void Land::trantorCollect(const network::NetPack& pack)
 {
     sf::Vector2i tile_pos = _trantorians.at(pack[0].getSize_t())->map_pos;
+
     _trantorians.at(pack[0].getSize_t())->collect(_tiles[tile_pos.x][tile_pos.y].resources, ACT_TIME(7.0f) / 2);
     _clear_resources.push_back({ACT_TIME(7.0f) + _clock.getElapsedTime().asMilliseconds(), tile_pos});
 }

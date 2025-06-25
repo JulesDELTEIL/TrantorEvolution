@@ -15,6 +15,7 @@
     #include <SFML/Graphics/RenderTarget.hpp>
 
     #include "map_tools.h"
+    #include "visual/visual.hpp"
     #include "visual/Drawable.hpp"
 
 namespace gui {
@@ -45,12 +46,16 @@ class Tile {
 
         void draw(sf::RenderTarget&, const sf::Clock&);
 
+        ResourceGroup getInventory(void) const;
+        void updateResource(resource_e, int);
+
     private:
         std::reference_wrapper<Drawable> _biome;
         uint8_t _tile_skin;
         sf::Vector2f _pos;
         biome_e _type;
 
+        ResourceGroup _resources;
 };
 
 } // visual

@@ -17,6 +17,7 @@
     #include "map_tools.h"
     #include "core/Engine.hpp"
     #include "network/Client.hpp"
+    #include "visual/entities/Hud.hpp"
     #include "visual/entities/Tile.hpp"
     #include "visual/entities/Trantorian.hpp"
     #include "visual/entities/ResourceNode.hpp"
@@ -60,7 +61,6 @@ class Land : public ALayer {
         sf::Vector2f _map_size = {-1, -1};
         bool _map_set = false;
 
-        void addResourceInTile(int, int, const sf::Vector2f&, resource_e, size_t);
         void clearResources(void);
         std::vector<ClearTile> _clear_resources;
 
@@ -69,10 +69,12 @@ class Land : public ALayer {
         void trantorCollect(const network::NetPack& pack);
         void posTrantorian(const network::NetPack& pack);
 
+        Hud _hud;
+
         struct TileInfo {
             std::unique_ptr<Tile> tile;
             std::map<size_t, std::shared_ptr<Trantorian>> trantorians;
-            std::vector<std::shared_ptr<ResourceNode>> resources;
+            std::map<resource_e, std::shared_ptr<ResourceNode>> resources;
         };
 
         std::map<size_t, std::map<size_t, TileInfo>> _tiles;
