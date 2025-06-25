@@ -35,7 +35,7 @@ static int add_circular(client_t *client, char *buffer)
     return EXIT_SUCCESS;
 }
 
-int receive_data(serverdata_t *sdata, client_t *client)
+int receive_data(serverdata_t *sdata, fdarray_t *fdarray, client_t *client)
 {
     char buffer[BUFFSIZE] = {0};
     int rc = DEFAULTRC;
@@ -44,7 +44,7 @@ int receive_data(serverdata_t *sdata, client_t *client)
     if (rc == 0) {
         if (sdata->debug)
             printf("Cfd%-3d ↓  ✕\n", client->fd);
-        return closeconnection(sdata, client);
+        return closeconnection(sdata, fdarray, client);
     } else if (rc == -1)
         return EXIT_FAILURE;
     if (sdata->debug)

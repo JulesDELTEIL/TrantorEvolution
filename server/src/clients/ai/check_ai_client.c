@@ -109,7 +109,8 @@ static int check_player_timer(serverdata_t *sdata, fdarray_t *fdarray,
     return EXIT_FAILURE;
 }
 
-static int check_player_life(serverdata_t *sdata, client_t *client)
+static int check_player_life(serverdata_t *sdata, fdarray_t *fdarray,
+    client_t *client)
 {
     struct timeval tp;
     size_t timenow = 0;
@@ -121,7 +122,7 @@ static int check_player_life(serverdata_t *sdata, client_t *client)
         client->player->time_use_life = set_timer_end(sdata->args->freq,
             TICKS_FOOD_USE);
         if (client->player->inventory[FOOD] <= 0) {
-            kill_player(sdata, client);
+            kill_player(sdata, fdarray, client);
             return EXIT_FAILURE;
         }
     }
@@ -133,7 +134,7 @@ int check_ai_client(serverdata_t *sdata, fdarray_t *fdarray,
 {
     if (client->player == NULL)
         return EXIT_FAILURE;
-    if (check_player_life(sdata, client) == EXIT_SUCCESS) {
+    if (check_player_life(sdata, fdarray, client) == EXIT_SUCCESS) {
         if (client->player->action.status != ONGOING)
             return buffer_handler(sdata, fdarray, client);
         else

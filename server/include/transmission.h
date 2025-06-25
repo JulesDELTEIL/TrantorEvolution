@@ -15,7 +15,7 @@
 Used to read data from client FD
 Returns EXIT_SUCCESS or EXIT_FAILURE
 */
-int receive_data(serverdata_t *sdata, client_t *client);
+int receive_data(serverdata_t *sdata, fdarray_t *fdarray, client_t *client);
 
 /*
 Used to write client buffer output and send it to client

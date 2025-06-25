@@ -34,12 +34,12 @@ static int destroy_buffout(message_t *head)
     }
 }
 
-int closeconnection(serverdata_t *sdata, client_t *client)
+int closeconnection(serverdata_t *sdata, fdarray_t *fdarray, client_t *client)
 {
     close(client->fd);
     destroy_client(client);
     if (client->type == AI)
-        kill_player(sdata, client);
+        kill_player(sdata, fdarray, client);
     destroy_buffout(client->buffout);
     setempty_client(client);
     return CLOSE_CONNECTION;
