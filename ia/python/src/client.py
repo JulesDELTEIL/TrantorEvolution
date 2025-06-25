@@ -122,7 +122,8 @@ class Trantorian (ServerManager) :
     def handle_nobody(self, response_list: list[str]) -> bool:
         broadcast = self.player.handle_broadcast(response_list)
         if broadcast == "ROLE":
-            self.player = ROLE_MAP[response_list[3]]()
+            print(response_list[2][5:])
+            self.player = ROLE_MAP[response_list[2][5:]]()
             return False
         if broadcast == "QUIT":
             action = Commands(Action.BROADCAST, 'quitting')

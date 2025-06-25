@@ -49,10 +49,11 @@ class Trantorian {
             size_t level, const std::string& team_name);
         ~Trantorian() = default;
 
-        void draw(sf::RenderTarget&);
+        void draw(sf::RenderTarget&, const sf::Clock&);
 
-        void changeTile(const sf::Vector2f&, float);
-        void collect(const std::map<resource_e, std::shared_ptr<ResourceNode>>&, float);
+        void changeTile(const sf::Vector2f&, float, const sf::Clock&);
+        void collect(const std::map<resource_e, std::shared_ptr<ResourceNode>>&,
+            float, const sf::Clock& clock);
 
         ResourceGroup getInventory(void) const;
 
@@ -61,7 +62,7 @@ class Trantorian {
         size_t lvl;
         std::string team;
     private:
-        void move(int index, const sf::Vector2f&, float);
+        void move(int index, const sf::Vector2f&, float, const sf::Clock&);
         sf::Color generateTeamColor(const std::string&);
 
         std::vector<Drawable> _body;

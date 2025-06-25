@@ -41,16 +41,15 @@ Trantorian::Trantorian(const sf::Vector2f& pos, const sf::Vector2i& pos_in_map,
         _type[i] = IDLE;
         _body_animation[i].changeAnimation(_type[i]);
         _body[i].sprite.setScale(TRANTOR_SCALE, TRANTOR_SCALE);
-        _body_movement[i].changeDestination(pos, 0);
     }
 }
 
-void Trantorian::draw(sf::RenderTarget& target)
+void Trantorian::draw(sf::RenderTarget& target, const sf::Clock& clock)
 {
     static std::vector<bool> asked_type(NB_TRANTORS, false);
 
     for (size_t i = 0; i < NB_TRANTORS; ++i) {
-        if (!_body_movement[i].move()) {
+        if (!_body_movement[i].move(clock)) {
             if (!asked_type[i]) {
                 asked_type[i] = true;
                 _body_animation[i].changeAnimation(_type[i]);
@@ -62,10 +61,10 @@ void Trantorian::draw(sf::RenderTarget& target)
     }
 }
 
-void Trantorian::move(int index, const sf::Vector2f& new_pos, float time)
+void Trantorian::move(int index, const sf::Vector2f& new_pos, float time, const sf::Clock& clock)
 {
     _body_animation[index].changeAnimation(WALK);
-    if (_body_movement[index].changeDestination(new_pos, time) != _body_direction[index]) {
+    if (_body_movement[index].changeDestination(new_pos, time, clock.getElapsedTime().asMilliseconds()) != _body_direction[index]) {
         sf::Vector2f scale = _body[index].sprite.getScale();
         _body[index].sprite.setScale(-scale.x, scale.y);
         if (_body_direction[index] == FACE_RIGHT)
@@ -86,7 +85,8 @@ sf::Color Trantorian::generateTeamColor(const std::string& team_name)
     return sf::Color(code, code, code, 255);
 }
 
-void Trantorian::collect(const std::map<resource_e, std::shared_ptr<ResourceNode>>& resources, float time)
+void Trantorian::collect(const std::map<resource_e, std::shared_ptr<ResourceNode>>& resources,
+    float time, const sf::Clock& clock)
 {
     int i = 0;
 
@@ -99,7 +99,7 @@ void Trantorian::collect(const std::map<resource_e, std::shared_ptr<ResourceNode
                 _type[i] = PICKAXE;
             else
                 _type[i] = COLLECT;
-            move(i, resource.second->getCollectPosition(), time);
+            move(i, resource.second->getCollectPosition(), time, clock);
             i += 1;
         }
     }
@@ -110,7 +110,7 @@ ResourceGroup Trantorian::getInventory(void) const
     return _inventory;
 }
 
-void Trantorian::changeTile(const sf::Vector2f& new_pos, float time)
+void Trantorian::changeTile(const sf::Vector2f& new_pos, float time, const sf::Clock& clock)
 {
     actual_pos = new_pos;
     for (size_t i = 0; i < NB_TRANTORS; ++i) {
@@ -119,7 +119,7 @@ void Trantorian::changeTile(const sf::Vector2f& new_pos, float time)
             new_pos.x + std::rand() % RES_RANGE_X + RES_MIN_X,
             new_pos.y + std::rand() % RES_RANGE_Y + RES_MIN_Y
         };
-        move(i, random_pos, time);
+        move(i, random_pos, time, clock);
     }
 }
 

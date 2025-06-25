@@ -26,14 +26,15 @@ class Worker(BaseRole):
         # if self.state.motivation.hunger > 0.7:
             # logique pour chercher de la food (vision...)
         if self.mode == 'GATHERING':
-            for visions in self.state.last_vision:
-                for objects in visions:
-                    for stone in STONES.keys():
-                        if stone in objects:
-                            self.carry = stone
-                            self.mode = 'DELIVERING'
-                            self.queue.appendleft(Commands(Action.TAKE, stone))
-                            return
+            print("condition")
+            print(self.state.last_vision)
+            for objects in self.state.last_vision:
+                for stone in STONES.keys():
+                    if stone in objects:
+                        self.carry = stone
+                        self.mode = 'DELIVERING'
+                        self.queue.appendleft(Commands(Action.TAKE, stone))
+                        return
             
             self.queue.appendleft(Commands(Action.FORWARD))
             if self.cycle % 2 == 0:
@@ -46,9 +47,10 @@ class Worker(BaseRole):
 
         elif self.mode == 'DELIVERING':
             if self.pos == self.queens_pos:
-               self.mode = 'GATHERING'
-               self.queue.appendleft(Commands(Action.SET, self.carry))
-               self.carry = None
+                print("je pose", self.carry)
+                self.mode = 'GATHERING'
+                self.queue.appendleft(Commands(Action.SET, self.carry))
+                self.carry = None
             else:
                 self.state.get_movements(self.pos, self.queens_pos, self.direction)
     

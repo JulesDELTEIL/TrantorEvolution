@@ -26,11 +26,11 @@ class Queen(BaseRole):
     def create_kingdom(self):
         for _ in range(5):
             self.queue.appendleft(Commands(Action.FORK))
-            self.queue.appendleft(Commands(Action.BROADCAST, 'role queen'))
+            self.queue.appendleft(Commands(Action.BROADCAST, 'role;queen'))
         self.queue.appendleft(Commands(Action.FORK))
-        self.queue.appendleft(Commands(Action.BROADCAST, 'role foreman'))
+        self.queue.appendleft(Commands(Action.BROADCAST, 'role;foreman'))
         self.queue.appendleft(Commands(Action.FORK))
-        self.queue.appendleft(Commands(Action.BROADCAST, 'role matriarch'))
+        self.queue.appendleft(Commands(Action.BROADCAST, 'role;matriarch'))
         self.give_birth = False
 
 
@@ -70,7 +70,6 @@ class Queen(BaseRole):
                 return
             else:
                 self.cycle = 0
-                self.queue.appendleft(Commands(Action.BROADCAST, "here"))
                 self.queue.appendleft(Commands(Action.LOOK))
 
     def _can_incant(self) -> bool:

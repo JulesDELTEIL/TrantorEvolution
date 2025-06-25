@@ -52,9 +52,10 @@ class PlayerState:
             else:
                 parts = [w.strip() for w in t.split(' ') if w.strip()]
                 vision.append([w.strip(',') for w in parts])
+            self.last_vision = vision[0]
         return vision
     
-    def get_movements(start: list[int], end: list[int], direction: str) -> list[Commands]:
+    def get_movements(self, start: list[int], end: list[int], direction: str) -> list[Commands]:
         commands_queue = []
         dx = end[0] - start[0]
         dy = end[1] - start[1]

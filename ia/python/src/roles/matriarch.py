@@ -20,7 +20,7 @@ class Matriarch(BaseRole):
             self.queue.appendleft(Commands(Action.TAKE, 'food'))
 
         self.queue.appendleft(Commands(Action.FORK))
-        self.queue.appendleft(Commands(Action.BROADCAST, 'role kamikaze'))
+        self.queue.appendleft(Commands(Action.BROADCAST, 'role;kamikaze'))
 
     def handle_broadcast(self, response_list: list[str]) -> bool:
         return False
