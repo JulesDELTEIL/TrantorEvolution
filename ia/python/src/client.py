@@ -51,7 +51,7 @@ class Trantorian (ServerManager) :
             Action.LOOK: self._update_mindmap,
             Action.INVENTORY: self.player.state.parse_inventory,
             Action.BROADCAST: self.void,
-            Action.TAKE: self.void,
+            Action.TAKE: self._take_object,
             Action.SET: self.void,
             Action.FORK: self._spawn_new_client,
             Action.INCANTATION: self._incatation_succes,
@@ -135,7 +135,7 @@ class Trantorian (ServerManager) :
     def handle_response(self, response: str) -> bool:
         response_list = response.split()
         if isinstance(self.player, Nobody):
-            if self.player.cycle > 5:
+            if self.player.cycle > 10:
                 self.player = Queen(lambda : self._spawn_new_client())
                 return True
         if response_list[0] == "message":
@@ -143,6 +143,8 @@ class Trantorian (ServerManager) :
                 return self.handle_nobody(response_list)
             self.player.handle_broadcast(response_list)
             return False
+        if response_list[0] == "Current":
+            self.player.state.level = int(response_list[2])
         elif self.player.last_sent:
             if self.player.last_sent == Action.CONNECT_NBR and response_list[0].isdigit():
                 return self.COMMANDS[self.player.last_sent](response_list[0])
@@ -153,9 +155,9 @@ class Trantorian (ServerManager) :
                 self.sock.shutdown(socket.SHUT_RDWR)
                 self.sock.close()
                 exit()
-            if self.player.last_sent == Action.INCANTATION:
+            if self.player.last_sent == Action.INCANTATION or self.player.last_sent == Action.TAKE:
                 self.COMMANDS[self.player.last_sent](response)
-            if response_list[0] == Commands.COMMANDS[self.player.last_sent]["response success"][0]:
+            elif response_list[0] == Commands.COMMANDS[self.player.last_sent]["response success"][0]:
                 self.COMMANDS[self.player.last_sent]()
             self.player.state.update(response)
             return True
@@ -185,14 +187,21 @@ class Trantorian (ServerManager) :
 
     def _move_forward(self):
         if self.player.direction == "up":
-            self.player.pos[1] -= 1
+            self.player.pos[1] += 1
         elif self.player.direction == "right":
             self.player.pos[0] += 1
         elif self.player.direction == "down":
-            self.player.pos[1] += 1
+            self.player.pos[1] -= 1
         elif self.player.direction == "left":
             self.player.pos[0] -= 1
             
+    def _take_object(self, response: str):
+        if response == "ko" or response == "ko\n":
+            self.player.carry = None
+            self.player.state.last_vision = None
+        else:
+            self.player.mode = 'DELIVERING'
+    
     def _incatation_succes(self, response: str):
         if response == "Elevation underway":
             return

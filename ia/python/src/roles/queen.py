@@ -59,17 +59,16 @@ class Queen(BaseRole):
         if self.give_birth :
             self.handle_mother_queen()
             return
-        if len(self.queue) == 0 :
-            self.cycle += 1
-            if self._can_incant():
-                self.queue.appendleft(Commands(Action.INCANTATION))
-                return
-            if self.cycle > 4:
-                self.queue.appendleft(Commands(Action.TAKE, "food"))
-                self.cycle = 0
-                return
-            else:
-                self.queue.appendleft(Commands(Action.LOOK))
+        self.cycle += 1
+        if self._can_incant():
+            self.queue.appendleft(Commands(Action.INCANTATION))
+            return
+        if self.cycle % 8 == 0:
+            self.queue.appendleft(Commands(Action.LOOK))
+        elif self.cycle % 5 == 1:
+            self.queue.appendleft(Commands(Action.TAKE, "food"))
+        else:
+            self.queue.appendleft(Commands(Action.LOOK))
 
     def _can_incant(self) -> bool:
         if not self.state.last_vision or self.state.last_vision.count('player') < 8:

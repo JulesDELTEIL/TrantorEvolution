@@ -60,8 +60,8 @@ class PlayerState:
         directions = ['up', 'right', 'down', 'left']
 
         def turn_to(current, target, queue):
-            ci = directions.index(current)
-            ti = directions.index(target)
+            ci = directions.index(current) + 1
+            ti = directions.index(target) + 1
             diff = (ti - ci) % 4
             if diff == 1:
                 queue.appendleft(Commands(Action.LEFT))
@@ -87,6 +87,4 @@ class PlayerState:
             for _ in range(abs(dy)):
                 commands_queue.appendleft(Commands(Action.FORWARD))
             direction = target_dir
-        for commands in commands_queue:
-            print(commands)
         return commands_queue
