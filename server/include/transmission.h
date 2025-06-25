@@ -32,5 +32,9 @@ Used to find a player based on his id
 */
 player_t *get_player_pos(serverdata_t *sdata, int player_id);
 
+/*
+Sends a message to all connected GUIs
+*/
+int send_guis(serverdata_t *sdata, fdarray_t *fdarray, char *cmd, char *data);
 
 #endif

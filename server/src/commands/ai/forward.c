@@ -8,6 +8,7 @@
 #include <unistd.h>
 #include <stdlib.h>
 #include <string.h>
+#include <stdio.h>
 
 #include "transmission.h"
 #include "commands.h"
@@ -46,6 +47,20 @@ static int move_player(player_t *player)
     return EXIT_FAILURE;
 }
 
+static void send_gui_p_moved(serverdata_t *sdata, fdarray_t *fdarray,
+    client_t *client)
+{
+    char data[BUFFSIZE] = {0};
+
+    sprintf(data, "%d %d %d %d",
+        client->player->id,
+        client->player->pos.x,
+        client->player->pos.y,
+        client->player->orientation
+    );
+    send_guis(sdata, fdarray, "ppo", data);
+}
+
 // ACTION
 int action_forward(serverdata_t *sdata, fdarray_t *fdarray,
     client_t *client, char *data)
@@ -56,6 +71,7 @@ int action_forward(serverdata_t *sdata, fdarray_t *fdarray,
     }
     keep_player_in(client->player, sdata->args->width, sdata->args->height);
     set_message(client, "ok", NULL, sdata->debug);
+    send_gui_p_moved(sdata, fdarray, client);
     return EXIT_SUCCESS;
 }
 

@@ -37,14 +37,51 @@ static int idt_resource(char *data)
     return -1;
 }
 
+static void send_gui_p_changed_inv(serverdata_t *sdata, fdarray_t *fdarray,
+    client_t *client)
+{
+    char data[BUFFSIZE] = {0};
+
+    sprintf(data, "%d %d %d %d %d %d %d %d %d %d",
+        client->player->id,
+        client->player->pos.x,
+        client->player->pos.y,
+        client->player->inventory[0],
+        client->player->inventory[1],
+        client->player->inventory[2],
+        client->player->inventory[3],
+        client->player->inventory[4],
+        client->player->inventory[5],
+        client->player->inventory[6]
+    );
+    send_guis(sdata, fdarray, "pin", data);
+}
+
+static void send_gui_p_take(serverdata_t *sdata, fdarray_t *fdarray,
+    client_t *client, int resource)
+{
+    char data[BUFFSIZE] = {0};
+
+    sprintf(data, "%d %d",
+        client->player->id,
+        resource
+    );
+    send_guis(sdata, fdarray, "pgt", data);
+}
+
 // ACTION
 int action_take(serverdata_t *sdata, fdarray_t *fdarray,
     client_t *client, char *data)
 {
-    if (take_resource(sdata, client, idt_resource(data)) == EXIT_FAILURE)
+    int resource = idt_resource(data);
+
+    if (take_resource(sdata, client, resource) == EXIT_FAILURE) {
         set_message(client, "ko", NULL, sdata->debug);
-    else
+    } else {
         set_message(client, "ok", NULL, sdata->debug);
+        send_gui_p_changed_inv(sdata, fdarray, client);
+        send_gui_p_take(sdata, fdarray, client, resource);
+    }
 }
 
 // COMMAND
