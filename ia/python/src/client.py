@@ -208,6 +208,7 @@ class Trantorian (ServerManager) :
         response_list = response.split()
         if response_list[0] == "Current":
             self.player.state.level = int(response_list[2])
+            self.player._last_incantation = self.player.cycle
 
     def void(self):
         return

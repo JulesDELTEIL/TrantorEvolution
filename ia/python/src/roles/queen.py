@@ -21,6 +21,7 @@ class Queen(BaseRole):
             self.give_birth = False
         self.all_alone = False
         self.player_killed = 0
+        self._last_incantation = 0
 
     def create_kingdom(self):
         for _ in range(3):
@@ -70,7 +71,7 @@ class Queen(BaseRole):
             self.queue.appendleft(Commands(Action.LOOK))
 
     def _can_incant(self) -> bool:
-        if self.cycle < 50:
+        if self.cycle - self._last_incantation < 50:
             return False
         if not self.state.last_vision or self.state.last_vision.count('player') < 8:
             return False
