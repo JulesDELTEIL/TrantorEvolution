@@ -77,6 +77,8 @@ typedef struct client_s {
     char *buffin;
     bool buffin_addition;
     message_t *buffout;
+    pthread_mutex_t buffin_mutex;
+    pthread_mutex_t buffout_mutex;
     player_t *player;
 } client_t;
 

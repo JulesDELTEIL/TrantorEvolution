@@ -67,6 +67,8 @@ int setempty_client(client_t *client)
     client->player = NULL;
     client->buffout = NULL;
     client->buffin_addition = false;
+    pthread_mutex_init(&(client->buffin_mutex), NULL);
+    pthread_mutex_init(&(client->buffout_mutex), NULL);
 }
 
 fdarray_t setup_fds(int sockfd)

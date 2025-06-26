@@ -22,8 +22,10 @@ static int buffer_handler(serverdata_t *sdata, fdarray_t *fdarray,
     char cmd[BUFFSIZE] = {0};
     char data[BUFFSIZE] = {0};
 
+    pthread_mutex_lock(&(client->buffin_mutex));
     if (client == NULL || client->buffin == NULL)
         return EXIT_FAILURE;
+    pthread_mutex_unlock(&(client->buffin_mutex));
     if (sdata->debug)
         debug_buffer(client);
     if (packet_parser(client, cmd, data) == EXIT_FAILURE)
