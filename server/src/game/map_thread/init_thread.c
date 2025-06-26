@@ -17,24 +17,24 @@
 
 static int get_biome(double noise)
 {
-    if (noise <= 0.25)
+    if (noise <= SEA_NOISE)
         return SEA;
-    if (noise <= 0.40)
+    if (noise <= BEACH_NOISE)
         return BEACH;
-    if (noise <= 0.60)
+    if (noise <= PLAINS_NOISE)
         return PLAINS;
-    if (noise <= 0.70)
+    if (noise <= FOREST_NOISE)
         return FOREST;
     return MOUNTAINS;
 }
 
 static int get_spawn_biome(float noise)
 {
-    if (noise <= 0.40)
+    if (noise <= BEACH_NOISE)
         return BEACH;
-    if (noise <= 0.60)
+    if (noise <= PLAINS_NOISE)
         return PLAINS;
-    if (noise <= 0.70)
+    if (noise <= FOREST_NOISE)
         return FOREST;
     return MOUNTAINS;
 }
@@ -96,7 +96,7 @@ static void refill_map(tile_t **tiles, int width, int height,
     density_t *max_dens)
 {
     biome_distribution_t dist = {{0}, {0}};
-    int total[NB_RESOURCES] = {0, 0, 0, 0, 0, 0};
+    int total[NB_RESOURCES] = {0, 0, 0, 0, 0, 0, 0};
     int area = width * height;
     int x = 0;
     int y = 0;
@@ -122,7 +122,7 @@ static void generate_noise(tile_t **map_tiles, int Y)
 
     for (int x = 0; map_tiles[x] != NULL; x++) {
         for (int y = 0; y < Y; y++) {
-                map_tiles[x][y].noise = perlin_2d(x, y, 0.2, 4);
+                map_tiles[x][y].noise = perlin_2d(x, y, 0.3, 4);
         }
     }
 }
@@ -133,8 +133,10 @@ void *map_thread(void *arg)
     density_t all_dens = init_density(WORLD_DENS(server->args));
 
     generate_noise(server->game_data.map.tiles, server->args->height);
+    pthread_mutex_lock(&(server->game_data.map.mutex));
     first_map_refill(server->args->height,
-    server->game_data.map.tiles);
+        server->game_data.map.tiles);
+        pthread_mutex_unlock(&(server->game_data.map.mutex));
     while (server->is_running == true) {
         usleep(TICKS_REFILLS / server->args->freq);
         pthread_mutex_lock(&(server->game_data.map.mutex));

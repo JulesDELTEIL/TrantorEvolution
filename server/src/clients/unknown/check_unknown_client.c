@@ -20,7 +20,7 @@ static int buffer_handler(serverdata_t *sdata, fdarray_t *fdarray,
     char cmd[BUFFSIZE] = {0};
     char data[BUFFSIZE] = {0};
 
-    if (client == NULL || client->buffer == NULL)
+    if (client == NULL || client->buffin == NULL)
         return EXIT_FAILURE;
     if (sdata->debug)
         debug_buffer(client);

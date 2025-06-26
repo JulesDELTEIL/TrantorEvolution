@@ -52,13 +52,17 @@ static char *get_tile_data(serverdata_t *sdata, client_t *client,
     char *tileinfo, pos_t vect)
 {
     pos_t tilepos = get_map_coor(sdata, client->player->pos, vect);
-    tile_t tile = sdata->game_data.map.tiles[tilepos.x][tilepos.y];
+    tile_t tile;
     uint_t nb_players = get_nb_tile_players(sdata, tilepos);
     uint_t size = 0;
 
-    for (uint_t k = 0; k < nb_players; k++) {
+    if (tilepos.x == 0 && tilepos.y == 0)
+        nb_players -= 1;
+    pthread_mutex_lock(&(sdata->game_data.map.mutex));
+    tile = sdata->game_data.map.tiles[tilepos.x][tilepos.y];
+    pthread_mutex_unlock(&(sdata->game_data.map.mutex));
+    for (uint_t k = 0; k < nb_players; k++)
         sprintf(tileinfo, "%s%s ", tileinfo, "player");
-    }
     for (uint_t k = 0; k < NB_DIFF_ITEMS; k++) {
         for (uint_t i = 0; i < tile.resources[k]; i++) {
             sprintf(tileinfo, "%s%s ", tileinfo, RESOURCES_NAMES[k]);
@@ -73,9 +77,10 @@ static int fill_answer(serverdata_t *sdata, client_t *client, char *answer)
 {
     pos_t vect;
     char tileinfo[BUFFSIZE];
+    uint_t nbtiles = NB_TILES_LOOK[client->player->level];
 
     sprintf(answer, "[");
-    for (uint_t k = 0; k < NB_TILES_LOOK - 1; k++) {
+    for (uint_t k = 0; k < nbtiles - 1; k++) {
         for (uint_t i = 0; i < BUFFSIZE; i++)
             tileinfo[i] = 0;
         vect = LOOK_TILES[client->player->orientation][k];
@@ -84,7 +89,7 @@ static int fill_answer(serverdata_t *sdata, client_t *client, char *answer)
     }
     for (uint_t i = 0; i < BUFFSIZE; i++)
         tileinfo[i] = 0;
-    vect = LOOK_TILES[client->player->orientation][NB_TILES_LOOK - 1];
+    vect = LOOK_TILES[client->player->orientation][nbtiles - 1];
     get_tile_data(sdata, client, tileinfo, vect);
     sprintf(answer, "%s%s]", answer, tileinfo);
 }
@@ -94,11 +99,13 @@ int action_look(serverdata_t *sdata, fdarray_t *fdarray,
     client_t *client, char *data)
 {
     char answer[BUFSIZ] = {0};
-    int x = 0;
-    int y = 0;
 
-    fill_answer(sdata, client, answer);
-    send_data(client, answer, NULL, sdata->debug);
+    if (client->player->level >= 8) {
+        set_message(client, "ko", NULL);
+    } else {
+        fill_answer(sdata, client, answer);
+        set_message(client, answer, NULL);
+    }
 }
 
 // COMMAND
@@ -106,7 +113,7 @@ int cmd_look(serverdata_t *sdata, fdarray_t *fdarray,
     client_t *client, char *data)
 {
     if (strlen(data) != 0) {
-        send_data(client, "ko", NULL, sdata->debug);
+        set_message(client, "ko", NULL);
         return EXIT_FAILURE;
     }
     client->player->action.cmd = strdup(ACTIONS_ARR[LOOK].name);

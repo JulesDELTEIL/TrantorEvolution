@@ -71,21 +71,21 @@ void debug_buffer(client_t *client)
 {
     uint_t size = 0;
 
-    if (client->buffer == NULL || strlen(client->buffer) == 0) {
+    if (client->buffin == NULL || strlen(client->buffin) == 0) {
         printf("Cfd%-3d.buff = %dB []\n", client->fd, size);
         return;
     }
-    size = strlen(client->buffer);
-    if (is_drawable(client->buffer[0]))
+    size = strlen(client->buffin);
+    if (is_drawable(client->buffin[0]))
         printf("Cfd%-3d.buff = %dB ['%c'", client->fd, size,
-            client->buffer[0]);
+            client->buffin[0]);
     else
-        printf("Cfd%-3d.buff = %dB [%d", client->fd, size, client->buffer[0]);
+        printf("Cfd%-3d.buff = %dB [%d", client->fd, size, client->buffin[0]);
     for (size_t k = 1; k < size; k++) {
-        if (is_drawable(client->buffer[k]))
-            printf(", '%c'", client->buffer[k]);
+        if (is_drawable(client->buffin[k]))
+            printf(", '%c'", client->buffin[k]);
         else
-            printf(", %d", client->buffer[k]);
+            printf(", %d", client->buffin[k]);
     }
     printf("]\n");
 }
