@@ -104,7 +104,7 @@ static void refill_map(tile_t **tiles, pos_t size, density_t *max_dens)
     get_total(total, size.x, size.y, tiles);
     for (int i = 0; i < area; i++) {
         x = (i / size.y);
-        y = (i % size.x);
+        y = (i % size.y);
         dist = biome_distributions[tiles[x][y].biome];
         for (int r = 0; r < NB_RESOURCES; r++) {
             add = (total[r] < max_dens->dens[r])
