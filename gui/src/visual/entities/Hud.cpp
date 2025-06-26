@@ -13,10 +13,15 @@ namespace visual {
 HudDisplay::HudDisplay()
 {   
     font.loadFromFile(HUD_FONT);
-    bg.texture.loadFromFile(BG_HUD_TEXTURE);
-    bg.sprite.setTexture(bg.texture);
-    bg.sprite.setScale(BG_HUD_SCALE, BG_HUD_SCALE);
-    bg.sprite.setOrigin(bg.texture.getSize().x / 2, bg.texture.getSize().y);
+    tile.texture.loadFromFile(TILE_HUD_TEXTURE);
+    tile.sprite.setTexture(tile.texture);
+    tile.sprite.setScale(TILE_HUD_SCALE, TILE_HUD_SCALE);
+    tile.sprite.setOrigin(tile.texture.getSize().x / 2, tile.texture.getSize().y + TILE_HUD_MARGIN);
+    tile_r.texture.loadFromFile(TILE_RESOURCES_TEXTURE);
+    tile_r.sprite.setTexture(tile_r.texture);
+    tile_rquantity.setFont(font);
+    tile_rquantity.setFillColor(TILE_COLOR_TEXT);
+    tile_rquantity.setCharacterSize(TILE_FONT_SIZE);
     global.texture.loadFromFile(GLOBAL_HUD_TEXTURE);
     global.sprite.setTexture(global.texture);
     global.sprite.setScale(GLOBAL_HUD_SCALE, GLOBAL_HUD_SCALE);
@@ -38,9 +43,9 @@ HudDisplay::HudDisplay()
     g_nb_trantors.setPosition(G_NBTR_POS);
 }
 
-void HudDisplay::move(const sf::Vector2f& pos)
+void HudDisplay::moveTile(const sf::Vector2f& pos)
 {
-    bg.sprite.setPosition(pos);
+    tile.sprite.setPosition(pos);
 }
 
 void Hud::display(sf::RenderTarget& render, const sf::Clock& clock)
@@ -52,8 +57,8 @@ void Hud::display(sf::RenderTarget& render, const sf::Clock& clock)
         _display.g_nb_teams.setString("Team(s):  " + std::to_string(_nb_teams.size()));
         _display.g_nb_trantors.setString("Trantorian(s):  " + std::to_string(_nb_trantors));
     }
-    if (_status != NO_INFO)
-        render.draw(_display.bg.sprite);
+    if (_status == TILE_INFO)
+        drawTileInfo(render);
     render.setView(render.getDefaultView());
     render.draw(_display.global.sprite);
     render.draw(_display.g_time);
@@ -110,7 +115,7 @@ void Hud::updateInfo(void)
             }
             _infos.position = _trantorian->map_pos;
             _infos.resources = _trantorian->getInventory();
-            _display.move(_trantorian->actual_pos);
+            _display.moveTile(_trantorian->actual_pos);
             break;
         case TILE_INFO:
             if (_tile == nullptr) {
@@ -118,8 +123,36 @@ void Hud::updateInfo(void)
                 return;
             }
             _infos.resources = _tile->getResources();
-            _display.move(_tile->getPos());
+            _display.moveTile(_tile->getPos());
             break;
+    }
+}
+
+void Hud::drawTileInfo(sf::RenderTarget& render)
+{
+    sf::Vector2f pos = _display.tile.sprite.getPosition();
+    sf::Vector2f sp_pos;
+    int i = 0;
+
+    pos.x -= _display.tile.texture.getSize().x / 2 * TILE_HUD_SCALE - TILE_INSIDE_MARGIN;
+    pos.y -= _display.tile.texture.getSize().y / 2 * TILE_HUD_SCALE + TILE_INSIDE_MARGIN - 2.0f;
+    render.draw(_display.tile.sprite);
+    for (const auto& res : _infos.resources) {
+        pos.x += TILE_INSIDE_SPLIT;
+        if (i == NB_RESOURCES / 2) {
+            pos.x -= (TILE_INSIDE_SPLIT + 2.0f) * i;
+            pos.y += 15.0f;
+        }
+        sp_pos = pos;
+        sp_pos.x -= 13.0f;
+        sp_pos.y += 1.0f;
+        _display.tile_r.sprite.setTextureRect(HUD_RES_RECT.at(res.first));
+        _display.tile_r.sprite.setPosition(sp_pos);
+        _display.tile_rquantity.setString(std::to_string(res.second));
+        _display.tile_rquantity.setPosition(pos);
+        render.draw(_display.tile_r.sprite);
+        render.draw(_display.tile_rquantity);
+        i += 1;
     }
 }
 

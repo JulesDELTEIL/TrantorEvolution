@@ -102,9 +102,11 @@ void Land::loadTile(const network::NetPack& pack)
     pos = MAP_POS(CENTER_MAP(_map_size.y), x, y);
     type = readBiomeType(pack);
     _tiles[x][y].tile = std::make_unique<Tile>(std::ref(_tile), pos, type);
-    for (size_t i = 2; i < NB_MAP_ARG; ++i)
+    for (size_t i = 2; i < NB_MAP_ARG; ++i) {
         _tiles[x][y].resources[static_cast<resource_e>(i - 2)] =
             std::make_shared<ResourceNode>(pos, static_cast<resource_e>(i - 2), pack[i].getSize_t());
+            _tiles[x][y].tile->updateResource(static_cast<resource_e>(i - 2), pack[i].getSize_t());
+    }
     index += 1;
     if (index >= (_map_size.x * _map_size.y))
         _map_set = true;
@@ -133,8 +135,10 @@ void Land::updateTile(const network::NetPack& pack)
     int x = pack[0].getInt();
     int y = pack[1].getInt();
     pos = MAP_POS(CENTER_MAP(_map_size.y), x, y);
-    for (size_t i = 2; i < NB_MAP_ARG; ++i)
+    for (size_t i = 2; i < NB_MAP_ARG; ++i) {
         _tiles[x][y].resources.at(static_cast<resource_e>(i - 2))->updateQuantity(pack[i].getSize_t());
+        _tiles[x][y].tile->updateResource(static_cast<resource_e>(i - 2), pack[i].getSize_t());
+    }
 }
 
 void Land::clearResources(void)
@@ -203,6 +207,8 @@ void Land::checkHudEvent(const core::Engine& engine, const network::NetEventPack
                 _hud.changeStatus(HudType_e::TRANTOR_INFO);
             else if (hitTile(mpos))
                 _hud.changeStatus(HudType_e::TILE_INFO);
+            else
+                _hud.changeStatus(HudType_e::NO_INFO);
         }
     }
 }

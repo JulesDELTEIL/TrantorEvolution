@@ -61,7 +61,11 @@ class Tile {
         sf::Vector2f _pos;
         biome_e _type;
 
-        ResourceGroup _resources;
+        ResourceGroup _resources = {
+            {FOOD, 0}, {WOOD, 0}, {STONE, 0},
+            {CLAY, 0}, {METAL, 0}, {OIL, 0},
+            {ANTI_MATTER, 0}
+        };
 };
 
 } // visual

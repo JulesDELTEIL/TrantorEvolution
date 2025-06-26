@@ -24,8 +24,26 @@ namespace visual {
 
     #define UPDATE_INFO 500.0f
     
-    #define BG_HUD_TEXTURE "assets/hud/hud_bg.jpg"
-    #define BG_HUD_SCALE 0.6f
+    #define TILE_HUD_TEXTURE "assets/hud/hud_bg.png"
+    #define TILE_HUD_SCALE 1.6f
+    #define TILE_HUD_MARGIN 10.0f
+    #define TILE_RESOURCES_TEXTURE "assets/hud/resources.png"
+    #define TILE_FONT_SIZE 12
+    #define TILE_COLOR_TEXT sf::Color(93, 60, 0, 255)
+    #define TILE_INSIDE_MARGIN 32.0f
+    #define TILE_INSIDE_SPLIT 20.0f
+
+    #define HUD_RES_SIZE 10
+
+static const std::map<resource_e, sf::IntRect> HUD_RES_RECT = {
+    {FOOD, {0, 0, HUD_RES_SIZE, HUD_RES_SIZE}},
+    {WOOD, {10, 0, HUD_RES_SIZE, HUD_RES_SIZE}},
+    {STONE, {20, 0, HUD_RES_SIZE, HUD_RES_SIZE}},
+    {CLAY, {30, 0, HUD_RES_SIZE, HUD_RES_SIZE}},
+    {METAL, {40, 0, HUD_RES_SIZE, HUD_RES_SIZE}},
+    {OIL, {50, 0, HUD_RES_SIZE, HUD_RES_SIZE}},
+    {ANTI_MATTER, {60, 0, HUD_RES_SIZE, HUD_RES_SIZE}}
+};
 
     #define GLOBAL_HUD_TEXTURE "assets/hud/global_info.png"
     #define GLOBAL_HUD_SCALE 2.0f
@@ -56,9 +74,11 @@ struct HudInfos {
 
 struct HudDisplay {
     HudDisplay();
-    void move(const sf::Vector2f& pos);
+    void moveTile(const sf::Vector2f& pos);
     sf::Font font;
-    Drawable bg;
+    Drawable tile;
+    Drawable tile_r;
+    sf::Text tile_rquantity;
     Drawable global;
     sf::Text g_time;
     sf::Text g_map_size;
@@ -88,6 +108,8 @@ class Hud {
         size_t _nb_trantors = 0;
         std::unordered_map<std::string, int> _nb_teams;
 
+        void drawTileInfo(sf::RenderTarget& render);
+    
         std::shared_ptr<Trantorian> _trantorian = nullptr;
         std::shared_ptr<Tile> _tile = nullptr;
 
