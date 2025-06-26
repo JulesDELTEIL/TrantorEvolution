@@ -72,7 +72,8 @@ int returnwitherror(const char *msg, int errorcode);
 Setup the pthread arg for the map thread
 Returns O if working
 */
-int setup_map_thread(serverdata_t *sdata, pthread_t *mapthr);
+int setup_map_thread(serverdata_t *sdata, fdarray_t *fdarray,
+    pthread_t *mapthr);
 
 /*
 Set a new player in SDATA which will be

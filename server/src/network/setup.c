@@ -14,9 +14,14 @@
 #include "utils.h"
 #include "map.h"
 
-int setup_map_thread(serverdata_t *sdata, pthread_t *mapthr)
+int setup_map_thread(serverdata_t *sdata, fdarray_t *fdarray,
+    pthread_t *mapthr)
 {
-    pthread_create(mapthr, NULL, map_thread, sdata);
+    thread_arg_t *arg = malloc(sizeof(thread_arg_t));
+
+    arg->fdarray = fdarray;
+    arg->sdata = sdata;
+    pthread_create(mapthr, NULL, map_thread, arg);
     return 0;
 }
 

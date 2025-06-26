@@ -116,7 +116,7 @@ int server(arguments_t *args)
     rc = setup_server(&sdata, args);
     if (rc == EXIT_FAILURE)
         return EXIT_FAILURE;
-    setup_map_thread(&sdata, &mapthr);
+    setup_map_thread(&sdata, &fdarray, &mapthr);
     fdarray = setup_fds(sdata.sockfd);
     listen(sdata.sockfd, NBCLIENTS_QUEUE);
     rc = server_loop(&sdata, &fdarray);
