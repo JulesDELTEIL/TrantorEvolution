@@ -41,7 +41,6 @@ void Core::run(void)
 void Core::display(void)
 {
     _engine.window.clear();
-    _engine.window.setView(_scenes.at(_selected_scene)->getView());
     _scenes.at(_selected_scene)->display(_engine.window);
     _engine.window.display();
 }

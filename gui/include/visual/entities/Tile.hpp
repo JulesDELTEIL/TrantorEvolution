@@ -30,6 +30,10 @@ namespace visual {
     #define TILE_SKIN_NB 3
     #define GET_ANIMATION(clock) (clock / ANIMATION_CLOCK % 2)
 
+    #define GET_TILE_BOT(top) (sf::Vector2f(top.x, top.y + TILE_SIZE / 4))
+    #define GET_TILE_LEFT(top) (sf::Vector2f(top.x - TILE_SIZE / 2, top.y + TILE_SIZE / 6))
+    #define GET_TILE_RIGHT(top) (sf::Vector2f(top.x + TILE_SIZE / 2, top.y + TILE_SIZE / 6))
+
 static const std::map<biome_e, sf::IntRect> TEXTURE_RECT = {
     {PLAINS, sf::IntRect(0, 0, TILE_SIZE, TILE_SIZE)},
     {BEACH, sf::IntRect(96, 0, TILE_SIZE, TILE_SIZE)},
@@ -57,7 +61,11 @@ class Tile {
         sf::Vector2f _pos;
         biome_e _type;
 
-        ResourceGroup _resources;
+        ResourceGroup _resources = {
+            {FOOD, 0}, {WOOD, 0}, {STONE, 0},
+            {CLAY, 0}, {METAL, 0}, {OIL, 0},
+            {ANTI_MATTER, 0}
+        };
 };
 
 } // visual

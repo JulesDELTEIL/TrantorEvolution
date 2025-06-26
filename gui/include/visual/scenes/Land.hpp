@@ -70,10 +70,12 @@ class Land : public AScene {
         void posTrantorian(const network::NetPack& pack);
 
         Hud _hud;
-        void checkHudEvent(const core::Engine& engine);
+        void checkHudEvent(const core::Engine& engine, const network::NetEventPack& net_pack);
+        bool hitTrantor(const sf::Vector2f&);
+        bool hitTile(const sf::Vector2f&);
 
         struct TileInfo {
-            std::unique_ptr<Tile> tile;
+            std::shared_ptr<Tile> tile;
             std::map<size_t, std::shared_ptr<Trantorian>> trantorians;
             std::map<resource_e, std::shared_ptr<ResourceNode>> resources;
             std::shared_ptr<IncantationObject> incantation_objects;

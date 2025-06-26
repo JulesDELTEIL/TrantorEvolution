@@ -52,9 +52,14 @@ void ResourceNode::updateQuantity(size_t new_quantity)
     _resource.sprite.setScale(scale);
 }
 
-resource_e ResourceNode::getType(void)
+resource_e ResourceNode::getType(void) const
 {
     return _type;
+}
+
+size_t ResourceNode::getQuantity(void) const
+{
+    return _quantity;
 }
 
 } // visual

@@ -6,6 +6,7 @@
 */
 
 #include <cstdlib>
+#include <iostream>
 
 #include "visual/entities/Tile.hpp"
 

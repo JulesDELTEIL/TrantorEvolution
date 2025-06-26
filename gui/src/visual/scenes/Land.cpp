@@ -5,9 +5,12 @@
 ** Land.cpp
 */
 
+#include <iostream> // test purpose (to delete)
+
 #include <cstdlib>
 #include <ctime>
 
+#include "maths.hpp"
 #include "visual/scenes/Land.hpp"
 #include "visual/visual.hpp"
 
@@ -24,6 +27,7 @@ Land::Land() : AScene(core::DEFAULT_VIEW)
 
 void Land::display(sf::RenderTarget& render)
 {
+    render.setView(_camera);
     clearResources();
     for (auto& tileY : _tiles) {
         for (auto& tileX : tileY.second) {
@@ -36,12 +40,13 @@ void Land::display(sf::RenderTarget& render)
     }
     for (auto& trantor : _trantorians)
         trantor.second->draw(render, _clock);
+    _hud.display(render, _clock);
 }
 
 void Land::event(const core::Engine& engine, const network::NetEventPack& net_pack)
 {
     viewEvent(engine.events);
-    checkHudEvent(engine);
+    checkHudEvent(engine, net_pack);
     switch (static_cast<int>(net_pack.event)) {
         case network::MSIZE:
             _map_size = sf::Vector2f(net_pack.pack[0].getFloat(), net_pack.pack[1].getFloat());
@@ -105,9 +110,11 @@ void Land::loadTile(const network::NetPack& pack)
     pos = MAP_POS(CENTER_MAP(_map_size.y), x, y);
     type = readBiomeType(pack);
     _tiles[x][y].tile = std::make_unique<Tile>(std::ref(_tile), pos, type);
-    for (size_t i = 2; i < NB_MAP_ARG; ++i)
+    for (size_t i = 2; i < NB_MAP_ARG; ++i) {
         _tiles[x][y].resources[static_cast<resource_e>(i - 2)] =
             std::make_shared<ResourceNode>(pos, static_cast<resource_e>(i - 2), pack[i].getSize_t());
+            _tiles[x][y].tile->updateResource(static_cast<resource_e>(i - 2), pack[i].getSize_t());
+    }
     index += 1;
     if (index >= (_map_size.x * _map_size.y))
         _map_set = true;
@@ -136,8 +143,10 @@ void Land::updateTile(const network::NetPack& pack)
     int x = pack[0].getInt();
     int y = pack[1].getInt();
     pos = MAP_POS(CENTER_MAP(_map_size.y), x, y);
-    for (size_t i = 2; i < NB_MAP_ARG; ++i)
+    for (size_t i = 2; i < NB_MAP_ARG; ++i) {
         _tiles[x][y].resources.at(static_cast<resource_e>(i - 2))->updateQuantity(pack[i].getSize_t());
+        _tiles[x][y].tile->updateResource(static_cast<resource_e>(i - 2), pack[i].getSize_t());
+    }
 }
 
 void Land::clearResources(void)
@@ -220,13 +229,50 @@ void Land::posTrantorian(const network::NetPack& pack)
     }
 }
 
-void Land::checkHudEvent(const core::Engine& engine)
+void Land::checkHudEvent(const core::Engine& engine, const network::NetEventPack& net_pack)
 {
+    _hud.event(engine.events, net_pack);
     if (engine.events.type == sf::Event::MouseButtonPressed) {
         if (engine.events.mouseButton.button == sf::Mouse::Left) {
-            
+            sf::Vector2f mpos = engine.window.mapPixelToCoords(sf::Mouse::getPosition(engine.window), _camera);
+            if (hitTrantor(mpos))
+                _hud.changeStatus(HudType_e::TRANTOR_INFO);
+            else if (hitTile(mpos))
+                _hud.changeStatus(HudType_e::TILE_INFO);
+            else
+                _hud.changeStatus(HudType_e::NO_INFO);
         }
     }
+}
+
+bool Land::hitTrantor(const sf::Vector2f&)
+{
+    // for (const auto& trantor : _trantorians) {
+    //     if () {
+    //         _hud.changeTrantorInfo(trantor.second);
+    //         return true;
+    //     }
+    // }
+    return false;
+}
+
+bool Land::hitTile(const sf::Vector2f& mpos)
+{
+    for (const auto& tileY : _tiles) {
+        for (const auto& tileX : tileY.second) {
+            sf::Vector2f tile_top = tileX.second.tile->getPos();
+            sf::Vector2f tile_bot = GET_TILE_BOT(tile_top);
+            sf::Vector2f tile_left = GET_TILE_LEFT(tile_top);
+            sf::Vector2f tile_right = GET_TILE_RIGHT(tile_top);
+            if (hitTriangle(sf::Vector2f(mpos), tile_top, tile_bot, tile_left) ||
+                hitTriangle(sf::Vector2f(mpos), tile_top, tile_bot, tile_right)) {
+                _hud.changeTileInfo(tileX.second.tile);
+                _hud.updateInfo();
+                return true;
+            }
+        }
+    }
+    return true;
 }
 
 } // visual
