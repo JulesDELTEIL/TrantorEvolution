@@ -62,6 +62,12 @@ void Land::event(const core::Engine& engine, const network::NetEventPack& net_pa
         case network::PGET:
             trantorCollect(net_pack.pack);
             break;
+        case network::PINC:
+            trantorStartIncantation(net_pack.pack);
+            break;
+        case network::PEINC:
+            trantorEndIncantation(net_pack.pack);
+            break;
         case network::PDEAD:
             removeTrantorian(net_pack.pack);
             break;
@@ -169,6 +175,30 @@ void Land::trantorCollect(const network::NetPack& pack)
 
     _trantorians.at(pack[0].getSize_t())->collect(_tiles[tile_pos.x][tile_pos.y].resources, ACT_TIME(7.0f) / 2, _clock);
     _clear_resources.push_back({ACT_TIME(7.0f) + _clock.getElapsedTime().asMilliseconds(), type, tile_pos});
+}
+
+void Land::trantorStartIncantation(const network::NetPack& pack)
+{
+    int x = pack[0].getInt();
+    int y = pack[1].getInt();
+    sf::Vector2f pos = MAP_POS(CENTER_MAP(_map_size.y), x, y);
+    
+    _tiles[x][y].incantation_objects = std::make_shared<IncantationObject>(pos);
+    for (size_t index = 3; index < pack.size(); index++) {
+        _trantorians.at(pack[index].getSize_t())->startIncantation(_tiles[x][y].incantation_objects, ACT_TIME(7.0f) / 2, _clock);
+    }
+}
+
+void Land::trantorEndIncantation(const network::NetPack& pack)
+{
+    int x = pack[0].getInt();
+    int y = pack[1].getInt();
+    sf::Vector2f pos = MAP_POS(CENTER_MAP(_map_size.y), x, y);
+    
+    _tiles[x][y].incantation_objects = std::make_shared<IncantationObject>(pos);
+    for (const auto &trantor : _tiles[x][y].trantorians) {
+        trantor.second->endIncantation(pos, ACT_TIME(7.0f) / 2, _clock);
+    }
 }
 
 void Land::posTrantorian(const network::NetPack& pack)

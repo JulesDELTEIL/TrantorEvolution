@@ -21,6 +21,7 @@
     #include "visual/entities/Tile.hpp"
     #include "visual/entities/Trantorian.hpp"
     #include "visual/entities/ResourceNode.hpp"
+    #include "visual/entities/IncantationObject.hpp"
 
 namespace gui {
 namespace visual {
@@ -64,6 +65,8 @@ class Land : public AScene {
         void addTrantorian(const network::NetPack& pack);
         void removeTrantorian(const network::NetPack& pack);
         void trantorCollect(const network::NetPack& pack);
+        void trantorStartIncantation(const network::NetPack& pack);
+        void trantorEndIncantation(const network::NetPack& pack);
         void posTrantorian(const network::NetPack& pack);
 
         Hud _hud;
@@ -73,6 +76,7 @@ class Land : public AScene {
             std::unique_ptr<Tile> tile;
             std::map<size_t, std::shared_ptr<Trantorian>> trantorians;
             std::map<resource_e, std::shared_ptr<ResourceNode>> resources;
+            std::shared_ptr<IncantationObject> incantation_objects;
         };
 
         std::map<size_t, std::map<size_t, TileInfo>> _tiles;

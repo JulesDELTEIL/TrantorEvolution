@@ -12,6 +12,7 @@
     #include <SFML/Graphics/RenderTarget.hpp>
 
     #include "visual/entities/ResourceNode.hpp"
+    #include "visual/entities/IncantationObject.hpp"
 
     #include "map_tools.h"
     #include "visual/Drawable.hpp"
@@ -30,6 +31,7 @@ enum BodyAnimIndex {
     COLLECT,
     PICKAXE,
     AXE,
+    INCANT
 };
 
     #define NB_BODY_ANIM 5
@@ -54,7 +56,10 @@ class Trantorian {
         void changeTile(const sf::Vector2f&, float, const sf::Clock&);
         void collect(const std::map<resource_e, std::shared_ptr<ResourceNode>>&,
             float, const sf::Clock& clock);
-
+        void startIncantation(const std::shared_ptr<IncantationObject>&,
+            float, const sf::Clock&);
+        void endIncantation(const sf::Vector2f&,
+            float, const sf::Clock&);
         ResourceGroup getInventory(void) const;
 
         sf::Vector2i map_pos;
