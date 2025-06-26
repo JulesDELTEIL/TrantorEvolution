@@ -100,8 +100,12 @@ int action_look(serverdata_t *sdata, fdarray_t *fdarray,
 {
     char answer[BUFSIZ] = {0};
 
-    fill_answer(sdata, client, answer);
-    set_message(client, answer, NULL);
+    if (client->player->level >= 8) {
+        set_message(client, "ko", NULL);
+    } else {
+        fill_answer(sdata, client, answer);
+        set_message(client, answer, NULL);
+    }
 }
 
 // COMMAND

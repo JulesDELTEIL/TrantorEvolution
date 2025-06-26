@@ -91,6 +91,7 @@ int cmd_set(serverdata_t *sdata, fdarray_t *fdarray,
         set_message(client, "ko", NULL);
         return EXIT_FAILURE;
     }
+    client->player->level += 1;
     client->player->action.cmd = strdup(ACTIONS_ARR[SET].name);
     client->player->action.data = strdup(data);
     client->player->action.status = ONGOING;
