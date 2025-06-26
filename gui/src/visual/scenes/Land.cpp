@@ -10,6 +10,7 @@
 #include <cstdlib>
 #include <ctime>
 
+#include "maths.hpp"
 #include "visual/scenes/Land.hpp"
 #include "visual/visual.hpp"
 
@@ -199,10 +200,12 @@ void Land::checkHudEvent(const core::Engine& engine)
     if (engine.events.type == sf::Event::MouseButtonPressed) {
         if (engine.events.mouseButton.button == sf::Mouse::Left) {
             sf::Vector2i mpos = sf::Mouse::getPosition(engine.window);
-            if (hitTile(mpos))
-                _hud.changeStatus(HudType_e::TILE_INFO);
+            mpos.x += getViewPos().x;
+            mpos.y += getViewPos().y;
             if (hitTrantor(mpos))
                 _hud.changeStatus(HudType_e::TRANTOR_INFO);
+            else if (hitTile(mpos))
+                _hud.changeStatus(HudType_e::TILE_INFO);
         }
     }
 }
@@ -216,12 +219,19 @@ bool Land::hitTrantor(const sf::Vector2i&)
     return false;
 }
 
-bool Land::hitTile(const sf::Vector2i&)
+bool Land::hitTile(const sf::Vector2i& mpos)
 {
     for (const auto& tileY : _tiles) {
         for (const auto& tileX : tileY.second) {
-            _hud.changeTileInfo(tileX.second.tile);
-            return true;
+            sf::Vector2f tile_top = tileX.second.tile->getPos();
+            sf::Vector2f tile_bot = GET_TILE_BOT(tile_top);
+            sf::Vector2f tile_left = GET_TILE_LEFT(tile_top);
+            sf::Vector2f tile_right = GET_TILE_RIGHT(tile_top);
+            if (hitTriangle(sf::Vector2f(mpos), tile_top, tile_bot, tile_left) ||
+                hitTriangle(sf::Vector2f(mpos), tile_top, tile_bot, tile_right)) {
+                _hud.changeTileInfo(tileX.second.tile);
+                return true;
+            }
         }
     }
     return true;

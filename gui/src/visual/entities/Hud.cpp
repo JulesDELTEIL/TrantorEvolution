@@ -61,15 +61,19 @@ void Hud::updateInfo(void)
 {
     switch (static_cast<int>(_status)) {
         case TRANTOR_INFO:
-            if (_trantorian == nullptr)
+            if (_trantorian == nullptr) {
                 _status = NO_INFO;
+                return;
+            }
             _infos.position = _trantorian->map_pos;
             _infos.resources = _trantorian->getInventory();
             _display.move(_trantorian->actual_pos);
             break;
         case TILE_INFO:
-            if (_tile == nullptr)
+            if (_tile == nullptr) {
                 _status = NO_INFO;
+                return;
+            }
             _infos.resources = _tile->getResources();
             _display.move(_tile->getPos());
             break;
