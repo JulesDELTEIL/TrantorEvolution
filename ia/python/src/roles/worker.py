@@ -26,33 +26,39 @@ class Worker(BaseRole):
         # if self.state.motivation.hunger > 0.7:
             # logique pour chercher de la food (vision...)
         if self.mode == 'GATHERING':
-            print("condition")
-            print(self.state.last_vision)
-            for objects in self.state.last_vision:
-                for stone in STONES.keys():
-                    if stone in objects:
-                        self.carry = stone
-                        self.mode = 'DELIVERING'
-                        self.queue.appendleft(Commands(Action.TAKE, stone))
-                        return
-            
+            if self.carry is not None:
+                return
+            if self.pos[0] == self.queens_pos[0] and self.pos[1] == self.queens_pos[1]:
+                self.queue.appendleft(Commands(Action.FORWARD))
+                return
+            if self.state.last_vision is not None:
+                for objects in self.state.last_vision:
+                    for stone in STONES.keys():
+                        if stone in objects:
+                            print("je prends", stone)
+                            self.carry = stone
+                            #self.mode = 'DELIVERING'
+                            self.queue.appendleft(Commands(Action.TAKE, stone))
+                            return
+
+            self.state.last_vision = None
             self.queue.appendleft(Commands(Action.FORWARD))
             if self.cycle % 2 == 0:
                 self.queue.appendleft(Commands(Action.LEFT))
             else:
                 self.queue.appendleft(Commands(Action.RIGHT))
-            self.queue.appendleft(Commands(Action.FORWARD))
             self.queue.appendleft(Commands(Action.LOOK))
             return
 
         elif self.mode == 'DELIVERING':
-            if self.pos == self.queens_pos:
+            if self.pos[0] == self.queens_pos[0] and self.pos[1] == self.queens_pos[1]:
                 print("je pose", self.carry)
                 self.mode = 'GATHERING'
                 self.queue.appendleft(Commands(Action.SET, self.carry))
                 self.carry = None
+                self.state.last_vision = None
             else:
-                self.state.get_movements(self.pos, self.queens_pos, self.direction)
+                self.queue = self.state.get_movements(self.pos, self.queens_pos, self.direction)
     
     def setup_direction(self) -> None:
         self.queue.appendleft(Commands(Action.FORWARD))

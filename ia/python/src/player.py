@@ -7,6 +7,7 @@
 
 from src.motivation import Motivation
 from src.action import *
+from collections import deque
 
 class PlayerState:
     def __init__(self):
@@ -39,54 +40,51 @@ class PlayerState:
             raise ValueError("Format inattendu")
         inner = s[1:-1]
 
-        raw_tiles = inner.split('],')
+        raw_tiles = inner.split(',')
         vision = []
         for raw in raw_tiles:
-            t = raw.strip()
-            if t.startswith('['):
-                t = t[1:]
-            if t.endswith(']'):
-                t = t[:-1]
-            if t == '':
+            raw = raw.strip()
+            if raw == '':
                 vision.append([])
             else:
-                parts = [w.strip() for w in t.split(' ') if w.strip()]
-                vision.append([w.strip(',') for w in parts])
-            self.last_vision = vision[0]
+                objs = [obj for obj in raw.split() if obj]
+                vision.append(objs)
+        self.last_vision = vision[0]
         return vision
     
     def get_movements(self, start: list[int], end: list[int], direction: str) -> list[Commands]:
-        commands_queue = []
+        commands_queue = deque()
         dx = end[0] - start[0]
         dy = end[1] - start[1]
 
         directions = ['up', 'right', 'down', 'left']
 
-        def turn_to(current, target):
-            moves = []
-            ci = directions.index(current)
-            ti = directions.index(target)
+        def turn_to(current, target, queue):
+            ci = directions.index(current) + 1
+            ti = directions.index(target) + 1
             diff = (ti - ci) % 4
             if diff == 1:
-                moves.append(Commands(Action.RIGHT))
+                queue.appendleft(Commands(Action.LEFT))
             elif diff == 2:
-                moves += [Commands(Action.RIGHT), Commands(Action.RIGHT)]
+                queue.appendleft(Commands(Action.RIGHT))
+                queue.appendleft(Commands(Action.RIGHT))
             elif diff == 3:
-                moves.append(Commands(Action.LEFT))
-            return moves
+                queue.appendleft(Commands(Action.RIGHT))
+            return queue
 
         # Mouvements en x
         if dx != 0:
             target_dir = 'right' if dx > 0 else 'left'
-            commands_queue += turn_to(direction, target_dir)
-            commands_queue += [Commands(Action.FORWARD)] * abs(dx)
+            turn_to(direction, target_dir, commands_queue)
+            for _ in range(abs(dx)):
+                commands_queue.appendleft(Commands(Action.FORWARD))
             direction = target_dir
 
         # Mouvements en y
         if dy != 0:
             target_dir = 'up' if dy > 0 else 'down'
-            commands_queue += turn_to(direction, target_dir)
-            commands_queue += [Commands(Action.FORWARD)] * abs(dy)
+            turn_to(direction, target_dir, commands_queue)
+            for _ in range(abs(dy)):
+                commands_queue.appendleft(Commands(Action.FORWARD))
             direction = target_dir
-
         return commands_queue
