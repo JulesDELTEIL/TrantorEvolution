@@ -18,4 +18,4 @@ static const pos_t EJECT_DIR[] = {
     {-1, 0}
 };
 
-#endif /* !GAME_H_ */
+#endif
