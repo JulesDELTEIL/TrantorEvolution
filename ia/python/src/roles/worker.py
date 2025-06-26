@@ -8,6 +8,7 @@
 from src.roles.base_role import BaseRole
 from src.action import Commands, Action
 from src.stones import STONES
+import random
 
 class Worker(BaseRole):
     def __init__(self):
@@ -20,6 +21,7 @@ class Worker(BaseRole):
         #test
         self.queens_pos = [0, 0]
         self.direction = "up"
+        self.random = random
         
     def decide_action(self) -> None:
         self.cycle += 1
@@ -42,16 +44,10 @@ class Worker(BaseRole):
                             return
 
             self.state.last_vision = None
-            if self.cycle > 15:
-                if self.cycle % 3 == 0:
-                    self.queue.appendleft(Commands(Action.LEFT))
-                else:
-                    self.queue.appendleft(Commands(Action.RIGHT))
+            if self.random.choice([0,1]) == 0:
+                self.queue.appendleft(Commands(Action.LEFT))
             else:
-                if self.cycle % 3 == 0:
-                    self.queue.appendleft(Commands(Action.LEFT))
-                else:
-                    self.queue.appendleft(Commands(Action.RIGHT))
+                self.queue.appendleft(Commands(Action.RIGHT))
             self.queue.appendleft(Commands(Action.FORWARD))
             self.queue.appendleft(Commands(Action.LOOK))
             return
