@@ -67,9 +67,9 @@ class Land : public AScene {
         void posTrantorian(const network::NetPack& pack);
 
         Hud _hud;
-        void checkHudEvent(const core::Engine& engine);
-        bool hitTrantor(const sf::Vector2i&);
-        bool hitTile(const sf::Vector2i&);
+        void checkHudEvent(const core::Engine& engine, const network::NetEventPack& net_pack);
+        bool hitTrantor(const sf::Vector2f&);
+        bool hitTile(const sf::Vector2f&);
 
         struct TileInfo {
             std::shared_ptr<Tile> tile;

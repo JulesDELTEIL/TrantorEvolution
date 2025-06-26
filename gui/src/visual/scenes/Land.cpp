@@ -38,14 +38,13 @@ void Land::display(sf::RenderTarget& render)
     }
     for (auto& trantor : _trantorians)
         trantor.second->draw(render, _clock);
-    // render.setView(render.getDefaultView());
     _hud.display(render, _clock);
 }
 
 void Land::event(const core::Engine& engine, const network::NetEventPack& net_pack)
 {
     viewEvent(engine.events);
-    checkHudEvent(engine);
+    checkHudEvent(engine, net_pack);
     switch (static_cast<int>(net_pack.event)) {
         case network::MSIZE:
             _map_size = sf::Vector2f(net_pack.pack[0].getFloat(), net_pack.pack[1].getFloat());
@@ -194,14 +193,12 @@ void Land::posTrantorian(const network::NetPack& pack)
     }
 }
 
-void Land::checkHudEvent(const core::Engine& engine)
+void Land::checkHudEvent(const core::Engine& engine, const network::NetEventPack& net_pack)
 {
-    _hud.event(engine.events);
+    _hud.event(engine.events, net_pack);
     if (engine.events.type == sf::Event::MouseButtonPressed) {
         if (engine.events.mouseButton.button == sf::Mouse::Left) {
-            sf::Vector2i mpos = sf::Mouse::getPosition(engine.window);
-            mpos.x += getViewPos().x;
-            mpos.y += getViewPos().y;
+            sf::Vector2f mpos = engine.window.mapPixelToCoords(sf::Mouse::getPosition(engine.window), _camera);
             if (hitTrantor(mpos))
                 _hud.changeStatus(HudType_e::TRANTOR_INFO);
             else if (hitTile(mpos))
@@ -210,16 +207,18 @@ void Land::checkHudEvent(const core::Engine& engine)
     }
 }
 
-bool Land::hitTrantor(const sf::Vector2i&)
+bool Land::hitTrantor(const sf::Vector2f&)
 {
-    for (const auto& trantor : _trantorians) {
-        _hud.changeTrantorInfo(trantor.second);
-        return true;
-    }
+    // for (const auto& trantor : _trantorians) {
+    //     if () {
+    //         _hud.changeTrantorInfo(trantor.second);
+    //         return true;
+    //     }
+    // }
     return false;
 }
 
-bool Land::hitTile(const sf::Vector2i& mpos)
+bool Land::hitTile(const sf::Vector2f& mpos)
 {
     for (const auto& tileY : _tiles) {
         for (const auto& tileX : tileY.second) {
