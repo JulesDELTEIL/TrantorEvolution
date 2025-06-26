@@ -82,7 +82,7 @@ int kill_player(serverdata_t *sdata, fdarray_t *fdarray, client_t *client)
 {
     if (client->player == NULL)
         return EXIT_FAILURE;
-    set_message(client, "dead", NULL, sdata->debug);
+    set_message(client, "dead", NULL);
     send_gui_p_death(sdata, fdarray, client);
     drop_inventory(&(sdata->game_data), client->player);
     if (client->player->action.cmd != NULL)
@@ -138,7 +138,7 @@ int send_pnw(serverdata_t *sdata, player_t *player, client_t *ui_client)
         player->level,
         player->team->name
     );
-    set_message(ui_client, "pnw", buff, sdata->debug);
+    set_message(ui_client, "pnw", buff);
     return EXIT_SUCCESS;
 }
 

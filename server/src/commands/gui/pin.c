@@ -20,12 +20,12 @@ int cmd_pin(serverdata_t *sdata, fdarray_t *fdarray,
     player_t *player = NULL;
 
     if (strlen(data) == 0) {
-        set_message(client, "sbp", NULL, sdata->debug);
+        set_message(client, "sbp", NULL);
         return EXIT_FAILURE;
     }
     player = get_player_pos(sdata, atoi(data));
     if (player == NULL) {
-        set_message(client, "sbp", NULL, sdata->debug);
+        set_message(client, "sbp", NULL);
         return EXIT_FAILURE;
     }
     sprintf(answer, "%d %d %d %d %d %d %d %d %d %d",
@@ -33,6 +33,6 @@ int cmd_pin(serverdata_t *sdata, fdarray_t *fdarray,
     player->inventory[FOOD], player->inventory[WOOD], player->inventory[ROCK],
     player->inventory[CLAY], player->inventory[METAL], player->inventory[OIL],
     player->inventory[ANTIMATTER]);
-    set_message(client, "pin", answer, sdata->debug);
+    set_message(client, "pin", answer);
     return EXIT_SUCCESS;
 }

@@ -25,7 +25,7 @@ int send_data(client_t *client, bool debug);
 /*
 Used to write DATA to client buffer output
 */
-int set_message(client_t *client, char *cmd, char *data, bool debug);
+int set_message(client_t *client, char *cmd, char *data);
 
 /*
 Used to find a player based on his id

@@ -102,7 +102,7 @@ static int add_message_to_queue(client_t *client, char *msg, uint_t len)
     client->buffout = new;
 }
 
-int set_message(client_t *client, char *cmd, char *data, bool debug)
+int set_message(client_t *client, char *cmd, char *data)
 {
     uint_t datalen = get_datalen(data);
     uint_t cmdlen = get_datalen(cmd);
