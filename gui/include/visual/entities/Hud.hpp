@@ -77,13 +77,13 @@ class Hud {
         void changeStatus(HudType_e);
         void changeTrantorInfo(std::shared_ptr<Trantorian>);
         void changeTileInfo(std::shared_ptr<Tile>);
+        void updateInfo(void);
 
     private:
         float _last_time = 0;
         HudType_e _status = NO_INFO;
         HudInfos _infos;
         HudDisplay _display;
-        void updateInfo(void);
 
         size_t _nb_trantors = 0;
         std::unordered_map<std::string, int> _nb_teams;

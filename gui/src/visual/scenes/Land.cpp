@@ -229,6 +229,7 @@ bool Land::hitTile(const sf::Vector2f& mpos)
             if (hitTriangle(sf::Vector2f(mpos), tile_top, tile_bot, tile_left) ||
                 hitTriangle(sf::Vector2f(mpos), tile_top, tile_bot, tile_right)) {
                 _hud.changeTileInfo(tileX.second.tile);
+                _hud.updateInfo();
                 return true;
             }
         }
