@@ -50,10 +50,14 @@ static int eject_players(serverdata_t *sdata, client_t *client)
 int action_eject(serverdata_t *sdata, fdarray_t *fdarray,
     client_t *client, char *data)
 {
+    char answer[BUFFSIZE] = {0};
+
     if (eject_players(sdata, client))
         set_message(client, "ok", NULL);
     else
         set_message(client, "ko", NULL);
+    sprintf(answer, "%d", client->player->id);
+    send_guis(sdata, fdarray, "pex", answer);
 }
 
 // COMMAND
