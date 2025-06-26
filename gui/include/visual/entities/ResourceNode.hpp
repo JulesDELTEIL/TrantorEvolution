@@ -49,7 +49,8 @@ class ResourceNode {
         void draw(sf::RenderTarget&);
         sf::Vector2f getCollectPosition(void);
         void updateQuantity(size_t);
-        resource_e getType(void);
+        resource_e getType(void) const;
+        size_t getQuantity(void) const;
 
     private:
         Drawable _resource;
