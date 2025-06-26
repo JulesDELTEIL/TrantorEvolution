@@ -5,8 +5,6 @@
 ** Hud.cpp
 */
 
-#include <iostream> // test purpose (to delete)
-
 #include "visual/entities/Hud.hpp"
 
 namespace gui {
