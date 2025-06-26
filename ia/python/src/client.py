@@ -134,8 +134,8 @@ class Trantorian (ServerManager) :
 
     def handle_response(self, response: str) -> bool:
         response_list = response.split()
-        if isinstance(self.player, Nobody):
-            if self.player.cycle > 30:
+        if isinstance(self.player, Nobody) and self.player._is_there_anyone == False:
+            if self.player.cycle > 50:
                 self.player = Queen(lambda : self._spawn_new_client())
                 return True
         if response_list[0] == "message":
@@ -155,7 +155,7 @@ class Trantorian (ServerManager) :
                 self.sock.shutdown(socket.SHUT_RDWR)
                 self.sock.close()
                 exit()
-            if self.player.last_sent == Action.INCANTATION or self.player.last_sent == Action.TAKE:
+            if self.player.last_sent == Action.INCANTATION or self.player.last_sent == Action.TAKE or response_list[0] == "Current":
                 self.COMMANDS[self.player.last_sent](response)
             elif response_list[0] == Commands.COMMANDS[self.player.last_sent]["response success"][0]:
                 self.COMMANDS[self.player.last_sent]()
@@ -173,6 +173,11 @@ class Trantorian (ServerManager) :
 
     def _update_mindmap(self, response: str) -> None:
         response_formatted = self.player.state.parse_vision(response)
+        if isinstance(self.player, Nobody):
+            if self.player.state.last_vision.count("player") > 1:
+                self.player._is_there_anyone = True
+            else:
+                self.player._is_there_anyone = False
         self.player.map.update_mindmap(response_formatted, self.player.state.level, self.player.cycle, self.player.pos)
         
     def _turn_left(self):

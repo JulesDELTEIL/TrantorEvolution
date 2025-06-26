@@ -66,14 +66,14 @@ class Queen(BaseRole):
             self.queue.appendleft(Commands(Action.INCANTATION))
             return
         if self.cycle % 2 == 0:
-            self.queue.appendleft(Commands(Action.TAKE, "food"))
-        else:
             self.queue.appendleft(Commands(Action.LOOK))
+        else:
+            self.queue.appendleft(Commands(Action.TAKE, "food"))
 
     def _can_incant(self) -> bool:
-        if self.cycle - self._last_incantation < 50:
+        if self.cycle - self._last_incantation < 60 or (self.state.level < 2 and self.cycle < 150):
             return False
-        if not self.state.last_vision or self.state.last_vision.count('player') < 8:
+        if not self.state.last_vision or self.state.last_vision.count('player') < 6:
             return False
         requirements = self.state.motivation.LEVEL_REQUIREMENTS.get(self.state.level, {})
         current = self.state.last_vision

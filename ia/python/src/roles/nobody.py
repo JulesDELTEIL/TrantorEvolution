@@ -13,6 +13,7 @@ from src.action import Commands, Action
 class Nobody(BaseRole):
     def __init__(self):
         super().__init__()
+        self._is_there_anyone = None
 
     def handle_broadcast(self, response_list: list[str]) -> str:
         if len(response_list) >= 3:
@@ -24,4 +25,7 @@ class Nobody(BaseRole):
 
     def decide_action(self):
         self.cycle += 1
-        self.queue.appendleft(Commands(Action.LEFT))
+        if self.cycle == 1:
+            self.queue.appendleft(Commands(Action.LOOK))
+        else:
+            self.queue.appendleft(Commands(Action.LEFT))
