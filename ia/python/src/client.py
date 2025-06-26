@@ -135,7 +135,7 @@ class Trantorian (ServerManager) :
     def handle_response(self, response: str) -> bool:
         response_list = response.split()
         if isinstance(self.player, Nobody):
-            if self.player.cycle > 10:
+            if self.player.cycle > 15:
                 self.player = Queen(lambda : self._spawn_new_client())
                 return True
         if response_list[0] == "message":

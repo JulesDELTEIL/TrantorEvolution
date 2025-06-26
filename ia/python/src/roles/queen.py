@@ -30,6 +30,7 @@ class Queen(BaseRole):
         self.queue.appendleft(Commands(Action.BROADCAST, 'role;foreman'))
         self.queue.appendleft(Commands(Action.FORK))
         self.queue.appendleft(Commands(Action.BROADCAST, 'role;matriarch'))
+        self.queue.appendleft(Commands(Action.LEFT))
         self.give_birth = False
 
 

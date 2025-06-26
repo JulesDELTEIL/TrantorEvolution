@@ -17,7 +17,7 @@ class Matriarch(BaseRole):
     def decide_action(self):
         self.cycle += 1
 
-        if self.cycle % 2 == 0:
+        if self.cycle % 3 != 0:
             self.queue.appendleft(Commands(Action.TAKE, 'food'))
             if self._fork_count % 2 == 0:
                 self.queue.appendleft(Commands(Action.TAKE, 'food'))
