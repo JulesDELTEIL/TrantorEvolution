@@ -6,6 +6,7 @@
 */
 
 #include "visual/entities/IncantationObject.hpp"
+#include <iostream>
 
 namespace gui {
 namespace visual {
@@ -31,7 +32,7 @@ void IncantationObject::draw(sf::RenderTarget& target)
 sf::Vector2f IncantationObject::getIncantationPosition(void)
 {
     _left_side = !_left_side;
-    return _pedestal.sprite.getPosition() + sf::Vector2f(-2 + 4 * _left_side, 0);
+    return _pedestal.sprite.getPosition() + sf::Vector2f(-2 + 10 * _left_side, 0);
 }
 
 } // visual

@@ -30,6 +30,8 @@ void Land::display(sf::RenderTarget& render)
             tileX.second.tile->draw(render, _clock);
             for (auto& resource : tileX.second.resources)
                 resource.second->draw(render);
+            if (tileX.second.incantation_objects != nullptr)
+                tileX.second.incantation_objects->draw(render);
         }
     }
     for (auto& trantor : _trantorians)

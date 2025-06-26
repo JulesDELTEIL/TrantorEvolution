@@ -43,6 +43,7 @@ static const std::vector<AnimationInfos> BODY_ANIM_INFOS = {
     {"assets/trantorians/body/Crush_Side-Sheet.png", {64, 64}, {8, 1}, {0, 0}, 0.2, sf::Clock()},
     {"assets/trantorians/body/Slice_Side-Sheet.png", {64, 64}, {8, 1}, {0, 0}, 0.2, sf::Clock()},
     {"assets/trantorians/body/Death_Side-Sheet.png", {64, 64}, {8, 1}, {0, 0}, 0.2, sf::Clock()},
+    {"assets/trantorians/body/Evolution-Sheet.png", {64, 64}, {8, 1}, {0, 0}, 0.2, sf::Clock()},
 };
 
 class Trantorian {
