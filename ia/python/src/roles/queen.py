@@ -12,7 +12,6 @@ class Queen(BaseRole):
     def __init__(self, *inp):
         super().__init__()
         if len(inp) == 1 :
-            print("")
             print("------------- JE SUIS UNE REINE MERE------------")
             self.birth_function = inp[0]
             self.waiting_for_slot_number = True
@@ -31,6 +30,7 @@ class Queen(BaseRole):
         self.queue.appendleft(Commands(Action.BROADCAST, 'role;foreman'))
         self.queue.appendleft(Commands(Action.FORK))
         self.queue.appendleft(Commands(Action.BROADCAST, 'role;matriarch'))
+        self.queue.appendleft(Commands(Action.LEFT))
         self.give_birth = False
 
 
@@ -60,25 +60,24 @@ class Queen(BaseRole):
         if self.give_birth :
             self.handle_mother_queen()
             return
-        if len(self.queue) == 0 :
-            self.cycle += 1
-            if self._can_incant():
-                self.queue.appendleft(Commands(Action.INCANTATION))
-                return
-            if self.cycle < 4:
-                self.queue.appendleft(Commands(Action.TAKE, "food"))
-                return
-            else:
-                self.cycle = 0
-                self.queue.appendleft(Commands(Action.LOOK))
+        self.cycle += 1
+        if self._can_incant():
+            self.queue.appendleft(Commands(Action.INCANTATION))
+            return
+        if self.cycle % 8 == 0:
+            self.queue.appendleft(Commands(Action.LOOK))
+        elif self.cycle % 5 == 1:
+            self.queue.appendleft(Commands(Action.TAKE, "food"))
+        else:
+            self.queue.appendleft(Commands(Action.LOOK))
 
     def _can_incant(self) -> bool:
-        if not self.state.last_vision :
+        if not self.state.last_vision or self.state.last_vision.count('player') < 8:
             return False
         requirements = self.state.motivation.LEVEL_REQUIREMENTS.get(self.state.level, {})
-        current = self.state.last_vision[0].split()
-        for stone, needed in requirements.items():
-            if current.count(stone) < needed:
+        current = self.state.last_vision
+        for stone in requirements.keys():
+            if current.count(stone) < requirements[stone]:
                 return False
         return True
 

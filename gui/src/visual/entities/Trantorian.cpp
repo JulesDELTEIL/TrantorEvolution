@@ -105,6 +105,29 @@ void Trantorian::collect(const std::map<resource_e, std::shared_ptr<ResourceNode
     }
 }
 
+void Trantorian::startIncantation(const std::shared_ptr<IncantationObject>& incantation_object,
+    float time, const sf::Clock& clock)
+{
+    for (size_t index = 0; index < NB_TRANTORS; index++) {
+        _type[index] = INCANT;
+        move(index, incantation_object->getIncantationPosition(), time, clock);
+    }
+}
+
+void Trantorian::endIncantation(const sf::Vector2f& pos,
+    float time, const sf::Clock& clock)
+{
+    for (size_t index = 0; index < NB_TRANTORS; index++) {
+        sf::Vector2f random_pos = {
+            pos.x + std::rand() % RES_RANGE_X + RES_MIN_X,
+            pos.y + std::rand() % RES_RANGE_Y + RES_MIN_Y
+        };
+        _type[index] = IDLE;
+        move(index, random_pos, time, clock);
+    }
+}
+
+
 ResourceGroup Trantorian::getInventory(void) const
 {
     return _inventory;
