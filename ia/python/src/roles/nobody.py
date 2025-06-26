@@ -24,5 +24,4 @@ class Nobody(BaseRole):
 
     def decide_action(self):
         self.cycle += 1
-        if len(self.queue) == 0:
-            self.queue.appendleft(Commands(Action.LEFT))
+        self.queue.appendleft(Commands(Action.LEFT))

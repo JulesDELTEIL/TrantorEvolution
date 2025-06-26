@@ -42,11 +42,17 @@ class Worker(BaseRole):
                             return
 
             self.state.last_vision = None
-            self.queue.appendleft(Commands(Action.FORWARD))
-            if self.cycle % 2 == 0:
-                self.queue.appendleft(Commands(Action.LEFT))
+            if self.cycle > 15:
+                if self.cycle % 3 == 0:
+                    self.queue.appendleft(Commands(Action.LEFT))
+                else:
+                    self.queue.appendleft(Commands(Action.RIGHT))
             else:
-                self.queue.appendleft(Commands(Action.RIGHT))
+                if self.cycle % 3 == 0:
+                    self.queue.appendleft(Commands(Action.LEFT))
+                else:
+                    self.queue.appendleft(Commands(Action.RIGHT))
+            self.queue.appendleft(Commands(Action.FORWARD))
             self.queue.appendleft(Commands(Action.LOOK))
             return
 
