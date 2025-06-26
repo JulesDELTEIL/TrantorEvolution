@@ -13,7 +13,7 @@ class MapMemory:
     def update_mindmap(self, response_formatted: list[list[str]], level: int, cycle: int, pos: list[int]) -> None:
         relative_coords = self._vision_coords(level)
         px, py = pos[0], pos[1]
-        for i in range(len(response_formatted)):
+        for i in range(len(relative_coords)):
             absolute_coord = [px + relative_coords[i][0], py + relative_coords[i][1]]
             self.update(absolute_coord, response_formatted[i], cycle)
 

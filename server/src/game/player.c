@@ -57,11 +57,34 @@ int del_player(game_t *game, int id)
     return EXIT_FAILURE;
 }
 
-int kill_player(serverdata_t *sdata, client_t *client)
+static void drop_inventory(game_t *game, player_t *player)
+{
+    tile_t *tile = NULL;
+
+    pthread_mutex_lock(&(game->map.mutex));
+    tile = &(game->map.tiles[player->pos.x][player->pos.y]);
+    for (uint_t k = 0; k < NB_RESOURCES; k++) {
+        tile->resources[k] += player->inventory[k];
+    }
+    pthread_mutex_unlock(&(game->map.mutex));
+}
+
+static int send_gui_p_death(serverdata_t *sdata, fdarray_t *fdarray,
+    client_t *client)
+{
+    char answer[BUFFSIZE] = {0};
+
+    sprintf(answer, "%d", client->player->id);
+    send_guis(sdata, fdarray, "pdi", answer);
+}
+
+int kill_player(serverdata_t *sdata, fdarray_t *fdarray, client_t *client)
 {
     if (client->player == NULL)
         return EXIT_FAILURE;
-    send_data(client, "dead", NULL, sdata->debug);
+    set_message(client, "dead", NULL);
+    send_gui_p_death(sdata, fdarray, client);
+    drop_inventory(&(sdata->game_data), client->player);
     if (client->player->action.cmd != NULL)
         free(client->player->action.cmd);
     if (client->player->action.data != NULL)
@@ -86,7 +109,7 @@ static int add_player(game_t *game, client_t *client, team_t *team)
 
     new->id = game->next;
     new->team = team;
-    new->level = 0;
+    new->level = 1;
     if (team->eggs != NULL) {
         new->pos = team->eggs->pos;
         del_egg(team, new->pos);
@@ -115,7 +138,7 @@ int send_pnw(serverdata_t *sdata, player_t *player, client_t *ui_client)
         player->level,
         player->team->name
     );
-    send_data(ui_client, "pnw", buff, sdata->debug);
+    set_message(ui_client, "pnw", buff);
     return EXIT_SUCCESS;
 }
 
