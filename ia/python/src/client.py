@@ -11,6 +11,7 @@ from curses.ascii import isdigit
 from sqlite3 import connect
 from time import sleep
 
+import src.cypher as cyp
 from src.roles.role_map import ROLE_MAP
 from src.roles.nobody import Nobody
 from src.roles.queen import Queen
@@ -96,6 +97,9 @@ class Trantorian (ServerManager) :
             self.player.decide_action()
         if self.player.queue :
             action = self.player.queue.pop()
+            if action.action == Action.BROADCAST :
+                print("SEND ACTION :", action.argument)
+                action.argument = cyp.cypher(action.argument, self.team_name)
             if action.action != Action.NONE:
                 self.send((action.__str__() + "\n").encode())
                 self.player.last_sent = action.action
@@ -126,11 +130,23 @@ class Trantorian (ServerManager) :
             self.player = ROLE_MAP[response_list[2][5:]]()
             return False
         if broadcast == "QUIT":
-            action = Commands(Action.BROADCAST, 'quitting')
+            action = Commands(Action.BROADCAST, cyp.cypher("quitting", self.team_name))
             self.player.last_sent = action.action
             self.send((action.__str__() + "\n").encode())
             sleep(4)
         return False
+
+
+    def translate_broadcast(self, response_list: list[str]) -> list[str]:
+        real_broadcast = []
+        broadcast_message = cyp.decypher(response_list[2], self.team_name)
+        if not broadcast_message :
+            return []
+        for i in range(2):
+            real_broadcast.append(response_list[i])
+        for item in broadcast_message.split() :
+            real_broadcast.append(item)
+        return real_broadcast
 
     def handle_response(self, response: str) -> bool:
         response_list = response.split()
@@ -139,9 +155,12 @@ class Trantorian (ServerManager) :
                 self.player = Queen(lambda : self._spawn_new_client())
                 return True
         if response_list[0] == "message":
+            deciphered_broadcast = self.translate_broadcast(response_list)
+            if not deciphered_broadcast:
+                return False
             if isinstance(self.player, Nobody): # response du serveur -> "message K, text envoyé" -> ex avec notre protocol: "message K, [Queen] role Queen"
-                return self.handle_nobody(response_list)
-            self.player.handle_broadcast(response_list)
+                return self.handle_nobody(deciphered_broadcast)
+            self.player.handle_broadcast(deciphered_broadcast)
             return False
         if response_list[0] == "Current":
             self.player.state.level = int(response_list[2])
@@ -151,7 +170,7 @@ class Trantorian (ServerManager) :
             if response_list[0][0] == '[':
                 if self.player.last_sent == Action.LOOK or self.player.last_sent == Action.INVENTORY:
                     self.COMMANDS[self.player.last_sent](response)
-            if self.player.last_sent == Action.BROADCAST and response_list[0] == "ok" and isinstance(self.player, Nobody)  :
+            if self.player.last_sent == Action.BROADCAST and response_list[0] == "ok" and isinstance(self.player, Nobody):
                 self.sock.shutdown(socket.SHUT_RDWR)
                 self.sock.close()
                 exit()
