@@ -24,10 +24,10 @@ static int send_tile(serverdata_t *sdata, client_t *client, int x, int y)
         sdata->game_data.map.tiles[x][y].resources[ROCK],
         sdata->game_data.map.tiles[x][y].resources[CLAY],
         sdata->game_data.map.tiles[x][y].resources[METAL],
-        sdata->game_data.map.tiles[x][y].resources[PETROL],
+        sdata->game_data.map.tiles[x][y].resources[OIL],
         sdata->game_data.map.tiles[x][y].resources[ANTIMATTER]
     );
-    send_data(client, "bct", answer, sdata->debug);
+    set_message(client, "bct", answer);
 }
 
 static int loop_send_tiles(serverdata_t *sdata, client_t *client)
@@ -45,7 +45,7 @@ int cmd_mct(serverdata_t *sdata, fdarray_t *fdarray,
     int rc = DEFAULTRC;
 
     if (strlen(data) != 0) {
-        send_data(client, "ko", NULL, sdata->debug);
+        set_message(client, "ko", NULL);
         return EXIT_FAILURE;
     }
     loop_send_tiles(sdata, client);

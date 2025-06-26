@@ -5,7 +5,7 @@
 ** AScene.cpp
 */
 
-#include "visual/interfaces/AScene.hpp"
+#include "visual/AScene.hpp"
 
 #include "core/Engine.hpp"
 
@@ -18,6 +18,16 @@ AScene::AScene(const sf::FloatRect& rect) : _camera(rect)
 sf::View AScene::getView(void)
 {
     return _camera;
+}
+
+sf::Vector2f AScene::getViewPos(void) const
+{
+    sf::Vector2f pos = _camera.getCenter();
+    sf::Vector2f size = _camera.getSize();
+
+    pos.x -= size.x / 2;
+    pos.y -= size.y / 2;
+    return pos;
 }
 
 void AScene::zoom(float scale)

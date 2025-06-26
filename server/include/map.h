@@ -14,11 +14,28 @@
     #define ROCK_DENS 0.15
     #define CLAY_DENS 0.1
     #define METAL_DENS 0.1
-    #define PETROL_DENS 0.08
+    #define OIL_DENS 0.08
     #define ANTIMATTER_DENS 0.05
     #define WORLD_DENS(args) ((args)->width * (args)->height)
     #define X_COORD(i, heigt) (i / height)
     #define Y_COORD(i, heigt) (i % height)
+    #define SEA_NOISE 0.20
+    #define BEACH_NOISE 0.35
+    #define PLAINS_NOISE 0.50
+    #define FOREST_NOISE 0.70
+
+/*
+perlin noise function call for a 2d map
+int x = x coord
+int y = y coord
+float freq = density of the noise
+int depth = deformation of the noise
+*/
+float perlin_2d(float x, float y, float freq, int depth);
+
+
+    #define HASH_SIZE 256
+    #define FOLLOWING_ONE 1
 
 /*
 struct map_t :
@@ -28,6 +45,7 @@ struct map_t :
 typedef struct tile_s {
     unsigned int resources[NB_RESOURCES];
     unsigned int biome;
+    double noise;
 } tile_t;
 
 typedef struct map_s {

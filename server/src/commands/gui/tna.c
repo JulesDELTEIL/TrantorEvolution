@@ -17,11 +17,11 @@ int cmd_tna(serverdata_t *sdata, fdarray_t *fdarray,
     int rc = DEFAULTRC;
 
     if (strlen(data) != 0) {
-        send_data(client, "ko", NULL, sdata->debug);
+        set_message(client, "ko", NULL);
         return EXIT_FAILURE;
     }
     for (uint_t k = 0; sdata->args->team_name[k]; k++) {
-        send_data(client, "tna", sdata->args->team_name[k], sdata->debug);
+        set_message(client, "tna", sdata->args->team_name[k]);
     }
     return EXIT_SUCCESS;
 }

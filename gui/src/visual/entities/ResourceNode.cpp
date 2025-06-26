@@ -31,7 +31,8 @@ ResourceNode::ResourceNode(const sf::Vector2f& pos, resource_e type, size_t quan
 
 void ResourceNode::draw(sf::RenderTarget& target)
 {
-    target.draw(_resource.sprite);
+    if (_quantity > 0)
+        target.draw(_resource.sprite);
 }
 
 sf::Vector2f ResourceNode::getCollectPosition(void)
@@ -39,10 +40,9 @@ sf::Vector2f ResourceNode::getCollectPosition(void)
     return _resource.sprite.getPosition() + sf::Vector2f(-2, 0);
 }
 
-void ResourceNode::addQuantity(size_t to_add)
+void ResourceNode::updateQuantity(size_t new_quantity)
 {
-    sf::Vector2f scale;
-    size_t new_quantity = to_add + _quantity;
+    sf::Vector2f scale = {0, 0};
 
     _quantity = new_quantity;
     if (new_quantity > SCALE_RATIO)
@@ -52,9 +52,14 @@ void ResourceNode::addQuantity(size_t to_add)
     _resource.sprite.setScale(scale);
 }
 
-resource_e ResourceNode::getType(void)
+resource_e ResourceNode::getType(void) const
 {
     return _type;
+}
+
+size_t ResourceNode::getQuantity(void) const
+{
+    return _quantity;
 }
 
 } // visual

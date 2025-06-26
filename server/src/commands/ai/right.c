@@ -8,6 +8,7 @@
 #include <unistd.h>
 #include <stdlib.h>
 #include <string.h>
+#include <stdio.h>
 
 #include "transmission.h"
 #include "commands.h"
@@ -15,9 +16,25 @@
 
 static void rotate_player(player_t *player)
 {
-    player->orientation -= 1;
-    if (player->orientation < N)
-        player->orientation = W;
+    int res = player->orientation + 1;
+
+    if (res > W)
+        res = N;
+    player->orientation = res;
+}
+
+static void send_gui_p_moved(serverdata_t *sdata, fdarray_t *fdarray,
+    client_t *client)
+{
+    char data[BUFFSIZE] = {0};
+
+    sprintf(data, "%d %d %d %d",
+        client->player->id,
+        client->player->pos.x,
+        client->player->pos.y,
+        client->player->orientation
+    );
+    send_guis(sdata, fdarray, "ppo", data);
 }
 
 // ACTION
@@ -25,7 +42,8 @@ int action_right(serverdata_t *sdata, fdarray_t *fdarray,
     client_t *client, char *data)
 {
     rotate_player(client->player);
-    send_data(client, "ok", NULL, sdata->debug);
+    set_message(client, "ok", NULL);
+    send_gui_p_moved(sdata, fdarray, client);
 }
 
 // COMMAND
@@ -33,7 +51,7 @@ int cmd_right(serverdata_t *sdata, fdarray_t *fdarray,
     client_t *client, char *data)
 {
     if (strlen(data) != 0) {
-        send_data(client, "ko", NULL, sdata->debug);
+        set_message(client, "ko", NULL);
         return EXIT_FAILURE;
     }
     client->player->action.cmd = strdup(ACTIONS_ARR[RIGHT].name);

@@ -19,16 +19,16 @@ static int send_inventory(serverdata_t *sdata, client_t *client)
     char answer[BUFFSIZE] = {0};
 
     sprintf(answer,
-    "[food %d, wood %d, rock %d, clay %d, metal %d, petrol %d, antimatter %d]",
-    client->player->inventory[FOOD],
-    client->player->inventory[WOOD],
-    client->player->inventory[ROCK],
-    client->player->inventory[CLAY],
-    client->player->inventory[METAL],
-    client->player->inventory[PETROL],
-    client->player->inventory[ANTIMATTER]
+    "[%s %d, %s %d, %s %d, %s %d, %s %d, %s %d, %s %d]",
+    RESOURCES_NAMES[FOOD], client->player->inventory[FOOD],
+    RESOURCES_NAMES[WOOD], client->player->inventory[WOOD],
+    RESOURCES_NAMES[ROCK], client->player->inventory[ROCK],
+    RESOURCES_NAMES[CLAY], client->player->inventory[CLAY],
+    RESOURCES_NAMES[METAL], client->player->inventory[METAL],
+    RESOURCES_NAMES[OIL], client->player->inventory[OIL],
+    RESOURCES_NAMES[ANTIMATTER], client->player->inventory[ANTIMATTER]
     );
-    send_data(client, answer, NULL, sdata->debug);
+    set_message(client, answer, NULL);
 }
 
 // ACTION
@@ -44,7 +44,7 @@ int cmd_inventory(serverdata_t *sdata, fdarray_t *fdarray,
     client_t *client, char *data)
 {
     if (strlen(data) != 0) {
-        send_data(client, "ko", NULL, sdata->debug);
+        set_message(client, "ko", NULL);
         return EXIT_FAILURE;
     }
     client->player->action.cmd = strdup(ACTIONS_ARR[INVENTORY].name);

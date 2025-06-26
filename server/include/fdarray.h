@@ -15,8 +15,11 @@
     #include "items.h"
     #include "team.h"
     #include "pos.h"
+    #include "buffout.h"
 
     #define NB_DIFF_ITEMS 7
+
+    #define TICKS_FOOD_USE 126
 
 typedef enum player_dir_e {
     N = 1,
@@ -53,6 +56,7 @@ typedef struct player_s {
     player_dir_t orientation;
     action_t action;
     uint_t inventory[NB_DIFF_ITEMS];
+    size_t time_use_life;
     struct player_s *next;
 } player_t;
 
@@ -70,8 +74,9 @@ struct client_t :
 typedef struct client_s {
     int fd;
     int type;
-    char *buffer;
+    char *buffin;
     bool buffin_addition;
+    message_t *buffout;
     player_t *player;
 } client_t;
 

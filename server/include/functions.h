@@ -55,7 +55,7 @@ int openconnection(serverdata_t *sdata, fdarray_t *fdarray);
 /*
 Closes connection with a client
 */
-int closeconnection(serverdata_t *sdata, client_t *client);
+int closeconnection(serverdata_t *sdata, fdarray_t *fdarray, client_t *client);
 
 /*
 Sets an empty client to use space later for an other one
@@ -85,6 +85,12 @@ int new_player(serverdata_t *sdata, fdarray_t *fdarray, client_t *client,
 Deletes a player from the list in GAME depending on its ID
 */
 int del_player(game_t *game, int id);
+
+/*
+Kills a player from CLIENT
+*/
+int kill_player(serverdata_t *sdata, fdarray_t *fdarray,
+    client_t *client);
 
 /*
 Parse the first command found in CLIENT into CMD and DATA

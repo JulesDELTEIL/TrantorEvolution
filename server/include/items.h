@@ -14,18 +14,18 @@ enum ressources_e {
     ROCK,
     CLAY,
     METAL,
-    PETROL,
+    OIL,
     ANTIMATTER
 };
 
 static const char *RESOURCES_NAMES[] = {
     "food",
-    "wood",
-    "rock",
-    "clay",
-    "metal",
-    "petrol",
-    "antimatter"
+    "linemate",
+    "deraumere",
+    "sibur",
+    "mendiane",
+    "phiras",
+    "thystame"
 };
 
 #endif /* !ITEMS_H_ */
