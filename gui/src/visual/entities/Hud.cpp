@@ -49,7 +49,7 @@ void Hud::display(sf::RenderTarget& render, const sf::Clock& clock)
         updateInfo();
         _last_time = clock.getElapsedTime().asMilliseconds();
         _display.g_time.setString("Time:  " + std::to_string(static_cast<int>(clock.getElapsedTime().asSeconds())) + "s");
-        _display.g_nb_teams.setString("Team(s):  " + std::to_string(_nb_teams));
+        _display.g_nb_teams.setString("Team(s):  " + std::to_string(_nb_teams.size()));
         _display.g_nb_trantors.setString("Trantorian(s):  " + std::to_string(_nb_trantors));
     }
     if (_status != NO_INFO)
@@ -80,7 +80,7 @@ void Hud::event(const sf::Event& event, const network::NetEventPack& net_pack)
             _nb_trantors -= 1;
             break;
         case network::TEAMS:
-            _nb_teams += 1;
+            _nb_teams[net_pack.pack[0].getString()] = 1;
             break;
     }
 }

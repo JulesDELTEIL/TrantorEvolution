@@ -10,6 +10,7 @@
 
     #include <SFML/Graphics/Text.hpp>
     #include <SFML/Window/Event.hpp>
+    #include <unordered_map>
 
     #include "visual/Drawable.hpp"
     #include "network/events.hpp"
@@ -31,7 +32,7 @@ namespace visual {
     #define GLOBAL_FONT_SIZE 21
     #define GLOBAL_COLOR_TEXT sf::Color(255, 204, 114, 255)
 
-    #define GLOBAL_MARGIN 30.0f
+    #define GLOBAL_MARGIN 26.0f
     #define GLOBAL_TEXT_SPLIT(i) (30.0f * i) + 5.0f
 
     #define G_TIME_POS sf::Vector2f(GLOBAL_MARGIN, GLOBAL_TEXT_SPLIT(1))
@@ -85,7 +86,7 @@ class Hud {
         void updateInfo(void);
 
         size_t _nb_trantors = 0;
-        size_t _nb_teams = 0;
+        std::unordered_map<std::string, int> _nb_teams;
 
         std::shared_ptr<Trantorian> _trantorian = nullptr;
         std::shared_ptr<Tile> _tile = nullptr;
