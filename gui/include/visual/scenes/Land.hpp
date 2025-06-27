@@ -85,6 +85,7 @@ class Land : public AScene {
         };
 
         std::map<size_t, std::map<size_t, TileInfo>> _tiles;
+        std::map<std::string, std::vector<std::shared_ptr<Trantorian>>> _teams;
         std::map<size_t, std::shared_ptr<Trantorian>> _trantorians;
 };
 
