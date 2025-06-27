@@ -104,6 +104,10 @@ int action_incantation(serverdata_t *sdata, fdarray_t *fdarray,
     sprintf(answer, "Current level: %d", client->player->level);
     set_message(client, answer, NULL);
     send_gui_p_end_inc(sdata, fdarray, client);
+    if (client->player->level >= 8) {
+        printf("GAME END, winner team : %s\n", client->player->team->name);
+        sdata->is_running = false;
+    }
 }
 
 // COMMAND

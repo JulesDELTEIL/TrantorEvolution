@@ -37,5 +37,4 @@ typedef struct serverdata_s {
     bool is_running;
 } serverdata_t;
 
-
 #endif
