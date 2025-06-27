@@ -7,7 +7,6 @@
 
 import socket
 import subprocess
-from time import sleep
 
 import src.cypher as cyp
 from src.roles.role_map import ROLE_MAP
@@ -18,8 +17,6 @@ from src.macros import X, Y
 from src.action import Action, Commands
 from src.server_manager import ServerManager
 from enum import Enum
-
-PLAYER_LEFT = 1
 
 class Direction(Enum):
     UP = "up"
@@ -95,7 +92,6 @@ class Trantorian(ServerManager):
         if self.player._queue:
             action = self.player._queue.pop()
             if action.action == Action.BROADCAST:
-                print("SEND ACTION:", action.argument)
                 action.argument = cyp.cypher(action.argument, self.team_name)
             if action.action != Action.NONE:
                 self.send((action.__str__() + "\n").encode())
@@ -130,7 +126,6 @@ class Trantorian(ServerManager):
             action = Commands(Action.BROADCAST, cyp.cypher("quitting", self.team_name))
             self.player._last_sent = action.action
             self.send((action.__str__() + "\n").encode())
-            sleep(4)
         return False
 
 
