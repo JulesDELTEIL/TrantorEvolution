@@ -51,8 +51,8 @@ class Tile {
         void draw(sf::RenderTarget&, const sf::Clock&);
 
         ResourceGroup getResources(void) const;
-        void updateResource(resource_e, int);
-        void lowerResource(resource_e, int);
+        void updateResource(resource_e, size_t);
+        void lowerResource(resource_e, size_t);
 
         sf::Vector2f getPos(void) const;
         biome_e getBiome(void) const;

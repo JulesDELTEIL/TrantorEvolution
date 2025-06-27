@@ -36,12 +36,12 @@ ResourceGroup Tile::getResources(void) const
     return _resources;
 }
 
-void Tile::updateResource(resource_e type, int factor)
+void Tile::updateResource(resource_e type, size_t factor)
 {
     _resources.at(type) = factor;
 }
 
-void Tile::lowerResource(resource_e type, int factor)
+void Tile::lowerResource(resource_e type, size_t factor)
 {
     if (factor > _resources.at(type))
         _resources.at(type) = 0;

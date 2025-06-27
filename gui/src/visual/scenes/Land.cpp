@@ -118,21 +118,18 @@ void Land::viewEvent(const sf::Event& event)
 void Land::askResources(void)
 {
     _net_running = true;
-    float last_check = 0;
+    float ms_to_wait = 0;
 
     while (_map_size.x == -1)
         std::this_thread::yield();
+    ms_to_wait = (_map_size.x * _map_size.y) * 10;
     while (_net_running) {
-        float time_to_asked = (_map_size.x * _map_size.y) * 10;
-        if (_clock.getElapsedTime().asMilliseconds() > last_check + time_to_asked) {
-            for (size_t y = 0; y < _map_size.y; ++y) {
-                for (size_t x = 0; x < _map_size.x; ++x) {
-                    _client.get().sendData("bct " + std::to_string(x) + " " + std::to_string(y));
-                }
+        for (size_t y = 0; y < _map_size.y; ++y) {
+            for (size_t x = 0; x < _map_size.x; ++x) {
+                _client.get().sendData("bct " + std::to_string(x) + " " + std::to_string(y));
             }
-            last_check = _clock.getElapsedTime().asMilliseconds();
-        } else
-            std::this_thread::yield();
+        }
+        std::this_thread::sleep_for(std::chrono::duration<float, std::milli>(ms_to_wait));
     }
 }
 
