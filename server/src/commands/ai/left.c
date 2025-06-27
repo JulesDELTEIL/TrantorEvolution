@@ -42,7 +42,7 @@ int action_left(serverdata_t *sdata, fdarray_t *fdarray,
     client_t *client, char *data)
 {
     rotate_player(client->player);
-    set_message(client, "ok", NULL, sdata->debug);
+    set_message(client, "ok", NULL);
     send_gui_p_moved(sdata, fdarray, client);
 }
 
@@ -51,7 +51,7 @@ int cmd_left(serverdata_t *sdata, fdarray_t *fdarray,
     client_t *client, char *data)
 {
     if (strlen(data) != 0) {
-        set_message(client, "ko", NULL, sdata->debug);
+        set_message(client, "ko", NULL);
         return EXIT_FAILURE;
     }
     client->player->action.cmd = strdup(ACTIONS_ARR[LEFT].name);

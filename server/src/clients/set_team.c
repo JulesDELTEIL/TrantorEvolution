@@ -20,9 +20,9 @@ static void send_c_data_gui(serverdata_t *sdata, client_t *client)
     char data[BUFFSIZE] = {0};
 
     sprintf(data, "%d", -1);
-    set_message(client, data, NULL, sdata->debug);
+    set_message(client, data, NULL);
     sprintf(data, "%d %d", sdata->args->width, sdata->args->height);
-    set_message(client, data, NULL, sdata->debug);
+    set_message(client, data, NULL);
 }
 
 static void send_c_data_ai(serverdata_t *sdata, client_t *client)
@@ -30,9 +30,9 @@ static void send_c_data_ai(serverdata_t *sdata, client_t *client)
     char data[BUFFSIZE] = {0};
 
     sprintf(data, "%d", client->player->team->space_left);
-    set_message(client, data, NULL, sdata->debug);
+    set_message(client, data, NULL);
     sprintf(data, "%d %d", sdata->args->width, sdata->args->height);
-    set_message(client, data, NULL, sdata->debug);
+    set_message(client, data, NULL);
 }
 
 static int send_players_infos(serverdata_t *sdata, fdarray_t *fdarray,
@@ -63,6 +63,6 @@ int set_team(serverdata_t *sdata, fdarray_t *fdarray,
             return EXIT_SUCCESS;
         }
     }
-    set_message(client, "ko", NULL, sdata->debug);
+    set_message(client, "ko", NULL);
     return EXIT_FAILURE;
 }

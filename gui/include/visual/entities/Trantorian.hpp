@@ -12,6 +12,7 @@
     #include <SFML/Graphics/RenderTarget.hpp>
 
     #include "visual/entities/ResourceNode.hpp"
+    #include "visual/entities/IncantationObject.hpp"
 
     #include "map_tools.h"
     #include "visual/Drawable.hpp"
@@ -21,7 +22,7 @@
 namespace gui {
 namespace visual {
 
-    #define NB_TRANTORS 6
+    #define NB_TRANTORS 7
     #define TRANTOR_SCALE 0.5f
 
 enum BodyAnimIndex {
@@ -30,6 +31,7 @@ enum BodyAnimIndex {
     COLLECT,
     PICKAXE,
     AXE,
+    INCANT
 };
 
     #define NB_BODY_ANIM 5
@@ -41,6 +43,7 @@ static const std::vector<AnimationInfos> BODY_ANIM_INFOS = {
     {"assets/trantorians/body/Crush_Side-Sheet.png", {64, 64}, {8, 1}, {0, 0}, 0.2, sf::Clock()},
     {"assets/trantorians/body/Slice_Side-Sheet.png", {64, 64}, {8, 1}, {0, 0}, 0.2, sf::Clock()},
     {"assets/trantorians/body/Death_Side-Sheet.png", {64, 64}, {8, 1}, {0, 0}, 0.2, sf::Clock()},
+    {"assets/trantorians/body/Evolution-Sheet.png", {64, 64}, {8, 1}, {0, 0}, 0.2, sf::Clock()},
 };
 
 class Trantorian {
@@ -49,22 +52,32 @@ class Trantorian {
             size_t level, const std::string& team_name);
         ~Trantorian() = default;
 
-        void draw(sf::RenderTarget&);
-        void move(int index, const sf::Vector2f&, float);
+        void draw(sf::RenderTarget&, const sf::Clock&);
 
-        void changeTile(const sf::Vector2f&, float);
-        void collect(const std::vector<std::shared_ptr<ResourceNode>>&, float);
+        void changeTile(const sf::Vector2f&, float, const sf::Clock&);
+        void collect(const std::map<resource_e, std::shared_ptr<ResourceNode>>&,
+            float, const sf::Clock& clock);
+        void startIncantation(const std::shared_ptr<IncantationObject>&,
+            float, const sf::Clock&);
+        void endIncantation(const sf::Vector2f&,
+            float, const sf::Clock&);
+        ResourceGroup getInventory(void) const;
 
         sf::Vector2i map_pos;
+        sf::Vector2f actual_pos;
         size_t lvl;
         std::string team;
     private:
+        void move(int index, const sf::Vector2f&, float, const sf::Clock&);
         sf::Color generateTeamColor(const std::string&);
+
         std::vector<Drawable> _body;
         std::vector<BodyAnimIndex> _type;
         std::vector<Direction> _body_direction;
         std::vector<Animation> _body_animation;
         std::vector<Movement> _body_movement;
+
+        ResourceGroup _inventory;
 };
 
 } // visual

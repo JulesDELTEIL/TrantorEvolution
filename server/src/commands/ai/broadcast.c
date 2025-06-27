@@ -26,7 +26,7 @@ static int send_msg(serverdata_t *sdata, client_t *sender,
     int k = calculate_k(sdata, sender, dest);
 
     sprintf(answer, "%d, %s", k, data);
-    set_message(dest, "message", answer, sdata->debug);
+    set_message(dest, "message", answer);
 }
 
 static int prepare_answer_message(serverdata_t *sdata, fdarray_t *fdarray,
@@ -55,7 +55,7 @@ int action_broadcast(serverdata_t *sdata, fdarray_t *fdarray,
     client_t *client, char *data)
 {
     prepare_answer_message(sdata, fdarray, client, data);
-    set_message(client, "ok", NULL, sdata->debug);
+    set_message(client, "ok", NULL);
     send_gui_p_broadcast(sdata, fdarray, client, data);
 }
 
@@ -63,7 +63,7 @@ int cmd_broadcast(serverdata_t *sdata, fdarray_t *fdarray,
     client_t *client, char *data)
 {
     if (strlen(data) == 0) {
-        set_message(client, "ko", NULL, sdata->debug);
+        set_message(client, "ko", NULL);
         return EXIT_FAILURE;
     }
     client->player->action.cmd = strdup(ACTIONS_ARR[BROADCAST].name);

@@ -60,16 +60,16 @@ int cmd_bct(serverdata_t *sdata, fdarray_t *fdarray,
     int y = 0;
 
     if (strlen(data) == 0) {
-        set_message(client, "ko", NULL, sdata->debug);
+        set_message(client, "ko", NULL);
         return EXIT_FAILURE;
     }
     rc = extract_positions(data, &x, &y);
     if (rc == EXIT_FAILURE || x >= sdata->args->width
         || y >= sdata->args->height || x < 0 || y < 0) {
-        set_message(client, "ko", NULL, sdata->debug);
+        set_message(client, "ko", NULL);
         return EXIT_FAILURE;
     }
     fill_answer(answer, sdata, x, y);
-    set_message(client, "bct", answer, sdata->debug);
+    set_message(client, "bct", answer);
     return EXIT_SUCCESS;
 }

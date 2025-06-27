@@ -28,6 +28,8 @@ enum resource_e {
     ANTI_MATTER
 };
 
+typedef std::map<resource_e, size_t> ResourceGroup;
+
 } // visual
 } // gui
 
