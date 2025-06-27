@@ -4,9 +4,6 @@
 ** File description:
 ** Land.cpp
 */
-
-#include <iostream> // test purpose (to delete)
-
 #include <cstdlib>
 #include <ctime>
 
@@ -30,6 +27,8 @@ void Land::display(sf::RenderTarget& render)
     _backgroud.drawBackground(render);
     render.setView(_camera);
     clearResources();
+    drawEdge(render, -1);
+    drawEdge(render, false);
     for (auto& tileY : _tiles) {
         for (auto& tileX : tileY.second) {
             tileX.second.tile->draw(render, _clock);
@@ -41,6 +40,7 @@ void Land::display(sf::RenderTarget& render)
     }
     for (auto& trantor : _trantorians)
         trantor.second->draw(render, _clock);
+    drawEdge(render, true);
     _backgroud.drawWaterfall(render, _map_size);
     _hud.display(render, _clock);
 }
@@ -123,6 +123,35 @@ void Land::loadTile(const network::NetPack& pack)
     index += 1;
     if (index >= (_map_size.x * _map_size.y))
         _map_set = true;
+}
+
+void Land::drawEdge(sf::RenderTarget& render, int bottom)
+{
+    sf::Vector2f pos;
+    int mx = -1;
+    int my = -1;
+
+    _tile.sprite.setTextureRect(TEXTURE_RECT.at(SEA));
+    if (bottom) {
+        my = _map_size.y;
+        mx = _map_size.x;
+    }
+    if (bottom == -1) {
+        pos = MAP_POS(CENTER_MAP(_map_size.y), -1, -1);
+        _tile.sprite.setPosition(pos);
+        render.draw(_tile.sprite);
+        return;
+    }
+    for (int y = 0; y <= _map_size.y + bottom; ++y) {
+        pos = MAP_POS(CENTER_MAP(_map_size.y), mx, y);
+        _tile.sprite.setPosition(pos);
+        render.draw(_tile.sprite);
+    }
+    for (int x = 0; x <= _map_size.x + bottom; ++x) {
+        pos = MAP_POS(CENTER_MAP(_map_size.y), x, my);
+        _tile.sprite.setPosition(pos);
+        render.draw(_tile.sprite);
+    }
 }
 
 biome_e Land::readBiomeType(const network::NetPack& pack)
@@ -257,8 +286,8 @@ bool Land::hitTile(const sf::Vector2f& mpos)
             sf::Vector2f tile_bot = GET_TILE_BOT(tile_top);
             sf::Vector2f tile_left = GET_TILE_LEFT(tile_top);
             sf::Vector2f tile_right = GET_TILE_RIGHT(tile_top);
-            if (hitTriangle(sf::Vector2f(mpos), tile_top, tile_bot, tile_left) ||
-                hitTriangle(sf::Vector2f(mpos), tile_top, tile_bot, tile_right)) {
+            if (hitTriangle(mpos, tile_top, tile_bot, tile_left) ||
+                hitTriangle(mpos, tile_top, tile_bot, tile_right)) {
                 _hud.changeTileInfo(tileX.second.tile);
                 _hud.updateInfo();
                 return true;

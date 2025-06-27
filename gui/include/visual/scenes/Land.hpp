@@ -52,6 +52,7 @@ class Land : public AScene {
         void viewEvent(const sf::Event&);
 
         void loadTile(const network::NetPack&);
+        void drawEdge(sf::RenderTarget& render, int bottom);
         biome_e readBiomeType(const network::NetPack& pack);
         void updateTile(const network::NetPack&);
         Drawable _tile;

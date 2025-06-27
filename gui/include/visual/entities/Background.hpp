@@ -26,7 +26,7 @@ namespace visual {
     #define TILE_SIZE 96
 
     #define CENTER_MAP(map_height) (sf::Vector2f(VIEW_WIDTH, (VIEW_HEIGHT * 2 - map_height * TILE_SIZE) / 2))
-    #define MAP_POS(middle, x, y) (sf::Vector2f((middle.x - (TILE_SIZE / 2) * (x + y)) + (TILE_SIZE * y), middle.y + (24 * (x + y))))
+    #define MAP_POS(middle, tx, ty) (sf::Vector2f((middle.x - (TILE_SIZE / 2) * (tx + ty)) + (TILE_SIZE * ty), middle.y + (24 * (tx + ty))))
 
 class Background {
     public:
