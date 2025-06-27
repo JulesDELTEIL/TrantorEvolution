@@ -7,6 +7,7 @@
 
 from src.roles.base_role import BaseRole
 from src.action import Commands, Action
+from src.macros import LEVEL_REQUIREMENTS
 
 class Queen(BaseRole):
     def __init__(self, *inp):
@@ -16,6 +17,7 @@ class Queen(BaseRole):
             self.birth_function = inp[0]
             self.waiting_for_slot_number = True
             self.give_birth = True
+            self.egg_left = -1
         else :
             print("------------- JE SUIS UNE REINE ------------")
             self.give_birth = False
@@ -36,16 +38,16 @@ class Queen(BaseRole):
 
 
     def fill_egg_left(self):
-        for _ in range(self.state.egg_left) :
+        for _ in range(self.egg_left) :
             self.birth_function()
 
     def handle_mother_queen(self):
         if not self.all_alone :
-            if self.state.egg_left == -1 and self.waiting_for_slot_number:
+            if self.egg_left == -1 and self.waiting_for_slot_number:
                 self.queue.appendleft(Commands(Action.CONNECT_NBR))
                 return
             else :
-                if self.player_killed >= self.state.egg_left or self.waiting_for_slot_number and not self.state.egg_left:
+                if self.player_killed >= self.egg_left or self.waiting_for_slot_number and not self.egg_left:
                     self.all_alone = True
                     self.create_kingdom()
                     return
@@ -71,12 +73,12 @@ class Queen(BaseRole):
             self.queue.appendleft(Commands(Action.TAKE, "food"))
 
     def _can_incant(self) -> bool:
-        if self.cycle - self._last_incantation < 60 or (self.state.level < 2 and self.cycle < 150):
+        if self.cycle - self._last_incantation < 60 or (self.level < 2 and self.cycle < 150):
             return False
-        if not self.state.last_vision or self.state.last_vision.count('player') < 6:
+        if not self.last_vision or self.last_vision.count('player') < 6:
             return False
-        requirements = self.state.motivation.LEVEL_REQUIREMENTS.get(self.state.level, {})
-        current = self.state.last_vision
+        requirements = LEVEL_REQUIREMENTS.get(self.level, {})
+        current = self.last_vision
         for stone in requirements.keys():
             if current.count(stone) < requirements[stone]:
                 return False

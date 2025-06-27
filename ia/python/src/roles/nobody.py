@@ -5,8 +5,6 @@
 ## nobody.py
 ##
 
-from itertools import cycle
-import socket
 from src.roles.base_role import BaseRole
 from src.action import Commands, Action
 

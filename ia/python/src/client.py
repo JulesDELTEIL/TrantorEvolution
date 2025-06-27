@@ -15,7 +15,7 @@ import src.cypher as cyp
 from src.roles.role_map import ROLE_MAP
 from src.roles.nobody import Nobody
 from src.roles.queen import Queen
-from src.utils import recv_until_newline
+from src.utils import parse_vision, parse_inventory
 from src.action import Action, Commands
 from src.server_manager import ServerManager
 from enum import Enum
@@ -50,7 +50,7 @@ class Trantorian (ServerManager) :
             Action.LEFT: self._turn_left,
             Action.RIGHT: self._turn_right,
             Action.LOOK: self._update_mindmap,
-            Action.INVENTORY: self.player.state.parse_inventory,
+            Action.INVENTORY: self._update_inventory,
             Action.BROADCAST: self.void,
             Action.TAKE: self._take_object,
             Action.SET: self.void,
@@ -163,7 +163,7 @@ class Trantorian (ServerManager) :
             self.player.handle_broadcast(deciphered_broadcast)
             return False
         if response_list[0] == "Current":
-            self.player.state.level = int(response_list[2])
+            self.player.level = int(response_list[2])
         elif self.player.last_sent:
             if self.player.last_sent == Action.CONNECT_NBR and response_list[0].isdigit():
                 return self.COMMANDS[self.player.last_sent](response_list[0])
@@ -178,7 +178,6 @@ class Trantorian (ServerManager) :
                 self.COMMANDS[self.player.last_sent](response)
             elif response_list[0] == Commands.COMMANDS[self.player.last_sent]["response success"][0]:
                 self.COMMANDS[self.player.last_sent]()
-            self.player.state.update(response)
             return True
         return True
 
@@ -187,17 +186,21 @@ class Trantorian (ServerManager) :
 
     def update_connect_nbr(self, connect_nbr: str) -> bool:
         print("UPDATING CONNECT NBR gotten", connect_nbr)
-        self.player.state.egg_left = int(connect_nbr)
+        self.player.egg_left = int(connect_nbr)
         return True
 
     def _update_mindmap(self, response: str) -> None:
-        response_formatted = self.player.state.parse_vision(response)
+        response_formatted = parse_vision(response)
+        self.player.last_vision = response_formatted[0]
         if isinstance(self.player, Nobody):
-            if self.player.state.last_vision.count("player") > 1:
+            if self.player.last_vision.count("player") > 1:
                 self.player._is_there_anyone = True
             else:
                 self.player._is_there_anyone = False
-        self.player.map.update_mindmap(response_formatted, self.player.state.level, self.player.cycle, self.player.pos)
+        self.player.map.update_mindmap(response_formatted, self.player.level, self.player.cycle, self.player.pos)
+        
+    def _update_inventory(self, response: str) -> None:
+        self.player.last_inventory = parse_inventory(response)
         
     def _turn_left(self):
         if self.player.direction is not None:
@@ -222,7 +225,7 @@ class Trantorian (ServerManager) :
     def _take_object(self, response: str):
         if response == "ko" or response == "ko\n":
             self.player.carry = None
-            self.player.state.last_vision = None
+            self.player.last_vision = None
         else:
             self.player.mode = 'DELIVERING'
     
@@ -231,7 +234,7 @@ class Trantorian (ServerManager) :
             return
         response_list = response.split()
         if response_list[0] == "Current":
-            self.player.state.level = int(response_list[2])
+            self.player.level = int(response_list[2])
             self.player._last_incantation = self.player.cycle
 
     def void(self):
