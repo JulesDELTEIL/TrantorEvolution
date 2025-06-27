@@ -46,6 +46,7 @@ enum NetEvent_e {
     MSG,
     UKN,
     PARAM,
+    BIOME,
 };
 
 class NetType {
@@ -95,7 +96,8 @@ static const std::map<std::string, NetEvent_e> CODE_EVENT_LINK {
     {"seg", END},
     {"smg", MSG},
     {"suc", UKN},
-    {"sbp", PARAM}
+    {"sbp", PARAM},
+    {"bio", BIOME}
 };
 
 typedef std::pair<std::string, NetPack> Command;

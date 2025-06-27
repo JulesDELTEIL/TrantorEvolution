@@ -4,6 +4,7 @@
 ** File description:
 ** Land.cpp
 */
+
 #include <cstdlib>
 #include <ctime>
 
@@ -14,12 +15,21 @@
 namespace gui {
 namespace visual {
 
-Land::Land() : AScene(core::DEFAULT_VIEW)
+Land::Land(std::reference_wrapper<network::Client> client) : AScene(core::DEFAULT_VIEW), _client(client)
 {
     std::srand(std::time({}));
     _tile.sprite.setOrigin({TILE_SIZE / 2, 0.0f});
     _tile.texture.loadFromFile(BIOME_TEXTURE_PATH);
     _tile.sprite.setTexture(_tile.texture);
+    _net = std::thread(&Land::askResources, this);
+}
+
+Land::~Land()
+{
+    if (_net_running) {
+        _net_running = false;
+        _net.join();
+    }
 }
 
 void Land::display(sf::RenderTarget& render)
@@ -54,10 +64,7 @@ void Land::event(const core::Engine& engine, const network::NetEventPack& net_pa
             _map_size = sf::Vector2f(net_pack.pack[0].getFloat(), net_pack.pack[1].getFloat());
             break;
         case network::TILE:
-            if (!_map_set && _map_size.y != -1)
-                loadTile(net_pack.pack);
-            else
-                updateTile(net_pack.pack);
+            updateTile(net_pack.pack);
             break;
         case network::NEW:
             addTrantorian(net_pack.pack);
@@ -83,6 +90,9 @@ void Land::event(const core::Engine& engine, const network::NetEventPack& net_pa
         case network::TEAMS:
             _teams[net_pack.pack[0].getString()] = {};
             break;
+        case network::BIOME:
+            addTile(net_pack.pack);
+            break;
     }
 }
 
@@ -104,25 +114,24 @@ void Land::viewEvent(const sf::Event& event)
     }
 }
 
-void Land::loadTile(const network::NetPack& pack)
+void Land::askResources(void)
 {
-    static int index = 0;
-    sf::Vector2f pos = {0, 0};
-    biome_e type = EMPTY;
+    _net_running = true;
+    float last_check = 0;
 
-    int x = pack[0].getInt();
-    int y = pack[1].getInt();
-    pos = MAP_POS(CENTER_MAP(_map_size.y), x, y);
-    type = readBiomeType(pack);
-    _tiles[x][y].tile = std::make_unique<Tile>(std::ref(_tile), pos, type);
-    for (size_t i = 2; i < NB_MAP_ARG; ++i) {
-        _tiles[x][y].resources[static_cast<resource_e>(i - 2)] =
-            std::make_shared<ResourceNode>(pos, static_cast<resource_e>(i - 2), pack[i].getSize_t());
-            _tiles[x][y].tile->updateResource(static_cast<resource_e>(i - 2), pack[i].getSize_t());
+    while (_net_running) {
+        float time_to_asked = (_map_size.x * _map_size.y) * 10;
+        if (time_to_asked > 60000)
+            time_to_asked = 60000;
+        if (_clock.getElapsedTime().asMilliseconds() > last_check + time_to_asked) {
+            for (size_t y = 0; y < _map_size.y; ++y) {
+                for (size_t x = 0; x < _map_size.x; ++x) {
+                    _client.get().sendData("bct " + std::to_string(x) + " " + std::to_string(y));
+                }
+            }
+            last_check = _clock.getElapsedTime().asMilliseconds();
+        }
     }
-    index += 1;
-    if (index >= (_map_size.x * _map_size.y))
-        _map_set = true;
 }
 
 void Land::drawEdge(sf::RenderTarget& render, int bottom)
@@ -154,20 +163,24 @@ void Land::drawEdge(sf::RenderTarget& render, int bottom)
     }
 }
 
-biome_e Land::readBiomeType(const network::NetPack& pack)
+void Land::addTile(const network::NetPack& pack)
 {
-    int biome_pack[NB_RESOURCES] = {};
+    static int index = 0;
+    sf::Vector2f pos = {0, 0};
+    biome_e type = static_cast<biome_e>(pack[2].getInt());
 
-    for (short i = 2; i < NB_RESOURCES + 2; ++i)
-        biome_pack[i - 2] = pack[i].getInt();
-    for (short b = 0; b < NB_BIOMES; ++b)
-        for (short i = 0; i < NB_RESOURCES; ++i) {
-            if (biome_distributions[b].biome_start[i] != biome_pack[i])
-                break;
-            else if (i + 1 == NB_RESOURCES)
-                return static_cast<biome_e>(b);
-        }
-    return biome_e::EMPTY;
+    int x = pack[0].getInt();
+    int y = pack[1].getInt();
+    pos = MAP_POS(CENTER_MAP(_map_size.y), x, y);
+    _tiles[x][y].tile = std::make_unique<Tile>(std::ref(_tile), pos, type);
+    for (size_t i = 2; i < NB_MAP_ARG; ++i) {
+        _tiles[x][y].resources[static_cast<resource_e>(i - 2)] =
+            std::make_shared<ResourceNode>(pos, static_cast<resource_e>(i - 2), 0);
+            _tiles[x][y].tile->updateResource(static_cast<resource_e>(i - 2), 0);
+    }
+    index += 1;
+    if (index >= (_map_size.x * _map_size.y))
+        _map_set = true;
 }
 
 void Land::updateTile(const network::NetPack& pack)
