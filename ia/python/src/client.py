@@ -27,18 +27,18 @@ class Direction(Enum):
 class Trantorian(ServerManager):
     def __init__(self, host, port, team_name):
         ServerManager.__init__(self, host, port)
-        self.host = host
-        self.port = port
-        self.team_name = team_name
-        self.dimension = None
-        self.player_num = None
-        self.player = Nobody()
-        self.connect_function = [
-            self.get_welcome,
-            self.get_client_num,
-            self.get_dimension,
+        self._host = host
+        self._port = port
+        self._team_name = team_name
+        self._dimension = None
+        self._player_num = None
+        self._player = Nobody()
+        self._connect_function = [
+            self._get_welcome,
+            self._get_client_num,
+            self._get_dimension,
         ]
-        self.connect()
+        self._connect()
         self.COMMANDS = {
             Action.FORWARD: self._move_forward,
             Action.LEFT: self._turn_left,
@@ -55,25 +55,25 @@ class Trantorian(ServerManager):
             Action.NONE:self.void
         }
 
-    def get_client_num(self, client_num_str: str) -> None:
+    def _get_client_num(self, client_num_str: str) -> None:
         client_num_strip = client_num_str.strip()
         if not client_num_strip.isdigit():
             raise Exception("Invalid client number left from server: %s" % client_num_str)
-        self.player_num = int(client_num_strip)
+        self._player_num = int(client_num_strip)
 
-    def get_dimension(self, dimension_str: str) -> None:
+    def _get_dimension(self, dimension_str: str) -> None:
         dimension_split = dimension_str.split()
         if len(dimension_split) != 2 or not all([val.isdigit() for val in dimension_split]):
             raise Exception("Invalid dimension from server: %s" % dimension_str)
         dimension_tuple = (int(dimension_split[X]), int(dimension_split[Y]))
-        self.dimension = dimension_tuple
+        self._dimension = dimension_tuple
 
-    def get_welcome(self, welcome_str: str) -> None:
+    def _get_welcome(self, welcome_str: str) -> None:
         if welcome_str.strip() != "WELCOME":
             raise ConnectionError("Expected WELCOME message.")
-        self.send(f"{self.team_name}\n".encode())
+        self.send(f"{self._team_name}\n".encode())
 
-    def connect(self) -> None:
+    def _connect(self) -> None:
         i = 0
         message = ""
         while i < 3:
@@ -82,20 +82,20 @@ class Trantorian(ServerManager):
                 index = message.find("\n")
                 if index == -1 or i >= 3:
                     break
-                self.connect_function[i](message[:index + 1])
+                self._connect_function[i](message[:index + 1])
                 message = message[index + 1:]
                 i += 1
 
     def send_action(self) -> None:
-        if not self.player._queue:
-            self.player.decide_action()
-        if self.player._queue:
-            action = self.player._queue.pop()
+        if not self._player._queue:
+            self._player.decide_action()
+        if self._player._queue:
+            action = self._player._queue.pop()
             if action.action == Action.BROADCAST:
-                action.argument = cyp.cypher(action.argument, self.team_name)
+                action.argument = cyp.cypher(action.argument, self._team_name)
             if action.action != Action.NONE:
                 self.send((action.__str__() + "\n").encode())
-                self.player._last_sent = action.action
+                self._player._last_sent = action.action
 
     def analyse_requests(self, message: str) -> str:
         message_left = message
@@ -117,21 +117,21 @@ class Trantorian(ServerManager):
             self.analyse_requests(response)
 
     def handle_nobody(self, response_list: list[str]) -> bool:
-        broadcast = self.player.handle_broadcast(response_list)
+        broadcast = self._player.handle_broadcast(response_list)
         if broadcast == "ROLE":
             print(response_list[2][5:])
-            self.player = ROLE_MAP[response_list[2][5:]]()
+            self._player = ROLE_MAP[response_list[2][5:]]()
             return False
         if broadcast == "QUIT":
-            action = Commands(Action.BROADCAST, cyp.cypher("quitting", self.team_name))
-            self.player._last_sent = action.action
+            action = Commands(Action.BROADCAST, cyp.cypher("quitting", self._team_name))
+            self._player._last_sent = action.action
             self.send((action.__str__() + "\n").encode())
         return False
 
 
     def translate_broadcast(self, response_list: list[str]) -> list[str]:
         real_broadcast = []
-        broadcast_message = cyp.decypher(response_list[2], self.team_name)
+        broadcast_message = cyp.decypher(response_list[2], self._team_name)
         if not broadcast_message:
             return []
         for i in range(2):
@@ -142,92 +142,92 @@ class Trantorian(ServerManager):
 
     def handle_response(self, response: str) -> bool:
         response_list = response.split()
-        if isinstance(self.player, Nobody) and self.player._is_there_anyone == False:
-            if self.player._cycle > 50:
-                self.player = Queen(lambda: self._spawn_new_client())
+        if isinstance(self._player, Nobody) and self._player._is_there_anyone == False:
+            if self._player._cycle > 50:
+                self._player = Queen(lambda: self._spawn_new_client())
                 return True
         if response_list[0] == "message":
             deciphered_broadcast = self.translate_broadcast(response_list)
             if not deciphered_broadcast:
                 return False
-            if isinstance(self.player, Nobody):
+            if isinstance(self._player, Nobody):
                 return self.handle_nobody(deciphered_broadcast)
-            self.player.handle_broadcast(deciphered_broadcast)
+            self._player.handle_broadcast(deciphered_broadcast)
             return False
         if response_list[0] == "Current":
-            self.player._level = int(response_list[2])
-        elif self.player._last_sent:
-            if self.player._last_sent == Action.CONNECT_NBR and response_list[0].isdigit():
-                return self.COMMANDS[self.player._last_sent](response_list[0])
+            self._player._level = int(response_list[2])
+        elif self._player._last_sent:
+            if self._player._last_sent == Action.CONNECT_NBR and response_list[0].isdigit():
+                return self.COMMANDS[self._player._last_sent](response_list[0])
             if response_list[0][0] == '[':
-                if self.player._last_sent == Action.LOOK or self.player._last_sent == Action.INVENTORY:
-                    self.COMMANDS[self.player._last_sent](response)
-            if self.player._last_sent == Action.BROADCAST and response_list[0] == "ok" and isinstance(self.player, Nobody):
+                if self._player._last_sent == Action.LOOK or self._player._last_sent == Action.INVENTORY:
+                    self.COMMANDS[self._player._last_sent](response)
+            if self._player._last_sent == Action.BROADCAST and response_list[0] == "ok" and isinstance(self._player, Nobody):
                 self.sock.shutdown(socket.SHUT_RDWR)
                 self.sock.close()
                 exit()
-            if self.player._last_sent == Action.INCANTATION or self.player._last_sent == Action.TAKE or response_list[0] == "Current":
-                self.COMMANDS[self.player._last_sent](response)
-            elif response_list[0] == Commands.COMMANDS[self.player._last_sent]["response success"][0]:
-                self.COMMANDS[self.player._last_sent]()
+            if self._player._last_sent == Action.INCANTATION or self._player._last_sent == Action.TAKE or response_list[0] == "Current":
+                self.COMMANDS[self._player._last_sent](response)
+            elif response_list[0] == Commands.COMMANDS[self._player._last_sent]["response success"][0]:
+                self.COMMANDS[self._player._last_sent]()
             return True
         return True
 
     def _spawn_new_client(self) -> None:
-        subprocess.Popen(["./zappy_ai", "-p", str(self.port), "-n", self.team_name, "-h", self.host])
+        subprocess.Popen(["./zappy_ai", "-p", str(self._port), "-n", self._team_name, "-h", self._host])
 
     def update_connect_nbr(self, connect_nbr: str) -> bool:
         print("UPDATING CONNECT NBR gotten", connect_nbr)
-        self.player._egg_left = int(connect_nbr)
+        self._player._egg_left = int(connect_nbr)
         return True
 
     def _update_mindmap(self, response: str) -> None:
         response_formatted = parse_vision(response)
-        self.player._last_vision = response_formatted[0]
-        if isinstance(self.player, Nobody):
-            if self.player._last_vision.count("player") > 1:
-                self.player._is_there_anyone = True
+        self._player._last_vision = response_formatted[0]
+        if isinstance(self._player, Nobody):
+            if self._player._last_vision.count("player") > 1:
+                self._player._is_there_anyone = True
             else:
-                self.player._is_there_anyone = False
-        self.player._map.update_mindmap(response_formatted, self.player._level, self.player._cycle, self.player.pos)
+                self._player._is_there_anyone = False
+        self._player._map.update_mindmap(response_formatted, self._player._level, self._player._cycle, self._player.pos)
         
     def _update_inventory(self, response: str) -> None:
-        self.player._last_inventory = parse_inventory(response)
+        self._player._last_inventory = parse_inventory(response)
         
     def _turn_left(self):
-        if self.player._direction is not None:
+        if self._player._direction is not None:
             mapping = {"up": "left", "left": "down", "down": "right", "right": "up"}
-            self.player._direction = mapping[self.player._direction]
+            self._player._direction = mapping[self._player._direction]
 
     def _turn_right(self):
-        if self.player._direction is not None:
+        if self._player._direction is not None:
             mapping = {"up": "right", "right": "down", "down": "left", "left": "up"}
-            self.player._direction = mapping[self.player._direction]
+            self._player._direction = mapping[self._player._direction]
 
     def _move_forward(self):
-        if self.player._direction == "up":
-            self.player.pos[1] += 1
-        elif self.player._direction == "right":
-            self.player.pos[0] += 1
-        elif self.player._direction == "down":
-            self.player.pos[1] -= 1
-        elif self.player._direction == "left":
-            self.player.pos[0] -= 1
+        if self._player._direction == "up":
+            self._player.pos[1] += 1
+        elif self._player._direction == "right":
+            self._player.pos[0] += 1
+        elif self._player._direction == "down":
+            self._player.pos[1] -= 1
+        elif self._player._direction == "left":
+            self._player.pos[0] -= 1
             
     def _take_object(self, response: str):
         if response == "ko" or response == "ko\n":
-            self.player.carry = None
-            self.player._last_vision = None
+            self._player.carry = None
+            self._player._last_vision = None
         else:
-            self.player.mode = 'DELIVERING'
+            self._player.mode = 'DELIVERING'
     
     def _incatation_succes(self, response: str):
         if response == "Elevation underway":
             return
         response_list = response.split()
         if response_list[0] == "Current":
-            self.player._level = int(response_list[2])
-            self.player._last_incantation = self.player._cycle
+            self._player._level = int(response_list[2])
+            self._player._last_incantation = self._player._cycle
 
     def void(self):
         return

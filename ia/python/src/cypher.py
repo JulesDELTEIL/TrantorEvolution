@@ -30,17 +30,3 @@ def decypher(message: str, key: str):
         return f.decrypt(bytes(message, "utf-8")).decode("utf-8")
     except cryptography.fernet.InvalidToken:
         return None
-
-def main():
-    print(sys.argv)
-    if len(sys.argv) != 4:
-        raise Exception("Invalid number of arguments")
-    print(sys.argv[3])
-    if sys.argv[3] == 'cypher':
-        print(str(cypher(sys.argv[1], sys.argv[2])))
-    if sys.argv[3] == 'decypher':
-        print(decypher(sys.argv[1], sys.argv[2]))
-
-if __name__ == '__main__':
-    main()
-
