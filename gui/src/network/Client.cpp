@@ -17,8 +17,10 @@ namespace network {
 
 Client::~Client()
 {
-    _network_runing = false;
-    _network.join();
+    if (_network_runing == true) {
+        _network_runing = false;
+        _network.join();
+    }
 }
 
 static Command splitCodeAndArg(const std::string &string)
@@ -38,7 +40,13 @@ static Command splitCodeAndArg(const std::string &string)
 
 void Client::setSocket(const std::string &server, const int &port)
 {
-    _socket.setSocket(server, port);
+    try {
+        _socket.setSocket(server, port);
+    }
+    catch(const network::Socket::socketError& e) {
+        std::cerr << e.what() << std::endl;
+        return;
+    }
     _stream.reset(fdopen(_socket.getFd(), "r"));
     _network_runing = true;
     _network = std::thread(&Client::checkEvent, this);

@@ -27,6 +27,7 @@ Land::Land() : AScene(core::DEFAULT_VIEW)
 
 void Land::display(sf::RenderTarget& render)
 {
+    _backgroud.display(render);
     render.setView(_camera);
     clearResources();
     for (auto& tileY : _tiles) {
@@ -46,6 +47,7 @@ void Land::display(sf::RenderTarget& render)
 void Land::event(const core::Engine& engine, const network::NetEventPack& net_pack)
 {
     viewEvent(engine.events);
+    _backgroud.event(engine, net_pack);
     checkHudEvent(engine, net_pack);
     switch (static_cast<int>(net_pack.event)) {
         case network::MSIZE:
@@ -77,6 +79,9 @@ void Land::event(const core::Engine& engine, const network::NetEventPack& net_pa
             break;
         case network::PDEAD:
             removeTrantorian(net_pack.pack);
+            break;
+        case network::TEAMS:
+            _teams[net_pack.pack[0].getString()] = {};
             break;
     }
 }
@@ -165,6 +170,7 @@ void Land::addTrantorian(const network::NetPack& pack)
     sf::Vector2f pos = MAP_POS(CENTER_MAP(_map_size.y), x, y);
     std::shared_ptr<Trantorian> newT = std::make_shared<Trantorian>(pos, sf::Vector2i(x, y), pack[4].getSize_t(), pack[5].getString());
 
+    _teams[pack[5].getString()].push_back(newT);
     _tiles[x][y].trantorians[pack[0].getSize_t()] = newT;
     _trantorians[pack[0].getSize_t()] = newT;
 }

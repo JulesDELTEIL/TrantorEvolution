@@ -17,6 +17,7 @@
     #include "map_tools.h"
     #include "core/Engine.hpp"
     #include "network/Client.hpp"
+    #include "visual/entities/Background.hpp"
     #include "visual/entities/Hud.hpp"
     #include "visual/entities/Tile.hpp"
     #include "visual/entities/Trantorian.hpp"
@@ -27,7 +28,7 @@ namespace gui {
 namespace visual {
 
     #define NB_MAP_ARG 9
-    #define CENTER_MAP(map_height) (sf::Vector2f(1280.0f / 2, (780.0f - map_height * TILE_SIZE) / 2))
+    #define CENTER_MAP(map_height) (sf::Vector2f(VIEW_WIDTH, (VIEW_HEIGHT * 2 - map_height * TILE_SIZE) / 2))
     #define MAP_POS(middle, x, y) (sf::Vector2f((middle.x - (TILE_SIZE / 2) * (x + y)) + (TILE_SIZE * y), middle.y + (24 * (x + y))))
 
     #define ACT_TIME(x) float((x / this->_time_unit_speed) * 1000)
@@ -69,6 +70,8 @@ class Land : public AScene {
         void trantorEndIncantation(const network::NetPack& pack);
         void posTrantorian(const network::NetPack& pack);
 
+        Background _backgroud;
+
         Hud _hud;
         void checkHudEvent(const core::Engine& engine, const network::NetEventPack& net_pack);
         bool hitTrantor(const sf::Vector2f&);
@@ -82,6 +85,7 @@ class Land : public AScene {
         };
 
         std::map<size_t, std::map<size_t, TileInfo>> _tiles;
+        std::map<std::string, std::vector<std::shared_ptr<Trantorian>>> _teams;
         std::map<size_t, std::shared_ptr<Trantorian>> _trantorians;
 };
 

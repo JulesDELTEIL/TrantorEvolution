@@ -29,6 +29,7 @@ add_executable( ${PROJECT_NAME}
     ${GUI_SRC_DIR}visual/entities/ResourceNode.cpp
     ${GUI_SRC_DIR}visual/entities/Hud.cpp
     ${GUI_SRC_DIR}visual/entities/IncantationObject.cpp
+    ${GUI_SRC_DIR}visual/entities/Background.cpp
 
     # SCENES
     ${GUI_SRC_DIR}visual/scenes/Land.cpp

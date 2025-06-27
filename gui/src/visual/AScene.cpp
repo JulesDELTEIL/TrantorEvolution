@@ -7,6 +7,8 @@
 
 #include "visual/AScene.hpp"
 
+#include "core/Engine.hpp"
+
 namespace gui {
 namespace visual {
 
