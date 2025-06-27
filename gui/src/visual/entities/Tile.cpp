@@ -38,7 +38,12 @@ ResourceGroup Tile::getResources(void) const
 
 void Tile::updateResource(resource_e type, int factor)
 {
-    _resources.at(type) += factor;
+    _resources.at(type) = factor;
+}
+
+void Tile::lowerResource(resource_e type, int factor)
+{
+    _resources.at(type) -= factor;
 }
 
 sf::Vector2f Tile::getPos(void) const
