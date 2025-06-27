@@ -17,6 +17,7 @@
     #include "map_tools.h"
     #include "core/Engine.hpp"
     #include "network/Client.hpp"
+    #include "audio/SoundManage.hpp"
     #include "visual/entities/Background.hpp"
     #include "visual/entities/Hud.hpp"
     #include "visual/entities/Tile.hpp"
@@ -44,6 +45,8 @@ class Land : public AScene {
 
         void display(sf::RenderTarget& render) override;
         void event(const core::Engine&, const network::NetEventPack&) override;
+        biome_e getCenterTileType(const sf::Vector2f &map_center);
+        void updateAmbiantSound();
 
     private:
         std::reference_wrapper<network::Client> _client; 
@@ -71,6 +74,8 @@ class Land : public AScene {
         void trantorCollect(const network::NetPack& pack);
         void trantorStartIncantation(const network::NetPack& pack);
         void trantorEndIncantation(const network::NetPack& pack);
+        void trantorLayingAnEgg(const network::NetPack& pack);
+        void trantorLaidAnEgg(const network::NetPack& pack);
         void posTrantorian(const network::NetPack& pack);
 
         Background _backgroud;
@@ -85,7 +90,8 @@ class Land : public AScene {
             std::map<resource_e, std::shared_ptr<ResourceNode>> resources;
             std::shared_ptr<IncantationObject> incantation_objects;
         };
-
+        SoundManage biome_song;
+        biome_e last_song_biome;
         std::map<size_t, std::map<size_t, TileInfo>> _tiles;
         std::map<std::string, std::vector<std::shared_ptr<Trantorian>>> _teams;
         std::map<size_t, std::shared_ptr<Trantorian>> _trantorians;

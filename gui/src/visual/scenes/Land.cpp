@@ -9,6 +9,8 @@
 #include <ctime>
 
 #include "maths.hpp"
+#include "map_tools.h"
+#include "visual/AScene.hpp"
 #include "visual/scenes/Land.hpp"
 #include "visual/visual.hpp"
 
@@ -85,6 +87,12 @@ void Land::event(const core::Engine& engine, const network::NetEventPack& net_pa
         case network::PEINC:
             trantorEndIncantation(net_pack.pack);
             break;
+        case network::PEGG:
+            trantorLayingAnEgg(net_pack.pack);
+            break;
+        case network::ELAID:
+            trantorLaidAnEgg(net_pack.pack);
+            break;
         case network::PDEAD:
             removeTrantorian(net_pack.pack);
             break;
@@ -97,9 +105,41 @@ void Land::event(const core::Engine& engine, const network::NetEventPack& net_pa
     }
 }
 
+biome_e Land::getCenterTileType(const sf::Vector2f &map_center)
+{
+    for (const auto& tileY : _tiles) {
+        for (const auto& tileX : tileY.second) {
+            sf::Vector2f tile_top = tileX.second.tile->getPos();
+            sf::Vector2f tile_bot = GET_TILE_BOT(tile_top);
+            sf::Vector2f tile_left = GET_TILE_LEFT(tile_top);
+            sf::Vector2f tile_right = GET_TILE_RIGHT(tile_top);
+            if (hitTriangle(sf::Vector2f(map_center), tile_top, tile_bot, tile_left) ||
+                hitTriangle(sf::Vector2f(map_center), tile_top, tile_bot, tile_right)) {
+                return tileX.second.tile->getBiome();
+            }
+        }
+    }
+    return EMPTY;
+}
+
+void Land::updateAmbiantSound()
+{
+    sf::Vector2f camera_center = _camera.getCenter();
+    biome_e biome = getCenterTileType(camera_center);
+
+    if (biome == EMPTY || biome == last_song_biome)
+        return;
+    biome_song.playSong(song_map.at(biome));
+    last_song_biome = biome;
+}
+
 void Land::viewEvent(const sf::Event& event)
 {
     if (event.type == sf::Event::KeyPressed) {
+        if (event.key.code == sf::Keyboard::E)
+            return zoom(0.9);
+        if (event.key.code == sf::Keyboard::A)
+            return zoom(1.1);
         if (event.key.code == sf::Keyboard::D)
             move(10, 0);
         if (event.key.code == sf::Keyboard::Q)
@@ -108,10 +148,7 @@ void Land::viewEvent(const sf::Event& event)
             move(0, 10);
         if (event.key.code == sf::Keyboard::Z)
             move(0, -10);
-        if (event.key.code == sf::Keyboard::E)
-            zoom(0.9);
-        if (event.key.code == sf::Keyboard::A)
-            zoom(1.1);
+        updateAmbiantSound();
     }
 }
 
@@ -257,6 +294,18 @@ void Land::trantorEndIncantation(const network::NetPack& pack)
     for (const auto &trantor : _tiles[x][y].trantorians) {
         trantor.second->endIncantation(pos, ACT_TIME(7.0f) / 2, _clock);
     }
+}
+
+void Land::trantorLayingAnEgg(const network::NetPack& pack)
+{
+    size_t trantor_id = pack[0].getSize_t();
+    _trantorians.at(trantor_id)->layAnEgg();
+}
+
+void Land::trantorLaidAnEgg(const network::NetPack& pack)
+{
+    size_t trantor_id = pack[1].getSize_t();
+    _trantorians.at(trantor_id)->laidAnEgg();
 }
 
 void Land::posTrantorian(const network::NetPack& pack)

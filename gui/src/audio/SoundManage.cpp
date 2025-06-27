@@ -7,9 +7,14 @@
 
 #include "audio/SoundManage.hpp"
 
-gui::SoundManage::SoundManage()
+
+void gui::SoundManage::playSong(std::string song)
 {
-    if (!s_song.openFromFile("assets/Trantor.mp3")) {
+    // "assets/Trantor.mp3"
+    if (s_song.getStatus() == sf::SoundSource::Playing) {
+        s_song.stop();
+    }
+    if (!s_song.openFromFile(song)) {
         std::cout << "[ERROR] Trantor.mp3 didn't load" << std::endl;
     }
     s_song.setLoop(true);
