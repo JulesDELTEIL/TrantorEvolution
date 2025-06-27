@@ -13,6 +13,7 @@
     #include <unordered_map>
 
     #include "map_tools.h"
+    #include "core/Engine.hpp"
     #include "visual/Drawable.hpp"
     #include "network/events.hpp"
     #include "visual/visual.hpp"
@@ -23,7 +24,8 @@
 namespace gui {
 namespace visual {
 
-    #define UPDATE_INFO 500.0f
+    #define UPDATE_INFO 800.0f
+    #define HUD_FONT "assets/hud/hud_font.ttf"
     
     #define TILE_HUD_TEXTURE "assets/hud/hud_bg.png"
     #define TILE_HUD_SCALE 1.6f
@@ -35,7 +37,6 @@ namespace visual {
     #define TILE_COLOR_TEXT sf::Color(93, 60, 0, 255)
     #define TILE_INSIDE_MARGIN 32.0f
     #define TILE_INSIDE_SPLIT 20.0f
-
     #define HUD_RES_SIZE 10
 
 static const std::map<resource_e, sf::IntRect> HUD_RES_RECT = {
@@ -52,16 +53,22 @@ static const std::map<resource_e, sf::IntRect> HUD_RES_RECT = {
     #define GLOBAL_HUD_SCALE 2.0f
     #define GLOBAL_FONT_SIZE 21
     #define GLOBAL_COLOR_TEXT sf::Color(255, 204, 114, 255)
-
     #define GLOBAL_MARGIN 26.0f
     #define GLOBAL_TEXT_SPLIT(i) (30.0f * i) + 5.0f
-
     #define G_TIME_POS sf::Vector2f(GLOBAL_MARGIN, GLOBAL_TEXT_SPLIT(1))
     #define G_MAPS_POS sf::Vector2f(GLOBAL_MARGIN, GLOBAL_TEXT_SPLIT(2))
     #define G_NBTE_POS sf::Vector2f(GLOBAL_MARGIN, GLOBAL_TEXT_SPLIT(3))
     #define G_NBTR_POS sf::Vector2f(GLOBAL_MARGIN, GLOBAL_TEXT_SPLIT(4))
 
-    #define HUD_FONT "assets/hud/hud_font.ttf"
+    #define UNIT_FOR_DAY 100
+    #define DAY_PASS_TIME float(1000.0f * (UNIT_FOR_DAY / this->_time_unit_speed))
+
+    #define DATE_HUD_TEXTURE "assets/hud/date.png"
+    #define DATE_HUD_SCALE 2.5f
+    #define DATE_FONT_SIZE 12
+    #define DATE_HUD_POS sf::Vector2f(WIN_X - 10.0f, 10.0f)
+    #define DATE_COLOR_TEXT sf::Color(255, 225, 170, 255)
+    #define DATE_NB_POS sf::Vector2f(DATE_HUD_POS.x - 155.0f, 16.0f)
 
 enum HudType_e {
     NO_INFO = -1,
@@ -92,6 +99,8 @@ struct HudDisplay {
     sf::Text g_map_size;
     sf::Text g_nb_trantors;
     sf::Text g_nb_teams;
+    Drawable date;
+    sf::Text date_nb;
 };
 
 class Hud {
@@ -110,14 +119,18 @@ class Hud {
         float _last_time = 0;
         HudType_e _status = NO_INFO;
         HudDisplay _display;
+    
+        float _last_day = 0;
+        size_t _time_unit_speed = 1;
+        size_t _nb_days = 0;
 
         size_t _nb_trantors = 0;
         std::unordered_map<std::string, int> _nb_teams;
 
-        void drawTileInfo(sf::RenderTarget& render);
-
         std::shared_ptr<Tile> _tile = nullptr;
         TileInfo _infos;
+        void drawTileInfo(sf::RenderTarget& render);
+
 
 };
 

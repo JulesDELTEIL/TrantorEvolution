@@ -5,6 +5,8 @@
 ** Hud.cpp
 */
 
+#include <iostream>
+
 #include "visual/entities/Hud.hpp"
 
 namespace gui {
@@ -44,13 +46,29 @@ HudDisplay::HudDisplay()
     g_nb_trantors.setFillColor(GLOBAL_COLOR_TEXT);
     g_nb_trantors.setCharacterSize(GLOBAL_FONT_SIZE);
     g_nb_trantors.setPosition(G_NBTR_POS);
+    date.texture.loadFromFile(DATE_HUD_TEXTURE);
+    date.sprite.setTexture(date.texture);
+    date.sprite.setScale(DATE_HUD_SCALE, DATE_HUD_SCALE);
+    date.sprite.setOrigin(date.texture.getSize().x, 0.0f);
+    date.sprite.setPosition(DATE_HUD_POS);
+    date_nb.setFont(font);
+    date_nb.setFillColor(DATE_COLOR_TEXT);
+    date_nb.setPosition(DATE_NB_POS);
+    date_nb.setString("Day 0");
 }
 
 void Hud::display(sf::RenderTarget& render, const sf::Clock& clock)
 {
-    if (clock.getElapsedTime().asMilliseconds() > _last_time + UPDATE_INFO) {
+    float time_elapsed = clock.getElapsedTime().asMilliseconds();
+
+    if (time_elapsed > _last_day + DAY_PASS_TIME) {
+        _nb_days += 1;
+        _display.date_nb.setString("Day " + std::to_string(_nb_days));
+        _last_day = time_elapsed;
+    }
+    if (time_elapsed > _last_time + UPDATE_INFO) {
         updateInfo();
-        _last_time = clock.getElapsedTime().asMilliseconds();
+        _last_time = time_elapsed;
         _display.g_time.setString("Time:  " + std::to_string(static_cast<int>(clock.getElapsedTime().asSeconds())) + "s");
         _display.g_nb_teams.setString("Team(s):  " + std::to_string(_nb_teams.size()));
         _display.g_nb_trantors.setString("Trantorian(s):  " + std::to_string(_nb_trantors));
@@ -63,6 +81,8 @@ void Hud::display(sf::RenderTarget& render, const sf::Clock& clock)
     render.draw(_display.g_map_size);
     render.draw(_display.g_nb_teams);
     render.draw(_display.g_nb_trantors);
+    render.draw(_display.date.sprite);
+    render.draw(_display.date_nb);
 }
 
 void Hud::event(const sf::Event& event, const network::NetEventPack& net_pack)
@@ -84,6 +104,12 @@ void Hud::event(const sf::Event& event, const network::NetEventPack& net_pack)
             break;
         case network::TEAMS:
             _nb_teams[net_pack.pack[0].getString()] = 1;
+            break;
+        case network::TIME: 
+            _time_unit_speed = net_pack.pack[0].getSize_t();
+            break;
+        case network::TIMEM:
+            _time_unit_speed = net_pack.pack[0].getSize_t();
             break;
     }
 }
