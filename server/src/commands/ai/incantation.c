@@ -93,6 +93,19 @@ static void send_gui_p_end_inc(serverdata_t *sdata, fdarray_t *fdarray,
     send_guis(sdata, fdarray, "pie", data);
 }
 
+static int check_game_end(serverdata_t *sdata, fdarray_t *fdarray,
+    client_t *client)
+{
+    for (uint_t k = 0; k < sdata->game_data.nb_of_teams; k++) {
+        if (sdata->game_data.teams[k].level_max >= 6) {
+            printf("\033[33mGAME END, Winner team : %s\033[0m\n",
+                client->player->team->name);
+            send_guis(sdata, fdarray, "seg", sdata->game_data.teams[k].name);
+            sdata->is_running = false;
+        }
+    }
+}
+
 // ACTION
 int action_incantation(serverdata_t *sdata, fdarray_t *fdarray,
     client_t *client, char *data)
@@ -101,13 +114,12 @@ int action_incantation(serverdata_t *sdata, fdarray_t *fdarray,
 
     if (level_up_ok(sdata, client->player))
         client->player->level += 1;
+    if (client->player->level >= 8)
+        client->player->team->level_max += 1;
     sprintf(answer, "Current level: %d", client->player->level);
     set_message(client, answer, NULL);
     send_gui_p_end_inc(sdata, fdarray, client);
-    if (client->player->level >= 8) {
-        printf("GAME END, winner team : %s\n", client->player->team->name);
-        sdata->is_running = false;
-    }
+    check_game_end(sdata, fdarray, client);
 }
 
 // COMMAND

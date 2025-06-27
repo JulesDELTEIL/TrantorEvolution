@@ -59,10 +59,8 @@ int openconnection(serverdata_t *sdata, fdarray_t *fdarray)
     int nextfree = NOFD;
 
     nextfree = getnextfree(fdarray);
-    if (nextfree == NOFD) {
-        set_message(&(fdarray->clients[nextfree]), "REFUSED", NULL);
+    if (nextfree == NOFD)
         return CLIENTS_OVERFLOW_CODE;
-    }
     newfd = accept(sdata->sockfd,
             (struct sockaddr*)&sdata->address, &sdata->addrlen);
     if (newfd < 0)
