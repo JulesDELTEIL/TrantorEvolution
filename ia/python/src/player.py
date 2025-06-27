@@ -5,86 +5,90 @@
 ## player.py
 ##
 
-from src.motivation import Motivation
-from src.action import *
-from collections import deque
+from src.roles.nobody import Nobody
+from src.action import Action
+from src.utils import parse_vision, parse_inventory
+from src.macros import X, Y
 
-class PlayerState:
-    def __init__(self):
-        self.level = 1
-        self.food = 10
-        self.egg_left = -1
-        self.last_inventory = {}
-        self.last_vision = []
-        self.motivation = Motivation()
-        self.sent_queue = []
-    
-    def update(self, response: str) -> None:
-        #toutes ces conditions doivent être gérer via la sent_queue -> on doit regarder quel est le premier élément de la liste et traiter la réponse en fonction
-        if response == "dead":
-            print("I'm dead lol")
-            exit(0)
-        self.motivation.update(self.food, self.last_inventory, self.level)
-    
-    def parse_inventory(self, response: str) -> None:
-        self.last_inventory = {}
-        for item in response.strip("[]").split(","):
-            if item.strip():
-                key, val = item.strip().split()
-                self.last_inventory[key] = int(val)
-        self.food = self.last_inventory.get("food", 0)
-        
-    def parse_vision(self, response: str) -> list[list[str]]:
-        s = response.strip()
-        if not (s.startswith('[') and s.endswith(']')):
-            raise ValueError("Format inattendu")
-        inner = s[1:-1]
+import subprocess
 
-        raw_tiles = inner.split(',')
-        vision = []
-        for raw in raw_tiles:
-            raw = raw.strip()
-            if raw == '':
-                vision.append([])
+class Player():
+    def __init__(self, host: str, port: str, team_name: str):
+        self._player_host = host
+        self._player_port = port
+        self._player_team_name = team_name
+        self.role = Nobody()
+        self.COMMANDS = {
+            Action.FORWARD: self._move_forward,
+            Action.LEFT: self._turn_left,
+            Action.RIGHT: self._turn_right,
+            Action.LOOK: self._update_mindmap,
+            Action.INVENTORY: self._update_inventory,
+            Action.BROADCAST: self._void,
+            Action.TAKE: self._take_object,
+            Action.SET: self._void,
+            Action.FORK: self._spawn_new_client,
+            Action.INCANTATION: self._incatation_succes,
+            Action.CONNECT_NBR: self._update_connect_nbr,
+            Action.EJECT: self._void,
+            Action.NONE:self._void
+        }
+    
+    def _spawn_new_client(self) -> None:
+        subprocess.Popen(["./zappy_ai", "-p", self._player_port, "-n", self._player_team_name, "-h", self._player_host])
+
+    def _update_connect_nbr(self, connect_nbr: str) -> bool:
+        print("UPDATING CONNECT NBR gotten", connect_nbr)
+        self.role._egg_left = int(connect_nbr)
+        return True
+
+    def _update_mindmap(self, response: str) -> None:
+        response_formatted = parse_vision(response)
+        self.role._last_vision = response_formatted[0]
+        if isinstance(self.role, Nobody):
+            if self.role._last_vision.count("player") > 1:
+                self.role._is_there_anyone = True
             else:
-                objs = [obj for obj in raw.split() if obj]
-                vision.append(objs)
-        self.last_vision = vision[0]
-        return vision
+                self.role._is_there_anyone = False
+        self.role._map.update_mindmap(response_formatted, self.role._level, self.role._cycle, self.role.pos)
+        
+    def _update_inventory(self, response: str) -> None:
+        self.role._last_inventory = parse_inventory(response)
+        
+    def _turn_left(self):
+        if self.role._direction is not None:
+            mapping = {"up": "left", "left": "down", "down": "right", "right": "up"}
+            self.role._direction = mapping[self.role._direction]
+
+    def _turn_right(self):
+        if self.role._direction is not None:
+            mapping = {"up": "right", "right": "down", "down": "left", "left": "up"}
+            self.role._direction = mapping[self.role._direction]
+
+    def _move_forward(self):
+        if self.role._direction == "up":
+            self.role.pos[Y] += 1
+        elif self.role._direction == "right":
+            self.role.pos[X] += 1
+        elif self.role._direction == "down":
+            self.role.pos[Y] -= 1
+        elif self.role._direction == "left":
+            self.role.pos[X] -= 1
+            
+    def _take_object(self, response: str):
+        if response == "ko" or response == "ko\n":
+            self.role.carry = None
+            self.role._last_vision = None
+        else:
+            self.role.mode = 'DELIVERING'
     
-    def get_movements(self, start: list[int], end: list[int], direction: str) -> list[Commands]:
-        commands_queue = deque()
-        dx = end[0] - start[0]
-        dy = end[1] - start[1]
+    def _incatation_succes(self, response: str):
+        if response == "Elevation underway":
+            return
+        response_list = response.split()
+        if response_list[0] == "Current":
+            self.role._level = int(response_list[2])
+            self.role._last_incantation = self.role._cycle
 
-        directions = ['up', 'right', 'down', 'left']
-
-        def turn_to(current, target, queue):
-            ci = directions.index(current) + 1
-            ti = directions.index(target) + 1
-            diff = (ti - ci) % 4
-            if diff == 1:
-                queue.appendleft(Commands(Action.LEFT))
-            elif diff == 2:
-                queue.appendleft(Commands(Action.RIGHT))
-                queue.appendleft(Commands(Action.RIGHT))
-            elif diff == 3:
-                queue.appendleft(Commands(Action.RIGHT))
-            return queue
-
-        # Mouvements en x
-        if dx != 0:
-            target_dir = 'right' if dx > 0 else 'left'
-            turn_to(direction, target_dir, commands_queue)
-            for _ in range(abs(dx)):
-                commands_queue.appendleft(Commands(Action.FORWARD))
-            direction = target_dir
-
-        # Mouvements en y
-        if dy != 0:
-            target_dir = 'up' if dy > 0 else 'down'
-            turn_to(direction, target_dir, commands_queue)
-            for _ in range(abs(dy)):
-                commands_queue.appendleft(Commands(Action.FORWARD))
-            direction = target_dir
-        return commands_queue
+    def _void(self):
+        return
