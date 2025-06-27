@@ -1,0 +1,130 @@
+/*
+** EPITECH PROJECT, 2025
+** zappy
+** File description:
+** functions.h
+*/
+
+#ifndef SERVERFUNCTIONS_H_
+    #define SERVERFUNCTIONS_H_
+
+    #include <sys/socket.h>
+    #include <arpa/inet.h>
+    #include <sys/wait.h>
+    #include <netinet/in.h>
+    #include <poll.h>
+    #include <pthread.h>
+
+    #include "serverdata.h"
+    #include "fdarray.h"
+
+/*
+Uses a port and returns a serverdata_t struct containing socket informations
+Returns a serverdata_t struct
+*/
+serverdata_t setup_parameters(arguments_t *args);
+
+/*
+Sets the options described in the sdata struct into the socket
+Returns EXIT_SUCCESS or EXIT_FAILURE
+*/
+int setup_server(serverdata_t *sdata, arguments_t *args);
+
+/*
+Function to call at end of ftp server, used to destroy entities
+Returns EXIT_SUCCESS
+*/
+int close_server(serverdata_t *sdata, fdarray_t *fdarray, pthread_t *mapthr);
+
+/*
+Destroy client datas, will not set it to default values
+*/
+int destroy_client(client_t *client);
+
+/*
+Setup the fdarray_t struct used to store all fds
+Returns a fdarray_t
+*/
+fdarray_t setup_fds(int sockfd);
+
+/*
+Opens a connection with a client
+*/
+int openconnection(serverdata_t *sdata, fdarray_t *fdarray);
+
+/*
+Closes connection with a client
+*/
+int closeconnection(serverdata_t *sdata, fdarray_t *fdarray, client_t *client);
+
+/*
+Sets an empty client to use space later for an other one
+*/
+int setempty_client(client_t *client);
+
+/*
+Displays an error message MSG on the error output
+Returns ERRORCODE
+*/
+int returnwitherror(const char *msg, int errorcode);
+
+/*
+Setup the pthread arg for the map thread
+Returns O if working
+*/
+int setup_map_thread(serverdata_t *sdata, pthread_t *mapthr);
+
+/*
+Set a new player in SDATA which will be
+linked to CLIENT and be part of TEAM_NAME
+*/
+int new_player(serverdata_t *sdata, fdarray_t *fdarray, client_t *client,
+    char *team_name);
+
+/*
+Deletes a player from the list in GAME depending on its ID
+*/
+int del_player(game_t *game, int id);
+
+/*
+Kills a player from CLIENT
+*/
+int kill_player(serverdata_t *sdata, fdarray_t *fdarray,
+    client_t *client);
+
+/*
+Parse the first command found in CLIENT into CMD and DATA
+*/
+int packet_parser(client_t *client, char *cmd, char *data);
+
+/*
+Checks the clients and executes commands
+*/
+int check_clients(serverdata_t *sdata, fdarray_t *fdarray);
+
+/*
+Checks the ai client CLIENT for related events and incoming commands
+*/
+int check_ai_client(serverdata_t *sdata, fdarray_t *fdarray,
+    client_t *client);
+
+/*
+Checks the gui client CLIENT for related events and incoming commands
+*/
+int check_gui_client(serverdata_t *sdata, fdarray_t *fdarray,
+    client_t *client);
+
+/*
+Checks the unset client CLIENT for related events and incoming commands
+*/
+int check_unknown_client(serverdata_t *sdata, fdarray_t *fdarray,
+    client_t *client);
+
+/*
+Called when the client sends its first ever data after its connection.
+will be used to set client type (AI / GUI)
+*/
+int set_team(serverdata_t *sdata, fdarray_t *fdarray,
+    client_t *client, char *data);
+
+#endif

@@ -7,8 +7,14 @@ vgcore.*
 # Cmake
 build/
 
+# Python
+*__pycache__
+
 # Files Created
 zappy_*
+ECS.a
+ECS/default.so
+gui/plugins/*.so
 
 # Doc
 latex/

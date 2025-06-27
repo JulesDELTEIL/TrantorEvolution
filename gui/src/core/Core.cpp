@@ -1,0 +1,75 @@
+/*
+** EPITECH PROJECT, 2025
+** TrantorEvolution
+** File description:
+** Core.cpp
+*/
+
+#include <iostream>
+
+#include "core/Core.hpp"
+#include "visual/scenes/Land.hpp"
+
+namespace gui {
+namespace core {
+
+Core::Core(int argc, const char *argv[])
+{
+    try {
+        _parser = Parser(argc, argv);
+    } catch(const std::exception& e) {
+        std::cerr << e.what() << std::endl;
+        exit(84);
+    }
+    _scenes[visual::Scene_e::IN_GAME] = std::make_unique<visual::Land>(std::ref(_client));
+    changeScene(visual::Scene_e::IN_GAME);
+    _client.setSocket(_parser.getHostName(), _parser.getPortNb());
+}
+
+void Core::run(void)
+{
+    while (_engine.window.isOpen()) {
+        events();
+        display();
+    }
+}
+
+void Core::display(void)
+{
+    _engine.window.clear();
+    _scenes.at(_selected_scene)->display(_engine.window);
+    _engine.window.display();
+}
+
+void Core::events(void)
+{
+    network::NetEventPack net_event;
+
+    while (_engine.window.pollEvent(_engine.events)) {
+        if (_engine.events.type == sf::Event::Closed) {
+            _engine.window.close();
+            return;
+        }
+        _scenes.at(_selected_scene)->event(_engine, net_event);
+    }
+    _engine.events.type = sf::Event::SensorChanged;
+    while (_client.pollEvent(net_event)) {
+        if (net_event.event == network::CON) {
+            _client.sendData(AUTHENTIFICATOR);
+            _client.sendData("msz");
+            _client.sendData("bio");
+            _client.sendData("sgt");
+            _client.sendData("tna");
+        }
+        _scenes.at(_selected_scene)->event(_engine, net_event);
+    }
+}
+
+void Core::changeScene(const visual::Scene_e& scene)
+{
+    _selected_scene = scene;
+    _engine.window.setView(_scenes.at(_selected_scene)->getView());
+}
+
+} // core
+} // core

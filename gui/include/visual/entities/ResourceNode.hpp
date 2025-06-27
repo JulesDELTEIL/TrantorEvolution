@@ -1,0 +1,72 @@
+/*
+** EPITECH PROJECT, 2025
+** TrantorEvolution
+** File description:
+** ResourceNode.hpp
+*/
+
+#ifndef RESOURCE_NODE_HPP_
+    #define RESOURCE_NODE_HPP_
+
+    #include <map>
+    #include <SFML/Graphics/RenderTarget.hpp>
+
+    #include "map_tools.h"
+    #include "visual/visual.hpp"
+    #include "visual/Drawable.hpp"
+
+    #define NB_RES_BY_TILE 3
+
+    #define RES_MAX_X 24
+    #define RES_MIN_X -24
+    #define RES_MAX_Y 39
+    #define RES_MIN_Y 9
+
+static const int RES_RANGE_X = RES_MAX_X - RES_MIN_X + 1;
+static const int RES_RANGE_Y = RES_MAX_Y - RES_MIN_Y + 1;
+
+    #define RES_SCALE 0.8f
+
+namespace gui {
+namespace visual {
+
+static const std::map<resource_e, std::string> RESOURCE_NODE_TEXTURE  = {
+    {FOOD, "assets/ressources/Deer.png"},
+    {WOOD, "assets/ressources/Grass_Biom_Tree.png"},
+    {STONE, "assets/ressources/Stone.png"},
+    {CLAY, "assets/ressources/Clay.png"},
+    {METAL, "assets/ressources/Metal.png"},
+    {OIL, "assets/ressources/Oil.png"},
+    {ANTI_MATTER, "assets/ressources/Anti_Matter.png"}
+};
+
+static const sf::IntRect RESOURCE_RECT(0, 0, 30, 30);
+
+class ResourceNode {
+    public:
+        ResourceNode(const sf::Vector2f& pos, resource_e type, size_t quantity);
+        ~ResourceNode() = default;
+
+        void addResource(void);
+
+        void draw(sf::RenderTarget&);
+        std::vector<sf::Vector2f> getCollectPosition(void);
+        void updateQuantity(size_t);
+        void lowerQuantity(size_t);
+        resource_e getType(void) const;
+        size_t getQuantity(void) const;
+
+    private:
+        Drawable _resource;
+        resource_e _type;
+
+        size_t _quantity;
+        sf::Vector2f _pos;
+        std::vector<sf::Vector2f> _sprites_pos;
+
+};
+
+} // visual
+} // gui
+
+#endif
