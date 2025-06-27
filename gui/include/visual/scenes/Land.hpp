@@ -28,8 +28,6 @@ namespace gui {
 namespace visual {
 
     #define NB_MAP_ARG 9
-    #define CENTER_MAP(map_height) (sf::Vector2f(VIEW_WIDTH, (VIEW_HEIGHT * 2 - map_height * TILE_SIZE) / 2))
-    #define MAP_POS(middle, x, y) (sf::Vector2f((middle.x - (TILE_SIZE / 2) * (x + y)) + (TILE_SIZE * y), middle.y + (24 * (x + y))))
 
     #define ACT_TIME(x) float((x / this->_time_unit_speed) * 1000)
 

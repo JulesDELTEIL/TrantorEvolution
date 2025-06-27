@@ -27,7 +27,7 @@ Land::Land() : AScene(core::DEFAULT_VIEW)
 
 void Land::display(sf::RenderTarget& render)
 {
-    _backgroud.display(render);
+    _backgroud.drawBackground(render);
     render.setView(_camera);
     clearResources();
     for (auto& tileY : _tiles) {
@@ -41,13 +41,13 @@ void Land::display(sf::RenderTarget& render)
     }
     for (auto& trantor : _trantorians)
         trantor.second->draw(render, _clock);
+    _backgroud.drawWaterfall(render, _map_size);
     _hud.display(render, _clock);
 }
 
 void Land::event(const core::Engine& engine, const network::NetEventPack& net_pack)
 {
     viewEvent(engine.events);
-    _backgroud.event(engine, net_pack);
     checkHudEvent(engine, net_pack);
     switch (static_cast<int>(net_pack.event)) {
         case network::MSIZE:
