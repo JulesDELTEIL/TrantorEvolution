@@ -27,10 +27,10 @@ namespace gui {
     class SoundManage {
     public:
         SoundManage();
-    
+
     private:
         sf::SoundBuffer sb_song;
-        sf::Sound s_song;
+        sf::Music s_song;
     };
 }
 
