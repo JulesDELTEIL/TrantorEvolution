@@ -38,6 +38,7 @@ void Land::display(sf::RenderTarget& render)
         trantor.second->draw(render, _clock);
 }
 
+
 void Land::event(const core::Engine& engine, const network::NetEventPack& net_pack)
 {
     viewEvent(engine.events);
@@ -197,7 +198,6 @@ void Land::trantorEndIncantation(const network::NetPack& pack)
     int y = pack[1].getInt();
     sf::Vector2f pos = MAP_POS(CENTER_MAP(_map_size.y), x, y);
     
-    _tiles[x][y].incantation_objects = std::make_shared<IncantationObject>(pos);
     for (const auto &trantor : _tiles[x][y].trantorians) {
         trantor.second->endIncantation(pos, ACT_TIME(7.0f) / 2, _clock);
     }

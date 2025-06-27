@@ -23,7 +23,7 @@ namespace gui {
 namespace visual {
 
     #define NB_TRANTORS 6
-    #define TRANTOR_SCALE 0.5f
+    #define TRANTOR_SCALE 0.3f
 
 enum BodyAnimIndex {
     IDLE = 0,
@@ -31,10 +31,11 @@ enum BodyAnimIndex {
     COLLECT,
     PICKAXE,
     AXE,
+    DEATH,
     INCANT
 };
 
-    #define NB_BODY_ANIM 5
+    #define NB_BODY_ANIM 7
 
 static const std::vector<AnimationInfos> BODY_ANIM_INFOS = {
     {"assets/trantorians/body/Idle_Side-Sheet.png", {64, 64}, {4, 1}, {0, 0}, 0.3, sf::Clock()},
@@ -43,7 +44,7 @@ static const std::vector<AnimationInfos> BODY_ANIM_INFOS = {
     {"assets/trantorians/body/Crush_Side-Sheet.png", {64, 64}, {8, 1}, {0, 0}, 0.2, sf::Clock()},
     {"assets/trantorians/body/Slice_Side-Sheet.png", {64, 64}, {8, 1}, {0, 0}, 0.2, sf::Clock()},
     {"assets/trantorians/body/Death_Side-Sheet.png", {64, 64}, {8, 1}, {0, 0}, 0.2, sf::Clock()},
-    {"assets/trantorians/body/Evolution-Sheet.png", {64, 64}, {8, 1}, {0, 0}, 0.2, sf::Clock()},
+    {"assets/trantorians/body/Evolution-Sheet.png", {64, 64}, {2, 1}, {0, 0}, 0.4, sf::Clock()},
 };
 
 class Trantorian {
