@@ -12,6 +12,7 @@
     #include <SFML/Window/Event.hpp>
     #include <unordered_map>
 
+    #include "map_tools.h"
     #include "visual/Drawable.hpp"
     #include "network/events.hpp"
     #include "visual/visual.hpp"
@@ -29,6 +30,8 @@ namespace visual {
     #define TILE_HUD_MARGIN 10.0f
     #define TILE_RESOURCES_TEXTURE "assets/hud/resources.png"
     #define TILE_FONT_SIZE 12
+    #define TILE_BIOME_FSIZE 16
+    #define TILE_BIOME_POS_FACTOR sf::Vector2f(-10.0f, -30.0f);
     #define TILE_COLOR_TEXT sf::Color(93, 60, 0, 255)
     #define TILE_INSIDE_MARGIN 32.0f
     #define TILE_INSIDE_SPLIT 20.0f
@@ -66,10 +69,15 @@ enum HudType_e {
     TILE_INFO,
 };
 
-struct HudInfos {
+struct TileInfo {
     std::string type;
     sf::Vector2i position;
     ResourceGroup resources;
+};
+
+static const std::map<biome_e, std::string> BIOME_NAMES = {
+    {SEA, "sea"}, {FOREST, "forest"}, {MOUNTAINS, "mountain"},
+    {PLAINS, "plains"}, {BEACH, "beach"}, {EMPTY, "empty"},
 };
 
 struct HudDisplay {
@@ -78,6 +86,7 @@ struct HudDisplay {
     sf::Font font;
     Drawable tile;
     Drawable tile_r;
+    sf::Text tile_biome;
     sf::Text tile_rquantity;
     Drawable global;
     sf::Text g_time;
@@ -95,23 +104,21 @@ class Hud {
         void event(const sf::Event&, const network::NetEventPack&);
         
         void changeStatus(HudType_e);
-        void changeTrantorInfo(std::shared_ptr<Trantorian>);
         void changeTileInfo(std::shared_ptr<Tile>);
         void updateInfo(void);
 
     private:
         float _last_time = 0;
         HudType_e _status = NO_INFO;
-        HudInfos _infos;
         HudDisplay _display;
 
         size_t _nb_trantors = 0;
         std::unordered_map<std::string, int> _nb_teams;
 
         void drawTileInfo(sf::RenderTarget& render);
-    
-        std::shared_ptr<Trantorian> _trantorian = nullptr;
+
         std::shared_ptr<Tile> _tile = nullptr;
+        TileInfo _infos;
 
 };
 

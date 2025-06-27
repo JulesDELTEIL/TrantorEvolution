@@ -19,6 +19,9 @@ HudDisplay::HudDisplay()
     tile.sprite.setOrigin(tile.texture.getSize().x / 2, tile.texture.getSize().y + TILE_HUD_MARGIN);
     tile_r.texture.loadFromFile(TILE_RESOURCES_TEXTURE);
     tile_r.sprite.setTexture(tile_r.texture);
+    tile_biome.setFont(font);
+    tile_biome.setFillColor(TILE_COLOR_TEXT);
+    tile_biome.setCharacterSize(TILE_BIOME_FSIZE);
     tile_rquantity.setFont(font);
     tile_rquantity.setFillColor(TILE_COLOR_TEXT);
     tile_rquantity.setCharacterSize(TILE_FONT_SIZE);
@@ -95,11 +98,6 @@ void Hud::changeStatus(HudType_e type)
     _status = type;
 }
 
-void Hud::changeTrantorInfo(std::shared_ptr<Trantorian> new_trantor)
-{
-    _trantorian = new_trantor;
-}
-
 void Hud::changeTileInfo(std::shared_ptr<Tile> new_tile)
 {
     _tile = new_tile;
@@ -107,36 +105,31 @@ void Hud::changeTileInfo(std::shared_ptr<Tile> new_tile)
 
 void Hud::updateInfo(void)
 {
-    switch (static_cast<int>(_status)) {
-        case TRANTOR_INFO:
-            if (_trantorian == nullptr) {
-                _status = NO_INFO;
-                return;
-            }
-            _infos.position = _trantorian->map_pos;
-            _infos.resources = _trantorian->getInventory();
-            _display.moveTile(_trantorian->actual_pos);
-            break;
-        case TILE_INFO:
-            if (_tile == nullptr) {
-                _status = NO_INFO;
-                return;
-            }
-            _infos.resources = _tile->getResources();
-            _display.moveTile(_tile->getPos());
-            break;
+    if (_status == TILE_INFO) {
+        if (_tile == nullptr) {
+            _status = NO_INFO;
+            return;
+        }
+        _infos.resources = _tile->getResources();
+        _infos.type = BIOME_NAMES.at(_tile->getBiome());
+        _display.tile_biome.setString(_infos.type);
+        _display.moveTile(_tile->getPos());
     }
 }
 
 void Hud::drawTileInfo(sf::RenderTarget& render)
 {
     sf::Vector2f pos = _display.tile.sprite.getPosition();
+    sf::Vector2f biome_pos;
     sf::Vector2f sp_pos;
     int i = 0;
 
+    render.draw(_display.tile.sprite);
     pos.x -= _display.tile.texture.getSize().x / 2 * TILE_HUD_SCALE - TILE_INSIDE_MARGIN;
     pos.y -= _display.tile.texture.getSize().y / 2 * TILE_HUD_SCALE + TILE_INSIDE_MARGIN - 2.0f;
-    render.draw(_display.tile.sprite);
+    biome_pos = pos + TILE_BIOME_POS_FACTOR;
+    _display.tile_biome.setPosition(biome_pos);
+    render.draw(_display.tile_biome);
     for (const auto& res : _infos.resources) {
         pos.x += TILE_INSIDE_SPLIT;
         if (i == NB_RESOURCES / 2) {

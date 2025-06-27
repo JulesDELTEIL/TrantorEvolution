@@ -235,25 +235,12 @@ void Land::checkHudEvent(const core::Engine& engine, const network::NetEventPack
     if (engine.events.type == sf::Event::MouseButtonPressed) {
         if (engine.events.mouseButton.button == sf::Mouse::Left) {
             sf::Vector2f mpos = engine.window.mapPixelToCoords(sf::Mouse::getPosition(engine.window), _camera);
-            if (hitTrantor(mpos))
-                _hud.changeStatus(HudType_e::TRANTOR_INFO);
-            else if (hitTile(mpos))
+            if (hitTile(mpos))
                 _hud.changeStatus(HudType_e::TILE_INFO);
             else
                 _hud.changeStatus(HudType_e::NO_INFO);
         }
     }
-}
-
-bool Land::hitTrantor(const sf::Vector2f&)
-{
-    // for (const auto& trantor : _trantorians) {
-    //     if () {
-    //         _hud.changeTrantorInfo(trantor.second);
-    //         return true;
-    //     }
-    // }
-    return false;
 }
 
 bool Land::hitTile(const sf::Vector2f& mpos)

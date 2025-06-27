@@ -54,6 +54,7 @@ class Tile {
         void updateResource(resource_e, int);
 
         sf::Vector2f getPos(void) const;
+        biome_e getBiome(void) const;
 
     private:
         std::reference_wrapper<Drawable> _biome;
