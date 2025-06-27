@@ -57,20 +57,22 @@ void ResourceNode::updateQuantity(size_t new_quantity)
     _quantity = new_quantity;
     if (nb_sprites > 3)
         nb_sprites = 3;
-    if (nb_sprites == 0 && new_quantity > 0)
-        nb_sprites = 1;
     if (nb_sprites > _sprites_pos.size()) {
         for (size_t i = _sprites_pos.size(); i < nb_sprites; ++i)
             addResource();
     } else if (nb_sprites < _sprites_pos.size()) {
-        for (size_t i = _sprites_pos.size(); i > nb_sprites; ++i)
+        for (size_t i = _sprites_pos.size(); i > nb_sprites; --i)
             _sprites_pos.pop_back();
     }
 }
 
 void ResourceNode::lowerQuantity(size_t to_lower)
 {
-    updateQuantity(_quantity - to_lower);
+    if (to_lower > _quantity)
+        _quantity = 0;
+    else
+        _quantity -= to_lower;
+    updateQuantity(_quantity);
 }
 
 resource_e ResourceNode::getType(void) const

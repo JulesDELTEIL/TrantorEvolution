@@ -18,7 +18,7 @@ namespace core {
     #define WIN_X 1280
     #define WIN_Y 720
 
-    #define FRAMERATE_LIMIT 60
+    #define FRAMERATE_LIMIT 30
 
     #define VIEW_WIDTH 1920.0f
     #define VIEW_HEIGHT 1080.0f

@@ -120,10 +120,10 @@ void Land::askResources(void)
     _net_running = true;
     float last_check = 0;
 
+    while (_map_size.x == -1)
+        std::this_thread::yield();
     while (_net_running) {
         float time_to_asked = (_map_size.x * _map_size.y) * 10;
-        if (time_to_asked > 60000)
-            time_to_asked = 60000;
         if (_clock.getElapsedTime().asMilliseconds() > last_check + time_to_asked) {
             for (size_t y = 0; y < _map_size.y; ++y) {
                 for (size_t x = 0; x < _map_size.x; ++x) {
@@ -131,7 +131,8 @@ void Land::askResources(void)
                 }
             }
             last_check = _clock.getElapsedTime().asMilliseconds();
-        }
+        } else
+            std::this_thread::yield();
     }
 }
 

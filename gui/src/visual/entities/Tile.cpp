@@ -43,7 +43,10 @@ void Tile::updateResource(resource_e type, int factor)
 
 void Tile::lowerResource(resource_e type, int factor)
 {
-    _resources.at(type) -= factor;
+    if (factor > _resources.at(type))
+        _resources.at(type) = 0;
+    else
+        _resources.at(type) -= factor;
 }
 
 sf::Vector2f Tile::getPos(void) const
