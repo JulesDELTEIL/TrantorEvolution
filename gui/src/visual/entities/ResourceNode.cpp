@@ -55,7 +55,7 @@ void ResourceNode::updateQuantity(size_t new_quantity)
     size_t nb_sprites = new_quantity;
 
     _quantity = new_quantity;
-    if (nb_sprites > 1 && _type == FOOD)
+    if (nb_sprites > 1 && (_type == FOOD || _type == ANTI_MATTER ||_type == OIL))
         nb_sprites = 1;
     if (nb_sprites > 3)
         nb_sprites = 3;

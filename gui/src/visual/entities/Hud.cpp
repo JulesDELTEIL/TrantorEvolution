@@ -22,6 +22,8 @@ HudDisplay::HudDisplay()
     tile_biome.setFont(font);
     tile_biome.setFillColor(DATE_COLOR_TEXT);
     tile_biome.setCharacterSize(TILE_BIOME_FSIZE);
+    tile_biome.setOutlineColor(TILE_COLOR_TEXT);
+    tile_biome.setOutlineThickness(0.8f);
     tile_rquantity.setFont(font);
     tile_rquantity.setFillColor(TILE_COLOR_TEXT);
     tile_rquantity.setCharacterSize(TILE_FONT_SIZE);
