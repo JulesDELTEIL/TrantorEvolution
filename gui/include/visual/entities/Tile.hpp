@@ -17,11 +17,11 @@
     #include "map_tools.h"
     #include "visual/visual.hpp"
     #include "visual/Drawable.hpp"
+    #include "visual/entities/Background.hpp"
 
 namespace gui {
 namespace visual {
 
-    #define TILE_SIZE 96
     #define BIOME_TEXTURE_PATH "assets/tiles/BiomTiles.png"
     #define NB_TYPE 3
     #define ANIMATION_CLOCK 500
