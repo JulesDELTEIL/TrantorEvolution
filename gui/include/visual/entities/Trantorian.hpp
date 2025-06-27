@@ -52,7 +52,7 @@ static const std::vector<AnimationInfos> BODY_ANIM_INFOS = {
 class Trantorian {
     public:
         Trantorian(const sf::Vector2f& pos, const sf::Vector2i& pos_in_map,
-            size_t level, const std::string& team_name);
+            size_t level, const std::string& team_name, const sf::Color& color);
         ~Trantorian() = default;
 
         void draw(sf::RenderTarget&, const sf::Clock&);

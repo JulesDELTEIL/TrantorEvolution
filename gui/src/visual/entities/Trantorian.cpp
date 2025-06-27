@@ -11,7 +11,7 @@ namespace gui {
 namespace visual {
 
 Trantorian::Trantorian(const sf::Vector2f& pos, const sf::Vector2i& pos_in_map,
-    size_t level, const std::string& team_name) :
+    size_t level, const std::string& team_name, const sf::Color& color) :
     _body(NB_TRANTORS),
     _type(NB_TRANTORS),
     _body_direction(NB_TRANTORS, FACE_RIGHT),
@@ -22,8 +22,6 @@ Trantorian::Trantorian(const sf::Vector2f& pos, const sf::Vector2i& pos_in_map,
         std::ref(_body[0]), std::ref(_body[1]), std::ref(_body[2])
     })
 {
-    sf::Color team_color = generateTeamColor(team_name);
-
     lvl = level;
     team = team_name;
     map_pos = pos_in_map;
@@ -35,7 +33,7 @@ Trantorian::Trantorian(const sf::Vector2f& pos, const sf::Vector2i& pos_in_map,
         };
         _body[i].sprite.setOrigin(sf::Vector2f(32, 48));
         _body[i].sprite.setPosition(random_pos);
-        _body[i].sprite.setColor(team_color);
+        _body[i].sprite.setColor(color);
         for (int d = 0; d < NB_BODY_ANIM; ++d)
             _body_animation[i].addAnimation(BODY_ANIM_INFOS[d]);
         _type[i] = IDLE;
@@ -77,12 +75,20 @@ void Trantorian::move(int index, const sf::Vector2f& new_pos, float time, const 
 sf::Color Trantorian::generateTeamColor(const std::string& team_name)
 {
     size_t code = 0;
-    sf::Color color;
 
-    for (const char& chara : team_name)
+    if (team_name.size() >= 3) {
+        return sf::Color(static_cast<sf::Uint8>(team_name[0]) + 120,
+            static_cast<sf::Uint8>(team_name[1]),
+            static_cast<sf::Uint8>(team_name[2]), 255);
+    }
+    for (const char& chara : team_name) {
+        if (chara % 2)
+            code += 120;
+        else
+            code -= 120;
         code += chara;
-    code /= team_name.size();
-    return sf::Color(code, code, code, 255);
+    }
+    return sf::Color(code / team_name.size(), code, 12, 255);
 }
 
 void Trantorian::collect(const std::shared_ptr<ResourceNode>& resource,

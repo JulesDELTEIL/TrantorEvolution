@@ -97,7 +97,8 @@ void Land::event(const core::Engine& engine, const network::NetEventPack& net_pa
             removeTrantorian(net_pack.pack);
             break;
         case network::TEAMS:
-            _teams[net_pack.pack[0].getString()] = {};
+            _teams.clear();
+            _teams.push_back({net_pack.pack[0].getString(), RANDOM_COLOR, {}});
             break;
         case network::BIOME:
             addTile(net_pack.pack);
@@ -247,11 +248,16 @@ void Land::addTrantorian(const network::NetPack& pack)
     int x = pack[1].getInt();
     int y = pack[2].getInt();
     sf::Vector2f pos = MAP_POS(CENTER_MAP(_map_size.y), x, y);
-    std::shared_ptr<Trantorian> newT = std::make_shared<Trantorian>(pos, sf::Vector2i(x, y), pack[4].getSize_t(), pack[5].getString());
+    std::shared_ptr<Trantorian> newT = nullptr;
 
-    _teams[pack[5].getString()].push_back(newT);
-    _tiles[x][y].trantorians[pack[0].getSize_t()] = newT;
-    _trantorians[pack[0].getSize_t()] = newT;
+    for (auto& team : _teams)
+        if (!team.name.compare(pack[5].getString())) {
+            newT = std::make_shared<Trantorian>(pos, sf::Vector2i(x, y),
+                pack[4].getSize_t(), team.name, team.color);
+            team.trantorians.push_back(newT);
+            _tiles[x][y].trantorians[pack[0].getSize_t()] = newT;
+            _trantorians[pack[0].getSize_t()] = newT;
+        }
 }
 
 void Land::removeTrantorian(const network::NetPack& pack)
