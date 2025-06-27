@@ -32,4 +32,4 @@ def create_configuration():
 if __name__ == "__main__":
     conf = create_configuration()
     client = Trantorian(conf["-h"], int(conf["-p"]), conf["-n"])
-    client.run()
+    client.main_loop()
