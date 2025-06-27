@@ -57,6 +57,7 @@ int cmd_pin(serverdata_t *, fdarray_t *, client_t *, char *);
 int cmd_plv(serverdata_t *, fdarray_t *, client_t *, char *);
 int cmd_sgt(serverdata_t *, fdarray_t *, client_t *, char *);
 int cmd_sst(serverdata_t *, fdarray_t *, client_t *, char *);
+int cmd_bio(serverdata_t *, fdarray_t *, client_t *, char *);
 
 
 static const command_t GUI_COMMANDS[] = {
@@ -68,7 +69,8 @@ static const command_t GUI_COMMANDS[] = {
     {"plv", cmd_plv},
     {"pin", cmd_pin},
     {"sgt", cmd_sgt},
-    {"sst", cmd_sst}
+    {"sst", cmd_sst},
+    {"bio", cmd_bio}
 };
 
 static const command_t AI_COMMANDS[] = {

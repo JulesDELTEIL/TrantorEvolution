@@ -22,9 +22,9 @@ static bool is_drawable(char c)
 void displayfds(fdarray_t *fdarray)
 {
     printf("poll : [");
-    printf("%d", fdarray->fds[0].fd);
+    printf("%d", fdarray->infds[0].fd);
     for (int k = 1; k < NBTOTAL_FD; k++)
-        printf(", %d", fdarray->fds[k].fd);
+        printf(", %d", fdarray->infds[k].fd);
     printf("]\n");
     printf("clients : [");
     printf("%d", fdarray->clients[0].fd);

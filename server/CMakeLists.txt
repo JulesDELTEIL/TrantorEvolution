@@ -16,6 +16,7 @@ add_executable( ${PROJECT_NAME}
     ${SERVER_SRC_DIR}network/loop.c
     ${SERVER_SRC_DIR}network/connection.c
     ${SERVER_SRC_DIR}network/transmission.c
+    ${SERVER_SRC_DIR}network/threads.c
     ${SERVER_SRC_DIR}network/end.c
     ${SERVER_SRC_DIR}clients/set_team.c
     ${SERVER_SRC_DIR}clients/check_clients.c
@@ -49,6 +50,7 @@ add_executable( ${PROJECT_NAME}
     ${SERVER_GUI_CMD_DIR}sgt.c
     ${SERVER_GUI_CMD_DIR}sst.c
     ${SERVER_GUI_CMD_DIR}pin.c
+    ${SERVER_GUI_CMD_DIR}bio.c
     ${SERVER_GUI_CMD_DIR}send_guis.c
     ${SERVER_THR_DIR}init_map.c
     ${SERVER_THR_DIR}init_thread.c
