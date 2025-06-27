@@ -98,10 +98,8 @@ static int add_message_to_queue(client_t *client, char *msg, uint_t len)
 
     new->len = len;
     new->data = strdup(msg);
-    pthread_mutex_lock(&(client->buffout_mutex));
     new->next = client->buffout;
     client->buffout = new;
-    pthread_mutex_unlock(&(client->buffout_mutex));
 }
 
 int set_message(client_t *client, char *cmd, char *data)

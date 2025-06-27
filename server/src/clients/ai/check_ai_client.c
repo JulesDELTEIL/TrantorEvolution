@@ -33,6 +33,7 @@ static int buffer_handler(serverdata_t *sdata, fdarray_t *fdarray,
             return COMMANDS[client->type][k].handler(sdata,
                 fdarray, client, data);
     set_message(client, "ko", NULL);
+    printf("========================== COMMAND NOT FOUND ============================\n");
     return EXIT_FAILURE;
 }
 

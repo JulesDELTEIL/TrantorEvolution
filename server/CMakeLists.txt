@@ -16,7 +16,6 @@ add_executable( ${PROJECT_NAME}
     ${SERVER_SRC_DIR}network/loop.c
     ${SERVER_SRC_DIR}network/connection.c
     ${SERVER_SRC_DIR}network/transmission.c
-    ${SERVER_SRC_DIR}network/threads.c
     ${SERVER_SRC_DIR}network/end.c
     ${SERVER_SRC_DIR}clients/set_team.c
     ${SERVER_SRC_DIR}clients/check_clients.c
