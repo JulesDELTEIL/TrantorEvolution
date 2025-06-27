@@ -46,5 +46,10 @@ sf::Vector2f Tile::getPos(void) const
     return _pos;
 }
 
+biome_e Tile::getBiome(void) const
+{
+    return _type;
+}
+
 } // visual
 } // gui

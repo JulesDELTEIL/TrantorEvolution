@@ -74,7 +74,6 @@ class Land : public AScene {
 
         Hud _hud;
         void checkHudEvent(const core::Engine& engine, const network::NetEventPack& net_pack);
-        bool hitTrantor(const sf::Vector2f&);
         bool hitTile(const sf::Vector2f&);
 
         struct TileInfo {
