@@ -103,6 +103,10 @@ class Trantorian(ServerManager):
             index = message_left.find("\n")
             if index == -1:
                 break
+            if message == "dead" or message == "dead\n":
+                self._sock.shutdown(socket.SHUT_RDWR)
+                self._sock.close()
+                exit()
             if self.handle_response(message_left[:index + 1]):
                 self.send_action()
             message_left = message_left[index + 1:]
@@ -143,7 +147,7 @@ class Trantorian(ServerManager):
     def handle_response(self, response: str) -> bool:
         response_list = response.split()
         if isinstance(self._player, Nobody) and self._player._is_there_anyone == False:
-            if self._player._cycle > 50:
+            if self._player._cycle > 10:
                 self._player = Queen(lambda: self._spawn_new_client())
                 return True
         if response_list[0] == "message":
@@ -156,6 +160,8 @@ class Trantorian(ServerManager):
             return False
         if response_list[0] == "Current":
             self._player._level = int(response_list[2])
+            self._player._last_incantation = self._player._cycle
+            return True
         elif self._player._last_sent:
             if self._player._last_sent == Action.CONNECT_NBR and response_list[0].isdigit():
                 return self.COMMANDS[self._player._last_sent](response_list[0])
@@ -163,8 +169,8 @@ class Trantorian(ServerManager):
                 if self._player._last_sent == Action.LOOK or self._player._last_sent == Action.INVENTORY:
                     self.COMMANDS[self._player._last_sent](response)
             if self._player._last_sent == Action.BROADCAST and response_list[0] == "ok" and isinstance(self._player, Nobody):
-                self.sock.shutdown(socket.SHUT_RDWR)
-                self.sock.close()
+                self._sock.shutdown(socket.SHUT_RDWR)
+                self._sock.close()
                 exit()
             if self._player._last_sent == Action.INCANTATION or self._player._last_sent == Action.TAKE or response_list[0] == "Current":
                 self.COMMANDS[self._player._last_sent](response)
