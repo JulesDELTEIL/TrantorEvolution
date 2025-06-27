@@ -127,6 +127,22 @@ void Trantorian::endIncantation(const sf::Vector2f& pos,
     }
 }
 
+void Trantorian::layAnEgg()
+{
+    for (size_t index = 0; index < NB_TRANTORS; index++)
+        _type[index] = IDLE;
+    _type[0] = WATERING;
+}
+
+void Trantorian::laidAnEgg()
+{
+    size_t index = 0;
+
+    for (size_t index = 0; index < NB_TRANTORS; index++)
+        if (_type[index] == WATERING)
+            break;
+    _type[index] = IDLE;
+}
 
 ResourceGroup Trantorian::getInventory(void) const
 {
