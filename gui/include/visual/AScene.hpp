@@ -28,6 +28,7 @@ class AScene : public IScene {
         void move(float, float) override;
 
     protected:
+        float _zoom = 1;
         sf::View _camera;
 
 };

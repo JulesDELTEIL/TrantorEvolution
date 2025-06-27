@@ -16,6 +16,7 @@ Engine::Engine(void) :
         sf::Style::Default, sf::ContextSettings(24))
 {
     // window.setVerticalSyncEnabled(true);
+    trantorSound.playSong("assets/audio/Trantor.mp3");
     window.setFramerateLimit(FRAMERATE_LIMIT);
     window.setActive(true);
 }

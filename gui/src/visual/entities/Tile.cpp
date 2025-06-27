@@ -36,14 +36,27 @@ ResourceGroup Tile::getResources(void) const
     return _resources;
 }
 
-void Tile::updateResource(resource_e type, int factor)
+void Tile::updateResource(resource_e type, size_t factor)
 {
-    _resources.at(type) += factor;
+    _resources.at(type) = factor;
+}
+
+void Tile::lowerResource(resource_e type, size_t factor)
+{
+    if (factor > _resources.at(type))
+        _resources.at(type) = 0;
+    else
+        _resources.at(type) -= factor;
 }
 
 sf::Vector2f Tile::getPos(void) const
 {
     return _pos;
+}
+
+biome_e Tile::getBiome(void) const
+{
+    return _type;
 }
 
 } // visual
