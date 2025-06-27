@@ -5,8 +5,6 @@
 ** Hud.cpp
 */
 
-#include <iostream>
-
 #include "visual/entities/Hud.hpp"
 
 namespace gui {
@@ -22,7 +20,7 @@ HudDisplay::HudDisplay()
     tile_r.texture.loadFromFile(TILE_RESOURCES_TEXTURE);
     tile_r.sprite.setTexture(tile_r.texture);
     tile_biome.setFont(font);
-    tile_biome.setFillColor(TILE_COLOR_TEXT);
+    tile_biome.setFillColor(DATE_COLOR_TEXT);
     tile_biome.setCharacterSize(TILE_BIOME_FSIZE);
     tile_rquantity.setFont(font);
     tile_rquantity.setFillColor(TILE_COLOR_TEXT);
