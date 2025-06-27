@@ -15,6 +15,8 @@
 int check_clients(serverdata_t *sdata, fdarray_t *fdarray)
 {
     for (uint_t k = NB_SERVER_FD; k < NBTOTAL_FD; k++) {
+        if (fdarray->clients[k].fd == NOFD)
+            continue;
         if (fdarray->clients[k].type == AI)
             check_ai_client(sdata, fdarray, &(fdarray->clients[k]));
         if (fdarray->clients[k].type == GUI)

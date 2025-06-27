@@ -92,20 +92,19 @@ static void *get_total(int *total, int width, int height, tile_t **tiles)
     }
 }
 
-static void refill_map(tile_t **tiles, int width, int height,
-    density_t *max_dens)
+static void refill_map(tile_t **tiles, pos_t size, density_t *max_dens)
 {
     biome_distribution_t dist = {{0}, {0}};
     int total[NB_RESOURCES] = {0, 0, 0, 0, 0, 0, 0};
-    int area = width * height;
+    int area = size.x * size.y;
     int x = 0;
     int y = 0;
     int add = 0;
 
-    get_total(total, width, height, tiles);
+    get_total(total, size.x, size.y, tiles);
     for (int i = 0; i < area; i++) {
-        x = X_COORD(i, height);
-        y = Y_COORD(i, height);
+        x = (i / size.y);
+        y = (i % size.y);
         dist = biome_distributions[tiles[x][y].biome];
         for (int r = 0; r < NB_RESOURCES; r++) {
             add = (total[r] < max_dens->dens[r])
@@ -129,20 +128,23 @@ static void generate_noise(tile_t **map_tiles, int Y)
 
 void *map_thread(void *arg)
 {
-    serverdata_t *server = (serverdata_t *)arg;
+    thread_arg_t *shared = (thread_arg_t *)arg;
+    serverdata_t *server = shared->sdata;
+    fdarray_t *fdarray = shared->fdarray;
     density_t all_dens = init_density(WORLD_DENS(server->args));
 
     generate_noise(server->game_data.map.tiles, server->args->height);
     pthread_mutex_lock(&(server->game_data.map.mutex));
     first_map_refill(server->args->height,
         server->game_data.map.tiles);
-        pthread_mutex_unlock(&(server->game_data.map.mutex));
+    pthread_mutex_unlock(&(server->game_data.map.mutex));
     while (server->is_running == true) {
         usleep(TICKS_REFILLS / server->args->freq);
         pthread_mutex_lock(&(server->game_data.map.mutex));
-        refill_map(server->game_data.map.tiles, server->args->width,
-        server->args->height, &all_dens);
+        refill_map(server->game_data.map.tiles,
+            (pos_t){server->args->width, server->args->height}, &all_dens);
         pthread_mutex_unlock(&(server->game_data.map.mutex));
     }
-    return 0;
+    free(shared);
+    return EXIT_SUCCESS;
 }
