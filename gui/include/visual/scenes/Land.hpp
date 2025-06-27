@@ -72,7 +72,6 @@ class Land : public AScene {
 
         Hud _hud;
         void checkHudEvent(const core::Engine& engine, const network::NetEventPack& net_pack);
-        bool hitTrantor(const sf::Vector2f&);
         bool hitTile(const sf::Vector2f&);
 
         struct TileInfo {
@@ -83,6 +82,7 @@ class Land : public AScene {
         };
 
         std::map<size_t, std::map<size_t, TileInfo>> _tiles;
+        std::map<std::string, std::vector<std::shared_ptr<Trantorian>>> _teams;
         std::map<size_t, std::shared_ptr<Trantorian>> _trantorians;
 };
 

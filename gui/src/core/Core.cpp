@@ -23,11 +23,7 @@ Core::Core(int argc, const char *argv[])
     }
     _scenes[visual::Scene_e::IN_GAME] = std::make_unique<visual::Land>();
     changeScene(visual::Scene_e::IN_GAME);
-    try {
-        _client.setSocket(_parser.getHostName(), _parser.getPortNb());
-    } catch (const network::Socket::socketError& e) {
-        std::cerr << e.what() << std::endl;
-    }
+    _client.setSocket(_parser.getHostName(), _parser.getPortNb());
 }
 
 void Core::run(void)
@@ -63,6 +59,7 @@ void Core::events(void)
             _client.sendData("msz");
             _client.sendData("mct");
             _client.sendData("sgt");
+            _client.sendData("tna");
         }
         _scenes.at(_selected_scene)->event(_engine, net_event);
     }
