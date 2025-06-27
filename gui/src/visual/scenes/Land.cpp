@@ -201,7 +201,8 @@ void Land::clearResources(void)
 {
     for (ClearTile& to_clear : _clear_resources) {
         if (_clock.getElapsedTime().asMilliseconds() >= to_clear.time) {
-            _tiles[to_clear.tile.x][to_clear.tile.y].resources[to_clear.type]->updateQuantity(0);
+            _tiles[to_clear.tile.x][to_clear.tile.y].resources[to_clear.type]->lowerQuantity(1);
+            _tiles[to_clear.tile.x][to_clear.tile.y].tile->lowerResource(to_clear.type, 1);
         }
     }
 }
@@ -233,7 +234,7 @@ void Land::trantorCollect(const network::NetPack& pack)
     sf::Vector2i tile_pos = _trantorians.at(pack[0].getSize_t())->map_pos;
     resource_e type = static_cast<resource_e>(pack[1].getInt());
 
-    _trantorians.at(pack[0].getSize_t())->collect(_tiles[tile_pos.x][tile_pos.y].resources, ACT_TIME(7.0f) / 2, _clock);
+    _trantorians.at(pack[0].getSize_t())->collect(_tiles[tile_pos.x][tile_pos.y].resources.at(type), ACT_TIME(7.0f) / 2, _clock);
     _clear_resources.push_back({ACT_TIME(7.0f) + _clock.getElapsedTime().asMilliseconds(), type, tile_pos});
 }
 

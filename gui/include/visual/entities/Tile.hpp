@@ -52,6 +52,7 @@ class Tile {
 
         ResourceGroup getResources(void) const;
         void updateResource(resource_e, int);
+        void lowerResource(resource_e, int);
 
         sf::Vector2f getPos(void) const;
         biome_e getBiome(void) const;
