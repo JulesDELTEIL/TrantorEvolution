@@ -128,9 +128,7 @@ static void generate_noise(tile_t **map_tiles, int Y)
 
 void *map_thread(void *arg)
 {
-    thread_arg_t *shared = (thread_arg_t *)arg;
-    serverdata_t *server = shared->sdata;
-    fdarray_t *fdarray = shared->fdarray;
+    serverdata_t *server = (serverdata_t *)arg;
     density_t all_dens = init_density(WORLD_DENS(server->args));
 
     generate_noise(server->game_data.map.tiles, server->args->height);
@@ -145,6 +143,5 @@ void *map_thread(void *arg)
             (pos_t){server->args->width, server->args->height}, &all_dens);
         pthread_mutex_unlock(&(server->game_data.map.mutex));
     }
-    free(shared);
     return EXIT_SUCCESS;
 }

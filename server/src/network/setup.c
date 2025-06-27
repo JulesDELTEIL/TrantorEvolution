@@ -14,14 +14,9 @@
 #include "utils.h"
 #include "map.h"
 
-int setup_map_thread(serverdata_t *sdata, fdarray_t *fdarray,
-    pthread_t *mapthr)
+int setup_map_thread(serverdata_t *sdata, pthread_t *mapthr)
 {
-    thread_arg_t *arg = malloc(sizeof(thread_arg_t));
-
-    arg->fdarray = fdarray;
-    arg->sdata = sdata;
-    pthread_create(mapthr, NULL, map_thread, arg);
+    pthread_create(mapthr, NULL, map_thread, sdata);
     return 0;
 }
 
@@ -67,7 +62,6 @@ int setempty_client(client_t *client)
     client->player = NULL;
     client->buffout = NULL;
     client->buffin_addition = false;
-    pthread_mutex_init(&(client->buffout_mutex), NULL);
 }
 
 fdarray_t setup_fds(int sockfd)
@@ -75,17 +69,12 @@ fdarray_t setup_fds(int sockfd)
     fdarray_t fdarray;
 
     for (size_t k = 0; k < NBTOTAL_FD; k++) {
-        fdarray.infds[k].events = POLLIN;
-        fdarray.infds[k].revents = 0;
-        fdarray.infds[k].fd = NOFD;
-        fdarray.outfds[k].events = POLLOUT;
-        fdarray.outfds[k].revents = 0;
-        fdarray.outfds[k].fd = NOFD;
+        fdarray.fds[k].events = POLLIN | POLLOUT;
+        fdarray.fds[k].revents = 0;
+        fdarray.fds[k].fd = NOFD;
         setempty_client(&(fdarray.clients[k]));
     }
-    fdarray.infds[SERVER_FD_INDEX].fd = sockfd;
-    fdarray.infds[SERVER_STDIN_INDEX].fd = 0;
-    fdarray.outfds[SERVER_FD_INDEX].fd = sockfd;
-    fdarray.outfds[SERVER_STDIN_INDEX].fd = 0;
+    fdarray.fds[SERVER_FD_INDEX].fd = sockfd;
+    fdarray.fds[SERVER_STDIN_INDEX].fd = 0;
     return fdarray;
 }

@@ -98,7 +98,7 @@ static int fill_answer(serverdata_t *sdata, client_t *client, char *answer)
 int action_look(serverdata_t *sdata, fdarray_t *fdarray,
     client_t *client, char *data)
 {
-    char answer[BUFSIZ] = {0};
+    char answer[BUFSIZ * 4] = {0};
 
     if (client->player->level >= 8) {
         set_message(client, "ko", NULL);
