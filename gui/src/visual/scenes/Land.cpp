@@ -97,7 +97,6 @@ void Land::event(const core::Engine& engine, const network::NetEventPack& net_pa
             removeTrantorian(net_pack.pack);
             break;
         case network::TEAMS:
-            _teams.clear();
             _teams.push_back({net_pack.pack[0].getString(), RANDOM_COLOR, {}});
             break;
         case network::BIOME:
@@ -142,13 +141,13 @@ void Land::viewEvent(const sf::Event& event)
         if (event.key.code == sf::Keyboard::A)
             return zoom(1.1);
         if (event.key.code == sf::Keyboard::D)
-            move(10, 0);
+            move(MOV_FACTOR, 0);
         if (event.key.code == sf::Keyboard::Q)
-            move(-10, 0);
+            move(-MOV_FACTOR, 0);
         if (event.key.code == sf::Keyboard::S)
-            move(0, 10);
+            move(0, MOV_FACTOR);
         if (event.key.code == sf::Keyboard::Z)
-            move(0, -10);
+            move(0, -MOV_FACTOR);
         updateAmbiantSound();
     }
 }

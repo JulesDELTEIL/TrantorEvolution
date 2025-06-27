@@ -30,6 +30,7 @@ namespace visual {
 
     #define NB_MAP_ARG 9
 
+    #define MOV_FACTOR 20
     #define ACT_TIME(x) float((x / this->_time_unit_speed) * 1000)
 
 struct ClearTile {
@@ -79,13 +80,13 @@ class Land : public AScene {
         void posTrantorian(const network::NetPack& pack);
 
         Background _backgroud;
+    
+        SoundManage biome_song;
+        biome_e last_song_biome;
 
         Hud _hud;
         void checkHudEvent(const core::Engine& engine, const network::NetEventPack& net_pack);
         bool hitTile(const sf::Vector2f&);
-    
-        SoundManage biome_song;
-        biome_e last_song_biome;
 
         struct TileInfo {
             std::shared_ptr<Tile> tile;
