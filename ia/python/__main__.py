@@ -19,13 +19,13 @@ def create_configuration():
     }
     if len(sys.argv) < ARG_NB:
         raise Exception("Too few arguments")
-    for i in range(1, ARG_NB - 1, 2) :
-        if not sys.argv[i] in conf.keys() :
+    for i in range(1, ARG_NB - 1, 2):
+        if not sys.argv[i] in conf.keys():
             raise Exception("Flag mismatch")
         conf[sys.argv[i]] = sys.argv[i + 1]
-    if not conf["-p"].isdigit() :
+    if not conf["-p"].isdigit():
         raise Exception("Port number is not a number")
-    if conf["-n"] == "GRAPHIC" :
+    if conf["-n"] == "GRAPHIC":
         raise Exception("Team name cant be 'GRAPHIC'")
     return conf
 

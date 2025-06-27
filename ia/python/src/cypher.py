@@ -13,25 +13,25 @@ from cryptography.hazmat.primitives.kdf.pbkdf2 import PBKDF2HMAC
 import os
 import sys
 
-def create_key(code : str) -> Fernet :
+def create_key(code: str) -> Fernet:
     code_bytes = code.encode("utf-8")
     key = base64.urlsafe_b64encode(code_bytes.ljust(32)[:32])
     f = Fernet(key)
     return f
 
-def cypher(message : str, key : str) :
+def cypher(message: str, key: str):
    f = create_key(key)
    return f.encrypt(message.encode(encoding="utf-8")).decode("utf-8")
 
 
-def decypher(message : str, key : str) :
+def decypher(message: str, key: str):
     f = create_key(key)
-    try :
+    try:
         return f.decrypt(bytes(message, "utf-8")).decode("utf-8")
-    except cryptography.fernet.InvalidToken :
+    except cryptography.fernet.InvalidToken:
         return None
 
-def main() :
+def main():
     print(sys.argv)
     if len(sys.argv) != 4:
         raise Exception("Invalid number of arguments")
@@ -41,6 +41,6 @@ def main() :
     if sys.argv[3] == 'decypher':
         print(decypher(sys.argv[1], sys.argv[2]))
 
-if __name__ == '__main__' :
+if __name__ == '__main__':
     main()
 

@@ -30,7 +30,7 @@ class Direction(Enum):
     LEFT = "left"
     RIGHT = "right"
 
-class Trantorian (ServerManager) :
+class Trantorian(ServerManager):
     def __init__(self, host, port, team_name):
         ServerManager.__init__(self, host, port)
         self.host = host
@@ -63,13 +63,13 @@ class Trantorian (ServerManager) :
 
     def get_client_num(self, client_num_str: str) -> None:
         client_num_strip = client_num_str.strip()
-        if not client_num_strip.isdigit() :
+        if not client_num_strip.isdigit():
             raise Exception("Invalid client number left from server: %s" % client_num_str)
         self.player_num = int(client_num_strip)
 
     def get_dimension(self, dimension_str: str) -> None:
         dimension_split = dimension_str.split()
-        if len(dimension_split) != 2 or not all([val.isdigit() for val in dimension_split]) :
+        if len(dimension_split) != 2 or not all([val.isdigit() for val in dimension_split]):
             raise Exception("Invalid dimension from server: %s" % dimension_str)
         dimension_tuple = (int(dimension_split[DIMENSION_X]), int(dimension_split[DIMENSION_Y]))
         self.dimension = dimension_tuple
@@ -82,9 +82,9 @@ class Trantorian (ServerManager) :
     def connect(self) -> None:
         i = 0
         message = ""
-        while i < 3 :
+        while i < 3:
             message += self.recv()
-            while message :
+            while message:
                 index = message.find("\n")
                 if index == -1 or i >= 3:
                     break
@@ -95,10 +95,10 @@ class Trantorian (ServerManager) :
     def send_action(self) -> None:
         if not self.player.queue:
             self.player.decide_action()
-        if self.player.queue :
+        if self.player.queue:
             action = self.player.queue.pop()
-            if action.action == Action.BROADCAST :
-                print("SEND ACTION :", action.argument)
+            if action.action == Action.BROADCAST:
+                print("SEND ACTION:", action.argument)
                 action.argument = cyp.cypher(action.argument, self.team_name)
             if action.action != Action.NONE:
                 self.send((action.__str__() + "\n").encode())
@@ -110,7 +110,7 @@ class Trantorian (ServerManager) :
             index = message_left.find("\n")
             if index == -1:
                 break
-            if self.handle_response(message_left[:index + 1]) :
+            if self.handle_response(message_left[:index + 1]):
                 self.send_action()
             message_left = message_left[index + 1:]
         return message_left
@@ -119,7 +119,7 @@ class Trantorian (ServerManager) :
         self.send_action()
         while True:
             response = self.recv()
-            if not response :
+            if not response:
                 break
             self.analyse_requests(response)
 
@@ -140,11 +140,11 @@ class Trantorian (ServerManager) :
     def translate_broadcast(self, response_list: list[str]) -> list[str]:
         real_broadcast = []
         broadcast_message = cyp.decypher(response_list[2], self.team_name)
-        if not broadcast_message :
+        if not broadcast_message:
             return []
         for i in range(2):
             real_broadcast.append(response_list[i])
-        for item in broadcast_message.split() :
+        for item in broadcast_message.split():
             real_broadcast.append(item)
         return real_broadcast
 
@@ -152,7 +152,7 @@ class Trantorian (ServerManager) :
         response_list = response.split()
         if isinstance(self.player, Nobody) and self.player._is_there_anyone == False:
             if self.player.cycle > 50:
-                self.player = Queen(lambda : self._spawn_new_client())
+                self.player = Queen(lambda: self._spawn_new_client())
                 return True
         if response_list[0] == "message":
             deciphered_broadcast = self.translate_broadcast(response_list)

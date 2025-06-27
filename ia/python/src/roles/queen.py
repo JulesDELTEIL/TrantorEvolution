@@ -12,17 +12,17 @@ from src.macros import LEVEL_REQUIREMENTS
 class Queen(BaseRole):
     def __init__(self, *inp):
         super().__init__()
-        if len(inp) == 1 :
+        if len(inp) == 1:
             print("------------- JE SUIS UNE REINE MERE------------")
             self.birth_function = inp[0]
             self.waiting_for_slot_number = True
             self.give_birth = True
             self.egg_left = -1
-        else :
+        else:
             print("------------- JE SUIS UNE REINE ------------")
             self.give_birth = False
-        self.all_alone = False
-        self.player_killed = 0
+        self._all_alone = False
+        self._player_killed = 0
         self._last_incantation = 0
 
     def create_kingdom(self):
@@ -36,31 +36,30 @@ class Queen(BaseRole):
         self.queue.appendleft(Commands(Action.LEFT))
         self.give_birth = False
 
-
     def fill_egg_left(self):
-        for _ in range(self.egg_left) :
+        for _ in range(self.egg_left):
             self.birth_function()
 
     def handle_mother_queen(self):
-        if not self.all_alone :
+        if not self.all_alone:
             if self.egg_left == -1 and self.waiting_for_slot_number:
                 self.queue.appendleft(Commands(Action.CONNECT_NBR))
                 return
-            else :
+            else:
                 if self.player_killed >= self.egg_left or self.waiting_for_slot_number and not self.egg_left:
                     self.all_alone = True
                     self.create_kingdom()
                     return
-                if self.waiting_for_slot_number :
+                if self.waiting_for_slot_number:
                     self.fill_egg_left()
                     self.waiting_for_slot_number = False
                 self.queue.appendleft(Commands(Action.BROADCAST, 'quit'))
-        else :
+        else:
             print("<QUEEN> : Creating kingdom")
             self.create_kingdom()
 
     def decide_action(self):
-        if self.give_birth :
+        if self.give_birth:
             self.handle_mother_queen()
             return
         self.cycle += 1
