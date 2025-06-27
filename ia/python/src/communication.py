@@ -75,6 +75,10 @@ class Communication():
             index = message_left.find("\n")
             if index == -1:
                 break
+            if message_left[:index + 1] == "dead\n":
+                    self._communication_sock.shutdown(socket.SHUT_RDWR)
+                    self._communication_sock.close()
+                    exit()
             if self._handle_response(message_left[:index + 1]):
                 self.send_action()
             message_left = message_left[index + 1:]
