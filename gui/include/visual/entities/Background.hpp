@@ -14,13 +14,14 @@
     #include "network/events.hpp"
     #include "core/Engine.hpp"
     #include "visual/Drawable.hpp"
+    #include "visual/Animation.hpp"
 
 namespace gui {
 namespace visual {
 
     #define BACKGROUND_PATH "assets/background.png"
     #define WATERFALL_PATH "assets/tiles/waterfall.png"
-    #define WATERFALL_RECT sf::IntRect(0, 0, 96, 200)
+    #define WATERFALL_ANIM {"assets/tiles/waterfall.png", {96, 200}, {3, 1}, {0, 0}, 0.4, sf::Clock()}
 
     #define TILE_SIZE 96
 
@@ -38,6 +39,7 @@ class Background {
     private:
         Drawable _background;
         Drawable _waterfall;
+        Animation _waterfall_anim;
 
 };
     

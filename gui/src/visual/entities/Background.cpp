@@ -10,14 +10,14 @@
 namespace gui {
 namespace visual {
 
-Background::Background()
+Background::Background() : _waterfall_anim(std::ref(_waterfall))
 {
     _background.texture.loadFromFile(BACKGROUND_PATH);
     _background.sprite.setTexture(_background.texture);
     _background.sprite.setPosition(0, 0);
     _waterfall.texture.loadFromFile(WATERFALL_PATH);
     _waterfall.sprite.setTexture(_waterfall.texture);
-    _waterfall.sprite.setTextureRect(WATERFALL_RECT);
+    _waterfall_anim.addAnimation(WATERFALL_ANIM);
 }
     
 void Background::drawBackground(sf::RenderTarget& render)
@@ -28,6 +28,8 @@ void Background::drawBackground(sf::RenderTarget& render)
 void Background::drawWaterfall(sf::RenderTarget& render, const sf::Vector2f& map_size)
 {
     sf::Vector2f pos;
+
+    _waterfall_anim.animate();
     _waterfall.sprite.setScale(1, 1);
     int y = map_size.y - 1;
     for (int x = 1; x <= map_size.x; ++x) {
