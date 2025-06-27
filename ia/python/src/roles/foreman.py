@@ -14,25 +14,25 @@ class Foreman(BaseRole):
         print("----- Je suis Foreman ------")
         self._initial_moves = 3
         self._fork_count = 0
-        self.queue.append(Commands(Action.TAKE, 'food'))
+        self._queue.append(Commands(Action.TAKE, 'food'))
     
     def decide_action(self):
-        self.cycle += 1
-        if self.cycle == 1:
-            self.queue.appendleft(Commands(Action.LEFT))
+        self._cycle += 1
+        if self._cycle == 1:
+            self._queue.appendleft(Commands(Action.LEFT))
             return
 
-        if self.cycle > 20:
-            self.queue.appendleft(Commands(Action.TAKE, 'food'))
-        if self.cycle % 2 == 0:
-            self.queue.appendleft(Commands(Action.TAKE, 'food'))
-            self.queue.appendleft(Commands(Action.TAKE, 'food'))
+        if self._cycle > 20:
+            self._queue.appendleft(Commands(Action.TAKE, 'food'))
+        if self._cycle % 2 == 0:
+            self._queue.appendleft(Commands(Action.TAKE, 'food'))
+            self._queue.appendleft(Commands(Action.TAKE, 'food'))
 
-        self.queue.appendleft(Commands(Action.FORK))
-        if self.cycle % 3 == 0:
-            self.queue.appendleft(Commands(Action.BROADCAST, 'role;worker'))
+        self._queue.appendleft(Commands(Action.FORK))
+        if self._cycle % 3 == 0:
+            self._queue.appendleft(Commands(Action.BROADCAST, 'role;worker'))
         else:
-            self.queue.appendleft(Commands(Action.BROADCAST, 'role;kamikaze'))
+            self._queue.appendleft(Commands(Action.BROADCAST, 'role;kamikaze'))
 
     def handle_broadcast(self, response_list: list[str]) -> bool:
         return False

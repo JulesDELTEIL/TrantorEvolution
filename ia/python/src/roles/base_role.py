@@ -12,16 +12,20 @@ from src.roles.map_memory import MapMemory
 
 class BaseRole(ABC):
     def __init__(self):
-        self.level = 1
-        self.cycle: int = 0
-        self.last_sent = None
-        self.direction = None
+        self._level = 1
+        self._cycle: int = 0
+        self._last_sent = None
+        self._direction = None
         self.pos = [0, 0]
-        self.queue = deque()
-        self.map = MapMemory(decay=0.1)
-        self.last_inventory = {}
-        self.last_vision = []
+        self._queue = deque()
+        self._map = MapMemory(decay=0.1)
+        self._last_inventory = {}
+        self._last_vision = []
 
     @abstractmethod
     def decide_action(self) -> Commands:
+        pass
+    
+    @abstractmethod
+    def handle_broadcast(self, response_list: list[str]) -> bool:
         pass

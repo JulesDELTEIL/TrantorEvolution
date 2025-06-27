@@ -22,8 +22,8 @@ class Nobody(BaseRole):
         return "NOTHING"
 
     def decide_action(self):
-        self.cycle += 1
-        if self.cycle == 1:
-            self.queue.appendleft(Commands(Action.LOOK))
+        self._cycle += 1
+        if self._cycle == 1:
+            self._queue.appendleft(Commands(Action.LOOK))
         else:
-            self.queue.appendleft(Commands(Action.LEFT))
+            self._queue.appendleft(Commands(Action.LEFT))

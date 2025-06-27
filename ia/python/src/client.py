@@ -7,8 +7,6 @@
 
 import socket
 import subprocess
-from curses.ascii import isdigit
-from sqlite3 import connect
 from time import sleep
 
 import src.cypher as cyp
@@ -16,12 +14,11 @@ from src.roles.role_map import ROLE_MAP
 from src.roles.nobody import Nobody
 from src.roles.queen import Queen
 from src.utils import parse_vision, parse_inventory
+from src.macros import X, Y
 from src.action import Action, Commands
 from src.server_manager import ServerManager
 from enum import Enum
 
-DIMENSION_X = 0
-DIMENSION_Y = 1
 PLAYER_LEFT = 1
 
 class Direction(Enum):
@@ -71,7 +68,7 @@ class Trantorian(ServerManager):
         dimension_split = dimension_str.split()
         if len(dimension_split) != 2 or not all([val.isdigit() for val in dimension_split]):
             raise Exception("Invalid dimension from server: %s" % dimension_str)
-        dimension_tuple = (int(dimension_split[DIMENSION_X]), int(dimension_split[DIMENSION_Y]))
+        dimension_tuple = (int(dimension_split[X]), int(dimension_split[Y]))
         self.dimension = dimension_tuple
 
     def get_welcome(self, welcome_str: str) -> None:
@@ -93,16 +90,16 @@ class Trantorian(ServerManager):
                 i += 1
 
     def send_action(self) -> None:
-        if not self.player.queue:
+        if not self.player._queue:
             self.player.decide_action()
-        if self.player.queue:
-            action = self.player.queue.pop()
+        if self.player._queue:
+            action = self.player._queue.pop()
             if action.action == Action.BROADCAST:
                 print("SEND ACTION:", action.argument)
                 action.argument = cyp.cypher(action.argument, self.team_name)
             if action.action != Action.NONE:
                 self.send((action.__str__() + "\n").encode())
-                self.player.last_sent = action.action
+                self.player._last_sent = action.action
 
     def analyse_requests(self, message: str) -> str:
         message_left = message
@@ -131,7 +128,7 @@ class Trantorian(ServerManager):
             return False
         if broadcast == "QUIT":
             action = Commands(Action.BROADCAST, cyp.cypher("quitting", self.team_name))
-            self.player.last_sent = action.action
+            self.player._last_sent = action.action
             self.send((action.__str__() + "\n").encode())
             sleep(4)
         return False
@@ -151,33 +148,33 @@ class Trantorian(ServerManager):
     def handle_response(self, response: str) -> bool:
         response_list = response.split()
         if isinstance(self.player, Nobody) and self.player._is_there_anyone == False:
-            if self.player.cycle > 50:
+            if self.player._cycle > 50:
                 self.player = Queen(lambda: self._spawn_new_client())
                 return True
         if response_list[0] == "message":
             deciphered_broadcast = self.translate_broadcast(response_list)
             if not deciphered_broadcast:
                 return False
-            if isinstance(self.player, Nobody): # response du serveur -> "message K, text envoyé" -> ex avec notre protocol: "message K, [Queen] role Queen"
+            if isinstance(self.player, Nobody):
                 return self.handle_nobody(deciphered_broadcast)
             self.player.handle_broadcast(deciphered_broadcast)
             return False
         if response_list[0] == "Current":
-            self.player.level = int(response_list[2])
-        elif self.player.last_sent:
-            if self.player.last_sent == Action.CONNECT_NBR and response_list[0].isdigit():
-                return self.COMMANDS[self.player.last_sent](response_list[0])
+            self.player._level = int(response_list[2])
+        elif self.player._last_sent:
+            if self.player._last_sent == Action.CONNECT_NBR and response_list[0].isdigit():
+                return self.COMMANDS[self.player._last_sent](response_list[0])
             if response_list[0][0] == '[':
-                if self.player.last_sent == Action.LOOK or self.player.last_sent == Action.INVENTORY:
-                    self.COMMANDS[self.player.last_sent](response)
-            if self.player.last_sent == Action.BROADCAST and response_list[0] == "ok" and isinstance(self.player, Nobody):
+                if self.player._last_sent == Action.LOOK or self.player._last_sent == Action.INVENTORY:
+                    self.COMMANDS[self.player._last_sent](response)
+            if self.player._last_sent == Action.BROADCAST and response_list[0] == "ok" and isinstance(self.player, Nobody):
                 self.sock.shutdown(socket.SHUT_RDWR)
                 self.sock.close()
                 exit()
-            if self.player.last_sent == Action.INCANTATION or self.player.last_sent == Action.TAKE or response_list[0] == "Current":
-                self.COMMANDS[self.player.last_sent](response)
-            elif response_list[0] == Commands.COMMANDS[self.player.last_sent]["response success"][0]:
-                self.COMMANDS[self.player.last_sent]()
+            if self.player._last_sent == Action.INCANTATION or self.player._last_sent == Action.TAKE or response_list[0] == "Current":
+                self.COMMANDS[self.player._last_sent](response)
+            elif response_list[0] == Commands.COMMANDS[self.player._last_sent]["response success"][0]:
+                self.COMMANDS[self.player._last_sent]()
             return True
         return True
 
@@ -186,46 +183,46 @@ class Trantorian(ServerManager):
 
     def update_connect_nbr(self, connect_nbr: str) -> bool:
         print("UPDATING CONNECT NBR gotten", connect_nbr)
-        self.player.egg_left = int(connect_nbr)
+        self.player._egg_left = int(connect_nbr)
         return True
 
     def _update_mindmap(self, response: str) -> None:
         response_formatted = parse_vision(response)
-        self.player.last_vision = response_formatted[0]
+        self.player._last_vision = response_formatted[0]
         if isinstance(self.player, Nobody):
-            if self.player.last_vision.count("player") > 1:
+            if self.player._last_vision.count("player") > 1:
                 self.player._is_there_anyone = True
             else:
                 self.player._is_there_anyone = False
-        self.player.map.update_mindmap(response_formatted, self.player.level, self.player.cycle, self.player.pos)
+        self.player._map.update_mindmap(response_formatted, self.player._level, self.player._cycle, self.player.pos)
         
     def _update_inventory(self, response: str) -> None:
-        self.player.last_inventory = parse_inventory(response)
+        self.player._last_inventory = parse_inventory(response)
         
     def _turn_left(self):
-        if self.player.direction is not None:
+        if self.player._direction is not None:
             mapping = {"up": "left", "left": "down", "down": "right", "right": "up"}
-            self.player.direction = mapping[self.player.direction]
+            self.player._direction = mapping[self.player._direction]
 
     def _turn_right(self):
-        if self.player.direction is not None:
+        if self.player._direction is not None:
             mapping = {"up": "right", "right": "down", "down": "left", "left": "up"}
-            self.player.direction = mapping[self.player.direction]
+            self.player._direction = mapping[self.player._direction]
 
     def _move_forward(self):
-        if self.player.direction == "up":
+        if self.player._direction == "up":
             self.player.pos[1] += 1
-        elif self.player.direction == "right":
+        elif self.player._direction == "right":
             self.player.pos[0] += 1
-        elif self.player.direction == "down":
+        elif self.player._direction == "down":
             self.player.pos[1] -= 1
-        elif self.player.direction == "left":
+        elif self.player._direction == "left":
             self.player.pos[0] -= 1
             
     def _take_object(self, response: str):
         if response == "ko" or response == "ko\n":
             self.player.carry = None
-            self.player.last_vision = None
+            self.player._last_vision = None
         else:
             self.player.mode = 'DELIVERING'
     
@@ -234,8 +231,8 @@ class Trantorian(ServerManager):
             return
         response_list = response.split()
         if response_list[0] == "Current":
-            self.player.level = int(response_list[2])
-            self.player._last_incantation = self.player.cycle
+            self.player._level = int(response_list[2])
+            self.player._last_incantation = self.player._cycle
 
     def void(self):
         return

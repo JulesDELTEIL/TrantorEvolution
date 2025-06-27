@@ -5,6 +5,9 @@
 ## stones.py
 ##
 
+X = 0
+Y = 1
+
 STONES = ['thystame', 'phiras', 'mendiane', 'sibur', 'deraumere', 'linemate']
 
 LEVEL_REQUIREMENTS = {
