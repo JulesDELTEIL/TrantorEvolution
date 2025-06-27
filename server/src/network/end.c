@@ -16,10 +16,8 @@ int destroy_client(client_t *client)
 {
     if (client == NULL)
         return EXIT_FAILURE;
-    pthread_mutex_lock(&(client->buffin_mutex));
     if (client->buffin != NULL)
         free(client->buffin);
-    pthread_mutex_unlock(&(client->buffin_mutex));
     return EXIT_SUCCESS;
 }
 

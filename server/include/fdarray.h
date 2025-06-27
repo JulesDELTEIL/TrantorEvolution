@@ -77,7 +77,6 @@ typedef struct client_s {
     char *buffin;
     bool buffin_addition;
     message_t *buffout;
-    pthread_mutex_t buffin_mutex;
     pthread_mutex_t buffout_mutex;
     player_t *player;
 } client_t;
@@ -89,7 +88,8 @@ struct fdarray_t :
 */
 typedef struct fdarray_s {
     client_t clients[NBTOTAL_FD];
-    struct pollfd fds[NBTOTAL_FD];
+    struct pollfd infds[NBTOTAL_FD];
+    struct pollfd outfds[NBTOTAL_FD];
 } fdarray_t;
 
 #endif

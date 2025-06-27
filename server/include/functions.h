@@ -128,4 +128,14 @@ will be used to set client type (AI / GUI)
 int set_team(serverdata_t *sdata, fdarray_t *fdarray,
     client_t *client, char *data);
 
+/*
+*/
+int setup_output_thread(serverdata_t *sdata, fdarray_t *fdarray,
+    pthread_t *outthr);
+
+/*
+*/
+int setup_input_thread(serverdata_t *sdata, fdarray_t *fdarray,
+    pthread_t *inthr);
+
 #endif

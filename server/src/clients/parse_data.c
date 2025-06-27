@@ -89,19 +89,13 @@ int packet_parser(client_t *client, char *cmd, char *data)
     int end_idx = 0;
     bool nl_presence = false;
 
-    pthread_mutex_lock(&(client->buffin_mutex));
     end_idx = parse_cmd(client, cmd, &nl_presence);
-    pthread_mutex_unlock(&(client->buffin_mutex));
     if (end_idx <= 0)
         return EXIT_FAILURE;
-    pthread_mutex_lock(&(client->buffin_mutex));
     if (nl_presence == false)
         end_idx = parse_data(client, data, end_idx, &nl_presence);
-    pthread_mutex_unlock(&(client->buffin_mutex));
     if (end_idx <= 0)
         return EXIT_FAILURE;
-    pthread_mutex_lock(&(client->buffin_mutex));
     empty_client_buff(client, end_idx);
-    pthread_mutex_unlock(&(client->buffin_mutex));
     return EXIT_SUCCESS;
 }

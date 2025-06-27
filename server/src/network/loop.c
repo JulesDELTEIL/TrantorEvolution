@@ -17,31 +17,17 @@
 #include "transmission.h"
 #include "debug.h"
 
-int search_listen_events(serverdata_t *sdata, fdarray_t *fdarray, int k)
+static int search_listen_events(serverdata_t *sdata, fdarray_t *fdarray, int k)
 {
     if (fdarray->clients[k].fd == NOFD)
         return EXIT_SUCCESS;
-    if (fdarray->fds[k].revents & POLLIN)
-        if (receive_data(sdata, fdarray,
-            &(fdarray->clients[k])) == CLOSE_CONNECTION)
-            fdarray->fds[k].fd = NOFD;
-}
-
-int search_write_events(serverdata_t *sdata, fdarray_t *fdarray, int k)
-{
-    if (fdarray->clients[k].fd == NOFD)
-        return EXIT_SUCCESS;
-    if (fdarray->fds[k].revents & POLLOUT &&
-        fdarray->clients[k].buffout != NULL)
-        send_data(&(fdarray->clients[k]), sdata->debug);
-}
-
-static int getnb_fd(fdarray_t *fdarray)
-{
-    for (size_t k = NB_SERVER_FD; k < NBTOTAL_FD; k++)
-        if (fdarray->clients[k].fd == NOFD)
-            return k;
-    return -1;
+    if (!(fdarray->infds[k].revents & POLLIN))
+        return EXIT_FAILURE;
+    if (receive_data(sdata, fdarray,
+    &(fdarray->clients[k])) == CLOSE_CONNECTION) {
+        fdarray->infds[k].fd = NOFD;
+        fdarray->outfds[k].fd = NOFD;
+    }
 }
 
 static bool check_stdin(void)
@@ -57,32 +43,18 @@ static bool check_stdin(void)
     return false;
 }
 
-int write_fds(serverdata_t *sdata, fdarray_t *fdarray)
+static int listen_fds(serverdata_t *sdata, fdarray_t *fdarray)
 {
     int rc = DEFAULTRC;
 
-    rc = poll(fdarray->fds, NBTOTAL_FD, POLLTIMEOUT);
+    rc = poll(fdarray->infds, NBTOTAL_FD, POLLTIMEOUT);
     if (rc < 0)
         return returnwitherror(ERROR_POLL, EXIT_FAILURE);
     else if (rc == 0)
         return EXIT_SUCCESS;
-    for (size_t k = NB_SERVER_FD; k < NBTOTAL_FD; k++)
-        search_write_events(sdata, fdarray, k);
-    return EXIT_SUCCESS;
-}
-
-int listen_fds(serverdata_t *sdata, fdarray_t *fdarray)
-{
-    int rc = DEFAULTRC;
-
-    rc = poll(fdarray->fds, NBTOTAL_FD, POLLTIMEOUT);
-    if (rc < 0)
-        return returnwitherror(ERROR_POLL, EXIT_FAILURE);
-    else if (rc == 0)
-        return EXIT_SUCCESS;
-    if (fdarray->fds[SERVER_FD_INDEX].revents & POLLIN)
+    if (fdarray->infds[SERVER_FD_INDEX].revents & POLLIN)
         openconnection(sdata, fdarray);
-    if (fdarray->fds[SERVER_STDIN_INDEX].revents & POLLIN && check_stdin())
+    if (fdarray->infds[SERVER_STDIN_INDEX].revents & POLLIN && check_stdin())
         return CLOSE_PROCESS;
     for (size_t k = NB_SERVER_FD; k < NBTOTAL_FD; k++)
         search_listen_events(sdata, fdarray, k);
@@ -91,25 +63,22 @@ int listen_fds(serverdata_t *sdata, fdarray_t *fdarray)
 
 static int server_loop(serverdata_t *sdata, fdarray_t *fdarray)
 {
-    bool run = true;
     int rc = DEFAULTRC;
 
-    while (run) {
+    while (sdata->is_running) {
+        check_clients(sdata, fdarray);
         rc = listen_fds(sdata, fdarray);
         if (rc == EXIT_FAILURE || rc == CLOSE_PROCESS)
-            run = false;
-        rc = write_fds(sdata, fdarray);
-        if (rc == EXIT_FAILURE || rc == CLOSE_PROCESS)
-            run = false;
-        check_clients(sdata, fdarray);
+            sdata->is_running = false;
     }
-    return rc;
+    return EXIT_SUCCESS;
 }
 
 int server(arguments_t *args)
 {
     serverdata_t sdata = setup_parameters(args);
     pthread_t mapthr;
+    pthread_t outthr;
     fdarray_t fdarray;
     int rc = DEFAULTRC;
 
@@ -119,8 +88,10 @@ int server(arguments_t *args)
     setup_map_thread(&sdata, &fdarray, &mapthr);
     fdarray = setup_fds(sdata.sockfd);
     listen(sdata.sockfd, NBCLIENTS_QUEUE);
+    setup_output_thread(&sdata, &fdarray, &outthr);
     rc = server_loop(&sdata, &fdarray);
     close_server(&sdata, &fdarray, &mapthr);
+    pthread_join(outthr, NULL);
     if (rc == EXIT_FAILURE)
         return EXIT_FAILURE;
     return EXIT_SUCCESS;

@@ -47,15 +47,11 @@ int receive_data(serverdata_t *sdata, fdarray_t *fdarray, client_t *client)
         return closeconnection(sdata, fdarray, client);
     } else if (rc == -1)
         return EXIT_FAILURE;
-    pthread_mutex_lock(&(client->buffin_mutex));
     if (sdata->debug)
         debug_input(client, buffer, rc);
-    pthread_mutex_unlock(&(client->buffin_mutex));
     if (rc < 2)
         return EXIT_FAILURE;
-    pthread_mutex_lock(&(client->buffin_mutex));
     add_circular(client, buffer);
-    pthread_mutex_unlock(&(client->buffin_mutex));
     return EXIT_SUCCESS;
 }
 
@@ -84,7 +80,6 @@ int send_data(client_t *client, bool debug)
         prev = msg;
         msg = msg->next;
     }
-    pthread_mutex_lock(&(client->buffout_mutex));
     write(client->fd, msg->data, msg->len - 1);
     if (debug)
         debug_output(client, msg->data, msg->len - 1);
@@ -95,16 +90,15 @@ int send_data(client_t *client, bool debug)
     } else {
         prev->next = NULL;
     }
-    pthread_mutex_unlock(&(client->buffout_mutex));
 }
 
 static int add_message_to_queue(client_t *client, char *msg, uint_t len)
 {
     message_t *new = malloc(sizeof(message_t));
 
-    pthread_mutex_lock(&(client->buffout_mutex));
     new->len = len;
     new->data = strdup(msg);
+    pthread_mutex_lock(&(client->buffout_mutex));
     new->next = client->buffout;
     client->buffout = new;
     pthread_mutex_unlock(&(client->buffout_mutex));

@@ -48,7 +48,8 @@ int closeconnection(serverdata_t *sdata, fdarray_t *fdarray, client_t *client)
 static int set_new_client(serverdata_t *sdata, fdarray_t *fdarray,
     int nextfree, int newfd)
 {
-    fdarray->fds[nextfree].fd = newfd;
+    fdarray->infds[nextfree].fd = newfd;
+    fdarray->outfds[nextfree].fd = newfd;
     fdarray->clients[nextfree].fd = newfd;
 }
 
