@@ -85,22 +85,22 @@ sf::Color Trantorian::generateTeamColor(const std::string& team_name)
     return sf::Color(code, code, code, 255);
 }
 
-void Trantorian::collect(const std::map<resource_e, std::shared_ptr<ResourceNode>>& resources,
+void Trantorian::collect(const std::shared_ptr<ResourceNode>& resource,
     float time, const sf::Clock& clock)
 {
     int i = 0;
+    std::vector<sf::Vector2f> res_pos = resource->getCollectPosition();
+    resource_e type = resource->getType();
 
-    for (const auto& resource : resources) {
-        if (resource.second->getQuantity() > 0) {
-            if (resource.first == WOOD)
-                _type[i] = AXE;
-            else if (resource.first == STONE || resource.first == CLAY ||
-                resource.first == METAL)
-                _type[i] = PICKAXE;
-            else
-                _type[i] = COLLECT;
-            move(i, resource.second->getCollectPosition(), time, clock);
-        }
+    for (const sf::Vector2f& to_go : res_pos) {
+        if (type == WOOD)
+            _type[i] = AXE;
+        else if (type == STONE || type == CLAY ||
+            type == METAL)
+            _type[i] = PICKAXE;
+        else
+            _type[i] = COLLECT;
+        move(i, to_go, time, clock);
         i += 1;
     }
 }

@@ -39,20 +39,25 @@ struct ClearTile {
 
 class Land : public AScene {
     public:
-        Land();
-        ~Land() = default;
+        Land(std::reference_wrapper<network::Client>);
+        ~Land();
 
         void display(sf::RenderTarget& render) override;
         void event(const core::Engine&, const network::NetEventPack&) override;
 
     private:
+        std::reference_wrapper<network::Client> _client; 
+        std::thread _net;
+        bool _net_running = false;
+        void askResources(void);
+
         sf::Clock _clock;
         size_t _time_unit_speed = 4;
 
         void viewEvent(const sf::Event&);
 
-        void loadTile(const network::NetPack&);
-        biome_e readBiomeType(const network::NetPack& pack);
+        void drawEdge(sf::RenderTarget& render, int bottom);
+        void addTile(const network::NetPack&);
         void updateTile(const network::NetPack&);
         Drawable _tile;
         sf::Vector2f _map_size = {-1, -1};

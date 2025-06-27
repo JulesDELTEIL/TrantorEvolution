@@ -21,7 +21,7 @@ Core::Core(int argc, const char *argv[])
         std::cerr << e.what() << std::endl;
         exit(84);
     }
-    _scenes[visual::Scene_e::IN_GAME] = std::make_unique<visual::Land>();
+    _scenes[visual::Scene_e::IN_GAME] = std::make_unique<visual::Land>(std::ref(_client));
     changeScene(visual::Scene_e::IN_GAME);
     _client.setSocket(_parser.getHostName(), _parser.getPortNb());
 }
@@ -57,7 +57,7 @@ void Core::events(void)
         if (net_event.event == network::CON) {
             _client.sendData(AUTHENTIFICATOR);
             _client.sendData("msz");
-            _client.sendData("mct");
+            _client.sendData("bio");
             _client.sendData("sgt");
             _client.sendData("tna");
         }

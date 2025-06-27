@@ -58,8 +58,7 @@ class Trantorian {
         void draw(sf::RenderTarget&, const sf::Clock&);
 
         void changeTile(const sf::Vector2f&, float, const sf::Clock&);
-        void collect(const std::map<resource_e, std::shared_ptr<ResourceNode>>&,
-            float, const sf::Clock& clock);
+        void collect(const std::shared_ptr<ResourceNode>&, float, const sf::Clock& clock);
         void startIncantation(const std::shared_ptr<IncantationObject>&,
             float, const sf::Clock&);
         void endIncantation(const sf::Vector2f&,

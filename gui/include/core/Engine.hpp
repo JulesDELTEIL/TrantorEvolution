@@ -8,6 +8,8 @@
 #ifndef WINDOW_HPP_
     #define WINDOW_HPP_
 
+    #include "audio/SoundManage.hpp"
+
     #include <SFML/Graphics.hpp>
 
 namespace gui {
@@ -28,6 +30,7 @@ struct Engine {
     sf::RenderWindow window;
     sf::Event events;
     sf::Clock runTime;
+    SoundManage trantorSound;
 };
 
 } // core
