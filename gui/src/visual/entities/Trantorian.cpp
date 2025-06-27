@@ -16,10 +16,10 @@ Trantorian::Trantorian(const sf::Vector2f& pos, const sf::Vector2i& pos_in_map,
     _type(NB_TRANTORS),
     _body_direction(NB_TRANTORS, FACE_RIGHT),
     _body_animation({
-        std::ref(_body[0]), std::ref(_body[1]), std::ref(_body[2]), std::ref(_body[3]), std::ref(_body[4]), std::ref(_body[5])
+        std::ref(_body[0]), std::ref(_body[1]), std::ref(_body[2]), std::ref(_body[3]), std::ref(_body[4]), std::ref(_body[5]), std::ref(_body[6])
     }),
     _body_movement({
-        std::ref(_body[0]), std::ref(_body[1]), std::ref(_body[2]), std::ref(_body[3]), std::ref(_body[4]), std::ref(_body[5])
+        std::ref(_body[0]), std::ref(_body[1]), std::ref(_body[2]), std::ref(_body[3]), std::ref(_body[4]), std::ref(_body[5]), std::ref(_body[6])
     })
 {
     sf::Color team_color = generateTeamColor(team_name);
@@ -90,8 +90,8 @@ void Trantorian::collect(const std::map<resource_e, std::shared_ptr<ResourceNode
 {
     int i = 0;
 
-    if (resources.size() > 0) {
-        for (const auto& resource : resources) {
+    for (const auto& resource : resources) {
+        if (resource.second->getQuantity() > 0) {
             if (resource.first == WOOD)
                 _type[i] = AXE;
             else if (resource.first == STONE || resource.first == CLAY ||
@@ -100,8 +100,8 @@ void Trantorian::collect(const std::map<resource_e, std::shared_ptr<ResourceNode
             else
                 _type[i] = COLLECT;
             move(i, resource.second->getCollectPosition(), time, clock);
-            i += 1;
         }
+        i += 1;
     }
 }
 

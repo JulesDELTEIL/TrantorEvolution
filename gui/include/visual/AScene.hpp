@@ -22,6 +22,7 @@ class AScene : public IScene {
         void event(const core::Engine&, const network::NetEventPack&) = 0;
 
         sf::View getView(void) override;
+        sf::Vector2f getViewPos(void) const override;
         void zoom(float) override;
         void move(const sf::Vector2f&) override;
         void move(float, float) override;
