@@ -39,9 +39,9 @@ static const char CLIENTS_OVERFLOW_MSG[] =
     #define CLIENTS_OVERFLOW_CODE 42
 
 enum client_type_e {
-    UNSET = -1,
     AI = 0,
     GUI = 1,
+    UNSET = 2
 };
 
 static const char GRAPHIC_TEAM[] = "GRAPHIC";
