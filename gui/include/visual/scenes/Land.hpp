@@ -66,6 +66,8 @@ class Land : public AScene {
         void trantorCollect(const network::NetPack& pack);
         void trantorStartIncantation(const network::NetPack& pack);
         void trantorEndIncantation(const network::NetPack& pack);
+        void trantorLayingAnEgg(const network::NetPack& pack);
+        void trantorLaidAnEgg(const network::NetPack& pack);
         void posTrantorian(const network::NetPack& pack);
 
         Background _backgroud;

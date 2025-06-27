@@ -78,6 +78,12 @@ void Land::event(const core::Engine& engine, const network::NetEventPack& net_pa
         case network::PEINC:
             trantorEndIncantation(net_pack.pack);
             break;
+        case network::PEGG:
+            trantorLayingAnEgg(net_pack.pack);
+            break;
+        case network::ELAID:
+            trantorLaidAnEgg(net_pack.pack);
+            break;
         case network::PDEAD:
             removeTrantorian(net_pack.pack);
             break;
@@ -216,6 +222,18 @@ void Land::trantorEndIncantation(const network::NetPack& pack)
     for (const auto &trantor : _tiles[x][y].trantorians) {
         trantor.second->endIncantation(pos, ACT_TIME(7.0f) / 2, _clock);
     }
+}
+
+void Land::trantorLayingAnEgg(const network::NetPack& pack)
+{
+    size_t trantor_id = pack[0].getSize_t();
+    _trantorians.at(trantor_id)->layAnEgg();
+}
+
+void Land::trantorLaidAnEgg(const network::NetPack& pack)
+{
+    size_t trantor_id = pack[1].getSize_t();
+    _trantorians.at(trantor_id)->laidAnEgg();
 }
 
 void Land::posTrantorian(const network::NetPack& pack)

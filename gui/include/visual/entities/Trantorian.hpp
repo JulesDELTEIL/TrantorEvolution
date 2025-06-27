@@ -32,10 +32,11 @@ enum BodyAnimIndex {
     PICKAXE,
     AXE,
     DEATH,
-    INCANT
+    INCANT,
+    WATERING
 };
 
-    #define NB_BODY_ANIM 7
+    #define NB_BODY_ANIM 8
 
 static const std::vector<AnimationInfos> BODY_ANIM_INFOS = {
     {"assets/trantorians/body/Idle_Side-Sheet.png", {64, 64}, {4, 1}, {0, 0}, 0.3, sf::Clock()},
@@ -45,6 +46,7 @@ static const std::vector<AnimationInfos> BODY_ANIM_INFOS = {
     {"assets/trantorians/body/Slice_Side-Sheet.png", {64, 64}, {8, 1}, {0, 0}, 0.2, sf::Clock()},
     {"assets/trantorians/body/Death_Side-Sheet.png", {64, 64}, {8, 1}, {0, 0}, 0.2, sf::Clock()},
     {"assets/trantorians/body/Evolution-Sheet.png", {64, 64}, {2, 1}, {0, 0}, 0.4, sf::Clock()},
+    {"assets/trantorians/body/Watering-Sheet.png", {64, 64}, {8, 1}, {0, 0}, 0.2, sf::Clock()},
 };
 
 class Trantorian {
@@ -62,6 +64,8 @@ class Trantorian {
             float, const sf::Clock&);
         void endIncantation(const sf::Vector2f&,
             float, const sf::Clock&);
+        void layAnEgg();
+        void laidAnEgg();
         ResourceGroup getInventory(void) const;
 
         sf::Vector2i map_pos;
