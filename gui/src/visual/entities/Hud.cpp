@@ -46,11 +46,6 @@ HudDisplay::HudDisplay()
     g_nb_trantors.setPosition(G_NBTR_POS);
 }
 
-void HudDisplay::moveTile(const sf::Vector2f& pos)
-{
-    tile.sprite.setPosition(pos);
-}
-
 void Hud::display(sf::RenderTarget& render, const sf::Clock& clock)
 {
     if (clock.getElapsedTime().asMilliseconds() > _last_time + UPDATE_INFO) {
@@ -113,7 +108,7 @@ void Hud::updateInfo(void)
         _infos.resources = _tile->getResources();
         _infos.type = BIOME_NAMES.at(_tile->getBiome());
         _display.tile_biome.setString(_infos.type);
-        _display.moveTile(_tile->getPos());
+        _display.tile.sprite.setPosition(_tile->getPos());
     }
 }
 

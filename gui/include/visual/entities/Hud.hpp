@@ -82,7 +82,6 @@ static const std::map<biome_e, std::string> BIOME_NAMES = {
 
 struct HudDisplay {
     HudDisplay();
-    void moveTile(const sf::Vector2f& pos);
     sf::Font font;
     Drawable tile;
     Drawable tile_r;
