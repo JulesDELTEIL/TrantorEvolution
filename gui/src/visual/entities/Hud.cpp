@@ -5,6 +5,8 @@
 ** Hud.cpp
 */
 
+#include "maths.hpp"
+
 #include "visual/entities/Hud.hpp"
 
 namespace gui {
@@ -17,9 +19,10 @@ HudDisplay::HudDisplay() :
     global(GLOBAL_HUD_TEXTURE, GLOBAL_HUD_SCALE), g_time(font, GLOBAL_COLOR_TEXT, GLOBAL_FONT_SIZE),
     g_map_size(font, GLOBAL_COLOR_TEXT, GLOBAL_FONT_SIZE), g_nb_teams(font, GLOBAL_COLOR_TEXT, GLOBAL_FONT_SIZE),
     g_nb_trantors(font, GLOBAL_COLOR_TEXT, GLOBAL_FONT_SIZE),
-    date(DATE_HUD_TEXTURE, DATE_HUD_SCALE), date_nb(font, DATE_COLOR_TEXT),
+    date(DATE_HUD_TEXTURE, DATE_HUD_SCALE), date_nb(font, DATE_COLOR_TEXT, DATE_FONT_SIZE),
     teams(TEAM_HUD_TEXTURE, TEAM_HUD_SCALE), t_trantor(T_TR_TEXTURE),
-    t_lvl(T_LVL_TEXTURE), t_info(font, GLOBAL_COLOR_TEXT, T_NAME_SIZE)
+    t_lvl(T_LVL_TEXTURE), t_go_to(T_TO_GO_TEXTURE),
+    t_info(font, GLOBAL_COLOR_TEXT, T_NAME_SIZE)
 {
     tile.sprite.setOrigin(tile.texture.getSize().x / 2, tile.texture.getSize().y + TILE_HUD_MARGIN);
     tile_biome.setFillColor(DATE_COLOR_TEXT);
@@ -56,10 +59,11 @@ void Hud::display(sf::RenderTarget& render, const sf::Clock& clock)
         _display.g_nb_teams.setString("Team(s):  " + std::to_string(_teams.get().size()));
         _display.g_nb_trantors.setString("Trantorian(s):  " + std::to_string(_nb_trantors));
         for (size_t i = 0; i < _teams.get().size(); ++i) {
-            _best_lvl[i] = 0;
+            if (_best_lvl[i] == nullptr && _teams.get()[i].trantorians.size() > 0)
+                _best_lvl[i] = _teams.get()[i].trantorians[0];
             for (const auto& trant : _teams.get()[i].trantorians) {
-                if (_best_lvl[i] < trant->lvl)
-                    _best_lvl[i] = trant->lvl;
+                if (_best_lvl[i]->lvl < trant->lvl)
+                    _best_lvl[i] = trant;
             }
         }
     }
@@ -105,7 +109,8 @@ void Hud::event(const sf::Event& event, const network::NetEventPack& net_pack)
             _time_unit_speed = net_pack.pack[0].getSize_t();
             break;
         case network::TEAMS:
-            _best_lvl.push_back(0);
+            _best_lvl.push_back(nullptr);
+            _trantor_index.push_back(0);
             break;
     }
 }
@@ -132,6 +137,33 @@ void Hud::updateInfo(void)
         _display.tile_biome.setString(_infos.type);
         _display.tile.sprite.setPosition(_tile->getPos());
     }
+}
+
+sf::Vector2f Hud::hitHudTeamInfo(const sf::Vector2i& mpos)
+{
+    sf::Vector2f pos = T_POS;
+    sf::Vector2u size = _display.teams.texture.getSize();
+
+    size.x *= TEAM_HUD_SCALE;
+    size.y *= TEAM_HUD_SCALE;
+    for (size_t i = 0; i < _teams.get().size(); ++i) {
+        pos += T_MARGIN;
+        if (hitRectangle(mpos, T_HITBOX_KING(pos))) {
+            if (_best_lvl[i] != nullptr)
+                return _best_lvl[i]->actual_pos;
+        }
+        if (hitRectangle(mpos, {static_cast<int>(pos.x), static_cast<int>(pos.y), static_cast<int>(size.x), static_cast<int>(size.y)})) {
+            if (_teams.get()[i].trantorians.size() == 0)
+                return {-1.0f, -1.0f};
+            _trantor_index[i] += 1;
+            if (_trantor_index[i] >= _teams.get()[i].trantorians.size())
+                _trantor_index[i] = 0;
+            else
+                return _teams.get()[i].trantorians[_trantor_index[i]]->actual_pos;
+        }
+        pos += T_INSIDE_MARGIN;
+    }
+    return {-1.0f, -1.0f};
 }
 
 void Hud::drawTileInfo(sf::RenderTarget& render)
@@ -190,8 +222,13 @@ void Hud::drawTeamsInfos(sf::RenderTarget& render)
         _display.t_lvl.sprite.setPosition(pos + T_LEFT_POS);
         render.draw(_display.t_lvl.sprite);
         _display.t_info.setPosition(pos + T_RIGHT_POS);
-        _display.t_info.setString(std::to_string(_best_lvl[i]));
+        if (_best_lvl[i] != nullptr) {
+            _display.t_info.setString(std::to_string(_best_lvl[i]->lvl));
+        } else
+            _display.t_info.setString("0");
         render.draw(_display.t_info);
+        _display.t_go_to.sprite.setPosition(pos + T_TO_GO_POS);
+        render.draw(_display.t_go_to.sprite);
 
     }
 }

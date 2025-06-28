@@ -76,13 +76,16 @@ static const std::map<resource_e, sf::IntRect> HUD_RES_RECT = {
     #define TEAM_HUD_SCALE 3.0f
     #define T_TR_TEXTURE "assets/hud/trantor.png"
     #define T_LVL_TEXTURE "assets/hud/king.png"
+    #define T_TO_GO_TEXTURE "assets/hud/go_to.png"
     #define T_NAME_SIZE 16
     #define T_POS sf::Vector2f(0.0f, 120.0f)
     #define T_MARGIN sf::Vector2f(0.0f, 80.0f)
     #define T_NAME_POS sf::Vector2f(25.0f, 12.0f)
-    #define T_INSIDE_MARGIN sf::Vector2f(0.0f, 25.0f);
+    #define T_INSIDE_MARGIN sf::Vector2f(0.0f, 25.0f)
     #define T_LEFT_POS sf::Vector2f(25.0f, 35.0f)
     #define T_RIGHT_POS sf::Vector2f(50.0f, 34.2f)
+    #define T_TO_GO_POS sf::Vector2f(130.0f, 35.0f)
+    #define T_HITBOX_KING(p) (sf::IntRect(p.x + T_INSIDE_MARGIN.x + T_TO_GO_POS.x, p.y + T_INSIDE_MARGIN.y + T_TO_GO_POS.y, 16.0f, 16.0f))
 
 enum HudType_e {
     NO_INFO = -1,
@@ -121,6 +124,7 @@ struct HudDisplay {
     Drawable teams;
     Drawable t_trantor;
     Drawable t_lvl;
+    Drawable t_go_to;
     Text t_info;
 };
 
@@ -135,6 +139,7 @@ class Hud {
         void changeStatus(HudType_e);
         void changeTileInfo(std::shared_ptr<Tile>);
         void updateInfo(void);
+        sf::Vector2f hitHudTeamInfo(const sf::Vector2i& mpos);
 
     private:
         float _last_time = 0;
@@ -149,7 +154,8 @@ class Hud {
         size_t _nb_trantors = 0;
 
         std::reference_wrapper<Teams> _teams;
-        std::vector<size_t> _best_lvl;
+        std::vector<std::shared_ptr<Trantorian>> _best_lvl;
+        std::vector<size_t> _trantor_index;
         void drawTeamsInfos(sf::RenderTarget&);
 
         HudType_e _status = NO_INFO;
