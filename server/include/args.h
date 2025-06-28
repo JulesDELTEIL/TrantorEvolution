@@ -26,6 +26,7 @@ typedef struct arguments_s {
     int freq;
     char **team_name;
     bool debug;
+    bool biome;
 } arguments_t;
 
 

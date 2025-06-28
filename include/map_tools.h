@@ -53,5 +53,30 @@ const static biome_distribution_t biome_distributions[] = {
         .refill = {3, 1, 1, 2, 2, 1, 1}
     }
 };
+/*
+Distribution without the biome flag
+*/
+const static biome_distribution_t normal_distributions[] = {
+    [SEA] = {
+        .biome_start = {2, 1, 1, 1, 1, 1, 1},
+        .refill = {2, 1, 1, 1, 1, 1, 1}
+    },
+    [FOREST] = {
+        .biome_start = {2, 1, 1, 1, 1, 1, 1},
+        .refill = {2, 1, 1, 1, 1, 1, 1}
+    },
+    [MOUNTAINS] = {
+        .biome_start = {2, 1, 1, 1, 1, 1, 1},
+        .refill = {2, 1, 1, 1, 1, 1, 1}
+    },
+    [PLAINS] = {
+        .biome_start = {2, 1, 1, 1, 1, 1, 1},
+        .refill = {2, 1, 1, 1, 1, 1, 1}
+    },
+    [BEACH] = {
+        .biome_start = {2, 1, 1, 1, 1, 1, 1},
+        .refill = {2, 1, 1, 1, 1, 1, 1}
+    }
+};
 
 #endif /* !MAPTOOLS_H_ */
