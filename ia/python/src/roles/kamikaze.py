@@ -11,7 +11,6 @@ from src.action import Commands, Action
 class Kamikaze(BaseRole):
     def __init__(self):
         super().__init__()
-        print("----- I'm kamikaze -----")
     
     def decide_action(self):
         self._cycle += 1

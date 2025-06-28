@@ -13,13 +13,11 @@ class Queen(BaseRole):
     def __init__(self, *inp):
         super().__init__()
         if len(inp) == 1:
-            print("----- I'm Mother Queen -----")
             self._birth_function = inp[0]
             self._waiting_for_slot_number = True
             self._give_birth = True
             self._egg_left = -1
         else:
-            print("----- I'm Queen -----")
             self._give_birth = False
         self._all_alone = False
         self._player_killed = 0
@@ -59,7 +57,6 @@ class Queen(BaseRole):
                     self._waiting_for_slot_number = False
                 self._queue.appendleft(Commands(Action.BROADCAST, 'quit'))
         else:
-            print("QUEEN : Creating kingdom")
             self.create_kingdom()
 
     def decide_action(self):
@@ -86,7 +83,6 @@ class Queen(BaseRole):
         for stone in requirements.keys():
             if self._last_vision.count(stone) < requirements[stone]:
                 return False
-            print("I want to incant. I'm level:", self._level)
         return True
 
     def handle_broadcast(self, response_list: list[str]) -> bool:
