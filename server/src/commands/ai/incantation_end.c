@@ -44,7 +44,7 @@ static void check_destroy_incantation(serverdata_t *sdata, player_t *player,
         free(player->incantation->player_inc_ids);
         free(player->incantation);
         player->incantation = NULL;
-        return;       
+        return;
     }
 }
 
