@@ -17,7 +17,8 @@
 namespace gui {
 namespace visual {
 
-Land::Land(std::reference_wrapper<network::Client> client) : AScene(core::DEFAULT_VIEW), _client(client)
+Land::Land(std::reference_wrapper<network::Client> client) : AScene(core::DEFAULT_VIEW),
+    _client(client), _hud(std::ref(_teams))
 {
     std::srand(std::time({}));
     _tile.sprite.setOrigin({TILE_SIZE / 2, 0.0f});

@@ -17,7 +17,9 @@ HudDisplay::HudDisplay() :
     global(GLOBAL_HUD_TEXTURE, GLOBAL_HUD_SCALE), g_time(font, GLOBAL_COLOR_TEXT, GLOBAL_FONT_SIZE),
     g_map_size(font, GLOBAL_COLOR_TEXT, GLOBAL_FONT_SIZE), g_nb_teams(font, GLOBAL_COLOR_TEXT, GLOBAL_FONT_SIZE),
     g_nb_trantors(font, GLOBAL_COLOR_TEXT, GLOBAL_FONT_SIZE),
-    date(DATE_HUD_TEXTURE, DATE_HUD_SCALE), date_nb(font, DATE_COLOR_TEXT)
+    date(DATE_HUD_TEXTURE, DATE_HUD_SCALE), date_nb(font, DATE_COLOR_TEXT),
+    teams(TEAM_HUD_TEXTURE, TEAM_HUD_SCALE), t_trantor(T_TR_TEXTURE),
+    t_lvl(T_LVL_TEXTURE), t_info(font, GLOBAL_COLOR_TEXT, T_NAME_SIZE)
 {
     tile.sprite.setOrigin(tile.texture.getSize().x / 2, tile.texture.getSize().y + TILE_HUD_MARGIN);
     tile_biome.setFillColor(DATE_COLOR_TEXT);
@@ -31,7 +33,12 @@ HudDisplay::HudDisplay() :
     date.sprite.setPosition(DATE_HUD_POS);
     date_nb.setPosition(DATE_NB_POS);
     date_nb.setString("Year 0");
+    t_info.setOutlineThickness(1.0f);
+    t_info.setOutlineColor(TILE_COLOR_TEXT);
 }
+
+Hud::Hud(std::reference_wrapper<Teams> teams) : _teams(teams)
+{}
 
 void Hud::display(sf::RenderTarget& render, const sf::Clock& clock)
 {
@@ -46,12 +53,25 @@ void Hud::display(sf::RenderTarget& render, const sf::Clock& clock)
         updateInfo();
         _last_time = time_elapsed;
         _display.g_time.setString("Time:  " + std::to_string(static_cast<int>(clock.getElapsedTime().asSeconds())) + "s");
-        _display.g_nb_teams.setString("Team(s):  " + std::to_string(_nb_teams.size()));
+        _display.g_nb_teams.setString("Team(s):  " + std::to_string(_teams.get().size()));
         _display.g_nb_trantors.setString("Trantorian(s):  " + std::to_string(_nb_trantors));
+        for (size_t i = 0; i < _teams.get().size(); ++i) {
+            _best_lvl[i] = 0;
+            for (const auto& trant : _teams.get()[i].trantorians) {
+                if (_best_lvl[i] < trant->lvl)
+                    _best_lvl[i] = trant->lvl;
+            }
+        }
     }
     if (_status == TILE_INFO)
         drawTileInfo(render);
     render.setView(render.getDefaultView());
+    drawHud(render);
+    drawTeamsInfos(render);
+}
+
+void Hud::drawHud(sf::RenderTarget& render)
+{
     render.draw(_display.global.sprite);
     render.draw(_display.g_time);
     render.draw(_display.g_map_size);
@@ -78,14 +98,14 @@ void Hud::event(const sf::Event& event, const network::NetEventPack& net_pack)
         case network::PDEAD:
             _nb_trantors -= 1;
             break;
-        case network::TEAMS:
-            _nb_teams[net_pack.pack[0].getString()] = 1;
-            break;
         case network::TIME: 
             _time_unit_speed = net_pack.pack[0].getSize_t();
             break;
         case network::TIMEM:
             _time_unit_speed = net_pack.pack[0].getSize_t();
+            break;
+        case network::TEAMS:
+            _best_lvl.push_back(0);
             break;
     }
 }
@@ -143,6 +163,36 @@ void Hud::drawTileInfo(sf::RenderTarget& render)
         render.draw(_display.tile_r.sprite);
         render.draw(_display.tile_rquantity);
         i += 1;
+    }
+}
+
+void Hud::drawTeamsInfos(sf::RenderTarget& render)
+{
+    sf::Vector2f pos = T_POS;
+
+    for (size_t i = 0; i < _teams.get().size(); ++i) {
+        pos += T_MARGIN;
+        _display.teams.sprite.setColor(_teams.get()[i].color);
+        _display.teams.sprite.setPosition(pos);
+        render.draw(_display.teams.sprite);
+        _display.t_info.setPosition(pos + T_NAME_POS);
+        _display.t_info.setString(_teams.get()[i].name);
+        render.draw(_display.t_info);
+        
+        _display.t_trantor.sprite.setColor(_teams.get()[i].color);
+        _display.t_trantor.sprite.setPosition(pos + T_LEFT_POS);
+        render.draw(_display.t_trantor.sprite);
+        _display.t_info.setPosition(pos + T_RIGHT_POS);
+        _display.t_info.setString(std::to_string(_teams.get()[i].trantorians.size()));
+        render.draw(_display.t_info);
+        
+        pos += T_INSIDE_MARGIN;
+        _display.t_lvl.sprite.setPosition(pos + T_LEFT_POS);
+        render.draw(_display.t_lvl.sprite);
+        _display.t_info.setPosition(pos + T_RIGHT_POS);
+        _display.t_info.setString(std::to_string(_best_lvl[i]));
+        render.draw(_display.t_info);
+
     }
 }
 

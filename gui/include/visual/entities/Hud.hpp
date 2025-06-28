@@ -18,6 +18,7 @@
     #include "visual/Text.hpp"
     #include "network/events.hpp"
     #include "visual/visual.hpp"
+    #include "Teams.hpp"
 
     #include "visual/entities/Trantorian.hpp"
     #include "visual/entities/Tile.hpp"
@@ -71,9 +72,20 @@ static const std::map<resource_e, sf::IntRect> HUD_RES_RECT = {
     #define DATE_COLOR_TEXT sf::Color(255, 225, 170, 255)
     #define DATE_NB_POS sf::Vector2f(DATE_HUD_POS.x - 155.0f, 20.0f)
 
+    #define TEAM_HUD_TEXTURE "assets/hud/team.png"
+    #define TEAM_HUD_SCALE 3.0f
+    #define T_TR_TEXTURE "assets/hud/trantor.png"
+    #define T_LVL_TEXTURE "assets/hud/king.png"
+    #define T_NAME_SIZE 16
+    #define T_POS sf::Vector2f(0.0f, 120.0f)
+    #define T_MARGIN sf::Vector2f(0.0f, 80.0f)
+    #define T_NAME_POS sf::Vector2f(25.0f, 12.0f)
+    #define T_INSIDE_MARGIN sf::Vector2f(0.0f, 25.0f);
+    #define T_LEFT_POS sf::Vector2f(25.0f, 35.0f)
+    #define T_RIGHT_POS sf::Vector2f(50.0f, 34.2f)
+
 enum HudType_e {
     NO_INFO = -1,
-    TRANTOR_INFO,
     TILE_INFO,
 };
 
@@ -91,22 +103,30 @@ static const std::map<biome_e, std::string> BIOME_NAMES = {
 struct HudDisplay {
     HudDisplay();
     Font font;
+
     Drawable tile;
     Drawable tile_r;
     Text tile_biome;
     Text tile_rquantity;
+
     Drawable global;
     Text g_time;
     Text g_map_size;
     Text g_nb_teams;
     Text g_nb_trantors;
+
     Drawable date;
     Text date_nb;
+
+    Drawable teams;
+    Drawable t_trantor;
+    Drawable t_lvl;
+    Text t_info;
 };
 
 class Hud {
     public:
-        Hud() = default;
+        Hud(std::reference_wrapper<Teams>);
         ~Hud() = default;
 
         void display(sf::RenderTarget& target, const sf::Clock& clock);
@@ -118,16 +138,21 @@ class Hud {
 
     private:
         float _last_time = 0;
-        HudType_e _status = NO_INFO;
+
         HudDisplay _display;
+        void drawHud(sf::RenderTarget&);
     
         float _last_day = 0;
         size_t _time_unit_speed = 1;
         size_t _nb_days = 0;
 
         size_t _nb_trantors = 0;
-        std::unordered_map<std::string, int> _nb_teams;
 
+        std::reference_wrapper<Teams> _teams;
+        std::vector<size_t> _best_lvl;
+        void drawTeamsInfos(sf::RenderTarget&);
+
+        HudType_e _status = NO_INFO;
         std::shared_ptr<Tile> _tile = nullptr;
         TileInfo _infos;
         void drawTileInfo(sf::RenderTarget& render);
