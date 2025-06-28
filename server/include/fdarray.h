@@ -41,6 +41,16 @@ typedef struct action_s {
     char *data;
 } action_t;
 
+typedef struct incantation_s incantation_t;
+
+struct incantation_s {
+    int nb_players;
+    int *player_inc_ids;
+    int done;
+};
+
+typedef struct player_s player_t;
+
 /*
 struct player_t :
 - size_t level
@@ -48,17 +58,18 @@ struct player_t :
 - uint_t y
 - uint_t orientation
 */
-typedef struct player_s {
+struct player_s {
     int id;
     team_t *team;
     size_t level;
     pos_t pos;
     player_dir_t orientation;
     action_t action;
+    incantation_t *incantation;
     int inventory[NB_DIFF_ITEMS];
     size_t time_use_life;
-    struct player_s *next;
-} player_t;
+    player_t *next;
+};
 
 /*
 struct client_t :
