@@ -31,6 +31,7 @@ namespace visual {
     #define NB_MAP_ARG 9
 
     #define MOV_FACTOR 20
+    #define TIME_TO_FIND 3000 // as ms
     #define ACT_TIME(x) float((x / this->_time_unit_speed) * 1000)
 
 struct ClearTile {
@@ -55,7 +56,6 @@ class Land : public AScene {
         bool _net_running = false;
         void askResources(void);
 
-        sf::Clock _clock;
         size_t _time_unit_speed = 4;
 
         void viewEvent(const sf::Event&);

@@ -23,6 +23,10 @@ class AScene : public IScene {
 
         sf::View getView(void) override;
         sf::Vector2f getViewPos(void) const override;
+
+        bool changeViewDest(const sf::Vector2f&, float) override;
+        void moveToDest(void) override;
+
         void zoom(float) override;
         void move(const sf::Vector2f&) override;
         void move(float, float) override;
@@ -30,6 +34,12 @@ class AScene : public IScene {
     protected:
         float _zoom = 1;
         sf::View _camera;
+        sf::Clock _clock;
+
+        sf::Vector2f _direction;
+        float _time;
+        float _start;
+        float _last_time;
 
 };
 

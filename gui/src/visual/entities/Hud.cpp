@@ -5,58 +5,44 @@
 ** Hud.cpp
 */
 
+#include "maths.hpp"
+
 #include "visual/entities/Hud.hpp"
 
 namespace gui {
 namespace visual {
 
-HudDisplay::HudDisplay()
-{   
-    font.loadFromFile(HUD_FONT);
-    tile.texture.loadFromFile(TILE_HUD_TEXTURE);
-    tile.sprite.setTexture(tile.texture);
-    tile.sprite.setScale(TILE_HUD_SCALE, TILE_HUD_SCALE);
+HudDisplay::HudDisplay() :
+    font(HUD_FONT),
+    tile(TILE_HUD_TEXTURE, TILE_HUD_SCALE), tile_r(TILE_RESOURCES_TEXTURE),
+    tile_biome(font, DATE_COLOR_TEXT, TILE_BIOME_FSIZE), tile_rquantity(font, TILE_COLOR_TEXT, TILE_FONT_SIZE),
+    global(GLOBAL_HUD_TEXTURE, GLOBAL_HUD_SCALE), g_time(font, GLOBAL_COLOR_TEXT, GLOBAL_FONT_SIZE),
+    g_map_size(font, GLOBAL_COLOR_TEXT, GLOBAL_FONT_SIZE), g_nb_teams(font, GLOBAL_COLOR_TEXT, GLOBAL_FONT_SIZE),
+    g_nb_trantors(font, GLOBAL_COLOR_TEXT, GLOBAL_FONT_SIZE),
+    date(DATE_HUD_TEXTURE, DATE_HUD_SCALE), date_nb(font, DATE_COLOR_TEXT, DATE_FONT_SIZE),
+    teams(TEAM_HUD_TEXTURE, TEAM_HUD_SCALE), t_trantor(T_TR_TEXTURE),
+    t_lvl(T_LVL_TEXTURE), t_go_to(T_TO_GO_TEXTURE),
+    t_info(font, GLOBAL_COLOR_TEXT, T_NAME_SIZE), trantor(TR_INFO_TEXTURE, TR_INFO_SCALE)
+{
     tile.sprite.setOrigin(tile.texture.getSize().x / 2, tile.texture.getSize().y + TILE_HUD_MARGIN);
-    tile_r.texture.loadFromFile(TILE_RESOURCES_TEXTURE);
-    tile_r.sprite.setTexture(tile_r.texture);
-    tile_biome.setFont(font);
     tile_biome.setFillColor(DATE_COLOR_TEXT);
-    tile_biome.setCharacterSize(TILE_BIOME_FSIZE);
     tile_biome.setOutlineColor(TILE_COLOR_TEXT);
     tile_biome.setOutlineThickness(0.8f);
-    tile_rquantity.setFont(font);
-    tile_rquantity.setFillColor(TILE_COLOR_TEXT);
-    tile_rquantity.setCharacterSize(TILE_FONT_SIZE);
-    global.texture.loadFromFile(GLOBAL_HUD_TEXTURE);
-    global.sprite.setTexture(global.texture);
-    global.sprite.setScale(GLOBAL_HUD_SCALE, GLOBAL_HUD_SCALE);
-    g_time.setFont(font);
-    g_time.setFillColor(GLOBAL_COLOR_TEXT);
-    g_time.setCharacterSize(GLOBAL_FONT_SIZE);
     g_time.setPosition(G_TIME_POS);
-    g_map_size.setFont(font);
-    g_map_size.setFillColor(GLOBAL_COLOR_TEXT);
-    g_map_size.setCharacterSize(GLOBAL_FONT_SIZE);
     g_map_size.setPosition(G_MAPS_POS);
-    g_nb_teams.setFont(font);
-    g_nb_teams.setFillColor(GLOBAL_COLOR_TEXT);
-    g_nb_teams.setCharacterSize(GLOBAL_FONT_SIZE);
     g_nb_teams.setPosition(G_NBTE_POS);
-    g_nb_trantors.setFont(font);
-    g_nb_trantors.setFillColor(GLOBAL_COLOR_TEXT);
-    g_nb_trantors.setCharacterSize(GLOBAL_FONT_SIZE);
     g_nb_trantors.setPosition(G_NBTR_POS);
-    date.texture.loadFromFile(DATE_HUD_TEXTURE);
-    date.sprite.setTexture(date.texture);
-    date.sprite.setScale(DATE_HUD_SCALE, DATE_HUD_SCALE);
     date.sprite.setOrigin(date.texture.getSize().x, 0.0f);
     date.sprite.setPosition(DATE_HUD_POS);
-    date_nb.setFont(font);
-    date_nb.setCharacterSize(DATE_FONT_SIZE);
-    date_nb.setFillColor(DATE_COLOR_TEXT);
     date_nb.setPosition(DATE_NB_POS);
     date_nb.setString("Year 0");
+    t_info.setOutlineThickness(1.0f);
+    t_info.setOutlineColor(TILE_COLOR_TEXT);
+    trantor.sprite.setPosition(TR_INFO_POS);
 }
+
+Hud::Hud(std::reference_wrapper<Teams> teams) : _teams(teams)
+{}
 
 void Hud::display(sf::RenderTarget& render, const sf::Clock& clock)
 {
@@ -71,12 +57,26 @@ void Hud::display(sf::RenderTarget& render, const sf::Clock& clock)
         updateInfo();
         _last_time = time_elapsed;
         _display.g_time.setString("Time:  " + std::to_string(static_cast<int>(clock.getElapsedTime().asSeconds())) + "s");
-        _display.g_nb_teams.setString("Team(s):  " + std::to_string(_nb_teams.size()));
+        _display.g_nb_teams.setString("Team(s):  " + std::to_string(_teams.get().size()));
         _display.g_nb_trantors.setString("Trantorian(s):  " + std::to_string(_nb_trantors));
+        for (size_t i = 0; i < _teams.get().size(); ++i) {
+            if (_best_lvl[i] == nullptr && _teams.get()[i].trantorians.size() > 0)
+                _best_lvl[i] = _teams.get()[i].trantorians[0];
+            for (const auto& trant : _teams.get()[i].trantorians) {
+                if (_best_lvl[i]->lvl < trant->lvl)
+                    _best_lvl[i] = trant;
+            }
+        }
     }
-    if (_status == TILE_INFO)
+    if (_tile != nullptr)
         drawTileInfo(render);
     render.setView(render.getDefaultView());
+    drawHud(render);
+    drawTeamsInfos(render);
+}
+
+void Hud::drawHud(sf::RenderTarget& render)
+{
     render.draw(_display.global.sprite);
     render.draw(_display.g_time);
     render.draw(_display.g_map_size);
@@ -84,13 +84,17 @@ void Hud::display(sf::RenderTarget& render, const sf::Clock& clock)
     render.draw(_display.g_nb_trantors);
     render.draw(_display.date.sprite);
     render.draw(_display.date_nb);
+    if (_tr_selected != nullptr)
+        render.draw(_display.trantor.sprite);
 }
 
 void Hud::event(const sf::Event& event, const network::NetEventPack& net_pack)
 {
     if (event.type == sf::Event::KeyPressed) {
-        if (event.key.code == sf::Keyboard::Escape)
-            _status = NO_INFO;
+        if (event.key.code == sf::Keyboard::Escape) {
+            _tile = nullptr;
+            _tr_selected = nullptr;
+        }
     }
     switch (static_cast<int>(net_pack.event)) {
         case network::MSIZE:
@@ -103,21 +107,17 @@ void Hud::event(const sf::Event& event, const network::NetEventPack& net_pack)
         case network::PDEAD:
             _nb_trantors -= 1;
             break;
-        case network::TEAMS:
-            _nb_teams[net_pack.pack[0].getString()] = 1;
-            break;
         case network::TIME: 
             _time_unit_speed = net_pack.pack[0].getSize_t();
             break;
         case network::TIMEM:
             _time_unit_speed = net_pack.pack[0].getSize_t();
             break;
+        case network::TEAMS:
+            _best_lvl.push_back(nullptr);
+            _trantor_index.push_back(0);
+            break;
     }
-}
-
-void Hud::changeStatus(HudType_e type)
-{
-    _status = type;
 }
 
 void Hud::changeTileInfo(std::shared_ptr<Tile> new_tile)
@@ -127,16 +127,45 @@ void Hud::changeTileInfo(std::shared_ptr<Tile> new_tile)
 
 void Hud::updateInfo(void)
 {
-    if (_status == TILE_INFO) {
-        if (_tile == nullptr) {
-            _status = NO_INFO;
-            return;
+    if (_tile == nullptr)
+        return;
+    _infos.resources = _tile->getResources();
+    _infos.type = BIOME_NAMES.at(_tile->getBiome());
+    _display.tile_biome.setString(_infos.type);
+    _display.tile.sprite.setPosition(_tile->getPos());
+}
+
+sf::Vector2f Hud::hitHudTeamInfo(const sf::Vector2i& mpos)
+{
+    sf::Vector2f pos = T_POS;
+    sf::Vector2u size = _display.teams.texture.getSize();
+
+    size.x *= TEAM_HUD_SCALE;
+    size.y *= TEAM_HUD_SCALE;
+    for (size_t i = 0; i < _teams.get().size(); ++i) {
+        pos += T_MARGIN;
+        if (hitRectangle(mpos, T_HITBOX_KING(pos))) {
+            _tr_selected = _best_lvl[i];
+            if (_best_lvl[i] != nullptr) {
+                return _best_lvl[i]->actual_pos;
+            }
         }
-        _infos.resources = _tile->getResources();
-        _infos.type = BIOME_NAMES.at(_tile->getBiome());
-        _display.tile_biome.setString(_infos.type);
-        _display.tile.sprite.setPosition(_tile->getPos());
+        if (hitRectangle(mpos, {static_cast<int>(pos.x), static_cast<int>(pos.y), static_cast<int>(size.x), static_cast<int>(size.y)})) {
+            if (_teams.get()[i].trantorians.size() == 0) {
+                _tr_selected = nullptr;
+                return {-1.0f, -1.0f};
+            }
+            _trantor_index[i] += 1;
+            if (_trantor_index[i] >= _teams.get()[i].trantorians.size())
+                _trantor_index[i] = 0;
+            else {
+                _tr_selected = _teams.get()[i].trantorians[_trantor_index[i]];
+                return _tr_selected->actual_pos;
+            }
+        }
+        pos += T_INSIDE_MARGIN;
     }
+    return {-1.0f, -1.0f};
 }
 
 void Hud::drawTileInfo(sf::RenderTarget& render)
@@ -168,6 +197,40 @@ void Hud::drawTileInfo(sf::RenderTarget& render)
         render.draw(_display.tile_r.sprite);
         render.draw(_display.tile_rquantity);
         i += 1;
+    }
+}
+
+void Hud::drawTeamsInfos(sf::RenderTarget& render)
+{
+    sf::Vector2f pos = T_POS;
+
+    for (size_t i = 0; i < _teams.get().size(); ++i) {
+        pos += T_MARGIN;
+        _display.teams.sprite.setColor(_teams.get()[i].color);
+        _display.teams.sprite.setPosition(pos);
+        render.draw(_display.teams.sprite);
+        _display.t_info.setPosition(pos + T_NAME_POS);
+        _display.t_info.setString(_teams.get()[i].name);
+        render.draw(_display.t_info);
+        
+        _display.t_trantor.sprite.setColor(_teams.get()[i].color);
+        _display.t_trantor.sprite.setPosition(pos + T_LEFT_POS);
+        render.draw(_display.t_trantor.sprite);
+        _display.t_info.setPosition(pos + T_RIGHT_POS);
+        _display.t_info.setString(std::to_string(_teams.get()[i].trantorians.size()));
+        render.draw(_display.t_info);
+        
+        pos += T_INSIDE_MARGIN;
+        _display.t_lvl.sprite.setPosition(pos + T_LEFT_POS);
+        render.draw(_display.t_lvl.sprite);
+        _display.t_info.setPosition(pos + T_RIGHT_POS);
+        if (_best_lvl[i] != nullptr) {
+            _display.t_info.setString(std::to_string(_best_lvl[i]->lvl));
+        } else
+            _display.t_info.setString("0");
+        render.draw(_display.t_info);
+        _display.t_go_to.sprite.setPosition(pos + T_TO_GO_POS);
+        render.draw(_display.t_go_to.sprite);
     }
 }
 

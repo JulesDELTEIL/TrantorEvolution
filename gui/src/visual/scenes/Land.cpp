@@ -17,7 +17,8 @@
 namespace gui {
 namespace visual {
 
-Land::Land(std::reference_wrapper<network::Client> client) : AScene(core::DEFAULT_VIEW), _client(client)
+Land::Land(std::reference_wrapper<network::Client> client) : AScene(core::DEFAULT_VIEW),
+    _client(client), _hud(std::ref(_teams))
 {
     std::srand(std::time({}));
     _tile.sprite.setOrigin({TILE_SIZE / 2, 0.0f});
@@ -37,6 +38,7 @@ Land::~Land()
 void Land::display(sf::RenderTarget& render)
 {
     _backgroud.drawBackground(render);
+    moveToDest();
     render.setView(_camera);
     clearResources();
     drawEdge(render, -1);
@@ -335,11 +337,10 @@ void Land::checkHudEvent(const core::Engine& engine, const network::NetEventPack
     _hud.event(engine.events, net_pack);
     if (engine.events.type == sf::Event::MouseButtonPressed) {
         if (engine.events.mouseButton.button == sf::Mouse::Left) {
-            sf::Vector2f mpos = engine.window.mapPixelToCoords(sf::Mouse::getPosition(engine.window), _camera);
-            if (hitTile(mpos))
-                _hud.changeStatus(HudType_e::TILE_INFO);
+            sf::Vector2i mpos = sf::Mouse::getPosition(engine.window);
+            if (changeViewDest(_hud.hitHudTeamInfo(mpos), 3000));
             else
-                _hud.changeStatus(HudType_e::NO_INFO);
+                hitTile(engine.window.mapPixelToCoords(mpos, _camera));
         }
     }
 }

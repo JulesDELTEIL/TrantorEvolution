@@ -24,6 +24,10 @@ class IScene {
     
         virtual sf::View getView(void) = 0;
         virtual sf::Vector2f getViewPos(void) const = 0;
+
+        virtual bool changeViewDest(const sf::Vector2f&, float) = 0;
+        virtual void moveToDest(void) = 0;
+
         virtual void zoom(float) = 0;
         virtual void move(const sf::Vector2f&) = 0;
         virtual void move(float, float) = 0;
