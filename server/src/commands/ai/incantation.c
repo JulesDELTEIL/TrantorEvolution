@@ -47,7 +47,8 @@ static const bool incantation_start_ok(serverdata_t *sdata, player_t *player)
     return true;
 }
 
-static void set_player_incantation_end(player_t *player, size_t timer_end, incantation_t *incantation)
+static void set_player_incantation_end(player_t *player, size_t timer_end,
+    incantation_t *incantation)
 {
     player->action.cmd = strdup(ACTIONS_ARR[INCANTATION].name);
     player->action.data = strdup("");
@@ -113,7 +114,8 @@ static void send_gui_p_start_inc(serverdata_t *sdata, fdarray_t *fdarray,
         fdarray->clients[k].player->level == client->player->level &&
         fdarray->clients[k].player->id != client->player->id) {
             sprintf(data, "%s %d", data, fdarray->clients[k].player->id);
-            set_player_incantation_end(fdarray->clients[k].player, timer_end, incantation);
+            set_player_incantation_end(fdarray->clients[k].player,
+                timer_end, incantation);
             set_message(&(fdarray->clients[k]), "Elevation underway", NULL);
         }
     }
@@ -124,11 +126,11 @@ static bool incantation_end_ok(serverdata_t *sdata, player_t *player)
 {
     tile_t tile = sdata->game_data.map.tiles[player->pos.x][player->pos.y];
     int n = 0;
-    player_t *mate = NULL;
+    player_t *mt = NULL;
 
     for (uint_t k = 0; k < player->incantation->nb_players; k++) {
-        mate = get_player_pos(sdata, player->incantation->player_inc_ids[k]);
-        if (mate && mate->pos.x == player->pos.x && mate->pos.y == player->pos.y)
+        mt = get_player_pos(sdata, player->incantation->player_inc_ids[k]);
+        if (mt && mt->pos.x == player->pos.x && mt->pos.y == player->pos.y)
             n++;
     }
     player->incantation->done += 1;
@@ -186,10 +188,12 @@ int cmd_incantation(serverdata_t *sdata, fdarray_t *fdarray,
         set_message(client, "ko", NULL);
         return EXIT_FAILURE;
     }
-    if (client->player->level < 8 && incantation_start_ok(sdata, client->player)) {
+    if (client->player->level < 8 && incantation_start_ok(sdata,
+        client->player)) {
         incantation = set_incantation(sdata, fdarray, client);
         set_player_incantation_end(client->player,
-            set_timer_end(sdata->args->freq, ACTIONS_ARR[INCANTATION].delay), incantation);
+            set_timer_end(sdata->args->freq, ACTIONS_ARR[INCANTATION].delay),
+            incantation);
         set_message(client, "Elevation underway", NULL);
         send_gui_p_start_inc(sdata, fdarray, client, incantation);
     } else {
