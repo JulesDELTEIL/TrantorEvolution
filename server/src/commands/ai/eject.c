@@ -13,7 +13,7 @@
 #include "transmission.h"
 #include "commands.h"
 #include "actions.h"
-#include "eject.h"
+#include "commands/eject.h"
 
 static void keep_player_in(player_t *player, int width, int height)
 {

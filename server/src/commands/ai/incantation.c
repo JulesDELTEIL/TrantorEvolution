@@ -13,7 +13,7 @@
 #include "transmission.h"
 #include "commands.h"
 #include "actions.h"
-#include "incantation.h"
+#include "commands/incantation.h"
 
 static int get_nb_tile_players(player_t *head, pos_t tilepos, int level)
 {
