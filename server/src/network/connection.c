@@ -36,10 +36,6 @@ static int destroy_buffout(message_t *head)
 
 int closeconnection(serverdata_t *sdata, fdarray_t *fdarray, client_t *client)
 {
-    printf("\033[34mDisconnection from client fd %d\033[0m\n", client->fd); // COMMENT TO REMEMBER TO REMOVE
-    if (client->type == AI) { // COMMENT TO REMEMBER TO REMOVE
-        printf("\033[34mClient %d was linked to player %d, killing it\033[0m\n", client->fd, client->player->id); // COMMENT TO REMEMBER TO REMOVE
-    } // COMMENT TO REMEMBER TO REMOVE
     close(client->fd);
     destroy_client(client);
     if (client->type == AI)
@@ -54,7 +50,6 @@ static int set_new_client(serverdata_t *sdata, fdarray_t *fdarray,
 {
     fdarray->fds[nextfree].fd = newfd;
     fdarray->clients[nextfree].fd = newfd;
-    printf("\033[34mConnection from client %d at idx %d\033[0m\n", newfd, nextfree); // COMMENT TO REMEMBER TO REMOVE
 }
 
 int openconnection(serverdata_t *sdata, fdarray_t *fdarray)

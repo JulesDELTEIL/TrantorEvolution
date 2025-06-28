@@ -75,7 +75,6 @@ int kill_player(serverdata_t *sdata, fdarray_t *fdarray, client_t *client)
 
     if (client->player == NULL)
         return EXIT_FAILURE;
-    printf("\033[34mKill player %d linked to client %d\033[0m\n", client->player->id, client->fd); // COMMENT TO REMEMBER TO REMOVE
     set_message(client, "dead", NULL);
     sprintf(answer, "%d", client->player->id);
     send_guis(sdata, fdarray, "pdi", answer);
@@ -179,7 +178,6 @@ int new_player(serverdata_t *sdata, fdarray_t *fdarray, client_t *client,
         return EXIT_FAILURE;
     add_player(sdata, fdarray, client, &(sdata->game_data.teams[team_idx]));
     client->player->team->space_left -= 1;
-    printf("\033[34mNew player %d linked to client %d, part of team %s (%d slots left)\033[0m\n", client->player->id, client->fd, client->player->team->name, client->player->team->space_left); // COMMENT TO REMEMBER TO REMOVE
     client->player->time_use_life = set_timer_end(sdata->args->freq,
         TICKS_FOOD_USE);
     for (uint_t k = NB_SERVER_FD; k < NBTOTAL_FD; k++) {

@@ -121,12 +121,6 @@ static int check_player_life(serverdata_t *sdata, fdarray_t *fdarray,
         client->player->inventory[FOOD] -= 1;
         client->player->time_use_life = set_timer_end(sdata->args->freq,
             TICKS_FOOD_USE);
-        if (client->fd < 6 + 3) { // COMMENT TO REMEMBER TO REMOVE
-            printf("\033[34mClient %d (player %d) : team %s (space left %d), level %d, pos {%d, %d}, inventory {food %d, %d, %d, %d, %d, %d, %d}\033[0m\n",
-                client->fd, client->player->id, client->player->team->name, client->player->team->space_left, client->player->level, client->player->pos.x, client->player->pos.y,
-                client->player->inventory[0], client->player->inventory[1], client->player->inventory[2], client->player->inventory[3], client->player->inventory[4], client->player->inventory[5], client->player->inventory[6]
-            ); // COMMENT TO REMEMBER TO REMOVE
-        }
         if (client->player->inventory[FOOD] <= 0) {
             kill_player(sdata, fdarray, client);
             return EXIT_FAILURE;
