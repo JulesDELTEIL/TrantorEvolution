@@ -11,6 +11,7 @@
     #include "pos.h"
 
 typedef struct egg_s {
+    size_t id;
     pos_t pos;
     struct egg_s *next;
 } egg_t;

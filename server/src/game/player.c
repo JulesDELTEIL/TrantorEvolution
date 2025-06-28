@@ -13,18 +13,18 @@
 #include "transmission.h"
 #include "commands.h"
 
-static int del_egg(team_t *team, pos_t pos)
+static int del_egg(team_t *team, size_t id)
 {
     egg_t *node = team->eggs->next;
     egg_t *prev = team->eggs;
 
-    if (team->eggs->pos.x == pos.x && team->eggs->pos.y == pos.y) {
+    if (team->eggs->id == id) {
         team->eggs = prev->next;
         free(prev);
         return EXIT_SUCCESS;
     }
     while (node != NULL) {
-        if (node->pos.x == pos.x && node->pos.y == pos.y) {
+        if (node->id == id) {
             prev->next = node->next;
             free(node);
             return EXIT_SUCCESS;
@@ -69,21 +69,15 @@ static void drop_inventory(game_t *game, player_t *player)
     pthread_mutex_unlock(&(game->map.mutex));
 }
 
-static int send_gui_p_death(serverdata_t *sdata, fdarray_t *fdarray,
-    client_t *client)
+int kill_player(serverdata_t *sdata, fdarray_t *fdarray, client_t *client)
 {
     char answer[BUFFSIZE] = {0};
 
-    sprintf(answer, "%d", client->player->id);
-    send_guis(sdata, fdarray, "pdi", answer);
-}
-
-int kill_player(serverdata_t *sdata, fdarray_t *fdarray, client_t *client)
-{
     if (client->player == NULL)
         return EXIT_FAILURE;
     set_message(client, "dead", NULL);
-    send_gui_p_death(sdata, fdarray, client);
+    sprintf(answer, "%d", client->player->id);
+    send_guis(sdata, fdarray, "pdi", answer);
     drop_inventory(&(sdata->game_data), client->player);
     if (client->player->action.cmd != NULL)
         free(client->player->action.cmd);
@@ -103,27 +97,44 @@ static int set_action(player_t *player)
     player->action.data = NULL;
 }
 
-static int add_player(game_t *game, client_t *client, team_t *team)
+static pos_t set_player_spawn(serverdata_t *sdata, fdarray_t *fdarray,
+    team_t *team)
+{
+    char gui_data[BUFFSIZE] = {0};
+    egg_t *head = team->eggs;
+    pos_t found;
+
+    while (head != NULL) {
+        if (head->next == NULL) {
+            found = head->pos;
+            sprintf(gui_data, "%d", (int)head->id);
+            send_guis(sdata, fdarray, "ebo", gui_data);
+            del_egg(team, head->id);
+            return found;
+        }
+        head = head->next;
+    }
+    return sdata->game_data.spawn;
+}
+
+static int add_player(serverdata_t *sdata, fdarray_t *fdarray,
+    client_t *client, team_t *team)
 {
     player_t *new = malloc(sizeof(player_t));
 
-    new->id = game->next;
+    new->id = sdata->game_data.next_player;
     new->team = team;
     new->level = 1;
-    if (team->eggs != NULL) {
-        new->pos = team->eggs->pos;
-        del_egg(team, new->pos);
-    } else
-        new->pos = game->spawn;
+    new->pos = set_player_spawn(sdata, fdarray, team);
     new->orientation = N;
     set_action(new);
     for (uint_t k = 0; k < NB_DIFF_ITEMS; k++)
         new->inventory[k] = 0;
     new->inventory[FOOD] = NB_FOOD_BEGIN;
-    new->next = game->players;
-    game->players = new;
+    new->next = sdata->game_data.players;
+    sdata->game_data.players = new;
     client->player = new;
-    game->next++;
+    sdata->game_data.next_player++;
 }
 
 int send_pnw(serverdata_t *sdata, player_t *player, client_t *ui_client)
@@ -157,8 +168,7 @@ int new_player(serverdata_t *sdata, fdarray_t *fdarray, client_t *client,
 
     if (team_idx < 0 || sdata->game_data.teams[team_idx].space_left <= 0)
         return EXIT_FAILURE;
-    add_player(&(sdata->game_data), client,
-        &(sdata->game_data.teams[team_idx]));
+    add_player(sdata, fdarray, client, &(sdata->game_data.teams[team_idx]));
     client->player->team->space_left -= 1;
     client->player->time_use_life = set_timer_end(sdata->args->freq,
         TICKS_FOOD_USE);

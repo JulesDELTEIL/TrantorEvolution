@@ -56,7 +56,8 @@ game_t init_game(arguments_t *args)
     game_data.map.tiles = init_map(args->width, args->height);
     pthread_mutex_init(&(game_data.map.mutex), NULL);
     game_data.players = NULL;
-    game_data.next = 0;
+    game_data.next_player = 0;
+    game_data.next_egg = 0;
     game_data.teams = init_teams(args->team_name,
     args->clientnb, game_data.nb_of_teams);
     init_spawn(&game_data, args->width, args->height);
