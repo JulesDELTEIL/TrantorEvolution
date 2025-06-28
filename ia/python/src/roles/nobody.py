@@ -5,14 +5,13 @@
 ## nobody.py
 ##
 
-from itertools import cycle
-import socket
 from src.roles.base_role import BaseRole
 from src.action import Commands, Action
 
 class Nobody(BaseRole):
     def __init__(self):
         super().__init__()
+        self._is_there_anyone = None
 
     def handle_broadcast(self, response_list: list[str]) -> str:
         if len(response_list) >= 3:
@@ -23,6 +22,8 @@ class Nobody(BaseRole):
         return "NOTHING"
 
     def decide_action(self):
-        self.cycle += 1
-        if len(self.queue) == 0:
-            self.queue.appendleft(Commands(Action.LEFT))
+        self._cycle += 1
+        if self._cycle == 1:
+            self._queue.appendleft(Commands(Action.LOOK))
+        else:
+            self._queue.appendleft(Commands(Action.LEFT))

@@ -61,15 +61,15 @@ static const std::map<resource_e, sf::IntRect> HUD_RES_RECT = {
     #define G_NBTE_POS sf::Vector2f(GLOBAL_MARGIN, GLOBAL_TEXT_SPLIT(3))
     #define G_NBTR_POS sf::Vector2f(GLOBAL_MARGIN, GLOBAL_TEXT_SPLIT(4))
 
-    #define UNIT_FOR_DAY 100
+    #define UNIT_FOR_DAY 365
     #define DAY_PASS_TIME float(1000.0f * (UNIT_FOR_DAY / this->_time_unit_speed))
 
     #define DATE_HUD_TEXTURE "assets/hud/date.png"
     #define DATE_HUD_SCALE 2.5f
-    #define DATE_FONT_SIZE 12
+    #define DATE_FONT_SIZE 24
     #define DATE_HUD_POS sf::Vector2f(WIN_X - 10.0f, 10.0f)
     #define DATE_COLOR_TEXT sf::Color(255, 225, 170, 255)
-    #define DATE_NB_POS sf::Vector2f(DATE_HUD_POS.x - 155.0f, 16.0f)
+    #define DATE_NB_POS sf::Vector2f(DATE_HUD_POS.x - 155.0f, 20.0f)
 
 enum HudType_e {
     NO_INFO = -1,

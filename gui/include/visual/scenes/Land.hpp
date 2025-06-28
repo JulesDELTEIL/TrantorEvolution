@@ -15,12 +15,13 @@
     #include "visual/AScene.hpp"
 
     #include "map_tools.h"
+    #include "Teams.hpp"
     #include "core/Engine.hpp"
     #include "network/Client.hpp"
+    #include "audio/SoundManage.hpp"
     #include "visual/entities/Background.hpp"
     #include "visual/entities/Hud.hpp"
     #include "visual/entities/Tile.hpp"
-    #include "visual/entities/Trantorian.hpp"
     #include "visual/entities/ResourceNode.hpp"
     #include "visual/entities/IncantationObject.hpp"
 
@@ -28,9 +29,8 @@ namespace gui {
 namespace visual {
 
     #define NB_MAP_ARG 9
-    #define CENTER_MAP(map_height) (sf::Vector2f(VIEW_WIDTH, (VIEW_HEIGHT * 2 - map_height * TILE_SIZE) / 2))
-    #define MAP_POS(middle, x, y) (sf::Vector2f((middle.x - (TILE_SIZE / 2) * (x + y)) + (TILE_SIZE * y), middle.y + (24 * (x + y))))
 
+    #define MOV_FACTOR 20
     #define ACT_TIME(x) float((x / this->_time_unit_speed) * 1000)
 
 struct ClearTile {
@@ -41,20 +41,27 @@ struct ClearTile {
 
 class Land : public AScene {
     public:
-        Land();
-        ~Land() = default;
+        Land(std::reference_wrapper<network::Client>);
+        ~Land();
 
         void display(sf::RenderTarget& render) override;
         void event(const core::Engine&, const network::NetEventPack&) override;
+        biome_e getCenterTileType(const sf::Vector2f &map_center);
+        void updateAmbiantSound();
 
     private:
+        std::reference_wrapper<network::Client> _client; 
+        std::thread _net;
+        bool _net_running = false;
+        void askResources(void);
+
         sf::Clock _clock;
         size_t _time_unit_speed = 4;
 
         void viewEvent(const sf::Event&);
 
-        void loadTile(const network::NetPack&);
-        biome_e readBiomeType(const network::NetPack& pack);
+        void drawEdge(sf::RenderTarget& render, int bottom);
+        void addTile(const network::NetPack&);
         void updateTile(const network::NetPack&);
         Drawable _tile;
         sf::Vector2f _map_size = {-1, -1};
@@ -68,9 +75,14 @@ class Land : public AScene {
         void trantorCollect(const network::NetPack& pack);
         void trantorStartIncantation(const network::NetPack& pack);
         void trantorEndIncantation(const network::NetPack& pack);
+        void trantorLayingAnEgg(const network::NetPack& pack);
+        void trantorLaidAnEgg(const network::NetPack& pack);
         void posTrantorian(const network::NetPack& pack);
 
         Background _backgroud;
+    
+        SoundManage biome_song;
+        biome_e last_song_biome;
 
         Hud _hud;
         void checkHudEvent(const core::Engine& engine, const network::NetEventPack& net_pack);
@@ -84,8 +96,8 @@ class Land : public AScene {
         };
 
         std::map<size_t, std::map<size_t, TileInfo>> _tiles;
-        std::map<std::string, std::vector<std::shared_ptr<Trantorian>>> _teams;
         std::map<size_t, std::shared_ptr<Trantorian>> _trantorians;
+        Teams _teams;
 };
 
 } // visual

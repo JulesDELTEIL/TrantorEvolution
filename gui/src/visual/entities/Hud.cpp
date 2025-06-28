@@ -21,6 +21,8 @@ HudDisplay::HudDisplay() :
 {
     tile.sprite.setOrigin(tile.texture.getSize().x / 2, tile.texture.getSize().y + TILE_HUD_MARGIN);
     tile_biome.setFillColor(DATE_COLOR_TEXT);
+    tile_biome.setOutlineColor(TILE_COLOR_TEXT);
+    tile_biome.setOutlineThickness(0.8f);
     g_time.setPosition(G_TIME_POS);
     g_map_size.setPosition(G_MAPS_POS);
     g_nb_teams.setPosition(G_NBTE_POS);
@@ -28,7 +30,7 @@ HudDisplay::HudDisplay() :
     date.sprite.setOrigin(date.texture.getSize().x, 0.0f);
     date.sprite.setPosition(DATE_HUD_POS);
     date_nb.setPosition(DATE_NB_POS);
-    date_nb.setString("Day 0");
+    date_nb.setString("Year 0");
 }
 
 void Hud::display(sf::RenderTarget& render, const sf::Clock& clock)
@@ -37,7 +39,7 @@ void Hud::display(sf::RenderTarget& render, const sf::Clock& clock)
 
     if (time_elapsed > _last_day + DAY_PASS_TIME) {
         _nb_days += 1;
-        _display.date_nb.setString("Day " + std::to_string(_nb_days));
+        _display.date_nb.setString("Year " + std::to_string(_nb_days));
         _last_day = time_elapsed;
     }
     if (time_elapsed > _last_time + UPDATE_INFO) {
@@ -67,7 +69,7 @@ void Hud::event(const sf::Event& event, const network::NetEventPack& net_pack)
     }
     switch (static_cast<int>(net_pack.event)) {
         case network::MSIZE:
-            _display.g_map_size.setString("Map size:  " +
+            _display.g_map_size.setString("World size:  " +
                 net_pack.pack[0].getString() + " " + net_pack.pack[1].getString());
             break;
         case network::NEW:

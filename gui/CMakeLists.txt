@@ -32,9 +32,13 @@ add_executable( ${PROJECT_NAME}
     ${GUI_SRC_DIR}visual/entities/Hud.cpp
     ${GUI_SRC_DIR}visual/entities/IncantationObject.cpp
     ${GUI_SRC_DIR}visual/entities/Background.cpp
+    ${GUI_SRC_DIR}visual/entities/Egg.cpp
 
     # SCENES
     ${GUI_SRC_DIR}visual/scenes/Land.cpp
+
+    # AUDIO 
+    ${GUI_SRC_DIR}audio/SoundManage.cpp
 )
 
 ########## LINKAGE ##########
@@ -42,6 +46,7 @@ target_link_libraries( ${PROJECT_NAME}
     sfml-graphics
     sfml-window
     sfml-system
+    sfml-audio
 )
 
 target_include_directories( ${PROJECT_NAME}

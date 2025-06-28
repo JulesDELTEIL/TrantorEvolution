@@ -32,17 +32,18 @@ sf::Vector2f AScene::getViewPos(void) const
 
 void AScene::zoom(float scale)
 {
+    _zoom *= scale;
     _camera.zoom(scale);
 }
 
 void AScene::move(const sf::Vector2f& factor)
 {
-    _camera.move(factor);
+    _camera.move(factor * _zoom);
 }
 
 void AScene::move(float x, float y)
 {
-    _camera.move(sf::Vector2f(x, y));
+    _camera.move(sf::Vector2f(x * _zoom, y * _zoom));
 }
 
 } // visual
