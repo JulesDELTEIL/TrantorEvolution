@@ -32,8 +32,7 @@ static int get_nb_tile_players(player_t *head, pos_t tilepos, int level)
 
 static const bool level_up_ok(serverdata_t *sdata, player_t *player)
 {
-    int nb_players = get_nb_tile_players(sdata->game_data.players,
-        player->pos, player->level);
+    int nb_players = 6;
     tile_t tile;
 
     printf("%d\n", nb_players);

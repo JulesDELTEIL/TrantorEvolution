@@ -37,8 +37,8 @@ const static biome_distribution_t biome_distributions[] = {
         .refill = {3, 1, 1, 1, 2, 1, 1}
     },
     [FOREST] = {
-        .biome_start = {3, 2, 0, 0, 0, 0, 0},
-        .refill = {3, 3, 1, 1, 1, 1, 1}
+        .biome_start = {1, 1, 1, 1, 1, 1, 1},
+        .refill = {1, 1, 1, 1, 1, 1, 1}
     },
     [MOUNTAINS] = {
         .biome_start = {3, 0, 2, 0, 0, 0, 0},
