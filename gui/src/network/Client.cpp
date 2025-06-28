@@ -17,8 +17,10 @@ namespace network {
 
 Client::~Client()
 {
-    _network_runing = false;
-    _network.join();
+    if (_network_runing == true) {
+        _network_runing = false;
+        _network.join();
+    }
 }
 
 static Command splitCodeAndArg(const std::string &string)
@@ -38,7 +40,13 @@ static Command splitCodeAndArg(const std::string &string)
 
 void Client::setSocket(const std::string &server, const int &port)
 {
-    _socket.setSocket(server, port);
+    try {
+        _socket.setSocket(server, port);
+    }
+    catch(const network::Socket::socketError& e) {
+        std::cerr << e.what() << std::endl;
+        return;
+    }
     _stream.reset(fdopen(_socket.getFd(), "r"));
     _network_runing = true;
     _network = std::thread(&Client::checkEvent, this);
@@ -76,16 +84,18 @@ void Client::checkEvent(void)
                     _buffer.push_back(tempBuffer[k]);
             }
         }
-        for (size_t size = 0; _buffer[size] != '\n'; ++size) {
-            if (size >= _buffer.size()) {
-                command.clear();
-                break;
+        if (_buffer.size() != 0) {
+            for (size_t size = 0; _buffer[size] != '\n'; ++size) {
+                if (size >= _buffer.size()) {
+                    command.clear();
+                    break;
+                }
+                command.push_back(_buffer[size]);
             }
-            command.push_back(_buffer[size]);
-        }
-        if (!command.empty()) {
-            pushNetpackEvent(command);
-            command.clear();
+            if (!command.empty()) {
+                pushNetpackEvent(command);
+                command.clear();
+            }
         }
     }
 }

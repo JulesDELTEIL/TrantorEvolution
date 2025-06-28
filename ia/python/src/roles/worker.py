@@ -14,11 +14,11 @@ import random
 class Worker(BaseRole):
     def __init__(self):
         super().__init__()
-        print("----- Je suis Worker ------")
         self.mode = 'GATHERING' # GATHERING or DELIVERING
         self.carry = None
         self.queens_pos = [0, 0]
         self._direction = "up"
+        self.check_eat = True
         self.random = random
         
     def decide_action(self) -> None:
@@ -33,7 +33,6 @@ class Worker(BaseRole):
                 for objects in self._last_vision:
                     for stone in STONES:
                         if stone in objects:
-                            print("je prends", stone)
                             self.carry = stone
                             self._queue.appendleft(Commands(Action.TAKE, stone))
                             return
@@ -45,11 +44,14 @@ class Worker(BaseRole):
                 self._queue.appendleft(Commands(Action.RIGHT))
             self._queue.appendleft(Commands(Action.FORWARD))
             self._queue.appendleft(Commands(Action.LOOK))
+            self.check_eat = True
             return
 
+        elif self.carry == None:
+            self.mode = 'GATHERING'
+            return
         elif self.mode == 'DELIVERING':
             if self.pos[X] == self.queens_pos[X] and self.pos[Y] == self.queens_pos[Y]:
-                print("je pose", self.carry)
                 self.mode = 'GATHERING'
                 self._queue.appendleft(Commands(Action.SET, self.carry))
                 self.carry = None

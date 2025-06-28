@@ -10,6 +10,7 @@ find_package(SFML 2.5.1 COMPONENTS graphics window system REQUIRED)
 ########## BINARY ##########
 add_executable( ${PROJECT_NAME}
     ${GUI_SRC_DIR}main.cpp
+    ${GUI_SRC_DIR}maths/hitbox.cpp
     ${GUI_SRC_DIR}core/Core.cpp
     ${GUI_SRC_DIR}core/Engine.cpp
     ${GUI_SRC_DIR}core/Parser.cpp
@@ -26,12 +27,16 @@ add_executable( ${PROJECT_NAME}
     ${GUI_SRC_DIR}visual/entities/Tile.cpp
     ${GUI_SRC_DIR}visual/entities/Trantorian.cpp
     ${GUI_SRC_DIR}visual/entities/ResourceNode.cpp
-
-    # LAYERS
-    ${GUI_SRC_DIR}visual/layers/Land.cpp
+    ${GUI_SRC_DIR}visual/entities/Hud.cpp
+    ${GUI_SRC_DIR}visual/entities/IncantationObject.cpp
+    ${GUI_SRC_DIR}visual/entities/Background.cpp
+    ${GUI_SRC_DIR}visual/entities/Egg.cpp
 
     # SCENES
-    ${GUI_SRC_DIR}visual/scenes/InGame.cpp
+    ${GUI_SRC_DIR}visual/scenes/Land.cpp
+
+    # AUDIO 
+    ${GUI_SRC_DIR}audio/SoundManage.cpp
 )
 
 ########## LINKAGE ##########
@@ -39,6 +44,7 @@ target_link_libraries( ${PROJECT_NAME}
     sfml-graphics
     sfml-window
     sfml-system
+    sfml-audio
 )
 
 target_include_directories( ${PROJECT_NAME}

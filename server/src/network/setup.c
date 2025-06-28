@@ -58,8 +58,9 @@ int setempty_client(client_t *client)
 {
     client->fd = NOFD;
     client->type = UNSET;
-    client->buffer = NULL;
+    client->buffin = NULL;
     client->player = NULL;
+    client->buffout = NULL;
     client->buffin_addition = false;
 }
 
@@ -68,7 +69,7 @@ fdarray_t setup_fds(int sockfd)
     fdarray_t fdarray;
 
     for (size_t k = 0; k < NBTOTAL_FD; k++) {
-        fdarray.fds[k].events = POLLIN;
+        fdarray.fds[k].events = POLLIN | POLLOUT;
         fdarray.fds[k].revents = 0;
         fdarray.fds[k].fd = NOFD;
         setempty_client(&(fdarray.clients[k]));

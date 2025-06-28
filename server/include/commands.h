@@ -52,12 +52,25 @@ int cmd_tna(serverdata_t *, fdarray_t *, client_t *, char *);
 int cmd_msz(serverdata_t *, fdarray_t *, client_t *, char *);
 int cmd_bct(serverdata_t *, fdarray_t *, client_t *, char *);
 int cmd_mct(serverdata_t *, fdarray_t *, client_t *, char *);
+int cmd_ppo(serverdata_t *, fdarray_t *, client_t *, char *);
+int cmd_pin(serverdata_t *, fdarray_t *, client_t *, char *);
+int cmd_plv(serverdata_t *, fdarray_t *, client_t *, char *);
+int cmd_sgt(serverdata_t *, fdarray_t *, client_t *, char *);
+int cmd_sst(serverdata_t *, fdarray_t *, client_t *, char *);
+int cmd_bio(serverdata_t *, fdarray_t *, client_t *, char *);
+
 
 static const command_t GUI_COMMANDS[] = {
     {"tna", cmd_tna},
     {"msz", cmd_msz},
     {"bct", cmd_bct},
-    {"mct", cmd_mct}
+    {"mct", cmd_mct},
+    {"ppo", cmd_ppo},
+    {"plv", cmd_plv},
+    {"pin", cmd_pin},
+    {"sgt", cmd_sgt},
+    {"sst", cmd_sst},
+    {"bio", cmd_bio}
 };
 
 static const command_t AI_COMMANDS[] = {

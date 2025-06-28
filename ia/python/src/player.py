@@ -6,7 +6,7 @@
 ##
 
 from src.roles.nobody import Nobody
-from src.action import Action
+from src.action import Commands, Action
 from src.utils import parse_vision, parse_inventory
 from src.macros import X, Y
 
@@ -28,17 +28,16 @@ class Player():
             Action.TAKE: self._take_object,
             Action.SET: self._void,
             Action.FORK: self._spawn_new_client,
-            Action.INCANTATION: self._incatation_succes,
+            Action.INCANTATION: self._incantation_success,
             Action.CONNECT_NBR: self._update_connect_nbr,
             Action.EJECT: self._void,
             Action.NONE:self._void
         }
     
-    def _spawn_new_client(self) -> None:
+    def _spawn_new_client(self, response) -> None:
         subprocess.Popen(["./zappy_ai", "-p", self._player_port, "-n", self._player_team_name, "-h", self._player_host])
 
     def _update_connect_nbr(self, connect_nbr: str) -> bool:
-        print("UPDATING CONNECT NBR gotten", connect_nbr)
         self.role._egg_left = int(connect_nbr)
         return True
 
@@ -53,19 +52,30 @@ class Player():
         self.role._map.update_mindmap(response_formatted, self.role._level, self.role._cycle, self.role.pos)
         
     def _update_inventory(self, response: str) -> None:
+        self.role.check_eat = False
         self.role._last_inventory = parse_inventory(response)
+        if self.role._last_inventory['food'] < 5:
+            self.role._queue.clear()
+            self.role._queue.appendleft(Commands(Action.TAKE, 'food'))
+        self.role._last_vision = None
+        if self.role.random.choice([0,1]) == 0:
+            self.role._queue.appendleft(Commands(Action.LEFT))
+        else:
+            self.role._queue.appendleft(Commands(Action.RIGHT))
+        self.role._queue.appendleft(Commands(Action.FORWARD))
+        self.role._queue.appendleft(Commands(Action.LOOK))
         
-    def _turn_left(self):
+    def _turn_left(self, response: str):
         if self.role._direction is not None:
             mapping = {"up": "left", "left": "down", "down": "right", "right": "up"}
             self.role._direction = mapping[self.role._direction]
 
-    def _turn_right(self):
+    def _turn_right(self, response: str):
         if self.role._direction is not None:
             mapping = {"up": "right", "right": "down", "down": "left", "left": "up"}
             self.role._direction = mapping[self.role._direction]
 
-    def _move_forward(self):
+    def _move_forward(self, response: str):
         if self.role._direction == "up":
             self.role.pos[Y] += 1
         elif self.role._direction == "right":
@@ -82,13 +92,15 @@ class Player():
         else:
             self.role.mode = 'DELIVERING'
     
-    def _incatation_succes(self, response: str):
+    def _incantation_success(self, response: str):
+        self.role._queue.clear()
         if response == "Elevation underway":
             return
         response_list = response.split()
         if response_list[0] == "Current":
             self.role._level = int(response_list[2])
             self.role._last_incantation = self.role._cycle
+            self.role._incant_asked = False
 
-    def _void(self):
+    def _void(self, response: str):
         return

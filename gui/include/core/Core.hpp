@@ -15,7 +15,7 @@
     #include "core/Engine.hpp"
     #include "visual/visual.hpp"
     #include "core/Parser.hpp"
-    #include "visual/interfaces/IScene.hpp"
+    #include "visual/IScene.hpp"
     #include "network/Client.hpp"
 
 namespace gui {
@@ -38,8 +38,6 @@ class Core {
         visual::Scene_e _selected_scene;
         std::map<visual::Scene_e, std::unique_ptr<visual::IScene>> _scenes;
         void changeScene(const visual::Scene_e&);
-
-        void setupVisual(void);
 };
 
 } // core
