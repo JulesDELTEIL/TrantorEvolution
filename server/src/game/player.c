@@ -127,6 +127,7 @@ static int add_player(serverdata_t *sdata, fdarray_t *fdarray,
     new->level = 1;
     new->pos = set_player_spawn(sdata, fdarray, team);
     new->orientation = N;
+    new->incantation = NULL;
     set_action(new);
     for (uint_t k = 0; k < NB_DIFF_ITEMS; k++)
         new->inventory[k] = 0;
