@@ -15,6 +15,7 @@
     #include "map_tools.h"
     #include "core/Engine.hpp"
     #include "visual/Drawable.hpp"
+    #include "visual/Text.hpp"
     #include "network/events.hpp"
     #include "visual/visual.hpp"
 
@@ -89,18 +90,18 @@ static const std::map<biome_e, std::string> BIOME_NAMES = {
 
 struct HudDisplay {
     HudDisplay();
-    sf::Font font;
+    Font font;
     Drawable tile;
     Drawable tile_r;
-    sf::Text tile_biome;
-    sf::Text tile_rquantity;
+    Text tile_biome;
+    Text tile_rquantity;
     Drawable global;
-    sf::Text g_time;
-    sf::Text g_map_size;
-    sf::Text g_nb_trantors;
-    sf::Text g_nb_teams;
+    Text g_time;
+    Text g_map_size;
+    Text g_nb_teams;
+    Text g_nb_trantors;
     Drawable date;
-    sf::Text date_nb;
+    Text date_nb;
 };
 
 class Hud {

@@ -10,47 +10,23 @@
 namespace gui {
 namespace visual {
 
-HudDisplay::HudDisplay()
-{   
-    font.loadFromFile(HUD_FONT);
-    tile.texture.loadFromFile(TILE_HUD_TEXTURE);
-    tile.sprite.setTexture(tile.texture);
-    tile.sprite.setScale(TILE_HUD_SCALE, TILE_HUD_SCALE);
+HudDisplay::HudDisplay() :
+    font(HUD_FONT),
+    tile(TILE_HUD_TEXTURE, TILE_HUD_SCALE), tile_r(TILE_RESOURCES_TEXTURE),
+    tile_biome(font, DATE_COLOR_TEXT, TILE_BIOME_FSIZE), tile_rquantity(font, TILE_COLOR_TEXT, TILE_FONT_SIZE),
+    global(GLOBAL_HUD_TEXTURE, GLOBAL_HUD_SCALE), g_time(font, GLOBAL_COLOR_TEXT, GLOBAL_FONT_SIZE),
+    g_map_size(font, GLOBAL_COLOR_TEXT, GLOBAL_FONT_SIZE), g_nb_teams(font, GLOBAL_COLOR_TEXT, GLOBAL_FONT_SIZE),
+    g_nb_trantors(font, GLOBAL_COLOR_TEXT, GLOBAL_FONT_SIZE),
+    date(DATE_HUD_TEXTURE, DATE_HUD_SCALE), date_nb(font, DATE_COLOR_TEXT)
+{
     tile.sprite.setOrigin(tile.texture.getSize().x / 2, tile.texture.getSize().y + TILE_HUD_MARGIN);
-    tile_r.texture.loadFromFile(TILE_RESOURCES_TEXTURE);
-    tile_r.sprite.setTexture(tile_r.texture);
-    tile_biome.setFont(font);
     tile_biome.setFillColor(DATE_COLOR_TEXT);
-    tile_biome.setCharacterSize(TILE_BIOME_FSIZE);
-    tile_rquantity.setFont(font);
-    tile_rquantity.setFillColor(TILE_COLOR_TEXT);
-    tile_rquantity.setCharacterSize(TILE_FONT_SIZE);
-    global.texture.loadFromFile(GLOBAL_HUD_TEXTURE);
-    global.sprite.setTexture(global.texture);
-    global.sprite.setScale(GLOBAL_HUD_SCALE, GLOBAL_HUD_SCALE);
-    g_time.setFont(font);
-    g_time.setFillColor(GLOBAL_COLOR_TEXT);
-    g_time.setCharacterSize(GLOBAL_FONT_SIZE);
     g_time.setPosition(G_TIME_POS);
-    g_map_size.setFont(font);
-    g_map_size.setFillColor(GLOBAL_COLOR_TEXT);
-    g_map_size.setCharacterSize(GLOBAL_FONT_SIZE);
     g_map_size.setPosition(G_MAPS_POS);
-    g_nb_teams.setFont(font);
-    g_nb_teams.setFillColor(GLOBAL_COLOR_TEXT);
-    g_nb_teams.setCharacterSize(GLOBAL_FONT_SIZE);
     g_nb_teams.setPosition(G_NBTE_POS);
-    g_nb_trantors.setFont(font);
-    g_nb_trantors.setFillColor(GLOBAL_COLOR_TEXT);
-    g_nb_trantors.setCharacterSize(GLOBAL_FONT_SIZE);
     g_nb_trantors.setPosition(G_NBTR_POS);
-    date.texture.loadFromFile(DATE_HUD_TEXTURE);
-    date.sprite.setTexture(date.texture);
-    date.sprite.setScale(DATE_HUD_SCALE, DATE_HUD_SCALE);
     date.sprite.setOrigin(date.texture.getSize().x, 0.0f);
     date.sprite.setPosition(DATE_HUD_POS);
-    date_nb.setFont(font);
-    date_nb.setFillColor(DATE_COLOR_TEXT);
     date_nb.setPosition(DATE_NB_POS);
     date_nb.setString("Day 0");
 }
