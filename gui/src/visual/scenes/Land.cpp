@@ -38,9 +38,9 @@ Land::~Land()
 void Land::display(sf::RenderTarget& render)
 {
     _backgroud.drawBackground(render);
-    moveToDest();
     render.setView(_camera);
     clearResources();
+    moveToDest();
     drawEdge(render, -1);
     drawEdge(render, false);
     for (auto& tileY : _tiles) {
@@ -109,6 +109,12 @@ void Land::event(const core::Engine& engine, const network::NetEventPack& net_pa
         case network::BIOME:
             addTile(net_pack.pack);
             break;
+        case network::PINV:
+            updateInventory(net_pack.pack);
+            break;
+        case network::PLVL:
+            _trantorians.at(net_pack.pack[0].getSize_t())->lvl = net_pack.pack[1].getSize_t();
+            break;
     }
 }
 
@@ -157,6 +163,9 @@ void Land::viewEvent(const sf::Event& event)
             move(0, -MOV_FACTOR);
         updateAmbiantSound();
     }
+    if (_selected_tr != -1 && _trantorians.find(_selected_tr) != _trantorians.end()) {
+        _camera.setCenter(_trantorians.at(_selected_tr)->actual_pos);;
+    }
 }
 
 void Land::askResources(void)
@@ -172,6 +181,11 @@ void Land::askResources(void)
             for (size_t x = 0; x < _map_size.x; ++x) {
                 _client.get().sendData("bct " + std::to_string(x) + " " + std::to_string(y));
             }
+        }
+        for (const auto& trantor : _trantorians) {
+            std::string id =  std::to_string(trantor.first);
+            _client.get().sendData("pin " + id);
+            _client.get().sendData("plv " + id);
         }
         std::this_thread::sleep_for(std::chrono::duration<float, std::milli>(ms_to_wait));
     }
@@ -253,17 +267,20 @@ void Land::addTrantorian(const network::NetPack& pack)
 {
     int x = pack[1].getInt();
     int y = pack[2].getInt();
+    int tId = 0;
     sf::Vector2f pos = MAP_POS(CENTER_MAP(_map_size.y), x, y);
     std::shared_ptr<Trantorian> newT = nullptr;
 
-    for (auto& team : _teams)
+    for (auto& team : _teams) {
         if (!team.name.compare(pack[5].getString())) {
             newT = std::make_shared<Trantorian>(pos, sf::Vector2i(x, y),
-                pack[4].getSize_t(), team.name, team.color);
-            team.trantorians.push_back(newT);
+                pack[4].getSize_t(), tId, team.color);
+            team.trantorians[pack[0].getSize_t()] = newT;
             _tiles[x][y].trantorians[pack[0].getSize_t()] = newT;
             _trantorians[pack[0].getSize_t()] = newT;
         }
+        tId += 1;
+    }
 }
 
 void Land::removeTrantorian(const network::NetPack& pack)
@@ -272,6 +289,7 @@ void Land::removeTrantorian(const network::NetPack& pack)
     std::shared_ptr<Trantorian> trantor = _trantorians.at(id);
 
     _tiles[trantor->map_pos.x][trantor->map_pos.y].trantorians.erase(id);
+    _teams.at(_trantorians.at(id)->team).trantorians.erase(id);
     _trantorians.erase(id);
     trantor = nullptr;
 }
@@ -348,15 +366,32 @@ void Land::posTrantorian(const network::NetPack& pack)
     }
 }
 
+void Land::updateInventory(const network::NetPack& pack)
+{
+    _trantorians.at(pack[0].getSize_t())->updateInventory(
+        pack[3].getSize_t(), pack[4].getSize_t(), pack[5].getSize_t(),
+        pack[6].getSize_t(), pack[7].getSize_t(), pack[8].getSize_t(),
+        pack[9].getSize_t()
+    );
+}
+
 void Land::checkHudEvent(const core::Engine& engine, const network::NetEventPack& net_pack)
 {
     _hud.event(engine.events, net_pack);
+    if (engine.events.type == sf::Event::KeyPressed) {
+        if (engine.events.key.code == sf::Keyboard::Escape)
+            _selected_tr = -1;
+    }
     if (engine.events.type == sf::Event::MouseButtonPressed) {
         if (engine.events.mouseButton.button == sf::Mouse::Left) {
             sf::Vector2i mpos = sf::Mouse::getPosition(engine.window);
-            if (changeViewDest(_hud.hitHudTeamInfo(mpos), 3000));
-            else
+            _selected_tr = _hud.hitHudTeamInfo(mpos);
+            if (_selected_tr != -1);
+            else {
                 hitTile(engine.window.mapPixelToCoords(mpos, _camera));
+                _selected_tr = -1;
+                _hud.clearTrantorInfo();
+            }
         }
     }
 }

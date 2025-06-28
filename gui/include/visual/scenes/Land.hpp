@@ -80,6 +80,7 @@ class Land : public AScene {
         void trantorLaidAnEgg(const network::NetPack& pack);
         void eggHatching(const network::NetPack& pack);
         void posTrantorian(const network::NetPack& pack);
+        void updateInventory(const network::NetPack& pack);
 
         Background _backgroud;
     
@@ -89,6 +90,7 @@ class Land : public AScene {
         Hud _hud;
         void checkHudEvent(const core::Engine& engine, const network::NetEventPack& net_pack);
         bool hitTile(const sf::Vector2f&);
+        int _selected_tr = -1;
 
         struct TileInfo {
             std::shared_ptr<Tile> tile;

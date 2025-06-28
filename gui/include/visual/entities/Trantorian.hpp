@@ -52,7 +52,7 @@ static const std::vector<AnimationInfos> BODY_ANIM_INFOS = {
 class Trantorian {
     public:
         Trantorian(const sf::Vector2f& pos, const sf::Vector2i& pos_in_map,
-            size_t level, const std::string& team_name, const sf::Color& color);
+            size_t level, size_t team_id, const sf::Color& color);
         ~Trantorian() = default;
 
         void draw(sf::RenderTarget&, const sf::Clock&);
@@ -66,15 +66,15 @@ class Trantorian {
         void layAnEgg();
         void laidAnEgg();
         ResourceGroup getInventory(void) const;
+        void updateInventory(size_t, size_t, size_t, size_t, size_t, size_t, size_t);
         sf::Vector2f getBodyPos(const size_t&);
 
         sf::Vector2i map_pos;
         sf::Vector2f actual_pos;
         size_t lvl;
-        std::string team;
+        size_t team;
     private:
         void move(int index, const sf::Vector2f&, float, const sf::Clock&);
-        sf::Color generateTeamColor(const std::string&);
 
         std::vector<Drawable> _body;
         std::vector<BodyAnimIndex> _type;

@@ -88,8 +88,12 @@ static const std::map<resource_e, sf::IntRect> HUD_RES_RECT = {
     #define T_HITBOX_KING(p) (sf::IntRect(p.x + T_INSIDE_MARGIN.x + T_TO_GO_POS.x, p.y + T_INSIDE_MARGIN.y + T_TO_GO_POS.y, 16.0f, 16.0f))
 
     #define TR_INFO_TEXTURE "assets/hud/trantor_info.png"
-    #define TR_INFO_SCALE 4.0f
+    #define TR_INFO_SCALE 5.0f
     #define TR_INFO_POS sf::Vector2f(200.0f, 10.0f)
+    #define TR_INFO_RES_POS sf::Vector2f(0.0f, 45.0f)
+    #define TR_INFO_RES_MARGIN sf::Vector2f(0.0f, 22.0f)
+    #define TR_INFO_SIZE 18
+    #define TR_INFO_POS_R sf::Vector2f(60.0f, 0.0f)
 
 struct TileInfo {
     std::string type;
@@ -127,6 +131,7 @@ struct HudDisplay {
     Text t_info;
 
     Drawable trantor;
+    Text tr_info;
 };
 
 class Hud {
@@ -139,7 +144,8 @@ class Hud {
 
         void changeTileInfo(std::shared_ptr<Tile>);
         void updateInfo(void);
-        sf::Vector2f hitHudTeamInfo(const sf::Vector2i& mpos);
+        int hitHudTeamInfo(const sf::Vector2i& mpos);
+        void clearTrantorInfo(void);
 
     private:
         float _last_time = 0;
@@ -154,16 +160,17 @@ class Hud {
         size_t _nb_trantors = 0;
 
         std::reference_wrapper<Teams> _teams;
-        std::vector<std::shared_ptr<Trantorian>> _best_lvl;
+        std::vector<size_t> _best_lvl;
         std::vector<size_t> _trantor_index;
         void drawTeamsInfos(sf::RenderTarget&);
 
         std::shared_ptr<Trantorian> _tr_selected = nullptr;
         ResourceGroup _trantor_resources;
+        void drawTrantorInfos(sf::RenderTarget&);
 
         std::shared_ptr<Tile> _tile = nullptr;
         TileInfo _infos;
-        void drawTileInfo(sf::RenderTarget& render);
+        void drawTileInfos(sf::RenderTarget& render);
 
 
 };
