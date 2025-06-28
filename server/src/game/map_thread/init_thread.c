@@ -154,6 +154,9 @@ void *map_thread(void *arg)
     pthread_mutex_lock(&(server->game_data.map.mutex));
     first_map_refill(server->args->height,
         server->game_data.map.tiles, server->args->biome);
+    refill_map(server->game_data.map.tiles,
+        (pos_t){server->args->width, server->args->height}, &all_dens,
+        server->args->biome);
     pthread_mutex_unlock(&(server->game_data.map.mutex));
     while (server->is_running == true) {
         usleep(TICKS_REFILLS / server->args->freq);
