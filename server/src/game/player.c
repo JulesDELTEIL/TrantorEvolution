@@ -100,7 +100,6 @@ static int set_action(player_t *player)
 static pos_t generate_player_spawn(serverdata_t *sdata)
 {
     pos_t try = (pos_t){0, 0};
-
     try.x = rand() % (sdata->args->width - 1);
     try.y = rand() % (sdata->args->height - 1);
     while (sdata->game_data.map.tiles[try.x][try.y].biome == SEA) {
