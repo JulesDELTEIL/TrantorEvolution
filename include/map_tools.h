@@ -58,23 +58,23 @@ Distribution without the biome flag
 */
 const static biome_distribution_t normal_distributions[] = {
     [SEA] = {
-        .biome_start = {2, 1, 1, 1, 1, 1, 1},
+        .biome_start = {0, 0, 0, 0, 0, 0, 0},
         .refill = {2, 1, 1, 1, 1, 1, 1}
     },
     [FOREST] = {
-        .biome_start = {2, 1, 1, 1, 1, 1, 1},
+        .biome_start = {0, 0, 0, 0, 0, 0, 0},
         .refill = {2, 1, 1, 1, 1, 1, 1}
     },
     [MOUNTAINS] = {
-        .biome_start = {2, 1, 1, 1, 1, 1, 1},
+        .biome_start = {0, 0, 0, 0, 0, 0, 0},
         .refill = {2, 1, 1, 1, 1, 1, 1}
     },
     [PLAINS] = {
-        .biome_start = {2, 1, 1, 1, 1, 1, 1},
+        .biome_start = {0, 0, 0, 0, 0, 0, 0},
         .refill = {2, 1, 1, 1, 1, 1, 1}
     },
     [BEACH] = {
-        .biome_start = {2, 1, 1, 1, 1, 1, 1},
+        .biome_start = {0, 0, 0, 0, 0, 0, 0},
         .refill = {2, 1, 1, 1, 1, 1, 1}
     }
 };
