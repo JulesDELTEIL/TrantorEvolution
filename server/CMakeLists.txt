@@ -38,7 +38,7 @@ add_executable( ${PROJECT_NAME}
     ${SERVER_AI_CMD_DIR}take.c
     ${SERVER_AI_CMD_DIR}broadcast.c
     ${SERVER_AI_CMD_DIR}look.c
-    ${SERVER_AI_CMD_DIR}utils.c
+    ${SERVER_AI_CMD_DIR}look_utils.c
     ${SERVER_AI_CMD_DIR}eject.c
     ${SERVER_AI_CMD_DIR}incantation.c
     ${SERVER_GUI_CMD_DIR}tna.c
