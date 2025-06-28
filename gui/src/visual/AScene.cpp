@@ -43,7 +43,7 @@ bool AScene::changeViewDest(const sf::Vector2f& new_dest, float time_ms)
     return true;
 }
 
-void AScene::moveToDest(void)
+bool AScene::moveToDest(void)
 {
     float time_elapsed = _clock.getElapsedTime().asMilliseconds();
     float percent = 0;
@@ -52,7 +52,9 @@ void AScene::moveToDest(void)
         percent = (time_elapsed - _last_time) / _time;
         _camera.move(_direction * percent);
         _last_time = time_elapsed;
+        return true;
     }
+    return false;
 }
 
 void AScene::zoom(float scale)

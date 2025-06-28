@@ -38,9 +38,9 @@ Land::~Land()
 void Land::display(sf::RenderTarget& render)
 {
     _backgroud.drawBackground(render);
-    moveToDest();
     render.setView(_camera);
     clearResources();
+    moveToDest();
     drawEdge(render, -1);
     drawEdge(render, false);
     for (auto& tileY : _tiles) {
@@ -157,6 +157,9 @@ void Land::viewEvent(const sf::Event& event)
         if (event.key.code == sf::Keyboard::Z)
             move(0, -MOV_FACTOR);
         updateAmbiantSound();
+    }
+    if (_selected_tr != -1 && _trantorians.find(_selected_tr) != _trantorians.end()) {
+        _camera.setCenter(_trantorians.at(_selected_tr)->actual_pos);;
     }
 }
 
@@ -359,12 +362,20 @@ void Land::updateInventory(const network::NetPack& pack)
 void Land::checkHudEvent(const core::Engine& engine, const network::NetEventPack& net_pack)
 {
     _hud.event(engine.events, net_pack);
+    if (engine.events.type == sf::Event::KeyPressed) {
+        if (engine.events.key.code == sf::Keyboard::Escape)
+            _selected_tr = -1;
+    }
     if (engine.events.type == sf::Event::MouseButtonPressed) {
         if (engine.events.mouseButton.button == sf::Mouse::Left) {
             sf::Vector2i mpos = sf::Mouse::getPosition(engine.window);
-            if (changeViewDest(_hud.hitHudTeamInfo(mpos), 1000));
-            else
+            _selected_tr = _hud.hitHudTeamInfo(mpos);
+            if (_selected_tr != -1);
+            else {
                 hitTile(engine.window.mapPixelToCoords(mpos, _camera));
+                _selected_tr = -1;
+                _hud.clearTrantorInfo();
+            }
         }
     }
 }

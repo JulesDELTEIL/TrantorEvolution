@@ -88,9 +88,12 @@ static const std::map<resource_e, sf::IntRect> HUD_RES_RECT = {
     #define T_HITBOX_KING(p) (sf::IntRect(p.x + T_INSIDE_MARGIN.x + T_TO_GO_POS.x, p.y + T_INSIDE_MARGIN.y + T_TO_GO_POS.y, 16.0f, 16.0f))
 
     #define TR_INFO_TEXTURE "assets/hud/trantor_info.png"
-    #define TR_INFO_SCALE 4.0f
+    #define TR_INFO_SCALE 5.0f
     #define TR_INFO_POS sf::Vector2f(200.0f, 10.0f)
-    #define TR_INFO_SIZE 16
+    #define TR_INFO_RES_POS sf::Vector2f(0.0f, 45.0f)
+    #define TR_INFO_RES_MARGIN sf::Vector2f(0.0f, 22.0f)
+    #define TR_INFO_SIZE 18
+    #define TR_INFO_POS_R sf::Vector2f(60.0f, 0.0f)
 
 struct TileInfo {
     std::string type;
@@ -141,7 +144,8 @@ class Hud {
 
         void changeTileInfo(std::shared_ptr<Tile>);
         void updateInfo(void);
-        sf::Vector2f hitHudTeamInfo(const sf::Vector2i& mpos);
+        int hitHudTeamInfo(const sf::Vector2i& mpos);
+        void clearTrantorInfo(void);
 
     private:
         float _last_time = 0;

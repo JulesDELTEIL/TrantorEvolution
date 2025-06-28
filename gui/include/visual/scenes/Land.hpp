@@ -88,6 +88,7 @@ class Land : public AScene {
         Hud _hud;
         void checkHudEvent(const core::Engine& engine, const network::NetEventPack& net_pack);
         bool hitTile(const sf::Vector2f&);
+        int _selected_tr = -1;
 
         struct TileInfo {
             std::shared_ptr<Tile> tile;

@@ -71,6 +71,8 @@ void Hud::display(sf::RenderTarget& render, const sf::Clock& clock)
                     _best_lvl[i] = trant.first;
             }
         }
+        if (_tr_selected != nullptr)
+            _trantor_resources = _tr_selected->getInventory();
     }
     if (_tile != nullptr)
         drawTileInfos(render);
@@ -139,7 +141,7 @@ void Hud::updateInfo(void)
     _display.tile.sprite.setPosition(_tile->getPos());
 }
 
-sf::Vector2f Hud::hitHudTeamInfo(const sf::Vector2i& mpos)
+int Hud::hitHudTeamInfo(const sf::Vector2i& mpos)
 {
     sf::Vector2f pos = T_POS;
     sf::Vector2u size = _display.teams.texture.getSize();
@@ -153,13 +155,13 @@ sf::Vector2f Hud::hitHudTeamInfo(const sf::Vector2i& mpos)
             if (_teams.get()[i].trantorians.find(_best_lvl[i]) != _teams.get()[i].trantorians.end()) {
                 _tr_selected = _teams.get()[i].trantorians.at(_best_lvl[i]);
                 _trantor_resources = _tr_selected->getInventory();
-                return _tr_selected->actual_pos;
+                return _best_lvl[i];
             }
         }
         if (hitRectangle(mpos, {static_cast<int>(pos.x), static_cast<int>(pos.y), static_cast<int>(size.x), static_cast<int>(size.y)})) {
             if (_teams.get()[i].trantorians.size() == 0) {
                 _tr_selected = nullptr;
-                return {-1.0f, -1.0f};
+                return -1;
             }
             _trantor_index[i] += 1;
             if (_teams.get()[i].trantorians.size() < _trantor_index[i])
@@ -168,14 +170,19 @@ sf::Vector2f Hud::hitHudTeamInfo(const sf::Vector2i& mpos)
                 if (d == _trantor_index[i]) {
                     _tr_selected = trant.second;
                     _trantor_resources = _tr_selected->getInventory();
-                    return _tr_selected->actual_pos;
+                    return trant.first;
                 }
                 d += 1;
             }
         }
         pos += T_INSIDE_MARGIN;
     }
-    return {-1.0f, -1.0f};
+    return -1;
+}
+
+void Hud::clearTrantorInfo(void)
+{
+    _tr_selected = nullptr;
 }
 
 void Hud::drawTileInfos(sf::RenderTarget& render)
@@ -191,6 +198,7 @@ void Hud::drawTileInfos(sf::RenderTarget& render)
     biome_pos = pos + TILE_BIOME_POS_FACTOR;
     _display.tile_biome.setPosition(biome_pos);
     render.draw(_display.tile_biome);
+    _display.tile_r.sprite.setScale(1.0f, 1.0f);
     for (const auto& res : _infos.resources) {
         pos.x += TILE_INSIDE_SPLIT;
         if (i == NB_RESOURCES / 2) {
@@ -212,7 +220,33 @@ void Hud::drawTileInfos(sf::RenderTarget& render)
 
 void Hud::drawTrantorInfos(sf::RenderTarget& render)
 {
+    sf::Vector2f pos = TR_INFO_POS + sf::Vector2f(17.0f, 45.0f);
+    bool switc = false;
+
     render.draw(_display.trantor.sprite);
+    _display.tile_r.sprite.setScale(2.0f, 2.0f);
+    _display.tr_info.setString("Level  " + std::to_string(_tr_selected->lvl));
+    _display.tr_info.setPosition(pos);
+    render.draw(_display.tr_info);
+    _display.tr_info.setString("Coor  " + std::to_string(_tr_selected->map_pos.x) + "x " + std::to_string(_tr_selected->map_pos.y) + "y");
+    _display.tr_info.setPosition(pos + sf::Vector2f(0.0f, 20.0f));
+    render.draw(_display.tr_info);
+    pos += TR_INFO_RES_POS;
+    for (const auto& res : _trantor_resources) {
+        _display.tile_r.sprite.setTextureRect(HUD_RES_RECT.at(res.first));
+        _display.tr_info.setString(std::to_string(res.second));
+        switc = !switc;
+        if (switc) {
+            _display.tile_r.sprite.setPosition(pos);
+            _display.tr_info.setPosition(pos + sf::Vector2(25.0f, 0.0f));
+            pos += TR_INFO_RES_MARGIN;
+        } else {
+            _display.tile_r.sprite.setPosition(pos + TR_INFO_POS_R);
+            _display.tr_info.setPosition(pos + sf::Vector2(25.0f, 0.0f) + TR_INFO_POS_R);
+        }
+        render.draw(_display.tile_r.sprite);
+        render.draw(_display.tr_info);
+    }
 }
 
 void Hud::drawTeamsInfos(sf::RenderTarget& render)
