@@ -54,7 +54,7 @@ static int set_new_client(serverdata_t *sdata, fdarray_t *fdarray,
 {
     fdarray->fds[nextfree].fd = newfd;
     fdarray->clients[nextfree].fd = newfd;
-    printf("\033[34mConnection from client %d at idx %d\033[0m\n", nextfree, newfd); // COMMENT TO REMEMBER TO REMOVE
+    printf("\033[34mConnection from client %d at idx %d\033[0m\n", newfd, nextfree); // COMMENT TO REMEMBER TO REMOVE
 }
 
 int openconnection(serverdata_t *sdata, fdarray_t *fdarray)
