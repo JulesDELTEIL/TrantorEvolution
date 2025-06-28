@@ -13,13 +13,13 @@ class Queen(BaseRole):
     def __init__(self, *inp):
         super().__init__()
         if len(inp) == 1:
-            print("------------- JE SUIS UNE REINE MERE------------")
+            print("----- I'm Mother Queen -----")
             self._birth_function = inp[0]
             self._waiting_for_slot_number = True
             self._give_birth = True
             self._egg_left = -1
         else:
-            print("------------- JE SUIS UNE REINE ------------")
+            print("----- I'm Queen -----")
             self._give_birth = False
         self._all_alone = False
         self._player_killed = 0
@@ -30,8 +30,11 @@ class Queen(BaseRole):
         for _ in range(3):
             self._queue.appendleft(Commands(Action.FORK))
             self._queue.appendleft(Commands(Action.BROADCAST, 'role;queen'))
+            self._queue.appendleft(Commands(Action.LEFT))
+        self._queue.appendleft(Commands(Action.LEFT))
         self._queue.appendleft(Commands(Action.FORK))
         self._queue.appendleft(Commands(Action.BROADCAST, 'role;foreman'))
+        self._queue.appendleft(Commands(Action.LEFT))
         self._queue.appendleft(Commands(Action.FORK))
         self._queue.appendleft(Commands(Action.BROADCAST, 'role;matriarch'))
         self._queue.appendleft(Commands(Action.LEFT))
@@ -56,7 +59,7 @@ class Queen(BaseRole):
                     self._waiting_for_slot_number = False
                 self._queue.appendleft(Commands(Action.BROADCAST, 'quit'))
         else:
-            print("<QUEEN> : Creating kingdom")
+            print("QUEEN : Creating kingdom")
             self.create_kingdom()
 
     def decide_action(self):
@@ -75,18 +78,15 @@ class Queen(BaseRole):
         self._queue.appendleft(Commands(Action.TAKE, "food"))
 
     def _can_incant(self) -> bool:
-        print("Can i incant ?")
         if self._cycle - self._last_incantation < 15 or (self._level < 2 and self._cycle < 50):
             return False
         if not self._last_vision or self._last_vision.count('player') < 6:
             return False
         requirements = LEVEL_REQUIREMENTS.get(self._level, {})
-        print("last vision:", self._last_vision)
         for stone in requirements.keys():
-            print("stone:", stone, " count:", self._last_vision.count(stone), " - required:", requirements[stone])
             if self._last_vision.count(stone) < requirements[stone]:
                 return False
-        print("je veux incanter", self._level)
+            print("I want to incant. I'm level:", self._level)
         return True
 
     def handle_broadcast(self, response_list: list[str]) -> bool:

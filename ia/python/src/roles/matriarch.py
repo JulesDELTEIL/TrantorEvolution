@@ -12,7 +12,7 @@ class Matriarch(BaseRole):
     def __init__(self):
         super().__init__()
         self._fork_count = 0
-        print("----- Je suis Matriarch ------")
+        print("----- I'm Matriarch -----")
     
     def decide_action(self):
         self._cycle += 1

@@ -14,7 +14,7 @@ import random
 class Worker(BaseRole):
     def __init__(self):
         super().__init__()
-        print("----- Je suis Worker ------")
+        print("----- I'm Worker -----")
         self.mode = 'GATHERING' # GATHERING or DELIVERING
         self.carry = None
         self.queens_pos = [0, 0]
@@ -34,7 +34,7 @@ class Worker(BaseRole):
                 for objects in self._last_vision:
                     for stone in STONES:
                         if stone in objects:
-                            print("je prends", stone)
+                            print("take", stone)
                             self.carry = stone
                             self._queue.appendleft(Commands(Action.TAKE, stone))
                             return
@@ -54,7 +54,7 @@ class Worker(BaseRole):
             return
         elif self.mode == 'DELIVERING':
             if self.pos[X] == self.queens_pos[X] and self.pos[Y] == self.queens_pos[Y]:
-                print("je pose", self.carry)
+                print("drop", self.carry)
                 self.mode = 'GATHERING'
                 self._queue.appendleft(Commands(Action.SET, self.carry))
                 self.carry = None

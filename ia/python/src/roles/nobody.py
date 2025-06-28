@@ -12,6 +12,7 @@ class Nobody(BaseRole):
     def __init__(self):
         super().__init__()
         self._is_there_anyone = None
+        self._direction = "up"
 
     def handle_broadcast(self, response_list: list[str]) -> str:
         if len(response_list) >= 3:
