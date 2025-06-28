@@ -20,6 +20,7 @@ typedef struct team_s {
     char *name;
     int space_left;
     egg_t *eggs;
+    int level_max;
 } team_t;
 
 #endif /* !GAME_H_ */

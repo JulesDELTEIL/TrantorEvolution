@@ -20,6 +20,7 @@ team_t *init_teams(char **teams_name, int clientnb, int nbteams)
     for (int i = 0; teams_name[i] != NULL; i++) {
         teams[i].name = strdup(teams_name[i]);
         teams[i].space_left = clientnb;
+        teams[i].level_max = 0;
         teams[i].eggs = NULL;
     }
     return teams;
