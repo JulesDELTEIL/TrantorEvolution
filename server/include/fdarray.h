@@ -55,7 +55,7 @@ typedef struct player_s {
     pos_t pos;
     player_dir_t orientation;
     action_t action;
-    uint_t inventory[NB_DIFF_ITEMS];
+    int inventory[NB_DIFF_ITEMS];
     size_t time_use_life;
     struct player_s *next;
 } player_t;
