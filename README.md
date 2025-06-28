@@ -22,7 +22,7 @@ Chaque binaire a un rôle précis dans le cadre du jeu distribué.
 Le serveur héberge la partie et gère la logique du jeu, les connexions clients (IA et GUI), les ressources, le temps et les équipes.
 Lancement :
 ```bash
-./zappy_server -p <port> -x <width> -y <height> -n <team_name1> <team_name2> ... -c <clientsNb> -f <freq> [-d]
+./zappy_server -p <port> -x <width> -y <height> -n <team_name1> <team_name2> ... -c <clientsNb> -f <freq> [-d] [-b]
 ```
 
 Paramètres :
@@ -40,6 +40,8 @@ Paramètres :
     -f <freq> : Fréquence d’exécution du serveur (ticks par seconde).
 
     -d (optionnel) : Active le mode debug.
+
+    -b (optionnel) : Active le placement des ressources selon les biomes.
 
 ### GUI – zappy_gui
 

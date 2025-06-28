@@ -26,6 +26,7 @@ Once validated, the server allocates and initializes a 2D map composed of map_t 
 typedef struct map_s {
     unsigned int resources[NB_RESOURCES];
     unsigned int biome;
+    float noise;
 } map_t;
 ```
 
@@ -42,7 +43,7 @@ enum ressources_e {
 };
 ```
 
-Each tile also receives a biome, chosen randomly from the following:
+Each tile also receives a biome, chosen randomly from the following by a perlin noise:
 ```c
 enum biome_e {
     SEA,
