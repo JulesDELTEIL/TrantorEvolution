@@ -55,8 +55,13 @@ static void refill_tiles(tile_t *tile, bool biome_active)
     } else {
         dist = normal_distributions[tile->biome];
     }
-    for (int i = 0; i < NB_RESOURCES; i++)
-        tile->resources[i] = dist.biome_start[i];
+    for (int i = 0; i < NB_RESOURCES; i++) {
+        if (biome_active == false) {
+            tile->resources[i] = rand() % dist.biome_start[i];
+            continue;
+        }
+        tile->resources[i] = rand() % dist.biome_start[i];
+    }
 }
 
 static void first_map_refill(int Y, tile_t **map_tiles, bool biome_active)
