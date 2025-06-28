@@ -15,51 +15,45 @@
 #include "actions.h"
 #include "look.h"
 
-#define ANSWER_SIZE BUFFSIZE * 200
-
-#define TILE_SIZE BUFFSIZE * 20
-
-static int keep_on_map(int max_val, int val)
+static uint_t calc_tileinfo_size(uint_t nb_players, tile_t tile)
 {
-    if (val < 0)
-        val = (val + max_val);
-    if (val >= max_val)
-        val = (val - max_val);
-    return val;
+    uint_t size = nb_players * (PLAYER_STR_LEN + 1);
+
+    for (uint_t i = 0; i < NB_DIFF_ITEMS; i++)
+        size += tile.resources[i] * (RESOURCES_STR_LEN[i] + 1);
+    return size;
 }
 
-static pos_t get_map_coor(serverdata_t *sdata, pos_t player_pos, pos_t vect)
+static uint_t calc_answer_size(serverdata_t *sdata, client_t *client)
 {
-    pos_t res;
+    uint_t nb_tile = NB_TILES_LOOK[client->player->level];
+    uint_t total_len = 1;
+    pos_t vect = {0};
+    pos_t tilepos = {0};
+    uint_t nb_player = 0;
+    tile_t tile;
 
-    res.x = player_pos.x + vect.x;
-    res.y = player_pos.y + vect.y;
-    res.x = keep_on_map(sdata->args->width, res.x);
-    res.y = keep_on_map(sdata->args->height, res.y);
-    return res;
-}
-
-static int get_nb_tile_players(serverdata_t *sdata, pos_t tilepos)
-{
-    player_t *head = sdata->game_data.players;
-    int res = 0;
-
-    while (head != NULL) {
-        if (head->pos.x == tilepos.x && head->pos.y == tilepos.y)
-            res++;
-        head = head->next;
+    for (uint_t i = 0; i < nb_tile; i++) {
+        vect = LOOK_TILES[client->player->orientation][i];
+        tilepos = get_map_coor(sdata, client->player->pos, vect);
+        nb_player = get_nb_tile_players(sdata, tilepos);
+        if (tilepos.x == 0 && tilepos.y == 0)
+            nb_player--;
+        pthread_mutex_lock(&sdata->game_data.map.mutex);
+        tile = sdata->game_data.map.tiles[tilepos.x][tilepos.y];
+        pthread_mutex_unlock(&sdata->game_data.map.mutex);
+        total_len += calc_tileinfo_size(nb_player, tile) + 1;
     }
-    return res;
+    return total_len + 1;
 }
 
-static int my_snprintf(uint_t *offset, uint_t *remaining, char **tileinfo,
+static int my_snprintf(uint_t *offset, uint_t *remaining, char *tileinfo,
     const char *str)
 {
     int written;
 
-    written = snprintf((*tileinfo) + (*offset), (*remaining), "%s ", str);
-    if (written < 0 || (uint8_t)written >= (*remaining)) {
-        free((*tileinfo));
+    written = snprintf((tileinfo) + (*offset), (*remaining), "%s ", str);
+    if (written < 0 || (uint_t)written >= (*remaining)) {
         return EXIT_FAILURE;
     }
     (*offset) += written;
@@ -71,7 +65,7 @@ static int fill_ressources(uint_t **follows, char *tileinfo, tile_t tile,
     uint_t k)
 {
     for (uint_t i = 0; i < tile.resources[k]; i++)
-        if (my_snprintf(follows[0], follows[1], &tileinfo, RESOURCES_NAMES[k])
+        if (my_snprintf(follows[0], follows[1], tileinfo, RESOURCES_NAMES[k])
             == EXIT_FAILURE)
             return EXIT_FAILURE;
     return EXIT_SUCCESS;
@@ -80,13 +74,15 @@ static int fill_ressources(uint_t **follows, char *tileinfo, tile_t tile,
 static char *fill_tile_data(serverdata_t *sdata, uint_t nb_players,
     tile_t tile)
 {
-    uint_t remaining = TILE_SIZE;
+    uint_t remaining = calc_tileinfo_size(nb_players, tile) + 1;
     uint_t offset = 0;
-    char *tileinfo = calloc(TILE_SIZE, sizeof(char));
+    char *tileinfo = calloc(remaining, sizeof(char));
     uint_t *follows[2];
 
+    if (!tileinfo)
+        return NULL;
     for (uint_t k = 0; k < nb_players; k++)
-        if (my_snprintf(&offset, &remaining, &tileinfo, "player")
+        if (my_snprintf(&offset, &remaining, tileinfo, "player")
             == EXIT_FAILURE)
             return NULL;
     follows[0] = &offset;
@@ -104,10 +100,7 @@ static char *get_tile_data(serverdata_t *sdata, client_t *client, pos_t vect)
     pos_t tilepos = get_map_coor(sdata, client->player->pos, vect);
     tile_t tile;
     uint_t nb_players = get_nb_tile_players(sdata, tilepos);
-    char *tileinfo = calloc(TILE_SIZE, sizeof(char));
 
-    if (!tileinfo)
-        return NULL;
     if (tilepos.x == 0 && tilepos.y == 0)
         nb_players -= 1;
     pthread_mutex_lock(&(sdata->game_data.map.mutex));
@@ -132,7 +125,7 @@ static int fill_tiles(serverdata_t *sdata, client_t *client, char *answer,
         written = snprintf(answer + *follows[0], *follows[1],
             (k < nbtiles - 1) ? "%s," : "%s", tileinfo);
         free(tileinfo);
-        if (written < 0 || (uint8_t)written >= *follows[1])
+        if (written < 0 || (uint_t)written >= *follows[1])
             return EXIT_FAILURE;
         *follows[0] += written;
         *follows[1] -= written;
@@ -140,9 +133,10 @@ static int fill_tiles(serverdata_t *sdata, client_t *client, char *answer,
     return EXIT_SUCCESS;
 }
 
-static int fill_answer(serverdata_t *sdata, client_t *client, char *answer)
+static int fill_answer(serverdata_t *sdata, client_t *client, char *answer,
+    uint_t answer_size)
 {
-    uint_t remaining = ANSWER_SIZE;
+    uint_t remaining = answer_size;
     int written;
     uint_t offset = 0;
     uint_t nbtiles = NB_TILES_LOOK[client->player->level];
@@ -158,9 +152,8 @@ static int fill_answer(serverdata_t *sdata, client_t *client, char *answer)
     if (fill_tiles(sdata, client, answer, follows) == EXIT_FAILURE)
         return EXIT_FAILURE;
     written = snprintf(answer + *follows[0], *follows[1], "]");
-    if (written < 0 || (uint8_t)written >= *follows[1]) {
-        return EXIT_FAILURE;
-    }
+    if (written < 0 || (uint_t)written >= *follows[1])
+            return EXIT_FAILURE;
     return EXIT_SUCCESS;
 }
 
@@ -168,7 +161,8 @@ static int fill_answer(serverdata_t *sdata, client_t *client, char *answer)
 int action_look(serverdata_t *sdata, fdarray_t *fdarray,
     client_t *client, char *data)
 {
-    char *answer = calloc(ANSWER_SIZE, sizeof(char));
+    uint_t answer_size = calc_answer_size(sdata, client) + 1;
+    char *answer = calloc(answer_size, sizeof(char));
 
     if (!answer)
         return EXIT_FAILURE;
@@ -177,7 +171,7 @@ int action_look(serverdata_t *sdata, fdarray_t *fdarray,
         free(answer);
         return EXIT_FAILURE;
     } else {
-        if (fill_answer(sdata, client, answer) == EXIT_FAILURE) {
+        if (fill_answer(sdata, client, answer, answer_size) == EXIT_FAILURE) {
             set_message(client, "ko", NULL);
             free(answer);
             return EXIT_FAILURE;

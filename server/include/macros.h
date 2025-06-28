@@ -46,4 +46,17 @@ enum client_type_e {
 
 static const char GRAPHIC_TEAM[] = "GRAPHIC";
 
+static const char PLAYER_STR_LEN = 6;
+
+// fit with RESSOURCES_NAMES indexes
+static const uint_t RESOURCES_STR_LEN[] = {
+    4,
+    8,
+    9,
+    5,
+    8,
+    6,
+    8
+};
+
 #endif
