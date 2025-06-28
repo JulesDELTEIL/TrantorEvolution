@@ -20,6 +20,7 @@ team_t *init_teams(char **teams_name, int clientnb, int nbteams)
     for (int i = 0; teams_name[i] != NULL; i++) {
         teams[i].name = strdup(teams_name[i]);
         teams[i].space_left = clientnb;
+        teams[i].level_max = 0;
         teams[i].eggs = NULL;
     }
     return teams;
@@ -56,7 +57,8 @@ game_t init_game(arguments_t *args)
     game_data.map.tiles = init_map(args->width, args->height);
     pthread_mutex_init(&(game_data.map.mutex), NULL);
     game_data.players = NULL;
-    game_data.next = 0;
+    game_data.next_player = 0;
+    game_data.next_egg = 0;
     game_data.teams = init_teams(args->team_name,
     args->clientnb, game_data.nb_of_teams);
     init_spawn(&game_data, args->width, args->height);

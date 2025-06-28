@@ -13,7 +13,7 @@
 #include "transmission.h"
 #include "commands.h"
 #include "actions.h"
-#include "look.h"
+#include "commands/look.h"
 
 static int keep_on_map(int max_val, int val)
 {

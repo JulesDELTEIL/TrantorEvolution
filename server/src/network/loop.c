@@ -91,16 +91,15 @@ int listen_fds(serverdata_t *sdata, fdarray_t *fdarray)
 
 static int server_loop(serverdata_t *sdata, fdarray_t *fdarray)
 {
-    bool run = true;
     int rc = DEFAULTRC;
 
-    while (run) {
+    while (sdata->is_running) {
         rc = listen_fds(sdata, fdarray);
         if (rc == EXIT_FAILURE || rc == CLOSE_PROCESS)
-            run = false;
+            sdata->is_running = false;
         rc = write_fds(sdata, fdarray);
         if (rc == EXIT_FAILURE || rc == CLOSE_PROCESS)
-            run = false;
+            sdata->is_running = false;
         check_clients(sdata, fdarray);
     }
     return rc;
