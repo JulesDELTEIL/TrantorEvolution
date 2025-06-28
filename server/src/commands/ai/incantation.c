@@ -98,7 +98,7 @@ static int check_game_end(serverdata_t *sdata, fdarray_t *fdarray,
 {
     for (uint_t k = 0; k < sdata->game_data.nb_of_teams; k++) {
         if (sdata->game_data.teams[k].level_max >= 6) {
-            printf("GAME END, winner team : %s\n", client->player->team->name);
+            printf("\033[33mGAME END, Winner team : %s\033[0m\n", client->player->team->name);
             send_guis(sdata, fdarray, "seg", sdata->game_data.teams[k].name);
             sdata->is_running = false;
         }
