@@ -54,6 +54,8 @@ void Land::display(sf::RenderTarget& render)
     }
     for (auto& trantor : _trantorians)
         trantor.second->draw(render, _clock);
+    for (const auto& egg: _eggs)
+        egg.second->draw(render);
     drawEdge(render, true);
     _backgroud.drawWaterfall(render, _map_size);
     _hud.display(render, _clock);
@@ -94,6 +96,9 @@ void Land::event(const core::Engine& engine, const network::NetEventPack& net_pa
             break;
         case network::ELAID:
             trantorLaidAnEgg(net_pack.pack);
+            break;
+        case network::ENEW:
+            eggHatching(net_pack.pack);
             break;
         case network::PDEAD:
             removeTrantorian(net_pack.pack);
@@ -329,8 +334,19 @@ void Land::trantorLayingAnEgg(const network::NetPack& pack)
 
 void Land::trantorLaidAnEgg(const network::NetPack& pack)
 {
+    size_t egg_id = pack[0].getSize_t();
     size_t trantor_id = pack[1].getSize_t();
+    sf::Vector2f egg_pos = _trantorians.at(trantor_id)->getBodyPos(0);
+    egg_pos.x += 5;
+    
     _trantorians.at(trantor_id)->laidAnEgg();
+    _eggs.emplace(egg_id, std::make_shared<Egg>(egg_pos));
+}
+
+void Land::eggHatching(const network::NetPack& pack)
+{
+    size_t egg_id = pack[0].getSize_t();
+    _eggs.at(egg_id)->hatch();
 }
 
 void Land::posTrantorian(const network::NetPack& pack)

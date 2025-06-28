@@ -24,6 +24,7 @@
     #include "visual/entities/Tile.hpp"
     #include "visual/entities/ResourceNode.hpp"
     #include "visual/entities/IncantationObject.hpp"
+    #include "visual/entities/Egg.hpp"
 
 namespace gui {
 namespace visual {
@@ -77,6 +78,7 @@ class Land : public AScene {
         void trantorEndIncantation(const network::NetPack& pack);
         void trantorLayingAnEgg(const network::NetPack& pack);
         void trantorLaidAnEgg(const network::NetPack& pack);
+        void eggHatching(const network::NetPack& pack);
         void posTrantorian(const network::NetPack& pack);
         void updateInventory(const network::NetPack& pack);
 
@@ -99,6 +101,7 @@ class Land : public AScene {
 
         std::map<size_t, std::map<size_t, TileInfo>> _tiles;
         std::map<size_t, std::shared_ptr<Trantorian>> _trantorians;
+        std::map<size_t, std::shared_ptr<Egg>> _eggs;
         Teams _teams;
 };
 

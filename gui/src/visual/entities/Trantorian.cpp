@@ -160,5 +160,10 @@ void Trantorian::changeTile(const sf::Vector2f& new_pos, float time, const sf::C
     }
 }
 
+sf::Vector2f Trantorian::getBodyPos(const size_t& index)
+{
+    return _body.at(index).sprite.getPosition();
+}
+
 } // visual
 } // gui
