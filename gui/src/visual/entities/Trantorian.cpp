@@ -11,7 +11,7 @@ namespace gui {
 namespace visual {
 
 Trantorian::Trantorian(const sf::Vector2f& pos, const sf::Vector2i& pos_in_map,
-    size_t level, const std::string& team_name, const sf::Color& color) :
+    size_t level, size_t team_id, const sf::Color& color) :
     _body(NB_TRANTORS),
     _type(NB_TRANTORS),
     _body_direction(NB_TRANTORS, FACE_RIGHT),
@@ -23,7 +23,7 @@ Trantorian::Trantorian(const sf::Vector2f& pos, const sf::Vector2i& pos_in_map,
     })
 {
     lvl = level;
-    team = team_name;
+    team = team_id;
     map_pos = pos_in_map;
     actual_pos = pos;
     for (size_t i = 0; i < NB_TRANTORS; ++i) {
@@ -70,25 +70,6 @@ void Trantorian::move(int index, const sf::Vector2f& new_pos, float time, const 
         else
             _body_direction[index] = FACE_RIGHT;
     }
-}
-
-sf::Color Trantorian::generateTeamColor(const std::string& team_name)
-{
-    size_t code = 0;
-
-    if (team_name.size() >= 3) {
-        return sf::Color(static_cast<sf::Uint8>(team_name[0]) + 120,
-            static_cast<sf::Uint8>(team_name[1]),
-            static_cast<sf::Uint8>(team_name[2]), 255);
-    }
-    for (const char& chara : team_name) {
-        if (chara % 2)
-            code += 120;
-        else
-            code -= 120;
-        code += chara;
-    }
-    return sf::Color(code / team_name.size(), code, 12, 255);
 }
 
 void Trantorian::collect(const std::shared_ptr<ResourceNode>& resource,
@@ -155,6 +136,17 @@ ResourceGroup Trantorian::getInventory(void) const
     return _inventory;
 }
 
+void Trantorian::updateInventory(size_t q0, size_t q1, size_t q2, size_t q3, size_t q4, size_t q5, size_t q6)
+{
+    _inventory[FOOD] = q0;
+    _inventory[WOOD] = q1;
+    _inventory[STONE] = q2;
+    _inventory[CLAY] = q3;
+    _inventory[METAL] = q4;
+    _inventory[OIL] = q5;
+    _inventory[ANTI_MATTER] = q6;
+}
+
 void Trantorian::changeTile(const sf::Vector2f& new_pos, float time, const sf::Clock& clock)
 {
     actual_pos = new_pos;
@@ -166,6 +158,11 @@ void Trantorian::changeTile(const sf::Vector2f& new_pos, float time, const sf::C
         };
         move(i, random_pos, time, clock);
     }
+}
+
+sf::Vector2f Trantorian::getBodyPos(const size_t& index)
+{
+    return _body.at(index).sprite.getPosition();
 }
 
 } // visual

@@ -8,6 +8,7 @@
 #ifndef TEAMS_HPP_
     #define TEAMS_HPP_
 
+    #include <map>
     #include <vector>
 
     #include "visual/entities/Trantorian.hpp"
@@ -20,10 +21,12 @@ namespace visual {
 struct TeamInfo {
     std::string name;
     sf::Color color;
-    std::vector<std::shared_ptr<Trantorian>> trantorians;
+    std::map<std::size_t, std::shared_ptr<Trantorian>> trantorians;
 };
 
 typedef std::vector<TeamInfo> Teams;
+
+
 
 } // visual
 } // gui

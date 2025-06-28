@@ -28,3 +28,12 @@ bool hitTriangle(const sf::Vector2f& hit, const sf::Vector2f& p1,
 
     return !(has_neg && has_pos);
 }
+
+
+bool hitRectangle(const sf::Vector2i& mpos, const sf::IntRect& rect)
+{
+    if (mpos.x >= rect.left && mpos.x <= rect.left + rect.width &&
+        mpos.y >= rect.top && mpos.y <= rect.top + rect.height)
+        return true;
+    return false;
+}

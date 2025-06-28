@@ -24,6 +24,7 @@
     #include "visual/entities/Tile.hpp"
     #include "visual/entities/ResourceNode.hpp"
     #include "visual/entities/IncantationObject.hpp"
+    #include "visual/entities/Egg.hpp"
 
 namespace gui {
 namespace visual {
@@ -31,6 +32,7 @@ namespace visual {
     #define NB_MAP_ARG 9
 
     #define MOV_FACTOR 20
+    #define TIME_TO_FIND 3000 // as ms
     #define ACT_TIME(x) float((x / this->_time_unit_speed) * 1000)
 
 struct ClearTile {
@@ -55,7 +57,6 @@ class Land : public AScene {
         bool _net_running = false;
         void askResources(void);
 
-        sf::Clock _clock;
         size_t _time_unit_speed = 4;
 
         void viewEvent(const sf::Event&);
@@ -77,7 +78,9 @@ class Land : public AScene {
         void trantorEndIncantation(const network::NetPack& pack);
         void trantorLayingAnEgg(const network::NetPack& pack);
         void trantorLaidAnEgg(const network::NetPack& pack);
+        void eggHatching(const network::NetPack& pack);
         void posTrantorian(const network::NetPack& pack);
+        void updateInventory(const network::NetPack& pack);
 
         Background _backgroud;
     
@@ -87,6 +90,7 @@ class Land : public AScene {
         Hud _hud;
         void checkHudEvent(const core::Engine& engine, const network::NetEventPack& net_pack);
         bool hitTile(const sf::Vector2f&);
+        int _selected_tr = -1;
 
         struct TileInfo {
             std::shared_ptr<Tile> tile;
@@ -97,6 +101,7 @@ class Land : public AScene {
 
         std::map<size_t, std::map<size_t, TileInfo>> _tiles;
         std::map<size_t, std::shared_ptr<Trantorian>> _trantorians;
+        std::map<size_t, std::shared_ptr<Egg>> _eggs;
         Teams _teams;
 };
 
