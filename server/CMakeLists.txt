@@ -55,6 +55,7 @@ add_executable( ${PROJECT_NAME}
     ${SERVER_THR_DIR}init_map.c
     ${SERVER_THR_DIR}init_thread.c
     ${SERVER_THR_DIR}perlin.c
+    ${SERVER_THR_DIR}status.c
 )
 
 ########## LINKAGE ##########

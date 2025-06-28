@@ -9,8 +9,10 @@
     #define MAP_H_
 
     #include "map_tools.h"
-    #include <pthread.h>
     #include "threads.h"
+
+    #include <pthread.h>
+    #include <stdbool.h>
 
     #define FOOD_DENS 0.5
     #define WOOD_DENS 0.3
@@ -72,5 +74,17 @@ max density for every resources
 typedef struct density_s {
     unsigned int dens[NB_RESOURCES];
 } density_t;
+
+/*
+STATUES FUNCTIONS
+    Function that get the right ressoursces depending on if the
+    -b flag is active or not
+*/
+biome_distribution_t get_first_refill_status(bool biome_active,
+    tile_t *tile);
+biome_distribution_t get_refill_status(bool biome_active,
+    int x,
+    int y,
+    tile_t **tiles);
 
 #endif /* !MAP_H_ */
