@@ -90,6 +90,7 @@ static const std::map<resource_e, sf::IntRect> HUD_RES_RECT = {
     #define TR_INFO_TEXTURE "assets/hud/trantor_info.png"
     #define TR_INFO_SCALE 4.0f
     #define TR_INFO_POS sf::Vector2f(200.0f, 10.0f)
+    #define TR_INFO_SIZE 16
 
 struct TileInfo {
     std::string type;
@@ -127,6 +128,7 @@ struct HudDisplay {
     Text t_info;
 
     Drawable trantor;
+    Text tr_info;
 };
 
 class Hud {
@@ -154,16 +156,17 @@ class Hud {
         size_t _nb_trantors = 0;
 
         std::reference_wrapper<Teams> _teams;
-        std::vector<std::shared_ptr<Trantorian>> _best_lvl;
+        std::vector<size_t> _best_lvl;
         std::vector<size_t> _trantor_index;
         void drawTeamsInfos(sf::RenderTarget&);
 
         std::shared_ptr<Trantorian> _tr_selected = nullptr;
         ResourceGroup _trantor_resources;
+        void drawTrantorInfos(sf::RenderTarget&);
 
         std::shared_ptr<Tile> _tile = nullptr;
         TileInfo _infos;
-        void drawTileInfo(sf::RenderTarget& render);
+        void drawTileInfos(sf::RenderTarget& render);
 
 
 };

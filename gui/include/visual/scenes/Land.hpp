@@ -78,6 +78,7 @@ class Land : public AScene {
         void trantorLayingAnEgg(const network::NetPack& pack);
         void trantorLaidAnEgg(const network::NetPack& pack);
         void posTrantorian(const network::NetPack& pack);
+        void updateInventory(const network::NetPack& pack);
 
         Background _backgroud;
     
