@@ -167,19 +167,14 @@ int send_pnw(serverdata_t *sdata, player_t *player, client_t *ui_client)
     return EXIT_SUCCESS;
 }
 
-static int find_team_idx(game_t *game, char *team_name)
-{
-    for (uint_t k = 0; k < game->nb_of_teams; k++)
-        if (strcmp(game->teams[k].name, team_name) == 0)
-            return k;
-    return -1;
-}
-
 int new_player(serverdata_t *sdata, fdarray_t *fdarray, client_t *client,
     char *team_name)
 {
-    int team_idx = find_team_idx(&(sdata->game_data), team_name);
+    int team_idx = -1;
 
+    for (uint_t k = 0; k < sdata->game_data.nb_of_teams; k++)
+        if (strcmp(sdata->game_data.teams[k].name, team_name) == 0)
+            team_idx = k;
     if (team_idx < 0 || sdata->game_data.teams[team_idx].space_left <= 0)
         return EXIT_FAILURE;
     add_player(sdata, fdarray, client, &(sdata->game_data.teams[team_idx]));
