@@ -30,16 +30,17 @@ sf::Vector2f AScene::getViewPos(void) const
     return pos;
 }
 
-void AScene::changeViewDest(const sf::Vector2f& new_dest, float time_ms)
+bool AScene::changeViewDest(const sf::Vector2f& new_dest, float time_ms)
 {
     sf::Vector2f pos = _camera.getCenter();
 
     if (new_dest.x < 0 || new_dest.y < 0)
-        return;
+        return false;
     _direction = {new_dest.x - pos.x, new_dest.y - pos.y};
     _time = time_ms;
     _start = _clock.getElapsedTime().asMilliseconds();
     _last_time = _start;
+    return true;
 }
 
 void AScene::moveToDest(void)
@@ -49,7 +50,7 @@ void AScene::moveToDest(void)
 
     if (time_elapsed < _start + _time) {
         percent = (time_elapsed - _last_time) / _time;
-        _camera.move(_direction);
+        _camera.move(_direction * percent);
         _last_time = time_elapsed;
     }
 }

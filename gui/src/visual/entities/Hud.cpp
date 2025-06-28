@@ -22,7 +22,7 @@ HudDisplay::HudDisplay() :
     date(DATE_HUD_TEXTURE, DATE_HUD_SCALE), date_nb(font, DATE_COLOR_TEXT, DATE_FONT_SIZE),
     teams(TEAM_HUD_TEXTURE, TEAM_HUD_SCALE), t_trantor(T_TR_TEXTURE),
     t_lvl(T_LVL_TEXTURE), t_go_to(T_TO_GO_TEXTURE),
-    t_info(font, GLOBAL_COLOR_TEXT, T_NAME_SIZE)
+    t_info(font, GLOBAL_COLOR_TEXT, T_NAME_SIZE), trantor(TR_INFO_TEXTURE, TR_INFO_SCALE)
 {
     tile.sprite.setOrigin(tile.texture.getSize().x / 2, tile.texture.getSize().y + TILE_HUD_MARGIN);
     tile_biome.setFillColor(DATE_COLOR_TEXT);
@@ -38,6 +38,7 @@ HudDisplay::HudDisplay() :
     date_nb.setString("Year 0");
     t_info.setOutlineThickness(1.0f);
     t_info.setOutlineColor(TILE_COLOR_TEXT);
+    trantor.sprite.setPosition(TR_INFO_POS);
 }
 
 Hud::Hud(std::reference_wrapper<Teams> teams) : _teams(teams)
@@ -67,7 +68,7 @@ void Hud::display(sf::RenderTarget& render, const sf::Clock& clock)
             }
         }
     }
-    if (_status == TILE_INFO)
+    if (_tile != nullptr)
         drawTileInfo(render);
     render.setView(render.getDefaultView());
     drawHud(render);
@@ -83,13 +84,17 @@ void Hud::drawHud(sf::RenderTarget& render)
     render.draw(_display.g_nb_trantors);
     render.draw(_display.date.sprite);
     render.draw(_display.date_nb);
+    if (_tr_selected != nullptr)
+        render.draw(_display.trantor.sprite);
 }
 
 void Hud::event(const sf::Event& event, const network::NetEventPack& net_pack)
 {
     if (event.type == sf::Event::KeyPressed) {
-        if (event.key.code == sf::Keyboard::Escape)
-            _status = NO_INFO;
+        if (event.key.code == sf::Keyboard::Escape) {
+            _tile = nullptr;
+            _tr_selected = nullptr;
+        }
     }
     switch (static_cast<int>(net_pack.event)) {
         case network::MSIZE:
@@ -115,11 +120,6 @@ void Hud::event(const sf::Event& event, const network::NetEventPack& net_pack)
     }
 }
 
-void Hud::changeStatus(HudType_e type)
-{
-    _status = type;
-}
-
 void Hud::changeTileInfo(std::shared_ptr<Tile> new_tile)
 {
     _tile = new_tile;
@@ -127,16 +127,12 @@ void Hud::changeTileInfo(std::shared_ptr<Tile> new_tile)
 
 void Hud::updateInfo(void)
 {
-    if (_status == TILE_INFO) {
-        if (_tile == nullptr) {
-            _status = NO_INFO;
-            return;
-        }
-        _infos.resources = _tile->getResources();
-        _infos.type = BIOME_NAMES.at(_tile->getBiome());
-        _display.tile_biome.setString(_infos.type);
-        _display.tile.sprite.setPosition(_tile->getPos());
-    }
+    if (_tile == nullptr)
+        return;
+    _infos.resources = _tile->getResources();
+    _infos.type = BIOME_NAMES.at(_tile->getBiome());
+    _display.tile_biome.setString(_infos.type);
+    _display.tile.sprite.setPosition(_tile->getPos());
 }
 
 sf::Vector2f Hud::hitHudTeamInfo(const sf::Vector2i& mpos)
@@ -149,17 +145,23 @@ sf::Vector2f Hud::hitHudTeamInfo(const sf::Vector2i& mpos)
     for (size_t i = 0; i < _teams.get().size(); ++i) {
         pos += T_MARGIN;
         if (hitRectangle(mpos, T_HITBOX_KING(pos))) {
-            if (_best_lvl[i] != nullptr)
+            _tr_selected = _best_lvl[i];
+            if (_best_lvl[i] != nullptr) {
                 return _best_lvl[i]->actual_pos;
+            }
         }
         if (hitRectangle(mpos, {static_cast<int>(pos.x), static_cast<int>(pos.y), static_cast<int>(size.x), static_cast<int>(size.y)})) {
-            if (_teams.get()[i].trantorians.size() == 0)
+            if (_teams.get()[i].trantorians.size() == 0) {
+                _tr_selected = nullptr;
                 return {-1.0f, -1.0f};
+            }
             _trantor_index[i] += 1;
             if (_trantor_index[i] >= _teams.get()[i].trantorians.size())
                 _trantor_index[i] = 0;
-            else
-                return _teams.get()[i].trantorians[_trantor_index[i]]->actual_pos;
+            else {
+                _tr_selected = _teams.get()[i].trantorians[_trantor_index[i]];
+                return _tr_selected->actual_pos;
+            }
         }
         pos += T_INSIDE_MARGIN;
     }
@@ -229,7 +231,6 @@ void Hud::drawTeamsInfos(sf::RenderTarget& render)
         render.draw(_display.t_info);
         _display.t_go_to.sprite.setPosition(pos + T_TO_GO_POS);
         render.draw(_display.t_go_to.sprite);
-
     }
 }
 

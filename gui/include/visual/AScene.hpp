@@ -24,8 +24,8 @@ class AScene : public IScene {
         sf::View getView(void) override;
         sf::Vector2f getViewPos(void) const override;
 
-        void changeViewDest(const sf::Vector2f&, float);
-        void moveToDest(void);
+        bool changeViewDest(const sf::Vector2f&, float) override;
+        void moveToDest(void) override;
 
         void zoom(float) override;
         void move(const sf::Vector2f&) override;

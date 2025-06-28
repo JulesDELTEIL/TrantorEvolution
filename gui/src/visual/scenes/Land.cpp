@@ -337,12 +337,10 @@ void Land::checkHudEvent(const core::Engine& engine, const network::NetEventPack
     _hud.event(engine.events, net_pack);
     if (engine.events.type == sf::Event::MouseButtonPressed) {
         if (engine.events.mouseButton.button == sf::Mouse::Left) {
-            changeViewDest(_hud.hitHudTeamInfo(sf::Mouse::getPosition(engine.window)), 3000);
-            sf::Vector2f mpos = engine.window.mapPixelToCoords(sf::Mouse::getPosition(engine.window), _camera);
-            if (hitTile(mpos))
-                _hud.changeStatus(HudType_e::TILE_INFO);
+            sf::Vector2i mpos = sf::Mouse::getPosition(engine.window);
+            if (changeViewDest(_hud.hitHudTeamInfo(mpos), 3000));
             else
-                _hud.changeStatus(HudType_e::NO_INFO);
+                hitTile(engine.window.mapPixelToCoords(mpos, _camera));
         }
     }
 }
