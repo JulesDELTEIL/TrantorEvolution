@@ -66,6 +66,7 @@ class Trantorian {
         void layAnEgg();
         void laidAnEgg();
         ResourceGroup getInventory(void) const;
+        sf::Vector2f getBodyPos(const size_t&);
 
         sf::Vector2i map_pos;
         sf::Vector2f actual_pos;
