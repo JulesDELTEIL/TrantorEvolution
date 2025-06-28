@@ -13,7 +13,7 @@
 #include "transmission.h"
 #include "commands.h"
 #include "actions.h"
-#include "look.h"
+#include "commands/look.h"
 
 static uint_t calc_tileinfo_size(uint_t nb_players, tile_t tile)
 {

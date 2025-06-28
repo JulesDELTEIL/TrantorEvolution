@@ -41,6 +41,7 @@ add_executable( ${PROJECT_NAME}
     ${SERVER_AI_CMD_DIR}look_utils.c
     ${SERVER_AI_CMD_DIR}eject.c
     ${SERVER_AI_CMD_DIR}incantation.c
+    ${SERVER_AI_CMD_DIR}incantation_end.c
     ${SERVER_GUI_CMD_DIR}tna.c
     ${SERVER_GUI_CMD_DIR}msz.c
     ${SERVER_GUI_CMD_DIR}bct.c
