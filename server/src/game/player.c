@@ -97,6 +97,19 @@ static int set_action(player_t *player)
     player->action.data = NULL;
 }
 
+static pos_t generate_player_spawn(serverdata_t *sdata)
+{
+    pos_t try = (pos_t){0, 0};
+
+    try.x = rand() % (sdata->args->width - 1);
+    try.y = rand() % (sdata->args->height - 1);
+    while (sdata->game_data.map.tiles[try.x][try.y].biome == SEA) {
+        try.x = rand() % sdata->args->width;
+        try.y = rand() % sdata->args->height;
+    }
+    return try;
+}
+
 static pos_t set_player_spawn(serverdata_t *sdata, fdarray_t *fdarray,
     team_t *team)
 {
@@ -114,7 +127,7 @@ static pos_t set_player_spawn(serverdata_t *sdata, fdarray_t *fdarray,
         }
         head = head->next;
     }
-    return sdata->game_data.spawn;
+    return generate_player_spawn(sdata);
 }
 
 static int add_player(serverdata_t *sdata, fdarray_t *fdarray,
@@ -126,7 +139,7 @@ static int add_player(serverdata_t *sdata, fdarray_t *fdarray,
     new->team = team;
     new->level = 1;
     new->pos = set_player_spawn(sdata, fdarray, team);
-    new->orientation = N;
+    new->orientation = (rand() % 4) + 1;
     new->incantation = NULL;
     set_action(new);
     for (uint_t k = 0; k < NB_DIFF_ITEMS; k++)
