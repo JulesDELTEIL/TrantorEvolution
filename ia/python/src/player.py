@@ -6,7 +6,7 @@
 ##
 
 from src.roles.nobody import Nobody
-from src.action import Action
+from src.action import Commands, Action
 from src.utils import parse_vision, parse_inventory
 from src.macros import X, Y
 
@@ -45,6 +45,7 @@ class Player():
     def _update_mindmap(self, response: str) -> None:
         response_formatted = parse_vision(response)
         self.role._last_vision = response_formatted[0]
+        print(response_formatted[0])
         if isinstance(self.role, Nobody):
             if self.role._last_vision.count("player") > 1:
                 self.role._is_there_anyone = True
@@ -53,7 +54,18 @@ class Player():
         self.role._map.update_mindmap(response_formatted, self.role._level, self.role._cycle, self.role.pos)
         
     def _update_inventory(self, response: str) -> None:
+        self.role.check_eat = False
         self.role._last_inventory = parse_inventory(response)
+        if self.role._last_inventory['food'] < 5:
+            self.role._queue.clear()
+            self.role._queue.appendleft(Commands(Action.TAKE, 'food'))
+        self.role._last_vision = None
+        if self.role.random.choice([0,1]) == 0:
+            self.role._queue.appendleft(Commands(Action.LEFT))
+        else:
+            self.role._queue.appendleft(Commands(Action.RIGHT))
+        self.role._queue.appendleft(Commands(Action.FORWARD))
+        self.role._queue.appendleft(Commands(Action.LOOK))
         
     def _turn_left(self):
         if self.role._direction is not None:
@@ -83,12 +95,14 @@ class Player():
             self.role.mode = 'DELIVERING'
     
     def _incatation_succes(self, response: str):
+        self.role._queue.clear()
         if response == "Elevation underway":
             return
         response_list = response.split()
         if response_list[0] == "Current":
             self.role._level = int(response_list[2])
             self.role._last_incantation = self.role._cycle
+            self.role._incant_asked = False
 
     def _void(self):
         return

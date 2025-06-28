@@ -49,7 +49,11 @@ class Communication():
         i = 0
         message = ""
         while i < 3:
-            message += self.recv()
+            new_message = self.recv()
+            if new_message is not None:
+                message += new_message
+            else:
+                exit()
             while message:
                 index = message.find("\n")
                 if index == -1 or i >= 3:
@@ -63,6 +67,7 @@ class Communication():
             self.role.decide_action()
         if self.role._queue:
             action = self.role._queue.pop()
+            #print("action:", action.action)
             if action.action == Action.BROADCAST:
                 action.argument = cyp.cypher(action.argument, self._communication_team_name)
             if action.action != Action.NONE:
@@ -86,11 +91,14 @@ class Communication():
 
     def run(self) -> None:
         self.send_action()
+        response = ""
         while True:
-            response = self.recv()
+            new_response = self.recv()
+            if new_response is not None:
+                response += new_response
             if not response:
                 break
-            self.analyse_requests(response)
+            response = self.analyse_requests(response)
 
 
     def _translate_broadcast(self, response_list: list[str]) -> list[str]:
@@ -119,7 +127,7 @@ class Communication():
     def _handle_response(self, response: str) -> bool:
         response_list = response.split()
         if isinstance(self.role, Nobody) and self.role._is_there_anyone == False:
-            if self.role._cycle > 50:
+            if self.role._cycle > 10:
                 self.role = Queen(lambda: self._spawn_new_client())
                 return True
         if response_list[0] == "message":
@@ -132,6 +140,9 @@ class Communication():
             return False
         if response_list[0] == "Current":
             self.role._level = int(response_list[2])
+            self.role._incant_asked = False
+            self.role._queue.clear()
+            self.role._last_incantation = self.role._cycle
         elif self.role._last_sent:
             if self.role._last_sent == Action.CONNECT_NBR and response_list[0].isdigit():
                 return self.COMMANDS[self.role._last_sent](response_list[0])

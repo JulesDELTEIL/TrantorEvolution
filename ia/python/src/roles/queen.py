@@ -24,6 +24,7 @@ class Queen(BaseRole):
         self._all_alone = False
         self._player_killed = 0
         self._last_incantation = 0
+        self._incant_asked = False
 
     def _create_kingdom(self):
         for _ in range(3):
@@ -63,28 +64,32 @@ class Queen(BaseRole):
             self._handle_mother_queen()
             return
         self._cycle += 1
-        if self._can_incant():
+        if self._incant_asked == False and self._can_incant():
             self._queue.appendleft(Commands(Action.INCANTATION))
+            self._incant_asked = True
             return
-        if self._cycle % 2 == 0:
-            self._queue.appendleft(Commands(Action.LOOK))
-        else:
-            self._queue.appendleft(Commands(Action.TAKE, "food"))
+        self._incant_asked = False
+        self._queue.appendleft(Commands(Action.LOOK))
+        for _ in range (5):
+            self._queue.appendleft(Commands(Action.LEFT))
+        self._queue.appendleft(Commands(Action.TAKE, "food"))
 
     def _can_incant(self) -> bool:
-        if self._cycle - self._last_incantation < 60 or (self._level < 2 and self._cycle < 150):
+        print("Can i incant ?")
+        if self._cycle - self._last_incantation < 15 or (self._level < 2 and self._cycle < 50):
             return False
         if not self._last_vision or self._last_vision.count('player') < 6:
             return False
         requirements = LEVEL_REQUIREMENTS.get(self._level, {})
-        current = self._last_vision
+        print("last vision:", self._last_vision)
         for stone in requirements.keys():
-            if current.count(stone) < requirements[stone]:
+            print("stone:", stone, " count:", self._last_vision.count(stone), " - required:", requirements[stone])
+            if self._last_vision.count(stone) < requirements[stone]:
                 return False
+        print("je veux incanter", self._level)
         return True
 
     def handle_broadcast(self, response_list: list[str]) -> bool:
-        print("response_list:", response_list)
         if len(response_list) == 3 and response_list[2] == "quitting":
             self._player_killed += 1
             return True

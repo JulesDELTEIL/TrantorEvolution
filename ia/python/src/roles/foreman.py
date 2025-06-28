@@ -22,17 +22,12 @@ class Foreman(BaseRole):
             self._queue.appendleft(Commands(Action.LEFT))
             return
 
-        if self._cycle > 20:
-            self._queue.appendleft(Commands(Action.TAKE, 'food'))
         if self._cycle % 2 == 0:
             self._queue.appendleft(Commands(Action.TAKE, 'food'))
             self._queue.appendleft(Commands(Action.TAKE, 'food'))
 
         self._queue.appendleft(Commands(Action.FORK))
-        if self._cycle % 3 == 0:
-            self._queue.appendleft(Commands(Action.BROADCAST, 'role;worker'))
-        else:
-            self._queue.appendleft(Commands(Action.BROADCAST, 'role;kamikaze'))
+        self._queue.appendleft(Commands(Action.BROADCAST, 'role;worker'))
 
     def handle_broadcast(self, response_list: list[str]) -> bool:
         return False
