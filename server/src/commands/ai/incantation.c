@@ -73,6 +73,7 @@ static void send_gui_p_start_inc(serverdata_t *sdata, fdarray_t *fdarray,
         fdarray->clients[k].player->level == client->player->level &&
         fdarray->clients[k].player->id != client->player->id) {
             sprintf(data, "%s %d", data, fdarray->clients[k].player->id);
+            printf("\033[34mThe incantation from client %d (player %d, level %d) triggered incantation of client %d (player %d, level %d)\033[0m\n", client->fd, client->player->id,client->player->level, fdarray->clients[k].fd, fdarray->clients[k].player->id, fdarray->clients[k].player->level); // COMMENT TO REMEMBER TO REMOVE
             set_player_incantation_end(fdarray->clients[k].player, timer_end);
             set_message(&(fdarray->clients[k]), "Elevation underway", NULL);
         }
@@ -120,6 +121,7 @@ int action_incantation(serverdata_t *sdata, fdarray_t *fdarray,
     set_message(client, answer, NULL);
     send_gui_p_end_inc(sdata, fdarray, client);
     check_game_end(sdata, fdarray, client);
+    printf("\033[34mClient %d (player %d) incantation done, actual level %d\033[0m\n", client->fd, client->player->id, client->player->level); // COMMENT TO REMEMBER TO REMOVE
 }
 
 // COMMAND
@@ -131,6 +133,7 @@ int cmd_incantation(serverdata_t *sdata, fdarray_t *fdarray,
         return EXIT_FAILURE;
     }
     if (client->player->level < 8 && level_up_ok(sdata, client->player)) {
+        printf("\033[34mIncantation command from client %d (player %d, level %d) accepted\033[0m\n", client->fd, client->player->id, client->player->level); // COMMENT TO REMEMBER TO REMOVE
         set_player_incantation_end(client->player,
             set_timer_end(sdata->args->freq, ACTIONS_ARR[INCANTATION].delay));
         set_message(client, "Elevation underway", NULL);

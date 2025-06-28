@@ -75,6 +75,7 @@ int kill_player(serverdata_t *sdata, fdarray_t *fdarray, client_t *client)
 
     if (client->player == NULL)
         return EXIT_FAILURE;
+    printf("\033[34mKill player %d linked to client %d\033[0m\n", client->player->id, client->fd); // COMMENT TO REMEMBER TO REMOVE
     set_message(client, "dead", NULL);
     sprintf(answer, "%d", client->player->id);
     send_guis(sdata, fdarray, "pdi", answer);
