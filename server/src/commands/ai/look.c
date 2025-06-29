@@ -192,7 +192,7 @@ int cmd_look(serverdata_t *sdata, fdarray_t *fdarray,
         return EXIT_FAILURE;
     }
     client->player->action.cmd = strdup(ACTIONS_ARR[LOOK].name);
-    client->player->action.data = strdup(data);
+    client->player->action.data = NULL;
     client->player->action.status = ONGOING;
     client->player->action.end = set_timer_end(sdata->args->freq,
         ACTIONS_ARR[LOOK].delay);

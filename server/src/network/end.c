@@ -68,14 +68,6 @@ void destroy_teams(team_t *teams, int team_count)
     free(teams);
 }
 
-static void destroy_incantation(player_t *player)
-{
-    if (player->incantation == NULL)
-        return;
-    if (player->incantation->done == player->incantation->nb_players)
-        free(player->incantation);
-}
-
 static void destroy_players(player_t *head)
 {
     player_t *temp = NULL;
