@@ -1,4 +1,4 @@
-# Server Gameplay / Map Thread Overview
+# Server Gameplay / Map Overview
 
 In this project, one crucial component is the map system and how it is managed during gameplay.
 Many mechanics depend on it working correctly from resource generation to biome behavior.
@@ -9,7 +9,7 @@ This page covers:
 
 - Resource densities and biome distribution
 
-- The dedicated thread responsible for managing map refills and biome logic
+- The dedicated code responsible for managing map refills and biome logic
 
 ## Error Handling
 
@@ -26,6 +26,7 @@ Once validated, the server allocates and initializes a 2D map composed of map_t 
 typedef struct map_s {
     unsigned int resources[NB_RESOURCES];
     unsigned int biome;
+    float noise;
 } map_t;
 ```
 
@@ -42,7 +43,7 @@ enum ressources_e {
 };
 ```
 
-Each tile also receives a biome, chosen randomly from the following:
+Each tile also receives a biome, chosen randomly from the following by a perlin noise:
 ```c
 enum biome_e {
     SEA,
@@ -90,7 +91,7 @@ Note: Every tile always starts with 3 units of FOOD, regardless of biome.
 
 These distributions are defined in a biome_distributions[] constant array and are used both for initial placement and refills.
 
-## Map Thread & Refill System
+## Map & Refill System
 
 A dedicated thread is responsible for the dynamic behavior of the map during the game:
 

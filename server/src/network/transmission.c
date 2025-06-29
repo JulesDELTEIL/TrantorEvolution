@@ -23,6 +23,8 @@ static int add_circular(client_t *client, char *buffer)
     if (client->buffin != NULL)
         c_bufflen = strlen(client->buffin);
     newbuff = malloc(sizeof(char) * (c_bufflen + n_bufflen + 1));
+    if (!newbuff)
+        return EXIT_FAILURE;
     for (uint_t k = 0; k < c_bufflen; k++)
         newbuff[k] = client->buffin[k];
     for (uint_t k = 0; k < n_bufflen; k++)
@@ -51,11 +53,15 @@ int receive_data(serverdata_t *sdata, fdarray_t *fdarray, client_t *client)
         debug_input(client, buffer, rc);
     if (rc < 2)
         return EXIT_FAILURE;
-    add_circular(client, buffer);
+    if (add_circular(client, buffer) == EXIT_FAILURE)
+        if (client->buffin != NULL) {
+            free(client->buffin);
+            client->buffin = NULL;
+        }
     return EXIT_SUCCESS;
 }
 
-static int get_datalen(char *data)
+static int get_datalen(const char *data)
 {
     if (data == NULL)
         return 0;
@@ -96,13 +102,16 @@ static int add_message_to_queue(client_t *client, char *msg, uint_t len)
 {
     message_t *new = malloc(sizeof(message_t));
 
+    if (!new)
+        return EXIT_FAILURE;
     new->len = len;
     new->data = strdup(msg);
     new->next = client->buffout;
     client->buffout = new;
+    return EXIT_SUCCESS;
 }
 
-int set_message(client_t *client, char *cmd, char *data)
+int set_message(client_t *client, const char *cmd, char *data)
 {
     uint_t datalen = get_datalen(data);
     uint_t cmdlen = get_datalen(cmd);

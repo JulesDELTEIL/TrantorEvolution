@@ -10,6 +10,7 @@
 
     #include <memory>
     #include <thread>
+    #include <mutex>
 
     #include "network/events.hpp"
     #include "network/Socket.hpp"
@@ -37,7 +38,9 @@ class Client {
         std::unique_ptr<FILE> _stream;
         std::vector<char> _buffer;
         PackQueue _events;
+
         std::thread _network;
+        std::mutex _mutex;
         bool _network_runing = false;
 };
 

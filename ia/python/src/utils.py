@@ -5,6 +5,7 @@
 ## utils.py
 ##
 
+import re
 from collections import deque
 from src.action import Commands, Action
 
@@ -26,11 +27,8 @@ def parse_vision(response: str) -> list[list[str]]:
     return vision
 
 def parse_inventory(response: str) -> dict:
-    inventory = {}
-    for item in response.strip("[]").split(","):
-        if item.strip():
-            key, val = item.strip().split()
-            inventory[key] = int(val)
+    pairs = re.findall(r'(\w+)\s+(\d+)', response)
+    inventory = {key: int(val) for key, val in pairs}
     return inventory
 
 def get_movements(start: list[int], end: list[int], direction: str) -> list[Commands]:
@@ -45,12 +43,12 @@ def get_movements(start: list[int], end: list[int], direction: str) -> list[Comm
         ti = directions.index(target) + 1
         diff = (ti - ci) % 4
         if diff == 1:
-            queue.appendleft(Commands(Action.LEFT))
+            queue.appendleft(Commands(Action.RIGHT))
         elif diff == 2:
             queue.appendleft(Commands(Action.RIGHT))
             queue.appendleft(Commands(Action.RIGHT))
         elif diff == 3:
-            queue.appendleft(Commands(Action.RIGHT))
+            queue.appendleft(Commands(Action.LEFT))
         return queue
 
     if dx != 0:

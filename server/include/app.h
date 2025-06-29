@@ -36,6 +36,7 @@ static const char ARG_HEIGHT[] = "-y";
 static const char ARG_CLIENTS[] = "-c";
 static const char ARG_FREQ[] = "-f";
 static const char ARG_TNAME[] = "-n";
+static const char ARG_BIOME[] = "-b";
 
 static const char *USAGE_MSG[] = {
     "./zappy_server -p <port 1025-65535> -x ",

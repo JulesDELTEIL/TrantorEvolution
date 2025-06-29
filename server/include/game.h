@@ -19,7 +19,8 @@
 typedef struct game_s {
     map_t map;
     player_t *players;
-    size_t next;
+    size_t next_player;
+    size_t next_egg;
     team_t *teams;
     int nb_of_teams;
     pos_t spawn;

@@ -9,30 +9,25 @@ from src.roles.base_role import *
 from src.action import Commands, Action
 
 class Foreman(BaseRole):
+    """
+    Foreman will create workers (see Worker class) and taking part of incantations to lvl 8
+    """
     def __init__(self):
         super().__init__()
-        print("----- Je suis Foreman ------")
-        self._initial_moves = 3
-        self._fork_count = 0
         self._queue.append(Commands(Action.TAKE, 'food'))
     
-    def decide_action(self):
+    def decide_action(self) -> None:
         self._cycle += 1
         if self._cycle == 1:
             self._queue.appendleft(Commands(Action.LEFT))
             return
 
-        if self._cycle > 20:
-            self._queue.appendleft(Commands(Action.TAKE, 'food'))
         if self._cycle % 2 == 0:
             self._queue.appendleft(Commands(Action.TAKE, 'food'))
             self._queue.appendleft(Commands(Action.TAKE, 'food'))
 
         self._queue.appendleft(Commands(Action.FORK))
-        if self._cycle % 3 == 0:
-            self._queue.appendleft(Commands(Action.BROADCAST, 'role;worker'))
-        else:
-            self._queue.appendleft(Commands(Action.BROADCAST, 'role;kamikaze'))
+        self._queue.appendleft(Commands(Action.BROADCAST, 'role;worker'))
 
     def handle_broadcast(self, response_list: list[str]) -> bool:
         return False

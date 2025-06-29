@@ -15,6 +15,9 @@ from src.macros import X, Y
 from src.action import Action, Commands
 
 class Communication():
+    """
+    Manage all things received via server and send things AI want to.
+    """
     def __init__(self, team_name: str, sock):
         self._communication_team_name = team_name
         self._communication_sock = sock
@@ -30,13 +33,13 @@ class Communication():
     def _get_client_num(self, client_num_str: str) -> None:
         client_num_strip = client_num_str.strip()
         if not client_num_strip.isdigit():
-            raise Exception("Invalid client number left from server: %s" % client_num_str)
+            raise ValueError("Invalid client number left from server: %s" % client_num_str)
         self._player_num = int(client_num_strip)
 
     def _get_dimension(self, dimension_str: str) -> None:
         dimension_split = dimension_str.split()
         if len(dimension_split) != 2 or not all([val.isdigit() for val in dimension_split]):
-            raise Exception("Invalid dimension from server: %s" % dimension_str)
+            raise ValueError("Invalid dimension from server: %s" % dimension_str)
         dimension_tuple = (int(dimension_split[X]), int(dimension_split[Y]))
         self._dimension = dimension_tuple
 
@@ -49,7 +52,11 @@ class Communication():
         i = 0
         message = ""
         while i < 3:
-            message += self.recv()
+            new_message = self.recv()
+            if new_message is not None:
+                message += new_message
+            else:
+                exit()
             while message:
                 index = message.find("\n")
                 if index == -1 or i >= 3:
@@ -64,7 +71,13 @@ class Communication():
         if self.role._queue:
             action = self.role._queue.pop()
             if action.action == Action.BROADCAST:
-                action.argument = cyp.cypher(action.argument, self._communication_team_name)
+                if isinstance(self.role, Queen):
+                    if self.role._key_opponent and action.argument == 'quit':
+                        action.argument = cyp.cypher(action.argument, self.role._key_opponent)
+                    else:
+                        action.argument = cyp.cypher(action.argument, self._communication_team_name)
+                else:
+                    action.argument = cyp.cypher(action.argument, self._communication_team_name)
             if action.action != Action.NONE:
                 self.send((action.__str__() + "\n").encode())
                 self.role._last_sent = action.action
@@ -76,9 +89,9 @@ class Communication():
             if index == -1:
                 break
             if message_left[:index + 1] == "dead\n":
-                    self._communication_sock.shutdown(socket.SHUT_RDWR)
-                    self._communication_sock.close()
-                    exit()
+                self._communication_sock.shutdown(socket.SHUT_RDWR)
+                self._communication_sock.close()
+                exit()
             if self._handle_response(message_left[:index + 1]):
                 self.send_action()
             message_left = message_left[index + 1:]
@@ -86,11 +99,14 @@ class Communication():
 
     def run(self) -> None:
         self.send_action()
+        response = ""
         while True:
-            response = self.recv()
+            new_response = self.recv()
+            if new_response is not None:
+                response += new_response
             if not response:
                 break
-            self.analyse_requests(response)
+            response = self.analyse_requests(response)
 
 
     def _translate_broadcast(self, response_list: list[str]) -> list[str]:
@@ -104,47 +120,65 @@ class Communication():
             real_broadcast.append(item)
         return real_broadcast
 
-    def handle_nobody(self, response_list: list[str]) -> bool:
-        broadcast = self.role.handle_broadcast(response_list)
-        if broadcast == "ROLE":
-            print(response_list[2][5:])
-            self.role = ROLE_MAP[response_list[2][5:]]()
-            return False
-        if broadcast == "QUIT":
-            action = Commands(Action.BROADCAST, cyp.cypher("quitting", self._communication_team_name))
-            self.role._last_sent = action.action
-            self.send((action.__str__() + "\n").encode())
-        return False
-
-    def _handle_response(self, response: str) -> bool:
-        response_list = response.split()
-        if isinstance(self.role, Nobody) and self.role._is_there_anyone == False:
-            if self.role._cycle > 50:
-                self.role = Queen(lambda: self._spawn_new_client())
+    def _handle_action(self, response: str, response_list: list[str]) -> bool:
+        if response_list[0] == "Current":
+            self._incantation_success(response)
+        elif self.role._last_sent:
+            if response_list[0] == "ko":
+                self.role._queue.clear()
                 return True
+            if response_list[0][0] == '[':
+                if self.role._last_sent == Action.LOOK or self.role._last_sent == Action.INVENTORY:
+                    self.COMMANDS[self.role._last_sent](response)
+            if ((self.role._last_sent == Action.CONNECT_NBR and response_list[0].isdigit())
+                    or response_list[0] == Commands.COMMANDS[self.role._last_sent]["response success"][0]):
+                self.COMMANDS[self.role._last_sent](response)
+            return True
+        return True
+
+    def handle_nobody(self, response: str) -> bool:
+        response_list = response.split()
         if response_list[0] == "message":
             deciphered_broadcast = self._translate_broadcast(response_list)
             if not deciphered_broadcast:
                 return False
-            if isinstance(self.role, Nobody):
-                return self.handle_nobody(deciphered_broadcast)
-            self.role.handle_broadcast(deciphered_broadcast)
+            broadcast = self.role.handle_broadcast(deciphered_broadcast)
+            if broadcast == "ROLE":
+                self.role = ROLE_MAP[deciphered_broadcast[2][5:]]()
+            elif broadcast == "QUIT":
+                action = Commands(Action.BROADCAST, cyp.cypher("quitting", self._communication_team_name))
+                self.role._last_sent = action.action
+                self.send((action.__str__() + "\n").encode())
             return False
-        if response_list[0] == "Current":
-            self.role._level = int(response_list[2])
-        elif self.role._last_sent:
-            if self.role._last_sent == Action.CONNECT_NBR and response_list[0].isdigit():
-                return self.COMMANDS[self.role._last_sent](response_list[0])
-            if response_list[0][0] == '[':
-                if self.role._last_sent == Action.LOOK or self.role._last_sent == Action.INVENTORY:
-                    self.COMMANDS[self.role._last_sent](response)
-            if self.role._last_sent == Action.BROADCAST and response_list[0] == "ok" and isinstance(self.role, Nobody):
-                self._communication_sock.shutdown(socket.SHUT_RDWR)
-                self._communication_sock.close()
-                exit()
-            if self.role._last_sent == Action.INCANTATION or self.role._last_sent == Action.TAKE or response_list[0] == "Current":
-                self.COMMANDS[self.role._last_sent](response)
-            elif response_list[0] == Commands.COMMANDS[self.role._last_sent]["response success"][0]:
-                self.COMMANDS[self.role._last_sent]()
-            return True
-        return True
+        if not self.role._is_there_anyone:
+            if self.role._cycle > 10:
+                self.role = Queen(lambda: self._spawn_new_client(response))
+                return True
+        if self.role._last_sent == Action.BROADCAST and response_list[0] == "ok":
+            self._communication_sock.shutdown(socket.SHUT_RDWR)
+            self._communication_sock.close()
+            exit()
+        return self._handle_action(response, response_list)
+
+    def _handle_response(self, response: str) -> bool:
+        response_list = response.split()
+        if isinstance(self.role, Nobody):
+            return self.handle_nobody(response)
+        if response_list[0] == "message":
+            deciphered_broadcast = self._translate_broadcast(response_list)
+            if deciphered_broadcast:
+                if deciphered_broadcast[2] == 'quit':
+                    self._communication_sock.shutdown(socket.SHUT_RDWR)
+                    self._communication_sock.close()
+                    exit()
+                else:
+                    self.role.handle_broadcast(deciphered_broadcast)
+            else:
+                if response_list[2] == 'quit':
+                    self._communication_sock.shutdown(socket.SHUT_RDWR)
+                    self._communication_sock.close()
+                    exit()
+                else:
+                    self.role.handle_broadcast(response_list)
+            return False
+        return self._handle_action(response, response_list)

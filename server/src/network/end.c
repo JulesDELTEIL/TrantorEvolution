@@ -14,10 +14,19 @@
 
 int destroy_client(client_t *client)
 {
+    message_t *head = client->buffout;
+    message_t *next = NULL;
+
     if (client == NULL)
         return EXIT_FAILURE;
     if (client->buffin != NULL)
         free(client->buffin);
+    while (head != NULL) {
+        next = head->next;
+        free(head->data);
+        free(head);
+        head = next;
+    }
     return EXIT_SUCCESS;
 }
 

@@ -31,7 +31,7 @@ static int buffer_handler(serverdata_t *sdata, fdarray_t *fdarray,
         if (strcmp(cmd, COMMANDS[client->type][k].command) == 0)
             return COMMANDS[client->type][k].handler(sdata,
                 fdarray, client, data);
-    set_message(client, "suc", NULL);
+    set_message(client, M_SUC, NULL);
     return EXIT_FAILURE;
 }
 

@@ -6,9 +6,14 @@
 ##
 
 class MapMemory:
+    """
+    Allow a player to remind him all tiles he saw and when.
+    
+    He will then calculate trust of what he reminds thanks to the gap between now and the time he saw it.
+    """
     def __init__(self, decay: float = 0.1):
         self._tiles: dict[str, dict[str, any]] = {}
-        self._decay = decay  # perte de confiance par cycle
+        self._decay: float = decay  # perte de confiance par cycle
 
     def update_mindmap(self, response_formatted: list[list[str]], level: int, cycle: int, pos: list[int]) -> None:
         relative_coords = self._vision_coords(level)

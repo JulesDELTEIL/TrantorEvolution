@@ -20,15 +20,15 @@ int cmd_plv(serverdata_t *sdata, fdarray_t *fdarray,
     player_t *player = NULL;
 
     if (strlen(data) == 0) {
-        set_message(client, "sbp", NULL);
+        set_message(client, M_SBP, NULL);
         return EXIT_FAILURE;
     }
     player = get_player_pos(sdata, atoi(data));
     if (player == NULL) {
-        set_message(client, "sbp", NULL);
+        set_message(client, M_SBP, NULL);
         return EXIT_FAILURE;
     }
     sprintf(answer, "%d %d", player->id, player->level);
-    set_message(client, "plv", answer);
+    set_message(client, M_PLV, answer);
     return EXIT_SUCCESS;
 }

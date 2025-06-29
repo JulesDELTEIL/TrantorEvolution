@@ -7,7 +7,7 @@
 
 #ifndef MAPTOOLS_H_
     #define MAPTOOLS_H_
-    #define TICKS_REFILLS 20000
+    #define TICKS_REFILLS 20000000
     #define NB_RESOURCES 7
     #define NB_BIOMES 5
     #define NOT_DEFINED -1
@@ -33,24 +33,49 @@ typedef struct biome_distribution_s {
 
 const static biome_distribution_t biome_distributions[] = {
     [SEA] = {
-        .biome_start = {3, 0, 0, 0, 0, 2, 0},
+        .biome_start = {0, 0, 0, 0, 0, 3, 0},
         .refill = {3, 1, 1, 1, 2, 1, 1}
     },
     [FOREST] = {
-        .biome_start = {3, 2, 0, 0, 0, 0, 0},
+        .biome_start = {0, 3, 0, 0, 0, 0, 0},
         .refill = {3, 3, 1, 1, 1, 1, 1}
     },
     [MOUNTAINS] = {
-        .biome_start = {3, 0, 2, 0, 0, 0, 0},
+        .biome_start = {0, 0, 3, 0, 0, 0, 0},
         .refill = {3, 1, 2, 1, 1, 1, 1}
     },
     [PLAINS] = {
-        .biome_start = {3, 0, 0, 2, 0, 0, 0},
+        .biome_start = {0, 0, 0, 3, 0, 0, 0},
         .refill = {3, 1, 1, 3, 1, 1, 1}
     },
     [BEACH] = {
-        .biome_start = {3, 0, 0, 2, 0, 2, 0},
+        .biome_start = {0, 0, 0, 3, 0, 2, 0},
         .refill = {3, 1, 1, 2, 2, 1, 1}
+    }
+};
+/*
+Distribution without the biome flag
+*/
+const static biome_distribution_t normal_distributions[] = {
+    [SEA] = {
+        .biome_start = {2, 2, 1, 1, 1, 1, 1},
+        .refill = {3, 2, 2, 2, 2, 2, 2}
+    },
+    [FOREST] = {
+        .biome_start = {2, 2, 1, 1, 1, 1, 1},
+        .refill = {3, 2, 2, 2, 2, 2, 2}
+    },
+    [MOUNTAINS] = {
+        .biome_start = {2, 2, 1, 1, 1, 1, 1},
+        .refill = {3, 2, 2, 2, 2, 2, 2}
+    },
+    [PLAINS] = {
+        .biome_start = {2, 2, 1, 1, 1, 1, 1},
+        .refill = {3, 2, 2, 2, 2, 2, 2}
+    },
+    [BEACH] = {
+        .biome_start = {2, 2, 1, 1, 1, 1, 1},
+        .refill = {3, 2, 2, 2, 2, 2, 2}
     }
 };
 
