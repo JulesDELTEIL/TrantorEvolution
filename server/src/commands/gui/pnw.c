@@ -26,8 +26,8 @@ int cmd_pnw(serverdata_t *sdata, fdarray_t *fdarray,
         set_message(client, "sbp", NULL);
         return EXIT_FAILURE;
     }
-    sprintf(answer, "%d %d %d %d %d %s", player->id, player->pos.x, player->pos.y,
-        player->orientation, player->level, player->team);
+    sprintf(answer, "%d %d %d %d %d %s", player->id, player->pos.x,
+        player->pos.y, player->orientation, player->level, player->team);
     set_message(client, "pnw", answer);
     return EXIT_SUCCESS;
 }
