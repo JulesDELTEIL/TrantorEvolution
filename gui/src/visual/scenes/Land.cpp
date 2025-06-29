@@ -18,7 +18,7 @@ namespace gui {
 namespace visual {
 
 Land::Land(std::reference_wrapper<network::Client> client) : AScene(core::DEFAULT_VIEW),
-    _client(client), _hud(std::ref(_teams))
+    _client(client), _loading(core::DEFAULT_VIEW), _hud(std::ref(_teams))
 {
     std::srand(std::time({}));
     _tile.sprite.setOrigin({TILE_SIZE / 2, 0.0f});
@@ -37,6 +37,11 @@ Land::~Land()
 
 void Land::display(sf::RenderTarget& render)
 {
+    if (!_map_set) {
+        render.setView(_camera);
+        _loading.draw(render);
+        return;
+    }
     _backgroud.drawBackground(render);
     render.setView(_camera);
     clearResources();
@@ -64,12 +69,13 @@ void Land::display(sf::RenderTarget& render)
 
 void Land::event(const core::Engine& engine, const network::NetEventPack& net_pack)
 {
+    if (!_map_set) {
+        loadingEvents(net_pack);
+        return;
+    }
     viewEvent(engine.events);
     checkHudEvent(engine, net_pack);
     switch (static_cast<int>(net_pack.event)) {
-        case network::MSIZE:
-            _map_size = sf::Vector2f(net_pack.pack[0].getFloat(), net_pack.pack[1].getFloat());
-            break;
         case network::TILE:
             updateTile(net_pack.pack);
             break;
@@ -103,17 +109,35 @@ void Land::event(const core::Engine& engine, const network::NetEventPack& net_pa
         case network::PDEAD:
             removeTrantorian(net_pack.pack);
             break;
-        case network::TEAMS:
-            _teams.push_back({net_pack.pack[0].getString(), RANDOM_COLOR, {}});
-            break;
-        case network::BIOME:
-            addTile(net_pack.pack);
-            break;
         case network::PINV:
             updateInventory(net_pack.pack);
             break;
         case network::PLVL:
             _trantorians.at(net_pack.pack[0].getSize_t())->lvl = net_pack.pack[1].getSize_t();
+            break;
+    }
+}
+
+void Land::loadingEvents(const network::NetEventPack& net_pack)
+{
+    switch (static_cast<int>(net_pack.event)) {
+        case network::MSIZE:
+            _map_size = sf::Vector2f(net_pack.pack[0].getFloat(), net_pack.pack[1].getFloat());
+            break;
+        case network::BIOME:
+            addTile(net_pack.pack);
+            break;
+        case network::TEAMS:
+            _teams.push_back({net_pack.pack[0].getString(), RANDOM_COLOR, {}});
+            break;
+        case network::NEW:
+            addTrantorian(net_pack.pack);
+            break;
+        case network::TILE:
+            updateTile(net_pack.pack);
+            break;
+        case network::TIME:
+            _time_unit_speed = net_pack.pack[0].getSize_t();
             break;
     }
 }
@@ -173,7 +197,7 @@ void Land::askResources(void)
     _net_running = true;
     float ms_to_wait = 0;
 
-    while (_map_size.x == -1)
+    while (!_map_set)
         std::this_thread::yield();
     ms_to_wait = (_map_size.x * _map_size.y) * 10;
     while (_net_running) {
@@ -236,6 +260,7 @@ void Land::addTile(const network::NetPack& pack)
             _tiles[x][y].tile->updateResource(static_cast<resource_e>(i - 2), 0);
     }
     index += 1;
+    _loading.loadingPercent(static_cast<float>(index) / (_map_size.x * _map_size.y));
     if (index >= (_map_size.x * _map_size.y))
         _map_set = true;
 }

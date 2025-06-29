@@ -33,6 +33,7 @@ add_executable( ${PROJECT_NAME}
     ${GUI_SRC_DIR}visual/entities/IncantationObject.cpp
     ${GUI_SRC_DIR}visual/entities/Background.cpp
     ${GUI_SRC_DIR}visual/entities/Egg.cpp
+    ${GUI_SRC_DIR}visual/entities/LoadingScreen.cpp
 
     # SCENES
     ${GUI_SRC_DIR}visual/scenes/Land.cpp

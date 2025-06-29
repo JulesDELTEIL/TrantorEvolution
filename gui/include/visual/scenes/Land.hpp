@@ -25,6 +25,7 @@
     #include "visual/entities/ResourceNode.hpp"
     #include "visual/entities/IncantationObject.hpp"
     #include "visual/entities/Egg.hpp"
+    #include "visual/entities/LoadingScreen.hpp"
 
 namespace gui {
 namespace visual {
@@ -67,6 +68,8 @@ class Land : public AScene {
         Drawable _tile;
         sf::Vector2f _map_size = {-1, -1};
         bool _map_set = false;
+        LoadingScreen _loading;
+        void loadingEvents(const network::NetEventPack&);
 
         void clearResources(void);
         std::vector<ClearTile> _clear_resources;
