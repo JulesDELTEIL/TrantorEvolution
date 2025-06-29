@@ -60,6 +60,8 @@ void Hud::display(sf::RenderTarget& render, const sf::Clock& clock)
         _display.g_nb_teams.setString("Team(s):  " + std::to_string(_teams.get().size()));
         _display.g_nb_trantors.setString("Trantorian(s):  " + std::to_string(_nb_trantors));
         for (size_t i = 0; i < _teams.get().size(); ++i) {
+            if (i >= _best_lvl.size() || i >= _teams.get().size())
+                break;
             if (_teams.get()[i].trantorians.find(_best_lvl[i]) == _teams.get()[i].trantorians.end()) {
                 for (const auto& trant : _teams.get()[i].trantorians) {
                     _best_lvl[i] = trant.first;
@@ -273,6 +275,8 @@ void Hud::drawTeamsInfos(sf::RenderTarget& render)
         _display.t_lvl.sprite.setPosition(pos + T_LEFT_POS);
         render.draw(_display.t_lvl.sprite);
         _display.t_info.setPosition(pos + T_RIGHT_POS);
+        if (i >= _best_lvl.size() || i >= _teams.get().size())
+            return;
         if (_teams.get()[i].trantorians.find(_best_lvl[i]) != _teams.get()[i].trantorians.end()) {
             _display.t_info.setString(std::to_string(_teams.get()[i].trantorians.at(_best_lvl[i])->lvl));
         } else

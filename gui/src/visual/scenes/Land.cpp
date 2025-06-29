@@ -311,6 +311,8 @@ void Land::addTrantorian(const network::NetPack& pack)
 void Land::removeTrantorian(const network::NetPack& pack)
 {
     size_t id = pack[0].getSize_t();
+    if (_trantorians.find(id) == _trantorians.end())
+        return;
     std::shared_ptr<Trantorian> trantor = _trantorians.at(id);
 
     _tiles[trantor->map_pos.x][trantor->map_pos.y].trantorians.erase(id);
@@ -321,10 +323,13 @@ void Land::removeTrantorian(const network::NetPack& pack)
 
 void Land::trantorCollect(const network::NetPack& pack)
 {
-    sf::Vector2i tile_pos = _trantorians.at(pack[0].getSize_t())->map_pos;
+    size_t id = pack[0].getSize_t();
+    if (_trantorians.find(id) == _trantorians.end())
+        return;
+    sf::Vector2i tile_pos = _trantorians.at(id)->map_pos;
     resource_e type = static_cast<resource_e>(pack[1].getInt());
 
-    _trantorians.at(pack[0].getSize_t())->collect(_tiles[tile_pos.x][tile_pos.y].resources.at(type), ACT_TIME(7.0f) / 2, _clock);
+    _trantorians.at(id)->collect(_tiles[tile_pos.x][tile_pos.y].resources.at(type), ACT_TIME(7.0f) / 2, _clock);
     _clear_resources.push_back({ACT_TIME(7.0f) + _clock.getElapsedTime().asMilliseconds(), type, tile_pos});
 }
 
@@ -353,30 +358,41 @@ void Land::trantorEndIncantation(const network::NetPack& pack)
 
 void Land::trantorLayingAnEgg(const network::NetPack& pack)
 {
-    size_t trantor_id = pack[0].getSize_t();
-    _trantorians.at(trantor_id)->layAnEgg();
+    size_t id = pack[0].getSize_t();
+    
+    if (_trantorians.find(id) == _trantorians.end())
+        return;
+    _trantorians.at(id)->layAnEgg();
 }
 
 void Land::trantorLaidAnEgg(const network::NetPack& pack)
 {
     size_t egg_id = pack[0].getSize_t();
-    size_t trantor_id = pack[1].getSize_t();
-    sf::Vector2f egg_pos = _trantorians.at(trantor_id)->getBodyPos(0);
+    size_t id = pack[1].getSize_t();
+    if (_trantorians.find(id) == _trantorians.end() ||
+        _eggs.find(egg_id) == _eggs.end())
+        return;
+    sf::Vector2f egg_pos = _trantorians.at(id)->getBodyPos(0);
     egg_pos.x += 5;
     
-    _trantorians.at(trantor_id)->laidAnEgg();
+    _trantorians.at(id)->laidAnEgg();
     _eggs.emplace(egg_id, std::make_shared<Egg>(egg_pos));
 }
 
 void Land::eggHatching(const network::NetPack& pack)
 {
-    size_t egg_id = pack[0].getSize_t();
-    _eggs.at(egg_id)->hatch();
+    size_t id = pack[0].getSize_t();
+
+    if (_eggs.find(id) == _eggs.end())
+        return;
+    _eggs.at(id)->hatch();
 }
 
 void Land::posTrantorian(const network::NetPack& pack)
 {
     size_t id = pack[0].getSize_t();
+    if (_trantorians.find(id) == _trantorians.end())
+        return;
     std::shared_ptr<Trantorian> trantor = _trantorians.at(id);
     int x = pack[1].getInt();
     int y = pack[2].getInt();
@@ -393,7 +409,11 @@ void Land::posTrantorian(const network::NetPack& pack)
 
 void Land::updateInventory(const network::NetPack& pack)
 {
-    _trantorians.at(pack[0].getSize_t())->updateInventory(
+    size_t id = pack[0].getSize_t();
+
+    if (_trantorians.find(id) == _trantorians.end())
+        return;
+    _trantorians.at(id)->updateInventory(
         pack[3].getSize_t(), pack[4].getSize_t(), pack[5].getSize_t(),
         pack[6].getSize_t(), pack[7].getSize_t(), pack[8].getSize_t(),
         pack[9].getSize_t()
