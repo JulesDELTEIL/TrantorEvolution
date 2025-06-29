@@ -15,6 +15,9 @@ from src.macros import X, Y
 from src.action import Action, Commands
 
 class Communication():
+    """
+    Manage all things received via server and send things AI want to.
+    """
     def __init__(self, team_name: str, sock):
         self._communication_team_name = team_name
         self._communication_sock = sock

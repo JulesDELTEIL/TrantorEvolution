@@ -10,6 +10,9 @@ from src.server_manager import ServerManager
 from src.player import Player
 
 class Trantorian(ServerManager, Player, Communication):
+    """
+    Core of AI. Handle communication with server and the algo.
+    """
     def __init__(self, host, port, team_name):
         ServerManager.__init__(self, host, port)
         Player.__init__(self, host, str(port), team_name)

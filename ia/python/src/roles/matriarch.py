@@ -9,6 +9,9 @@ from src.roles.base_role import BaseRole
 from src.action import Commands, Action
 
 class Matriarch(BaseRole):
+    """
+    Will create kamikazes (see Kamikaze role) and taking part of incantations to lvl 8
+    """
     def __init__(self):
         super().__init__()
     

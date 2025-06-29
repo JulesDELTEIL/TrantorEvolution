@@ -9,6 +9,10 @@ from src.roles.base_role import BaseRole
 from src.action import Commands, Action
 
 class Nobody(BaseRole):
+    """
+    When a client spawn, he'll be a Nobody.
+    He wait a broadcast to know his role or become a Mother Queen if no broadcast during 10 cycle.
+    """
     def __init__(self):
         super().__init__()
         self._is_there_anyone: bool = None
