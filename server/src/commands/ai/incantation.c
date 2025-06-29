@@ -15,90 +15,56 @@
 #include "actions.h"
 #include "commands/incantation.h"
 
-static int get_nb_tile_players(player_t *head, pos_t tilepos, int level)
+static void set_incantation(serverdata_t *sdata, client_t *client)
 {
-    uint_t n = 0;
+    incantation_t incantation = {0};
+    player_t *head = sdata->game_data.players;
 
-    while (head != NULL) {
-        if (head->pos.x == tilepos.x &&
-            head->pos.y == tilepos.y &&
-            head->level == level) {
-            n++;
-        }
-        head = head->next;
-    }
-    return n;
-}
-
-static const bool incantation_start_ok(serverdata_t *sdata, player_t *player)
-{
-    int nb_players = get_nb_tile_players(sdata->game_data.players,
-        player->pos, player->level);
-    tile_t tile;
-
-    pthread_mutex_lock(&(sdata->game_data.map.mutex));
-    tile = sdata->game_data.map.tiles[player->pos.x][player->pos.y];
-    pthread_mutex_unlock(&(sdata->game_data.map.mutex));
-    if (nb_players < ELEVATION_REQ[player->level].players)
-        return false;
-    for (uint_t k = 0; k < NB_RESOURCES; k++)
-        if (tile.resources[k] < ELEVATION_REQ[player->level].resources[k])
-            return false;
-    return true;
-}
-
-static void set_player_incantation_end(player_t *player, size_t timer_end,
-    incantation_t *incantation)
-{
-    player->action.cmd = strdup(ACTIONS_ARR[INCANTATION].name);
-    player->action.data = strdup("");
-    player->action.status = ONGOING;
-    player->action.end = timer_end;
-    player->incantation = incantation;
-}
-
-static int fill_players_ids(client_t *client, player_t *head, int *arr)
-{
-    int n = 0;
-
+    incantation.nb_players = 0;
     while (head != NULL) {
         if (head->pos.x == client->player->pos.x &&
             head->pos.y == client->player->pos.y &&
             head->level == client->player->level) {
-            arr[n] = head->id;
-            n++;
+            incantation.player_inc_ids[incantation.nb_players] = head->id;
+            incantation.nb_players++;
         }
         head = head->next;
     }
-    return n;
+    incantation.starter = true;
+    incantation.level_after = client->player->level + 1;
+    client->player->incantation = incantation;
 }
 
-static incantation_t *set_incantation(serverdata_t *sdata, fdarray_t *fdarray,
-    client_t *client)
+static const bool incantation_start_ok(serverdata_t *sdata, client_t *client)
 {
-    incantation_t *incantation = malloc(sizeof(incantation_t));
-    int nb_players = get_nb_tile_players(sdata->game_data.players,
-        client->player->pos, client->player->level);
-    int *id_arr = malloc(sizeof(int) * nb_players);
-    player_t *head = sdata->game_data.players;
-    int n = 0;
+    tile_t tile = sdata->game_data.map.tiles
+        [client->player->pos.x][client->player->pos.y];
 
-    if (!incantation || !id_arr)
-        return NULL;
-    n = fill_players_ids(client, sdata->game_data.players, id_arr);
-    incantation->done = 0;
-    incantation->nb_players = nb_players;
-    incantation->player_inc_ids = id_arr;
-    if (n != incantation->nb_players) {
-        free(incantation->player_inc_ids);
-        free(incantation);
-        return NULL;
+    set_incantation(sdata, client);
+    if (client->player->incantation.nb_players <
+    ELEVATION_REQ[client->player->level].players) {
+        client->player->incantation = (incantation_t){0};
+        return false;
     }
-    return incantation;
+    for (uint_t k = 0; k < NB_RESOURCES; k++)
+        if (tile.resources[k] <
+        ELEVATION_REQ[client->player->level].resources[k]) {
+            client->player->incantation = (incantation_t){0};
+            return false;
+        }
+    return true;
+}
+
+static void set_player_incantation_end(player_t *player, size_t timer_end)
+{
+    player->action.cmd = strdup(ACTIONS_ARR[INCANTATION].name);
+    player->action.data = NULL;
+    player->action.status = ONGOING;
+    player->action.end = timer_end;
 }
 
 static void send_gui_p_start_inc(serverdata_t *sdata, fdarray_t *fdarray,
-    client_t *client, incantation_t *incantation)
+    client_t *client)
 {
     char data[BUFFSIZE] = {0};
     size_t timer_end = set_timer_end(sdata->args->freq,
@@ -114,8 +80,8 @@ static void send_gui_p_start_inc(serverdata_t *sdata, fdarray_t *fdarray,
         fdarray->clients[k].player->level == client->player->level &&
         fdarray->clients[k].player->id != client->player->id) {
             sprintf(data, "%s %d", data, fdarray->clients[k].player->id);
-            set_player_incantation_end(fdarray->clients[k].player,
-                timer_end, incantation);
+            set_player_incantation_end(fdarray->clients[k].player, timer_end);
+            fdarray->clients[k].player->incantation.starter = false;
             set_message(&(fdarray->clients[k]), "Elevation underway", NULL);
         }
     }
@@ -126,22 +92,15 @@ static void send_gui_p_start_inc(serverdata_t *sdata, fdarray_t *fdarray,
 int cmd_incantation(serverdata_t *sdata, fdarray_t *fdarray,
     client_t *client, char *data)
 {
-    incantation_t *incantation = NULL;
-
     if (strlen(data) != 0) {
         set_message(client, "ko", NULL);
         return EXIT_FAILURE;
     }
-    if (client->player->level < 8 && incantation_start_ok(sdata,
-        client->player)) {
-        incantation = set_incantation(sdata, fdarray, client);
-        if (incantation == NULL)
-            return EXIT_FAILURE;
+    if (client->player->level < 8 && incantation_start_ok(sdata, client)) {
         set_player_incantation_end(client->player,
-            set_timer_end(sdata->args->freq, ACTIONS_ARR[INCANTATION].delay),
-            incantation);
+            set_timer_end(sdata->args->freq, ACTIONS_ARR[INCANTATION].delay));
         set_message(client, "Elevation underway", NULL);
-        send_gui_p_start_inc(sdata, fdarray, client, incantation);
+        send_gui_p_start_inc(sdata, fdarray, client);
     } else {
         set_message(client, "ko", NULL);
     }

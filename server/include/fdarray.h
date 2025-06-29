@@ -44,9 +44,10 @@ typedef struct action_s {
 typedef struct incantation_s incantation_t;
 
 struct incantation_s {
+    bool starter;
+    int level_after;
     int nb_players;
-    int *player_inc_ids;
-    int done;
+    int player_inc_ids[NBCLIENTS_MAX];
 };
 
 typedef struct player_s player_t;
@@ -65,7 +66,7 @@ struct player_s {
     pos_t pos;
     player_dir_t orientation;
     action_t action;
-    incantation_t *incantation;
+    incantation_t incantation;
     int inventory[NB_DIFF_ITEMS];
     size_t time_use_life;
     player_t *next;

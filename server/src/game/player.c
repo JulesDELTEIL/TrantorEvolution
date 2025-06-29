@@ -79,8 +79,6 @@ int kill_player(serverdata_t *sdata, fdarray_t *fdarray, client_t *client)
     sprintf(answer, "%d", client->player->id);
     send_guis(sdata, fdarray, "pdi", answer);
     drop_inventory(&(sdata->game_data), client->player);
-    if (client->player->incantation != NULL)
-        client->player->incantation->done += 1;
     if (client->player->action.cmd != NULL)
         free(client->player->action.cmd);
     if (client->player->action.data != NULL)
@@ -143,7 +141,7 @@ static int add_player(serverdata_t *sdata, fdarray_t *fdarray,
     new->level = 1;
     new->pos = set_player_spawn(sdata, fdarray, team);
     new->orientation = (rand() % 4) + 1;
-    new->incantation = NULL;
+    new->incantation = (incantation_t){0};
     set_action(new);
     for (uint_t k = 0; k < NB_DIFF_ITEMS; k++)
         new->inventory[k] = 0;

@@ -133,7 +133,6 @@ Paramètres :
 
     -h <machine> : Adresse IP ou nom d’hôte du serveur.
 
-
 ## 4. Support
 
 Au besoin, vous pouvez contacter les créateurs de ce projet :

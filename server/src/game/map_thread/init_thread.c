@@ -15,30 +15,6 @@
 #include "map.h"
 #include "serverdata.h"
 
-static int get_biome(double noise)
-{
-    if (noise <= SEA_NOISE)
-        return SEA;
-    if (noise <= BEACH_NOISE)
-        return BEACH;
-    if (noise <= PLAINS_NOISE)
-        return PLAINS;
-    if (noise <= FOREST_NOISE)
-        return FOREST;
-    return MOUNTAINS;
-}
-
-static int get_spawn_biome(float noise)
-{
-    if (noise <= BEACH_NOISE)
-        return BEACH;
-    if (noise <= PLAINS_NOISE)
-        return PLAINS;
-    if (noise <= FOREST_NOISE)
-        return FOREST;
-    return MOUNTAINS;
-}
-
 static void refill_tiles(tile_t *tile, bool biome_active)
 {
     biome_distribution_t dist;
@@ -97,30 +73,61 @@ static void *get_total(int *total, int width, int height, tile_t **tiles)
     }
 }
 
+static int *create_shuffled_indices(int area)
+{
+    int *shuffle = malloc(sizeof(int) * area);
+    int new_value = 0;
+    int tmp = 0;
+
+    if (!shuffle)
+        return NULL;
+    for (int i = 0; i < area; i++)
+        shuffle[i] = i;
+    for (int i = area - 1; i > 0; i--) {
+        new_value = rand() % (i + LAST_VALUE);
+        tmp = shuffle[i];
+        shuffle[i] = shuffle[new_value];
+        shuffle[new_value] = tmp;
+    }
+    return shuffle;
+}
+
+static void refill_tile_resources(tile_t *tile,
+    biome_distribution_t dist,
+    int *total,
+    density_t *max_dens)
+{
+    int add = 0;
+
+    for (int r = 0; r < NB_RESOURCES; r++) {
+        add = (total[r] < max_dens->dens[r]) ? rand() % dist.refill[r] : 0;
+        tile->resources[r] += add;
+        total[r] += add;
+    }
+}
+
 static void refill_map(tile_t **tiles,
     pos_t size,
     density_t *max_dens,
     bool biome_active)
 {
-    biome_distribution_t dist = {{0}, {0}};
-    int total[NB_RESOURCES] = {0, 0, 0, 0, 0, 0, 0};
-    int area = size.x * size.y;
     int x = 0;
     int y = 0;
-    int add = 0;
+    int area = size.x * size.y;
+    int total[NB_RESOURCES] = {0};
+    biome_distribution_t dist;
+    int *indices = create_shuffled_indices(area);
 
+    if (!indices)
+        return;
     get_total(total, size.x, size.y, tiles);
     for (int i = 0; i < area; i++) {
-        x = (i / size.y);
-        y = (i % size.y);
+        x = indices[i] / size.y;
+        y = indices[i] % size.y;
         dist = get_refill_status(biome_active, x, y, tiles);
-        for (int r = 0; r < NB_RESOURCES; r++) {
-            add = (total[r] < max_dens->dens[r])
-            ? rand() % dist.refill[r] : 0;
-            tiles[x][y].resources[r] += add;
-            total[r] += add;
-        }
+        refill_tile_resources(&tiles[x][y], dist, total, max_dens);
     }
+    free(indices);
 }
 
 static void generate_noise(tile_t **map_tiles, int Y)
