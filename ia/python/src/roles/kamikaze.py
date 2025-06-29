@@ -9,6 +9,9 @@ from src.roles.base_role import BaseRole
 from src.action import Commands, Action
 
 class Kamikaze(BaseRole):
+    """
+    Kamikaze will drop all his when spawning and die.
+    """
     def __init__(self):
         super().__init__()
     

@@ -13,6 +13,9 @@ from src.macros import STONES, X, Y
 from src.utils import get_movements
 
 class Worker(BaseRole):
+    """
+    Walk randomly and look for stones. When he saw one, take it then bring it to kindom base.
+    """
     def __init__(self):
         super().__init__()
         self.mode: str = 'GATHERING' # GATHERING or DELIVERING

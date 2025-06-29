@@ -11,6 +11,11 @@ from src.macros import LEVEL_REQUIREMENTS, BROADCAST_MSG
 from src.cypher import open_rockyou_file, crack_fernet
 
 class Queen(BaseRole):
+    """
+    If Mother Queen, create the kindom (3 queens, 1 foreman, 1 matriarch).
+    
+    A classic queen look to incant.
+    """
     def __init__(self, *inp):
         super().__init__()
         if len(inp) == 1:

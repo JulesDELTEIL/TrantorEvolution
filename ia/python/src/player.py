@@ -13,6 +13,9 @@ from src.utils import parse_vision, parse_inventory
 from src.macros import X, Y
 
 class Player():
+    """
+    All things related to AI logic. All actions handled when server send back 'ok'
+    """
     def __init__(self, host: str, port: str, team_name: str):
         self._player_host: str = host
         self._player_port: str = port

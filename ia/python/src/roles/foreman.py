@@ -9,6 +9,9 @@ from src.roles.base_role import *
 from src.action import Commands, Action
 
 class Foreman(BaseRole):
+    """
+    Foreman will create workers (see Worker class) and taking part of incantations to lvl 8
+    """
     def __init__(self):
         super().__init__()
         self._queue.append(Commands(Action.TAKE, 'food'))

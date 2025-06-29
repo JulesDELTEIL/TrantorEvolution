@@ -10,6 +10,9 @@ import socket
 BUFF_SIZE = 1024
 
 class ServerManager:
+    """
+    Communication with server with circular buffer
+    """
     def __init__(self, host: str, port: int):
         self._host = host
         self._port = port
