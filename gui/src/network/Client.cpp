@@ -17,8 +17,10 @@ namespace network {
 
 Client::~Client()
 {
-    _network_runing = false;
-    _network.join();
+    if (_network_runing == true) {
+        _network_runing = false;
+        _network.join();
+    }
 }
 
 static Command splitCodeAndArg(const std::string &string)
@@ -38,15 +40,41 @@ static Command splitCodeAndArg(const std::string &string)
 
 void Client::setSocket(const std::string &server, const int &port)
 {
-    _socket.setSocket(server, port);
+    try {
+        _socket.setSocket(server, port);
+    }
+    catch(const network::Socket::socketError& e) {
+        std::cerr << e.what() << std::endl;
+        return;
+    }
     _stream.reset(fdopen(_socket.getFd(), "r"));
     _network_runing = true;
     _network = std::thread(&Client::checkEvent, this);
 }
 
+void Client::pushNetpackEvent(const std::string& command)
+{
+    std::vector<char> tempV = _buffer;
+    size_t k = command.size();
+    Command infos = splitCodeAndArg(command);
+    NetEventPack event;
+
+    _buffer.clear();
+    for (size_t i = k + 1; i < tempV.size(); ++i)
+        _buffer.push_back(tempV[i]);
+    if (CODE_EVENT_LINK.contains(infos.first)) {
+        event.event = CODE_EVENT_LINK.at(infos.first);
+        event.pack = infos.second;
+        _mutex.lock();
+        _events.push(event);
+        _mutex.unlock();
+    }
+}
+
 void Client::checkEvent(void)
 {
     int rc = 0;
+    std::string command;
 
     while (_network_runing) {
         _socket.pollServer();
@@ -58,37 +86,40 @@ void Client::checkEvent(void)
                     _buffer.push_back(tempBuffer[k]);
             }
         }
+        if (_buffer.size() != 0) {
+            for (size_t size = 0; _buffer[size] != '\n'; ++size) {
+                if (size >= _buffer.size()) {
+                    command.clear();
+                    break;
+                }
+                command.push_back(_buffer[size]);
+            }
+            if (!command.empty()) {
+                pushNetpackEvent(command);
+                command.clear();
+            }
+        }
     }
 }
 
 bool Client::pollEvent(NetEventPack& event)
 {
-    size_t size = _buffer.size();
-    std::vector<char> tempV = _buffer;
-    size_t k = 0;
-    std::string command;
-
     event.event = network::NONE;
     event.pack = {};
-    if (size == 0)
+    if (_events.empty())
         return false;
-    for (k = 0; _buffer[k] != '\n'; ++k)
-        command.push_back(_buffer[k]);
-    _buffer.clear();
-    for (size_t i = k + 1; i < tempV.size(); i++)
-        _buffer.push_back(tempV[i]);
-    Command infos = splitCodeAndArg(command);
-    if (CODE_EVENT_LINK.contains(infos.first)) {
-        event.event = CODE_EVENT_LINK.at(infos.first);
-        event.pack = infos.second;
-        return true;
-    }
-    return false;
+    event = _events.front();
+    _mutex.lock();
+    _events.pop();
+    _mutex.unlock();
+    return true;
 }
 
 void Client::sendData(const std::string& msg) const
 {
-    write(_socket.getFd(), msg.data(), msg.size());
+    std::string to_send(msg);
+    to_send.append("\n");
+    write(_socket.getFd(), to_send.data(), to_send.size());
 }
 
 } // namespace network
