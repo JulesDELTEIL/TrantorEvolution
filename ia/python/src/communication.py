@@ -124,6 +124,9 @@ class Communication():
         if response_list[0] == "Current":
             self._incantation_success(response)
         elif self.role._last_sent:
+            if response_list[0] == "ko":
+                self.role._queue.clear()
+                return True
             if response_list[0][0] == '[':
                 if self.role._last_sent == Action.LOOK or self.role._last_sent == Action.INVENTORY:
                     self.COMMANDS[self.role._last_sent](response)

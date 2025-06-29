@@ -43,12 +43,12 @@ def get_movements(start: list[int], end: list[int], direction: str) -> list[Comm
         ti = directions.index(target) + 1
         diff = (ti - ci) % 4
         if diff == 1:
-            queue.appendleft(Commands(Action.LEFT))
+            queue.appendleft(Commands(Action.RIGHT))
         elif diff == 2:
             queue.appendleft(Commands(Action.RIGHT))
             queue.appendleft(Commands(Action.RIGHT))
         elif diff == 3:
-            queue.appendleft(Commands(Action.RIGHT))
+            queue.appendleft(Commands(Action.LEFT))
         return queue
 
     if dx != 0:

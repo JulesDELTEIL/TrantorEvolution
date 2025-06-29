@@ -28,20 +28,15 @@ class Worker(BaseRole):
     def decide_action(self) -> None:
         self._cycle += 1
         if self.mode == 'GATHERING':
-            if self.carry is not None:
-                self.mode = 'DELIVERING'
-                return
             if self.pos[X] == self.queens_pos[X] and self.pos[Y] == self.queens_pos[Y]:
                 self._queue.appendleft(Commands(Action.FORWARD))
-                self._queue.appendleft(Commands(Action.FORWARD))
-                self._queue.appendleft(Commands(Action.LOOK))
-                return
             if self._last_vision is not None:
                 for objects in self._last_vision:
                     for stone in STONES:
                         if stone in objects:
                             self.carry = stone
                             self._queue.appendleft(Commands(Action.TAKE, stone))
+                            self._last_vision = None
                             return
 
             self._last_vision = None
@@ -54,20 +49,15 @@ class Worker(BaseRole):
             self.check_eat = True
             return
 
-        elif self.carry == None:
-            self.mode = 'GATHERING'
-            return
         elif self.mode == 'DELIVERING':
             if self.pos[X] == self.queens_pos[X] and self.pos[Y] == self.queens_pos[Y]:
-                self.mode = 'GATHERING'
                 self._queue.appendleft(Commands(Action.SET, self.carry))
                 self.carry = None
                 self._last_vision = None
             else:
                 self._queue = get_movements(self.pos, self.queens_pos, self._direction)
-    
-    def setup_direction(self) -> None:
-        self._queue.appendleft(Commands(Action.FORWARD))
+        else:
+            self.mode = 'GATHERING'
 
     def handle_broadcast(self, response_list: list[str]) -> bool:
         return False

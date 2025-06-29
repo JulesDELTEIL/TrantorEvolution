@@ -29,7 +29,7 @@ class Player():
             Action.INVENTORY: self._update_inventory,
             Action.BROADCAST: self._void,
             Action.TAKE: self._take_object,
-            Action.SET: self._void,
+            Action.SET: self._set_object,
             Action.FORK: self._spawn_new_client,
             Action.INCANTATION: self._incantation_success,
             Action.CONNECT_NBR: self._update_connect_nbr,
@@ -92,7 +92,19 @@ class Player():
             self.role.carry = None
             self.role._last_vision = None
         else:
+            self.role._queue.clear()
             self.role.mode = 'DELIVERING'
+            
+    def _set_object(self, response: str) -> None:
+        if response == "ko" or response == "ko\n":
+            self.role.carry = None
+            self.role._last_vision = None
+            self.role._queue.clear()
+        else:
+            self.role._queue.clear()
+            self.role.mode = 'GATHERING'
+            self.role.carry = None
+            self.role._last_vision = None
     
     def _incantation_success(self, response: str) -> None:
         self.role._queue.clear()
