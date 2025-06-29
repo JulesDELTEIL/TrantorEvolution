@@ -46,10 +46,10 @@ static int check_game_end(serverdata_t *sdata, fdarray_t *fdarray,
     client_t *client)
 {
     for (uint_t k = 0; k < sdata->game_data.nb_of_teams; k++) {
-        if (sdata->game_data.teams[k].level_max >= 6) {
+        if (sdata->game_data.teams[k].level_max >= NB_MAX_LVL_TO_WIN) {
             printf("\033[33mGAME END, Winner team : %s\033[0m\n",
                 client->player->team->name);
-            send_guis(sdata, fdarray, "seg", sdata->game_data.teams[k].name);
+            send_guis(sdata, fdarray, M_SEG, sdata->game_data.teams[k].name);
             sdata->is_running = false;
         }
     }
@@ -58,7 +58,7 @@ static int check_game_end(serverdata_t *sdata, fdarray_t *fdarray,
 static int player_set_level(player_t *player, int level)
 {
     player->level = level;
-    if (player->level == 8)
+    if (player->level == MAX_LEVEL)
         player->team->level_max += 1;
 }
 
@@ -68,7 +68,7 @@ static int affect_incantation_players(serverdata_t *sdata, fdarray_t *fdarray,
     player_t *head = sdata->game_data.players;
     char answer[BUFFSIZE] = {0};
 
-    sprintf(answer, "Current level: %d", client->player->level);
+    sprintf(answer, "%d", client->player->level);
     for (uint_t k = NB_SERVER_FD; k < NBCLIENTS_MAX; k++) {
         if (fdarray->clients[k].type != AI)
             continue;
@@ -76,7 +76,7 @@ static int affect_incantation_players(serverdata_t *sdata, fdarray_t *fdarray,
         client->player->incantation)) {
             player_set_level(fdarray->clients[k].player,
                 client->player->incantation.level_after);
-            set_message(&(fdarray->clients[k]), answer, NULL);
+            set_message(&(fdarray->clients[k]), M_INC_END, answer);
         }
     }
 }
@@ -94,6 +94,6 @@ int action_incantation(serverdata_t *sdata, fdarray_t *fdarray,
     client->player->incantation = (incantation_t){0};
     sprintf(gui_msg, "%d %d %d", client->player->pos.x,
         client->player->pos.y, client->player->level);
-    send_guis(sdata, fdarray, "pie", gui_msg);
+    send_guis(sdata, fdarray, M_PIE, gui_msg);
     check_game_end(sdata, fdarray, client);
 }

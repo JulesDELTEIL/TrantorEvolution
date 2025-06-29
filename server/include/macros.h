@@ -21,7 +21,7 @@ typedef unsigned int uint_t;
     #define CLIENT_BUFFER_SIZE 1024
 
     #define CLOSE_PROCESS 12
-    #define NBCLIENTS_MAX 500
+    #define NBCLIENTS_MAX 200
     #define NBCLIENTS_QUEUE 100
     #define NB_SERVER_FD 2
     #define NBTOTAL_FD (NBCLIENTS_MAX + NB_SERVER_FD)
@@ -45,6 +45,7 @@ enum client_type_e {
 };
 
 static const char GRAPHIC_TEAM[] = "GRAPHIC";
+static const char M_WELCOME[] = "WELCOME";
 
 static const char PLAYER_STR_LEN = 6;
 
@@ -58,5 +59,8 @@ static const uint_t RESOURCES_STR_LEN[] = {
     6,
     8
 };
+
+    #define MAX_LEVEL 8
+    #define NB_MAX_LVL_TO_WIN 6
 
 #endif

@@ -19,10 +19,10 @@ int cmd_msz(serverdata_t *sdata, fdarray_t *fdarray,
     int rc = DEFAULTRC;
 
     if (strlen(data) != 0) {
-        set_message(client, "ko", NULL);
+        set_message(client, M_KO, NULL);
         return EXIT_FAILURE;
     }
     sprintf(answer, "%d %d", sdata->args->width, sdata->args->height);
-    set_message(client, "msz", answer);
+    set_message(client, M_MSZ, answer);
     return EXIT_SUCCESS;
 }

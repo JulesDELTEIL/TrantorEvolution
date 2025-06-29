@@ -28,7 +28,7 @@ int cmd_connect_nbr(serverdata_t *sdata, fdarray_t *fdarray,
     char answer[BUFFSIZE] = {0};
 
     if (strlen(data) != 0) {
-        set_message(client, "ko", NULL);
+        set_message(client, M_KO, NULL);
         return EXIT_FAILURE;
     }
     sprintf(answer, "%d", client->player->team->space_left);

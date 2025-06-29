@@ -53,6 +53,6 @@ int openconnection(serverdata_t *sdata, fdarray_t *fdarray)
     if (newfd < 0)
         returnwitherror(ERROR_ACCEPT, EXIT_FAILURE);
     set_new_client(sdata, fdarray, nextfree, newfd);
-    set_message(&(fdarray->clients[nextfree]), "WELCOME", NULL);
+    set_message(&(fdarray->clients[nextfree]), M_WELCOME, NULL);
     return EXIT_SUCCESS;
 }

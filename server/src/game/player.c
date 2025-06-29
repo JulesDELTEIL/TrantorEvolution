@@ -75,9 +75,9 @@ int kill_player(serverdata_t *sdata, fdarray_t *fdarray, client_t *client)
 
     if (client->player == NULL)
         return EXIT_FAILURE;
-    set_message(client, "dead", NULL);
+    set_message(client, M_DEAD, NULL);
     sprintf(answer, "%d", client->player->id);
-    send_guis(sdata, fdarray, "pdi", answer);
+    send_guis(sdata, fdarray, M_PDI, answer);
     drop_inventory(&(sdata->game_data), client->player);
     if (client->player->action.cmd != NULL)
         free(client->player->action.cmd);
@@ -120,7 +120,7 @@ static pos_t set_player_spawn(serverdata_t *sdata, fdarray_t *fdarray,
         if (head->next == NULL) {
             found = head->pos;
             sprintf(gui_data, "%d", (int)head->id);
-            send_guis(sdata, fdarray, "ebo", gui_data);
+            send_guis(sdata, fdarray, M_EBO, gui_data);
             del_egg(team, head->id);
             return found;
         }
@@ -165,7 +165,7 @@ int send_pnw(serverdata_t *sdata, player_t *player, client_t *ui_client)
         player->level,
         player->team->name
     );
-    set_message(ui_client, "pnw", buff);
+    set_message(ui_client, M_PNW, buff);
     return EXIT_SUCCESS;
 }
 

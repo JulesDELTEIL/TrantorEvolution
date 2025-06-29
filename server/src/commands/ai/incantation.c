@@ -82,10 +82,10 @@ static void send_gui_p_start_inc(serverdata_t *sdata, fdarray_t *fdarray,
             sprintf(data, "%s %d", data, fdarray->clients[k].player->id);
             set_player_incantation_end(fdarray->clients[k].player, timer_end);
             fdarray->clients[k].player->incantation.starter = false;
-            set_message(&(fdarray->clients[k]), "Elevation underway", NULL);
+            set_message(&(fdarray->clients[k]), M_INC_START, NULL);
         }
     }
-    send_guis(sdata, fdarray, "pic", data);
+    send_guis(sdata, fdarray, M_PIC, data);
 }
 
 // COMMAND
@@ -93,16 +93,17 @@ int cmd_incantation(serverdata_t *sdata, fdarray_t *fdarray,
     client_t *client, char *data)
 {
     if (strlen(data) != 0) {
-        set_message(client, "ko", NULL);
+        set_message(client, M_KO, NULL);
         return EXIT_FAILURE;
     }
-    if (client->player->level < 8 && incantation_start_ok(sdata, client)) {
+    if (client->player->level < MAX_LEVEL &&
+        incantation_start_ok(sdata, client)) {
         set_player_incantation_end(client->player,
             set_timer_end(sdata->args->freq, ACTIONS_ARR[INCANTATION].delay));
-        set_message(client, "Elevation underway", NULL);
+        set_message(client, M_INC_START, NULL);
         send_gui_p_start_inc(sdata, fdarray, client);
     } else {
-        set_message(client, "ko", NULL);
+        set_message(client, M_KO, NULL);
     }
     return EXIT_SUCCESS;
 }

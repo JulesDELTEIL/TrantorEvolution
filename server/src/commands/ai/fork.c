@@ -25,7 +25,7 @@ static int send_gui_fork_end(serverdata_t *sdata, fdarray_t *fdarray,
         client->player->pos.x,
         client->player->pos.y
     );
-    send_guis(sdata, fdarray, "enw", data);
+    send_guis(sdata, fdarray, M_ENW, data);
 }
 
 static int send_gui_fork_start(serverdata_t *sdata, fdarray_t *fdarray,
@@ -34,7 +34,7 @@ static int send_gui_fork_start(serverdata_t *sdata, fdarray_t *fdarray,
     char data[BUFFSIZE] = {0};
 
     sprintf(data, "%d", client->player->id);
-    send_guis(sdata, fdarray, "pfk", data);
+    send_guis(sdata, fdarray, M_PFK, data);
 }
 
 static int add_egg(serverdata_t *sdata, fdarray_t *fdarray,
@@ -58,11 +58,11 @@ int action_fork(serverdata_t *sdata, fdarray_t *fdarray,
     client_t *client, char *data)
 {
     if (add_egg(sdata, fdarray, client) == EXIT_FAILURE) {
-        set_message(client, "ko", NULL);
+        set_message(client, M_KO, NULL);
         return EXIT_FAILURE;
     }
     client->player->team->space_left++;
-    set_message(client, "ok", NULL);
+    set_message(client, M_OK, NULL);
     return EXIT_SUCCESS;
 }
 
@@ -71,7 +71,7 @@ int cmd_fork(serverdata_t *sdata, fdarray_t *fdarray,
     client_t *client, char *data)
 {
     if (strlen(data) != 0) {
-        set_message(client, "ko", NULL);
+        set_message(client, M_KO, NULL);
         return EXIT_FAILURE;
     }
     client->player->action.cmd = strdup(ACTIONS_ARR[FORK].name);

@@ -34,7 +34,7 @@ static void send_gui_p_moved(serverdata_t *sdata, fdarray_t *fdarray,
         client->player->pos.y,
         client->player->orientation
     );
-    send_guis(sdata, fdarray, "ppo", data);
+    send_guis(sdata, fdarray, M_PPO, data);
 }
 
 // ACTION
@@ -42,7 +42,7 @@ int action_right(serverdata_t *sdata, fdarray_t *fdarray,
     client_t *client, char *data)
 {
     rotate_player(client->player);
-    set_message(client, "ok", NULL);
+    set_message(client, M_OK, NULL);
     send_gui_p_moved(sdata, fdarray, client);
 }
 

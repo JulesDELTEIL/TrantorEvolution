@@ -72,7 +72,7 @@ static int send_msg(serverdata_t *sdata, client_t *sender,
     int k = calculate_k(sdata, sender, dest);
 
     sprintf(answer, "%d, %s", k, data);
-    set_message(dest, "message", answer);
+    set_message(dest, M_BDC_MSG, answer);
 }
 
 static int prepare_answer_message(serverdata_t *sdata, fdarray_t *fdarray,
@@ -94,14 +94,14 @@ static void send_gui_p_broadcast(serverdata_t *sdata, fdarray_t *fdarray,
         client->player->id,
         msg
     );
-    send_guis(sdata, fdarray, "pbc", data);
+    send_guis(sdata, fdarray, M_PBC, data);
 }
 
 int action_broadcast(serverdata_t *sdata, fdarray_t *fdarray,
     client_t *client, char *data)
 {
     prepare_answer_message(sdata, fdarray, client, data);
-    set_message(client, "ok", NULL);
+    set_message(client, M_OK, NULL);
     send_gui_p_broadcast(sdata, fdarray, client, data);
 }
 
@@ -109,7 +109,7 @@ int cmd_broadcast(serverdata_t *sdata, fdarray_t *fdarray,
     client_t *client, char *data)
 {
     if (strlen(data) == 0) {
-        set_message(client, "ko", NULL);
+        set_message(client, M_KO, NULL);
         return EXIT_FAILURE;
     }
     client->player->action.cmd = strdup(ACTIONS_ARR[BROADCAST].name);

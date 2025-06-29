@@ -20,16 +20,16 @@ int cmd_sst(serverdata_t *sdata, fdarray_t *fdarray,
     int new_freq = 0;
 
     if (strlen(data) == 0) {
-        set_message(client, "sbp", NULL);
+        set_message(client, M_SBP, NULL);
         return EXIT_FAILURE;
     }
     new_freq = atoi(data);
     if (new_freq == 0) {
-        set_message(client, "sbp", NULL);
+        set_message(client, M_SBP, NULL);
         return EXIT_FAILURE;
     }
     sdata->args->freq = new_freq;
     sprintf(answer, "%d", sdata->args->freq);
-    set_message(client, "sst", answer);
+    set_message(client, M_SST, answer);
     return EXIT_SUCCESS;
 }
