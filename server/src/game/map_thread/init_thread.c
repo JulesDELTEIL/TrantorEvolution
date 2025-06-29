@@ -73,14 +73,12 @@ static void *get_total(int *total, int width, int height, tile_t **tiles)
     }
 }
 
-static int *create_shuffled_indices(int area)
+static void create_shuffled_indices(int *shuffle, int area)
 {
-    int *shuffle = malloc(sizeof(int) * area);
     int new_value = 0;
     int tmp = 0;
 
-    if (!shuffle)
-        return NULL;
+
     for (int i = 0; i < area; i++)
         shuffle[i] = i;
     for (int i = area - 1; i > 0; i--) {
@@ -89,7 +87,6 @@ static int *create_shuffled_indices(int area)
         shuffle[i] = shuffle[new_value];
         shuffle[new_value] = tmp;
     }
-    return shuffle;
 }
 
 static void refill_tile_resources(tile_t *tile,
@@ -116,10 +113,9 @@ static void refill_map(tile_t **tiles,
     int area = size.x * size.y;
     int total[NB_RESOURCES] = {0};
     biome_distribution_t dist;
-    int *indices = create_shuffled_indices(area);
+    int indices[area];
 
-    if (!indices)
-        return;
+    create_shuffled_indices(indices, area);
     get_total(total, size.x, size.y, tiles);
     for (int i = 0; i < area; i++) {
         x = indices[i] / size.y;
@@ -127,7 +123,6 @@ static void refill_map(tile_t **tiles,
         dist = get_refill_status(biome_active, x, y, tiles);
         refill_tile_resources(&tiles[x][y], dist, total, max_dens);
     }
-    free(indices);
 }
 
 static void generate_noise(tile_t **map_tiles, int Y)
