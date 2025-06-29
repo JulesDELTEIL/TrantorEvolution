@@ -53,11 +53,11 @@ int action_eject(serverdata_t *sdata, fdarray_t *fdarray,
     char answer[BUFFSIZE] = {0};
 
     if (eject_players(sdata, client))
-        set_message(client, "ok", NULL);
+        set_message(client, M_OK, NULL);
     else
-        set_message(client, "ko", NULL);
+        set_message(client, M_KO, NULL);
     sprintf(answer, "%d", client->player->id);
-    send_guis(sdata, fdarray, "pex", answer);
+    send_guis(sdata, fdarray, M_PEX, answer);
 }
 
 // COMMAND
@@ -65,7 +65,7 @@ int cmd_eject(serverdata_t *sdata, fdarray_t *fdarray,
     client_t *client, char *data)
 {
     if (strlen(data) != 0) {
-        set_message(client, "ko", NULL);
+        set_message(client, M_KO, NULL);
         return EXIT_FAILURE;
     }
     client->player->action.cmd = strdup(ACTIONS_ARR[EJECT].name);

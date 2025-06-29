@@ -166,13 +166,13 @@ int action_look(serverdata_t *sdata, fdarray_t *fdarray,
 
     if (!answer)
         return EXIT_FAILURE;
-    if (client->player->level >= 8) {
-        set_message(client, "ko", NULL);
+    if (client->player->level >= MAX_LEVEL) {
+        set_message(client, M_KO, NULL);
         free(answer);
         return EXIT_FAILURE;
     } else {
         if (fill_answer(sdata, client, answer, answer_size) == EXIT_FAILURE) {
-            set_message(client, "ko", NULL);
+            set_message(client, M_KO, NULL);
             free(answer);
             return EXIT_FAILURE;
         } else {
@@ -188,7 +188,7 @@ int cmd_look(serverdata_t *sdata, fdarray_t *fdarray,
     client_t *client, char *data)
 {
     if (strlen(data) != 0) {
-        set_message(client, "ko", NULL);
+        set_message(client, M_KO, NULL);
         return EXIT_FAILURE;
     }
     client->player->action.cmd = strdup(ACTIONS_ARR[LOOK].name);

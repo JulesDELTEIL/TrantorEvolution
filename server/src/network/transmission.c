@@ -61,7 +61,7 @@ int receive_data(serverdata_t *sdata, fdarray_t *fdarray, client_t *client)
     return EXIT_SUCCESS;
 }
 
-static int get_datalen(char *data)
+static int get_datalen(const char *data)
 {
     if (data == NULL)
         return 0;
@@ -111,7 +111,7 @@ static int add_message_to_queue(client_t *client, char *msg, uint_t len)
     return EXIT_SUCCESS;
 }
 
-int set_message(client_t *client, char *cmd, char *data)
+int set_message(client_t *client, const char *cmd, char *data)
 {
     uint_t datalen = get_datalen(data);
     uint_t cmdlen = get_datalen(cmd);

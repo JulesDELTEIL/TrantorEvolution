@@ -63,6 +63,6 @@ int set_team(serverdata_t *sdata, fdarray_t *fdarray,
             return EXIT_SUCCESS;
         }
     }
-    set_message(client, "ko", NULL);
+    set_message(client, M_KO, NULL);
     return EXIT_FAILURE;
 }

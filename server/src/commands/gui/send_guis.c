@@ -9,7 +9,8 @@
 #include "fdarray.h"
 #include "transmission.h"
 
-int send_guis(serverdata_t *sdata, fdarray_t *fdarray, char *cmd, char *data)
+int send_guis(serverdata_t *sdata, fdarray_t *fdarray, const char *cmd,
+    char *data)
 {
     for (uint_t k = NB_SERVER_FD; k < NBTOTAL_FD; k++)
         if (fdarray->clients[k].type == GUI)
