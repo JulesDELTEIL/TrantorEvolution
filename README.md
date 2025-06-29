@@ -75,7 +75,7 @@ Fonctionnement :
 
 L'IA de Zappy a pour principe de créer un royaume à partir d'une reine.
 Cette reine va engendrer ensuite plusieurs autres IA aux rôles précis, qui vont organiser ce royaume.
-Ce fonctionnement permet de regrouper les ressources et faire évoluer les IA rapidement.
+Ce fonctionnement permet de regrouper les ressources et de faire évoluer les IA rapidement.
 
 Rôles :
 
@@ -98,11 +98,13 @@ Ces messages sont cryptés selon le nom de leurs équipes, qu'eux seuls connaiss
 
 Cependant un "Ouvrier" d'une équipe adversaire peut tenter de décrypter ces messages afin de perturber l'organisation
 de cette équipe.
+
 Ces ouvriers utilisent une méthode de "BruteForce" afin de décrypter ces messages grâce à un fichier de potentiels codes.
-Si vous souhaitez que les IA puissent tenter de décrypter les messages adversaires, veuillez place le fichier "rockyou.txt"
-à la racine du programme.
+Si vous souhaitez que les IA puissent tenter de décrypter les messages des adversaires,
+veuillez placer le fichier "rockyou.txt" à la racine du programme.
 
 Lien de téléchargement de "rockyou.txt" :
+
 https://www.kaggle.com/datasets/wjburns/common-password-list-rockyoutxt
 
 ## Compilation
