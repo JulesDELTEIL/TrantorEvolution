@@ -12,6 +12,9 @@ from src.action import Commands
 from src.roles.map_memory import MapMemory
 
 class BaseRole(ABC):
+    """
+    BaseRole contains all attributes necessaries to every role.
+    """
     def __init__(self):
         self._level = 1
         self._cycle: int = 0

@@ -29,9 +29,12 @@ class Worker(BaseRole):
         self._cycle += 1
         if self.mode == 'GATHERING':
             if self.carry is not None:
+                self.mode = 'DELIVERING'
                 return
             if self.pos[X] == self.queens_pos[X] and self.pos[Y] == self.queens_pos[Y]:
                 self._queue.appendleft(Commands(Action.FORWARD))
+                self._queue.appendleft(Commands(Action.FORWARD))
+                self._queue.appendleft(Commands(Action.LOOK))
                 return
             if self._last_vision is not None:
                 for objects in self._last_vision:
