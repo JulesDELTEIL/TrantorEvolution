@@ -50,6 +50,7 @@ add_executable( ${PROJECT_NAME}
     ${SERVER_GUI_CMD_DIR}sst.c
     ${SERVER_GUI_CMD_DIR}pin.c
     ${SERVER_GUI_CMD_DIR}bio.c
+    ${SERVER_GUI_CMD_DIR}pnw.c
     ${SERVER_GUI_CMD_DIR}send_guis.c
     ${SERVER_THR_DIR}init_map.c
     ${SERVER_THR_DIR}init_thread.c
