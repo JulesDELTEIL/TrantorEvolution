@@ -8,7 +8,8 @@ import sys
 import socket
 from src.client import Trantorian
 
-ARG_NB = 7
+MIN_ARG_NB = 5
+MAX_ARG_NB = 7
 ERROR = 84
 
 def create_configuration():
@@ -17,9 +18,10 @@ def create_configuration():
         "-n": "",
         "-p": ""
     }
-    if len(sys.argv) != ARG_NB:
-        raise ValueError("USAGE: ./zappy_ai -p port -h ip -n team_name")
-    for i in range(1, ARG_NB - 1, 2):
+    len_arg = len(sys.argv)
+    if len_arg != MIN_ARG_NB and len_arg != MAX_ARG_NB:
+        raise ValueError("USAGE: ./zappy_ai -p port -n team_name [-h ip]")
+    for i in range(1, len_arg - 1, 2):
         if not sys.argv[i] in conf.keys():
             raise NameError("Flag mismatch")
         conf[sys.argv[i]] = sys.argv[i + 1]
@@ -27,6 +29,8 @@ def create_configuration():
         raise ValueError("Port number must be between 1025 and 65535 includes")
     if conf["-n"] == "GRAPHIC":
         raise NameError("Team name can't be 'GRAPHIC'")
+    if not conf["-h"]:
+        conf["-h"] = "127.0.0.1"
     return conf
 
 if __name__ == "__main__":
