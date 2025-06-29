@@ -38,6 +38,7 @@ add_executable( ${PROJECT_NAME}
     ${SERVER_AI_CMD_DIR}take.c
     ${SERVER_AI_CMD_DIR}broadcast.c
     ${SERVER_AI_CMD_DIR}look.c
+    ${SERVER_AI_CMD_DIR}look_utils.c
     ${SERVER_AI_CMD_DIR}eject.c
     ${SERVER_AI_CMD_DIR}incantation.c
     ${SERVER_AI_CMD_DIR}incantation_end.c
@@ -55,6 +56,7 @@ add_executable( ${PROJECT_NAME}
     ${SERVER_THR_DIR}init_map.c
     ${SERVER_THR_DIR}init_thread.c
     ${SERVER_THR_DIR}perlin.c
+    ${SERVER_THR_DIR}status.c
 )
 
 ########## LINKAGE ##########

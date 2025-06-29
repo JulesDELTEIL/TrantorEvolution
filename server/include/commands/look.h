@@ -327,5 +327,11 @@ static const pos_t *LOOK_TILES[] = {
     W_LOOK_TILES
 };
 
+//utils
+
+int keep_on_map(int max_val, int val);
+pos_t get_map_coor(serverdata_t *sdata, pos_t player_pos, pos_t vect);
+int get_nb_tile_players(serverdata_t *sdata, pos_t tilepos);
+
 
 #endif /* !GAME_H_ */

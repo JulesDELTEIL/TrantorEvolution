@@ -42,6 +42,8 @@ static int add_egg(serverdata_t *sdata, fdarray_t *fdarray,
 {
     egg_t *new = malloc(sizeof(egg_t));
 
+    if (!new)
+        return EXIT_FAILURE;
     new->id = sdata->game_data.next_egg;
     sdata->game_data.next_egg++;
     new->pos = client->player->pos;
@@ -55,7 +57,10 @@ static int add_egg(serverdata_t *sdata, fdarray_t *fdarray,
 int action_fork(serverdata_t *sdata, fdarray_t *fdarray,
     client_t *client, char *data)
 {
-    add_egg(sdata, fdarray, client);
+    if (add_egg(sdata, fdarray, client) == EXIT_FAILURE) {
+        set_message(client, "ko", NULL);
+        return EXIT_FAILURE;
+    }
     client->player->team->space_left++;
     set_message(client, "ok", NULL);
     return EXIT_SUCCESS;
