@@ -45,9 +45,9 @@ class Player():
 
     def _update_mindmap(self, response: str) -> None:
         response_formatted = parse_vision(response)
-        self.role._last_vision = response_formatted[0]
+        self.role._last_vision = response_formatted
         if isinstance(self.role, Nobody):
-            if self.role._last_vision.count("player") > 1:
+            if self.role._last_vision[0].count("player") > 1:
                 self.role._is_there_anyone = True
             else:
                 self.role._is_there_anyone = False

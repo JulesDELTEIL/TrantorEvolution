@@ -13,7 +13,7 @@ from src.cypher import open_rockyou_file, crack_fernet
 class Queen(BaseRole):
     """
     If Mother Queen, create the kindom (3 queens, 1 foreman, 1 matriarch).
-    
+
     A classic queen look to incant.
     """
     def __init__(self, *inp):
@@ -90,11 +90,11 @@ class Queen(BaseRole):
     def _can_incant(self) -> bool:
         if self._cycle - self._last_incantation < 15 or (self._level < 2 and self._cycle < 50):
             return False
-        if not self._last_vision or self._last_vision.count('player') < 6:
+        if not self._last_vision or self._last_vision[0].count('player') < 6:
             return False
         requirements = LEVEL_REQUIREMENTS.get(self._level, {})
         for stone in requirements.keys():
-            if self._last_vision.count(stone) < requirements[stone]:
+            if self._last_vision[0].count(stone) < requirements[stone]:
                 return False
         return True
 

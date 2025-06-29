@@ -25,19 +25,79 @@ class Worker(BaseRole):
         self.check_eat: bool = True
         self.random = random
         
+    def _is_kindom_tile(self, look_index: int) -> bool:
+        if self._direction == "up":
+            if look_index == 1:
+                if self.pos[X] - 1 == self.queens_pos[X] and self.pos[Y] + 1 == self.queens_pos[Y]:
+                    return True
+            elif look_index == 2:
+                if self.pos[X] == self.queens_pos[X] and self.pos[Y] + 1 == self.queens_pos[Y]:
+                    return True
+            elif look_index == 3:
+                if self.pos[X] + 1 == self.queens_pos[X] and self.pos[Y] + 1 == self.queens_pos[Y]:
+                    return True
+            return False
+        if self._direction == "right":
+            if look_index == 1:
+                if self.pos[X] + 1 == self.queens_pos[X] and self.pos[Y] + 1 == self.queens_pos[Y]:
+                    return True
+            elif look_index == 2:
+                if self.pos[X] + 1 == self.queens_pos[X] and self.pos[Y] == self.queens_pos[Y]:
+                    return True
+            elif look_index == 3:
+                if self.pos[X] + 1 == self.queens_pos[X] and self.pos[Y] - 1 == self.queens_pos[Y]:
+                    return True
+            return False
+        if self._direction == "down":
+            if look_index == 1:
+                if self.pos[X] + 1 == self.queens_pos[X] and self.pos[Y] - 1 == self.queens_pos[Y]:
+                    return True
+            elif look_index == 2:
+                if self.pos[X] == self.queens_pos[X] and self.pos[Y] - 1 == self.queens_pos[Y]:
+                    return True
+            elif look_index == 3:
+                if self.pos[X] - 1 == self.queens_pos[X] and self.pos[Y] - 1 == self.queens_pos[Y]:
+                    return True
+            return False
+        if self._direction == "left":
+            if look_index == 1:
+                if self.pos[X] - 1 == self.queens_pos[X] and self.pos[Y] - 1 == self.queens_pos[Y]:
+                    return True
+            elif look_index == 2:
+                if self.pos[X] - 1 == self.queens_pos[X] and self.pos[Y] == self.queens_pos[Y]:
+                    return True
+            elif look_index == 3:
+                if self.pos[X] - 1 == self.queens_pos[X] and self.pos[Y] + 1 == self.queens_pos[Y]:
+                    return True
+            return False
+        
     def decide_action(self) -> None:
         self._cycle += 1
         if self.mode == 'GATHERING':
             if self.pos[X] == self.queens_pos[X] and self.pos[Y] == self.queens_pos[Y]:
                 self._queue.appendleft(Commands(Action.FORWARD))
+                self._last_vision = None
             if self._last_vision is not None:
-                for objects in self._last_vision:
-                    for stone in STONES:
-                        if stone in objects:
-                            self.carry = stone
-                            self._queue.appendleft(Commands(Action.TAKE, stone))
-                            self._last_vision = None
-                            return
+                for i in range(4):
+                    for objects in self._last_vision[i]:
+                        if self._is_kindom_tile(i) == True:
+                            continue
+                        for stone in STONES:
+                            if stone in objects:
+                                if i == 1:
+                                    self._queue.appendleft(Commands(Action.FORWARD))
+                                    self._queue.appendleft(Commands(Action.LEFT))
+                                    self._queue.appendleft(Commands(Action.FORWARD))
+                                elif i == 2:
+                                    self._queue.appendleft(Commands(Action.FORWARD))
+                                elif i == 3:
+                                    self._queue.appendleft(Commands(Action.FORWARD))
+                                    self._queue.appendleft(Commands(Action.RIGHT))
+                                    self._queue.appendleft(Commands(Action.FORWARD))
+                                self.carry = stone
+                                self._queue.appendleft(Commands(Action.TAKE, stone))
+                                self._last_vision = None
+                                return
 
             self._last_vision = None
             if self.random.choice([0,1]) == 0:
@@ -50,6 +110,8 @@ class Worker(BaseRole):
             return
 
         elif self.mode == 'DELIVERING':
+            if self.carry is None:
+                self.mode = 'GATHERING'
             if self.pos[X] == self.queens_pos[X] and self.pos[Y] == self.queens_pos[Y]:
                 self._queue.appendleft(Commands(Action.SET, self.carry))
                 self.carry = None
