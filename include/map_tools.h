@@ -7,7 +7,7 @@
 
 #ifndef MAPTOOLS_H_
     #define MAPTOOLS_H_
-    #define TICKS_REFILLS 20000
+    #define TICKS_REFILLS 20000000
     #define NB_RESOURCES 7
     #define NB_BIOMES 5
     #define NOT_DEFINED -1
