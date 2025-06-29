@@ -19,10 +19,10 @@ int cmd_sgt(serverdata_t *sdata, fdarray_t *fdarray,
     int rc = DEFAULTRC;
 
     if (strlen(data) != 0) {
-        set_message(client, "sbp", NULL);
+        set_message(client, M_SBP, NULL);
         return EXIT_FAILURE;
     }
     sprintf(answer, "%d", sdata->args->freq);
-    set_message(client, "sgt", answer);
+    set_message(client, M_SGT, answer);
     return EXIT_SUCCESS;
 }

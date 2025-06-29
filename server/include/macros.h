@@ -45,6 +45,7 @@ enum client_type_e {
 };
 
 static const char GRAPHIC_TEAM[] = "GRAPHIC";
+static const char M_WELCOME[] = "WELCOME";
 
 static const char PLAYER_STR_LEN = 6;
 
@@ -58,5 +59,8 @@ static const uint_t RESOURCES_STR_LEN[] = {
     6,
     8
 };
+
+    #define MAX_LEVEL 8
+    #define NB_MAX_LVL_TO_WIN 6
 
 #endif

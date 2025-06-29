@@ -53,7 +53,7 @@ static void send_gui_p_changed_inv(serverdata_t *sdata, fdarray_t *fdarray,
         client->player->inventory[5],
         client->player->inventory[6]
     );
-    send_guis(sdata, fdarray, "pin", data);
+    send_guis(sdata, fdarray, M_PIN, data);
 }
 
 static void send_gui_p_set(serverdata_t *sdata, fdarray_t *fdarray,
@@ -65,7 +65,7 @@ static void send_gui_p_set(serverdata_t *sdata, fdarray_t *fdarray,
         client->player->id,
         resource
     );
-    send_guis(sdata, fdarray, "pdr", data);
+    send_guis(sdata, fdarray, M_PDR, data);
 }
 
 // ACTION
@@ -75,9 +75,9 @@ int action_set(serverdata_t *sdata, fdarray_t *fdarray,
     int resource = idt_resource(data);
 
     if (set_resource(sdata, client, resource) == EXIT_FAILURE) {
-        set_message(client, "ko", NULL);
+        set_message(client, M_KO, NULL);
     } else {
-        set_message(client, "ok", NULL);
+        set_message(client, M_OK, NULL);
         send_gui_p_changed_inv(sdata, fdarray, client);
         send_gui_p_set(sdata, fdarray, client, resource);
     }
@@ -88,7 +88,7 @@ int cmd_set(serverdata_t *sdata, fdarray_t *fdarray,
     client_t *client, char *data)
 {
     if (strlen(data) == 0) {
-        set_message(client, "ko", NULL);
+        set_message(client, M_KO, NULL);
         return EXIT_FAILURE;
     }
     client->player->action.cmd = strdup(ACTIONS_ARR[SET].name);
