@@ -18,7 +18,7 @@ namespace gui {
 namespace visual {
 
 Land::Land(std::reference_wrapper<network::Client> client) : AScene(core::DEFAULT_VIEW),
-    _client(client), _hud(std::ref(_teams))
+    _client(client), _loading(core::DEFAULT_VIEW), _hud(std::ref(_teams))
 {
     std::srand(std::time({}));
     _tile.sprite.setOrigin({TILE_SIZE / 2, 0.0f});
@@ -37,6 +37,11 @@ Land::~Land()
 
 void Land::display(sf::RenderTarget& render)
 {
+    if (!_map_set) {
+        render.setView(_camera);
+        _loading.draw(render);
+        return;
+    }
     _backgroud.drawBackground(render);
     render.setView(_camera);
     clearResources();
@@ -64,12 +69,13 @@ void Land::display(sf::RenderTarget& render)
 
 void Land::event(const core::Engine& engine, const network::NetEventPack& net_pack)
 {
+    if (!_map_set) {
+        loadingEvents(net_pack);
+        return;
+    }
     viewEvent(engine.events);
     checkHudEvent(engine, net_pack);
     switch (static_cast<int>(net_pack.event)) {
-        case network::MSIZE:
-            _map_size = sf::Vector2f(net_pack.pack[0].getFloat(), net_pack.pack[1].getFloat());
-            break;
         case network::TILE:
             updateTile(net_pack.pack);
             break;
@@ -103,17 +109,35 @@ void Land::event(const core::Engine& engine, const network::NetEventPack& net_pa
         case network::PDEAD:
             removeTrantorian(net_pack.pack);
             break;
-        case network::TEAMS:
-            _teams.push_back({net_pack.pack[0].getString(), RANDOM_COLOR, {}});
-            break;
-        case network::BIOME:
-            addTile(net_pack.pack);
-            break;
         case network::PINV:
             updateInventory(net_pack.pack);
             break;
         case network::PLVL:
             _trantorians.at(net_pack.pack[0].getSize_t())->lvl = net_pack.pack[1].getSize_t();
+            break;
+    }
+}
+
+void Land::loadingEvents(const network::NetEventPack& net_pack)
+{
+    switch (static_cast<int>(net_pack.event)) {
+        case network::MSIZE:
+            _map_size = sf::Vector2f(net_pack.pack[0].getFloat(), net_pack.pack[1].getFloat());
+            break;
+        case network::BIOME:
+            addTile(net_pack.pack);
+            break;
+        case network::TEAMS:
+            _teams.push_back({net_pack.pack[0].getString(), RANDOM_COLOR, {}});
+            break;
+        case network::NEW:
+            addTrantorian(net_pack.pack);
+            break;
+        case network::TILE:
+            updateTile(net_pack.pack);
+            break;
+        case network::TIME:
+            _time_unit_speed = net_pack.pack[0].getSize_t();
             break;
     }
 }
@@ -173,7 +197,7 @@ void Land::askResources(void)
     _net_running = true;
     float ms_to_wait = 0;
 
-    while (_map_size.x == -1)
+    while (!_map_set)
         std::this_thread::yield();
     ms_to_wait = (_map_size.x * _map_size.y) * 10;
     while (_net_running) {
@@ -236,6 +260,7 @@ void Land::addTile(const network::NetPack& pack)
             _tiles[x][y].tile->updateResource(static_cast<resource_e>(i - 2), 0);
     }
     index += 1;
+    _loading.loadingPercent(static_cast<float>(index) / (_map_size.x * _map_size.y));
     if (index >= (_map_size.x * _map_size.y))
         _map_set = true;
 }
@@ -286,6 +311,8 @@ void Land::addTrantorian(const network::NetPack& pack)
 void Land::removeTrantorian(const network::NetPack& pack)
 {
     size_t id = pack[0].getSize_t();
+    if (_trantorians.find(id) == _trantorians.end())
+        return;
     std::shared_ptr<Trantorian> trantor = _trantorians.at(id);
 
     _tiles[trantor->map_pos.x][trantor->map_pos.y].trantorians.erase(id);
@@ -296,10 +323,13 @@ void Land::removeTrantorian(const network::NetPack& pack)
 
 void Land::trantorCollect(const network::NetPack& pack)
 {
-    sf::Vector2i tile_pos = _trantorians.at(pack[0].getSize_t())->map_pos;
+    size_t id = pack[0].getSize_t();
+    if (_trantorians.find(id) == _trantorians.end())
+        return;
+    sf::Vector2i tile_pos = _trantorians.at(id)->map_pos;
     resource_e type = static_cast<resource_e>(pack[1].getInt());
 
-    _trantorians.at(pack[0].getSize_t())->collect(_tiles[tile_pos.x][tile_pos.y].resources.at(type), ACT_TIME(7.0f) / 2, _clock);
+    _trantorians.at(id)->collect(_tiles[tile_pos.x][tile_pos.y].resources.at(type), ACT_TIME(7.0f) / 2, _clock);
     _clear_resources.push_back({ACT_TIME(7.0f) + _clock.getElapsedTime().asMilliseconds(), type, tile_pos});
 }
 
@@ -328,30 +358,41 @@ void Land::trantorEndIncantation(const network::NetPack& pack)
 
 void Land::trantorLayingAnEgg(const network::NetPack& pack)
 {
-    size_t trantor_id = pack[0].getSize_t();
-    _trantorians.at(trantor_id)->layAnEgg();
+    size_t id = pack[0].getSize_t();
+    
+    if (_trantorians.find(id) == _trantorians.end())
+        return;
+    _trantorians.at(id)->layAnEgg();
 }
 
 void Land::trantorLaidAnEgg(const network::NetPack& pack)
 {
     size_t egg_id = pack[0].getSize_t();
-    size_t trantor_id = pack[1].getSize_t();
-    sf::Vector2f egg_pos = _trantorians.at(trantor_id)->getBodyPos(0);
+    size_t id = pack[1].getSize_t();
+    if (_trantorians.find(id) == _trantorians.end() ||
+        _eggs.find(egg_id) == _eggs.end())
+        return;
+    sf::Vector2f egg_pos = _trantorians.at(id)->getBodyPos(0);
     egg_pos.x += 5;
     
-    _trantorians.at(trantor_id)->laidAnEgg();
+    _trantorians.at(id)->laidAnEgg();
     _eggs.emplace(egg_id, std::make_shared<Egg>(egg_pos));
 }
 
 void Land::eggHatching(const network::NetPack& pack)
 {
-    size_t egg_id = pack[0].getSize_t();
-    _eggs.at(egg_id)->hatch();
+    size_t id = pack[0].getSize_t();
+
+    if (_eggs.find(id) == _eggs.end())
+        return;
+    _eggs.at(id)->hatch();
 }
 
 void Land::posTrantorian(const network::NetPack& pack)
 {
     size_t id = pack[0].getSize_t();
+    if (_trantorians.find(id) == _trantorians.end())
+        return;
     std::shared_ptr<Trantorian> trantor = _trantorians.at(id);
     int x = pack[1].getInt();
     int y = pack[2].getInt();
@@ -368,7 +409,11 @@ void Land::posTrantorian(const network::NetPack& pack)
 
 void Land::updateInventory(const network::NetPack& pack)
 {
-    _trantorians.at(pack[0].getSize_t())->updateInventory(
+    size_t id = pack[0].getSize_t();
+
+    if (_trantorians.find(id) == _trantorians.end())
+        return;
+    _trantorians.at(id)->updateInventory(
         pack[3].getSize_t(), pack[4].getSize_t(), pack[5].getSize_t(),
         pack[6].getSize_t(), pack[7].getSize_t(), pack[8].getSize_t(),
         pack[9].getSize_t()

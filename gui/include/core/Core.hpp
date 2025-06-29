@@ -21,6 +21,8 @@
 namespace gui {
 namespace core {
 
+    #define EVENT_LIMITER 200
+
 class Core {
     public:
         Core(int argc, const char *argv[]);
