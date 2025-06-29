@@ -15,11 +15,11 @@ from src.utils import get_movements
 class Worker(BaseRole):
     def __init__(self):
         super().__init__()
-        self.mode = 'GATHERING' # GATHERING or DELIVERING
-        self.carry = None
-        self.queens_pos = [0, 0]
-        self._direction = "up"
-        self.check_eat = True
+        self.mode: str = 'GATHERING' # GATHERING or DELIVERING
+        self.carry: str = None
+        self.queens_pos: list[int] = [0, 0]
+        self._direction: str = "up"
+        self.check_eat: bool = True
         self.random = random
         
     def decide_action(self) -> None:

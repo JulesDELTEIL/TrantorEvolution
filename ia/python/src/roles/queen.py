@@ -15,17 +15,17 @@ class Queen(BaseRole):
         super().__init__()
         if len(inp) == 1:
             self._birth_function = inp[0]
-            self._waiting_for_slot_number = True
-            self._give_birth = True
-            self._egg_left = -1
+            self._waiting_for_slot_number: bool = True
+            self._give_birth: bool = True
+            self._egg_left: int = -1
         else:
-            self._give_birth = False
-        self._all_alone = False
-        self._player_killed = 0
-        self._last_incantation = 0
-        self._incant_asked = False
-        self._wordlist = open_rockyou_file()
-        self._key_opponent = None
+            self._give_birth: bool = False
+        self._all_alone: bool = False
+        self._player_killed: int = 0
+        self._last_incantation: int = 0
+        self._incant_asked: bool = False
+        self._wordlist: list[str] = open_rockyou_file()
+        self._key_opponent: str = None
 
     def _create_kingdom(self):
         for _ in range(3):
@@ -41,11 +41,11 @@ class Queen(BaseRole):
         self._queue.appendleft(Commands(Action.LEFT))
         self._give_birth = False
 
-    def _fill__egg_left(self):
+    def _fill__egg_left(self) -> None:
         for _ in range(self._egg_left):
             self._birth_function()
 
-    def _handle_mother_queen(self):
+    def _handle_mother_queen(self) -> None:
         if not self._all_alone:
             if self._egg_left == -1 and self._waiting_for_slot_number:
                 self._queue.appendleft(Commands(Action.CONNECT_NBR))
@@ -62,7 +62,7 @@ class Queen(BaseRole):
         else:
             self.create_kingdom()
 
-    def decide_action(self):
+    def decide_action(self) -> None:
         if self._give_birth:
             self._handle_mother_queen()
             return
