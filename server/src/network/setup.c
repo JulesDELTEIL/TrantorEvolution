@@ -17,6 +17,7 @@
 int setup_map_thread(serverdata_t *sdata, pthread_t *mapthr)
 {
     pthread_create(mapthr, NULL, map_thread, sdata);
+    pthread_detach(*mapthr);
     return 0;
 }
 
