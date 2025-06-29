@@ -26,7 +26,7 @@ void Background::drawBackground(sf::RenderTarget& render)
     render.draw(_background.sprite);
 }
 
-void Background::drawWaterfall(sf::RenderTarget& render, const sf::Vector2f& map_size)
+void Background::drawWaterfall(sf::RenderTarget& render, const sf::Vector2i& map_size)
 {
     sf::Vector2f pos;
 

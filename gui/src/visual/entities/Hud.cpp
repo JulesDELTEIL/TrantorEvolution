@@ -86,10 +86,6 @@ void Hud::event(const sf::Event& event, const network::NetEventPack& net_pack)
         }
     }
     switch (static_cast<int>(net_pack.event)) {
-        case network::MSIZE:
-            _display.g_map_size.setString("World size:  " +
-                net_pack.pack[0].getString() + " " + net_pack.pack[1].getString());
-            break;
         case network::NEW:
             _nb_trantors += 1;
             break;
@@ -105,12 +101,13 @@ void Hud::event(const sf::Event& event, const network::NetEventPack& net_pack)
     }
 }
 
-void Hud::setLaunch(size_t nb_trantor, size_t tus)
+void Hud::setLaunch(size_t nb_trantor, size_t tus, const sf::Vector2i& map)
 {
     _nb_trantors = nb_trantor;
     _time_unit_speed = tus;
     _best_lvl = std::vector<size_t>(_teams.get().size(), 0);
     _trantor_index = std::vector<size_t>(_teams.get().size(), 0);
+    _display.g_map_size.setString("World size:  " + std::to_string(map.x) + " " + std::to_string(map.y));
 }
 
 void Hud::changeTileInfo(std::shared_ptr<Tile> new_tile)

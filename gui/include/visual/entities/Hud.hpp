@@ -142,7 +142,7 @@ class Hud {
         void display(sf::RenderTarget& target, const sf::Clock& clock);
         void event(const sf::Event&, const network::NetEventPack&);
         
-        void setLaunch(size_t, size_t);
+        void setLaunch(size_t, size_t, const sf::Vector2i&);
         void changeTileInfo(std::shared_ptr<Tile>);
         void updateInfo(const sf::Clock&);
         int hitHudTeamInfo(const sf::Vector2i& mpos);

@@ -122,7 +122,7 @@ void Land::loadingEvents(const network::NetEventPack& net_pack)
 {
     switch (static_cast<int>(net_pack.event)) {
         case network::MSIZE:
-            _map_size = sf::Vector2f(net_pack.pack[0].getFloat(), net_pack.pack[1].getFloat());
+            _map_size = sf::Vector2i(net_pack.pack[0].getInt(), net_pack.pack[1].getInt());
             break;
         case network::BIOME:
             addTile(net_pack.pack);
@@ -201,8 +201,8 @@ void Land::askResources(void)
         std::this_thread::yield();
     ms_to_wait = (_map_size.x * _map_size.y) * 10;
     while (_net_running) {
-        for (size_t y = 0; y < _map_size.y; ++y) {
-            for (size_t x = 0; x < _map_size.x; ++x) {
+        for (int y = 0; y < _map_size.y; ++y) {
+            for (int x = 0; x < _map_size.x; ++x) {
                 _client.get().sendData("bct " + std::to_string(x) + " " + std::to_string(y));
             }
         }
@@ -263,7 +263,7 @@ void Land::addTile(const network::NetPack& pack)
     _loading.loadingPercent(static_cast<float>(index) / (_map_size.x * _map_size.y));
     if (index >= (_map_size.x * _map_size.y)) {
         _map_set = true;
-        _hud.setLaunch(_trantorians.size(), _time_unit_speed);
+        _hud.setLaunch(_trantorians.size(), _time_unit_speed, _map_size);
     }
 }
 

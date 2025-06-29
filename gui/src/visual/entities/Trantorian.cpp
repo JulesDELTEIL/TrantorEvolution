@@ -87,7 +87,7 @@ void Trantorian::collect(const std::shared_ptr<ResourceNode>& resource,
             _type[i] = PICKAXE;
         else
             _type[i] = COLLECT;
-        move(i, to_go, time, clock);
+        move(i, to_go, time / 4, clock);
         i += 1;
     }
 }
