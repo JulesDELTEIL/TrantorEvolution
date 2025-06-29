@@ -40,5 +40,3 @@ if __name__ == "__main__":
         client.main_loop()
     except (ValueError, NameError, ConnectionRefusedError, ConnectionError, ConnectionResetError) as e :
         print("Error :", e, file=sys.stderr)
-
-
