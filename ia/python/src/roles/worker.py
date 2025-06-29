@@ -5,11 +5,12 @@
 ## worker.py
 ##
 
+import random
+
 from src.roles.base_role import BaseRole
 from src.action import Commands, Action
 from src.macros import STONES, X, Y
 from src.utils import get_movements
-import random
 
 class Worker(BaseRole):
     def __init__(self):

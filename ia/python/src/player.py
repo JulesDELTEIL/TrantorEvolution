@@ -5,12 +5,12 @@
 ## player.py
 ##
 
+import subprocess
+
 from src.roles.nobody import Nobody
 from src.action import Commands, Action
 from src.utils import parse_vision, parse_inventory
 from src.macros import X, Y
-
-import subprocess
 
 class Player():
     def __init__(self, host: str, port: str, team_name: str):

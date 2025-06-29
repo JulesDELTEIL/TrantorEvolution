@@ -4,8 +4,8 @@
 ## File description:
 ## action.py
 ##
-import base64
 
+import base64
 import cryptography
 from cryptography.fernet import Fernet
 

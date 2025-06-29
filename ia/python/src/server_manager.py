@@ -6,13 +6,8 @@
 #
 
 import socket
-from collections import deque
-import sys
 
 BUFF_SIZE = 1024
-INTERLOCUTOR = 0
-MESSAGE_CONTENT = 1
-WORD_COUNT = 2
 
 class ServerManager:
     def __init__(self, host: str, port: int):

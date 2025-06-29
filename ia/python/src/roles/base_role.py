@@ -6,6 +6,7 @@
 ##
 
 from abc import ABC, abstractmethod
+
 from collections import deque
 from src.action import Commands
 from src.roles.map_memory import MapMemory
