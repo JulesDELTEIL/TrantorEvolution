@@ -71,6 +71,40 @@ Paramètres :
 
     -h <machine> : Adresse IP ou nom d’hôte du serveur.
 
+Fonctionnement :
+
+L'IA de Zappy a pour principe de créer un royaume à partir d'une reine.
+Cette reine va engendrer ensuite plusieurs autres IA aux rôles précis, qui vont organiser ce royaume.
+Ce fonctionnement permet de regrouper les ressources et faire évoluer les IA rapidement.
+
+Rôles :
+
+    Reine Mère : Engendre les reines, la matriarche et le maître ouvrier avant de devenir une simple reine.
+
+    Reine : Reste statique afin de récupérer les ressources acheminées pour évoluer.
+
+    Matriarche : Reste statique, engendre des kamikazes afin de nourrir les autres IA.
+
+    Kamikazes : Reste statique, lâche sa nourriture initiale avant de mourir pour nourrir les autres IA.
+
+    Maître Ouvrier : Reste statique, engendre un maximum d'ouvriers pour faire évoluer les reines.
+
+    Ouvriers : Partent à la recherche de matériaux d'évolution pour les ramener aux reines.
+
+Cryptage et Décryptage :
+
+Les multiples IA d'une équipe communiquent entre eux secrètement via des messages cryptés.
+Ces messages sont cryptés selon le nom de leurs équipes, qu'eux seuls connaissent.
+
+Cependant un "Ouvrier" d'une équipe adversaire peut tenter de décrypter ces messages afin de perturber l'organisation
+de cette équipe.
+Ces ouvriers utilisent une méthode de "BruteForce" afin de décrypter ces messages grâce à un fichier de potentiels codes.
+Si vous souhaitez que les IA puissent tenter de décrypter les messages adversaires, veuillez place le fichier "rockyou.txt"
+à la racine du programme.
+
+Lien de téléchargement de "rockyou.txt" :
+https://www.kaggle.com/datasets/wjburns/common-password-list-rockyoutxt
+
 ## Compilation
 
 Pour compiler le projet, un script compile.sh est fourni à la racine du dépôt.
