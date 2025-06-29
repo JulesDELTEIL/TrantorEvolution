@@ -66,8 +66,9 @@ class Land : public AScene {
         void addTile(const network::NetPack&);
         void updateTile(const network::NetPack&);
         Drawable _tile;
-        sf::Vector2f _map_size = {-1, -1};
+        sf::Vector2i _map_size = {-1, -1};
         bool _map_set = false;
+
         LoadingScreen _loading;
         void loadingEvents(const network::NetEventPack&);
 

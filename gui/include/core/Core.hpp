@@ -21,7 +21,7 @@
 namespace gui {
 namespace core {
 
-    #define EVENT_LIMITER 200
+    #define EVENT_LIMITER 100
 
 class Core {
     public:

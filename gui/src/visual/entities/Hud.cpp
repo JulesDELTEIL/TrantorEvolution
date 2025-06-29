@@ -54,27 +54,8 @@ void Hud::display(sf::RenderTarget& render, const sf::Clock& clock)
         _last_day = time_elapsed;
     }
     if (time_elapsed > _last_time + UPDATE_INFO) {
-        updateInfo();
+        updateInfo(clock);
         _last_time = time_elapsed;
-        _display.g_time.setString("Time:  " + std::to_string(static_cast<int>(clock.getElapsedTime().asSeconds())) + "s");
-        _display.g_nb_teams.setString("Team(s):  " + std::to_string(_teams.get().size()));
-        _display.g_nb_trantors.setString("Trantorian(s):  " + std::to_string(_nb_trantors));
-        for (size_t i = 0; i < _teams.get().size(); ++i) {
-            if (i >= _best_lvl.size() || i >= _teams.get().size())
-                break;
-            if (_teams.get()[i].trantorians.find(_best_lvl[i]) == _teams.get()[i].trantorians.end()) {
-                for (const auto& trant : _teams.get()[i].trantorians) {
-                    _best_lvl[i] = trant.first;
-                    break;
-                }
-            }
-            for (const auto& trant : _teams.get()[i].trantorians) {
-                if (_best_lvl[i] < trant.second->lvl)
-                    _best_lvl[i] = trant.first;
-            }
-        }
-        if (_tr_selected != nullptr)
-            _trantor_resources = _tr_selected->getInventory();
     }
     if (_tile != nullptr)
         drawTileInfos(render);
@@ -105,10 +86,6 @@ void Hud::event(const sf::Event& event, const network::NetEventPack& net_pack)
         }
     }
     switch (static_cast<int>(net_pack.event)) {
-        case network::MSIZE:
-            _display.g_map_size.setString("World size:  " +
-                net_pack.pack[0].getString() + " " + net_pack.pack[1].getString());
-            break;
         case network::NEW:
             _nb_trantors += 1;
             break;
@@ -121,11 +98,16 @@ void Hud::event(const sf::Event& event, const network::NetEventPack& net_pack)
         case network::TIMEM:
             _time_unit_speed = net_pack.pack[0].getSize_t();
             break;
-        case network::TEAMS:
-            _best_lvl.push_back(0);
-            _trantor_index.push_back(0);
-            break;
     }
+}
+
+void Hud::setLaunch(size_t nb_trantor, size_t tus, const sf::Vector2i& map)
+{
+    _nb_trantors = nb_trantor;
+    _time_unit_speed = tus;
+    _best_lvl = std::vector<size_t>(_teams.get().size(), 0);
+    _trantor_index = std::vector<size_t>(_teams.get().size(), 0);
+    _display.g_map_size.setString("World size:  " + std::to_string(map.x) + " " + std::to_string(map.y));
 }
 
 void Hud::changeTileInfo(std::shared_ptr<Tile> new_tile)
@@ -133,14 +115,33 @@ void Hud::changeTileInfo(std::shared_ptr<Tile> new_tile)
     _tile = new_tile;
 }
 
-void Hud::updateInfo(void)
+void Hud::updateInfo(const sf::Clock& clock)
 {
-    if (_tile == nullptr)
-        return;
-    _infos.resources = _tile->getResources();
-    _infos.type = BIOME_NAMES.at(_tile->getBiome());
-    _display.tile_biome.setString(_infos.type);
-    _display.tile.sprite.setPosition(_tile->getPos());
+    if (_tile != nullptr) {
+        _infos.resources = _tile->getResources();
+        _infos.type = BIOME_NAMES.at(_tile->getBiome());
+        _display.tile_biome.setString(_infos.type);
+        _display.tile.sprite.setPosition(_tile->getPos());
+    }
+    _display.g_time.setString("Time:  " + std::to_string(static_cast<int>(clock.getElapsedTime().asSeconds())) + "s");
+    _display.g_nb_teams.setString("Team(s):  " + std::to_string(_teams.get().size()));
+    _display.g_nb_trantors.setString("Trantorian(s):  " + std::to_string(_nb_trantors));
+    for (size_t i = 0; i < _teams.get().size(); ++i) {
+        if (i >= _best_lvl.size() || i >= _teams.get().size())
+            break;
+        if (_teams.get()[i].trantorians.find(_best_lvl[i]) == _teams.get()[i].trantorians.end()) {
+            for (const auto& trant : _teams.get()[i].trantorians) {
+                _best_lvl[i] = trant.first;
+                break;
+            }
+        }
+        for (const auto& trant : _teams.get()[i].trantorians) {
+            if (_best_lvl[i] < trant.second->lvl)
+                _best_lvl[i] = trant.first;
+        }
+    }
+    if (_tr_selected != nullptr)
+        _trantor_resources = _tr_selected->getInventory();
 }
 
 int Hud::hitHudTeamInfo(const sf::Vector2i& mpos)
