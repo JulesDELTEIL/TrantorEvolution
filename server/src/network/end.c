@@ -14,10 +14,19 @@
 
 int destroy_client(client_t *client)
 {
+    message_t *head = client->buffout;
+    message_t *next = NULL;
+
     if (client == NULL)
         return EXIT_FAILURE;
     if (client->buffin != NULL)
         free(client->buffin);
+    while (head != NULL) {
+        next = head->next;
+        free(head->data);
+        free(head);
+        head = next;
+    }
     return EXIT_SUCCESS;
 }
 
@@ -57,6 +66,14 @@ void destroy_teams(team_t *teams, int team_count)
         destroy_eggs(teams[i].eggs);
     }
     free(teams);
+}
+
+static void destroy_incantation(player_t *player)
+{
+    if (player->incantation == NULL)
+        return;
+    if (player->incantation->done == player->incantation->nb_players)
+        free(player->incantation);
 }
 
 static void destroy_players(player_t *head)

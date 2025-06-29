@@ -11,6 +11,10 @@
 #ifndef TRANSMISSION_H_
     #define TRANSMISSION_H_
 
+static const char *M_OK = "ok";
+static const char *M_KO = "ko";
+static const char *M_SUC = "suc";
+
 /*
 Used to read data from client FD
 Returns EXIT_SUCCESS or EXIT_FAILURE

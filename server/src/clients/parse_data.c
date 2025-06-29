@@ -20,11 +20,8 @@ static int empty_client_buff(client_t *client, uint_t index)
     char *newbuff = NULL;
     uint_t flw = 0;
 
-    if (remaining == 0) {
-        free(client->buffin);
-        client->buffin = NULL;
+    if (remaining == 0)
         return EXIT_FAILURE;
-    }
     newbuff = malloc(sizeof(char) * (remaining + 1));
     if (!newbuff)
         return EXIT_FAILURE;
@@ -98,6 +95,9 @@ int packet_parser(client_t *client, char *cmd, char *data)
         end_idx = parse_data(client, data, end_idx, &nl_presence);
     if (end_idx <= 0)
         return EXIT_FAILURE;
-    empty_client_buff(client, end_idx);
+    if (empty_client_buff(client, end_idx) == EXIT_FAILURE) {
+        free(client->buffin);
+        client->buffin = NULL;
+    }
     return EXIT_SUCCESS;
 }

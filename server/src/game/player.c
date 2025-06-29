@@ -79,6 +79,8 @@ int kill_player(serverdata_t *sdata, fdarray_t *fdarray, client_t *client)
     sprintf(answer, "%d", client->player->id);
     send_guis(sdata, fdarray, "pdi", answer);
     drop_inventory(&(sdata->game_data), client->player);
+    if (client->player->incantation != NULL)
+        client->player->incantation->done += 1;
     if (client->player->action.cmd != NULL)
         free(client->player->action.cmd);
     if (client->player->action.data != NULL)
