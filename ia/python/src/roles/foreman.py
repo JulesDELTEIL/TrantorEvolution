@@ -11,11 +11,9 @@ from src.action import Commands, Action
 class Foreman(BaseRole):
     def __init__(self):
         super().__init__()
-        self._initial_moves = 3
-        self._fork_count = 0
         self._queue.append(Commands(Action.TAKE, 'food'))
     
-    def decide_action(self):
+    def decide_action(self) -> None:
         self._cycle += 1
         if self._cycle == 1:
             self._queue.appendleft(Commands(Action.LEFT))

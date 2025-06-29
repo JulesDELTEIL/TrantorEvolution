@@ -12,7 +12,7 @@ class Kamikaze(BaseRole):
     def __init__(self):
         super().__init__()
     
-    def decide_action(self):
+    def decide_action(self) -> None:
         self._cycle += 1
         for _ in range(10):
             self._queue.appendleft(Commands(Action.SET, 'food'))

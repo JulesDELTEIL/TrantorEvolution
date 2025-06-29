@@ -117,7 +117,7 @@ class Communication():
             real_broadcast.append(item)
         return real_broadcast
 
-    def _handle_action(self, response: str, response_list: list[str]):
+    def _handle_action(self, response: str, response_list: list[str]) -> bool:
         if response_list[0] == "Current":
             self._incantation_success(response)
         elif self.role._last_sent:
