@@ -50,13 +50,14 @@ static void refill_tiles(tile_t *tile, bool biome_active)
     }
     for (int i = 0; i < NB_RESOURCES; i++)
         tile->resources[i] = 0;
-    if (biome_active == true) {
-    dist = biome_distributions[tile->biome];
-    } else {
-        dist = normal_distributions[tile->biome];
-    }
-    for (int i = 0; i < NB_RESOURCES; i++)
+    dist = get_first_refill_status(biome_active, tile);
+    for (int i = 0; i < NB_RESOURCES; i++) {
+        if (biome_active == false) {
+            tile->resources[i] = rand() % dist.biome_start[i];
+            continue;
+        }
         tile->resources[i] = dist.biome_start[i];
+    }
 }
 
 static void first_map_refill(int Y, tile_t **map_tiles, bool biome_active)
@@ -93,18 +94,6 @@ static void *get_total(int *total, int width, int height, tile_t **tiles)
         y = Y_COORD(i, height);
         for (int r = 0; r < NB_RESOURCES; r++)
             total[r] += tiles[x][y].resources[r];
-    }
-}
-
-static biome_distribution_t get_refill_status(bool biome_active,
-    int x,
-    int y,
-    tile_t **tiles)
-{
-    if (biome_active == true) {
-    return biome_distributions[tiles[x][y].biome];
-    } else {
-        return normal_distributions[tiles[x][y].biome];
     }
 }
 
@@ -154,6 +143,9 @@ void *map_thread(void *arg)
     pthread_mutex_lock(&(server->game_data.map.mutex));
     first_map_refill(server->args->height,
         server->game_data.map.tiles, server->args->biome);
+    refill_map(server->game_data.map.tiles,
+        (pos_t){server->args->width, server->args->height}, &all_dens,
+        server->args->biome);
     pthread_mutex_unlock(&(server->game_data.map.mutex));
     while (server->is_running == true) {
         usleep(TICKS_REFILLS / server->args->freq);
