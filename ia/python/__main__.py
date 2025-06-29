@@ -10,7 +10,6 @@ from src.client import Trantorian
 ARG_NB = 7
 ERROR = 84
 
-
 def create_configuration():
     conf = {
         "-h": "",
@@ -23,10 +22,10 @@ def create_configuration():
         if not sys.argv[i] in conf.keys():
             raise Exception("Flag mismatch")
         conf[sys.argv[i]] = sys.argv[i + 1]
-    if not conf["-p"].isdigit():
-        raise Exception("Port number is not a number")
+    if not conf["-p"].isdigit() or int(conf["-p"]) < 1025 or int(conf["-p"]) > 65535:
+        raise Exception("Port number must be between 1025 and 65535 includes")
     if conf["-n"] == "GRAPHIC":
-        raise Exception("Team name cant be 'GRAPHIC'")
+        raise Exception("Team name can't be 'GRAPHIC'")
     return conf
 
 if __name__ == "__main__":
