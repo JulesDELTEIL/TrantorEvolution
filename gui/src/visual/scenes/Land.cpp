@@ -128,7 +128,7 @@ void Land::loadingEvents(const network::NetEventPack& net_pack)
             addTile(net_pack.pack);
             break;
         case network::TEAMS:
-            _teams.push_back({net_pack.pack[0].getString(), RANDOM_COLOR, {}});
+            addTeam(net_pack.pack);
             break;
         case network::NEW:
             addTrantorian(net_pack.pack);
@@ -302,8 +302,33 @@ void Land::clearResources(void)
     }
 }
 
+void Land::addTeam(const network::NetPack& pack)
+{
+    std::shared_ptr<Trantorian> newT = nullptr;
+    std::vector<size_t> placed;
+    static int tId = 0;
+
+    _teams.push_back({pack[0].getString(), RANDOM_COLOR, {}});
+    for (auto& lone : _temp) {
+        for (auto& team : _teams) {
+            if (!team.name.compare(lone.second.team)) {
+                newT = std::make_shared<Trantorian>(lone.second.pos, lone.second.map_pos,
+                    lone.second.lvl, tId, team.color);
+                team.trantorians[lone.first] = newT;
+                _tiles[lone.second.map_pos.x][lone.second.map_pos.y].trantorians[lone.first] = newT;
+                _trantorians[lone.first] = newT;
+                placed.push_back(lone.first);
+            }
+        }
+    }
+    for (const auto& to_del : placed)
+        _temp.erase(to_del);
+    tId += 1;
+}
+
 void Land::addTrantorian(const network::NetPack& pack)
 {
+    size_t id = pack[0].getSize_t();
     int x = pack[1].getInt();
     int y = pack[2].getInt();
     int tId = 0;
@@ -314,12 +339,14 @@ void Land::addTrantorian(const network::NetPack& pack)
         if (!team.name.compare(pack[5].getString())) {
             newT = std::make_shared<Trantorian>(pos, sf::Vector2i(x, y),
                 pack[4].getSize_t(), tId, team.color);
-            team.trantorians[pack[0].getSize_t()] = newT;
-            _tiles[x][y].trantorians[pack[0].getSize_t()] = newT;
-            _trantorians[pack[0].getSize_t()] = newT;
+            team.trantorians[id] = newT;
+            _tiles[x][y].trantorians[id] = newT;
+            _trantorians[id] = newT;
+            return;
         }
         tId += 1;
     }
+    _temp[id] = {pack[5].getString(), pos, sf::Vector2i(x, y), pack[4].getSize_t()};
 }
 
 void Land::removeTrantorian(const network::NetPack& pack)
