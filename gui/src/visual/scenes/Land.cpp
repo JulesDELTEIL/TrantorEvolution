@@ -85,7 +85,7 @@ void Land::event(const core::Engine& engine, const network::NetEventPack& net_pa
         case network::PPOS:
             posTrantorian(net_pack.pack);
             break;
-        case network::TIME:
+        case network::TIMEM:
             _time_unit_speed = net_pack.pack[0].getSize_t();
             break;
         case network::PGET:
@@ -185,6 +185,18 @@ void Land::viewEvent(const sf::Event& event)
             move(0, MOV_FACTOR);
         if (event.key.code == sf::Keyboard::Z)
             move(0, -MOV_FACTOR);
+        if (event.key.code == sf::Keyboard::Left && _time_unit_speed > 1) {
+            if (sf::Keyboard::isKeyPressed(sf::Keyboard::LShift) && _time_unit_speed >= 10)
+                _client.get().sendData("sst " + std::to_string(_time_unit_speed - 10));
+            else
+                _client.get().sendData("sst " + std::to_string(_time_unit_speed - 1));
+        }
+        if (event.key.code == sf::Keyboard::Right && _time_unit_speed < 99) {
+            if (sf::Keyboard::isKeyPressed(sf::Keyboard::LShift) && _time_unit_speed <= 90)
+                _client.get().sendData("sst " + std::to_string(_time_unit_speed + 10));
+            else
+                _client.get().sendData("sst " + std::to_string(_time_unit_speed + 1));
+        }
         updateAmbiantSound();
     }
     if (_selected_tr != -1 && _trantorians.find(_selected_tr) != _trantorians.end()) {

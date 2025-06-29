@@ -68,6 +68,7 @@ class Land : public AScene {
         Drawable _tile;
         sf::Vector2i _map_size = {-1, -1};
         bool _map_set = false;
+
         LoadingScreen _loading;
         void loadingEvents(const network::NetEventPack&);
 

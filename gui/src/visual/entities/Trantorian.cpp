@@ -13,7 +13,7 @@ namespace visual {
 Trantorian::Trantorian(const sf::Vector2f& pos, const sf::Vector2i& pos_in_map,
     size_t level, size_t team_id, const sf::Color& color) :
     _body(NB_TRANTORS),
-    _type(NB_TRANTORS),
+    _type(NB_TRANTORS, IDLE),
     _body_direction(NB_TRANTORS, FACE_RIGHT),
     _body_animation({
         std::ref(_body[0]), std::ref(_body[1]), std::ref(_body[2])
