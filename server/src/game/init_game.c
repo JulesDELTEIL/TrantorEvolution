@@ -14,9 +14,10 @@
 
 team_t *init_teams(char **teams_name, int clientnb, int nbteams)
 {
-    team_t *teams;
+    team_t *teams = malloc(sizeof(team_t) * nbteams);
 
-    teams = malloc(sizeof(team_t) * nbteams);
+    if (!teams)
+        return NULL;
     for (int i = 0; teams_name[i] != NULL; i++) {
         teams[i].name = strdup(teams_name[i]);
         teams[i].space_left = clientnb;

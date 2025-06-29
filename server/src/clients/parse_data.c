@@ -26,6 +26,8 @@ static int empty_client_buff(client_t *client, uint_t index)
         return EXIT_FAILURE;
     }
     newbuff = malloc(sizeof(char) * (remaining + 1));
+    if (!newbuff)
+        return EXIT_FAILURE;
     for (uint_t k = index + 1; flw < remaining; k++) {
         newbuff[flw] = client->buffin[k];
         flw++;

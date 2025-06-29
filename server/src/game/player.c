@@ -134,6 +134,8 @@ static int add_player(serverdata_t *sdata, fdarray_t *fdarray,
 {
     player_t *new = malloc(sizeof(player_t));
 
+    if (!new)
+        return EXIT_FAILURE;
     new->id = sdata->game_data.next_player;
     new->team = team;
     new->level = 1;
@@ -148,6 +150,7 @@ static int add_player(serverdata_t *sdata, fdarray_t *fdarray,
     sdata->game_data.players = new;
     client->player = new;
     sdata->game_data.next_player++;
+    return EXIT_SUCCESS;
 }
 
 int send_pnw(serverdata_t *sdata, player_t *player, client_t *ui_client)
@@ -169,21 +172,21 @@ int send_pnw(serverdata_t *sdata, player_t *player, client_t *ui_client)
 int new_player(serverdata_t *sdata, fdarray_t *fdarray, client_t *client,
     char *team_name)
 {
-    int team_idx = -1;
+    int teamidx = -1;
 
     for (uint_t k = 0; k < sdata->game_data.nb_of_teams; k++)
         if (strcmp(sdata->game_data.teams[k].name, team_name) == 0)
-            team_idx = k;
-    if (team_idx < 0 || sdata->game_data.teams[team_idx].space_left <= 0)
+            teamidx = k;
+    if (teamidx < 0 || sdata->game_data.teams[teamidx].space_left <= 0)
         return EXIT_FAILURE;
-    add_player(sdata, fdarray, client, &(sdata->game_data.teams[team_idx]));
+    if (add_player(sdata, fdarray, client,
+        &(sdata->game_data.teams[teamidx])) == EXIT_FAILURE)
+            return EXIT_FAILURE;
     client->player->team->space_left -= 1;
     client->player->time_use_life = set_timer_end(sdata->args->freq,
         TICKS_FOOD_USE);
-    for (uint_t k = NB_SERVER_FD; k < NBTOTAL_FD; k++) {
-        if (fdarray->clients[k].type == GUI) {
+    for (uint_t k = NB_SERVER_FD; k < NBTOTAL_FD; k++)
+        if (fdarray->clients[k].type == GUI)
             send_pnw(sdata, client->player, &(fdarray->clients[k]));
-        }
-    }
     return EXIT_SUCCESS;
 }

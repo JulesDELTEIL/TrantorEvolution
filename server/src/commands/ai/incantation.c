@@ -135,6 +135,8 @@ int cmd_incantation(serverdata_t *sdata, fdarray_t *fdarray,
     if (client->player->level < 8 && incantation_start_ok(sdata,
         client->player)) {
         incantation = set_incantation(sdata, fdarray, client);
+        if (incantation == NULL)
+            return EXIT_FAILURE;
         set_player_incantation_end(client->player,
             set_timer_end(sdata->args->freq, ACTIONS_ARR[INCANTATION].delay),
             incantation);
