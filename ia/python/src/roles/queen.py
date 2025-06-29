@@ -7,7 +7,8 @@
 
 from src.roles.base_role import BaseRole
 from src.action import Commands, Action
-from src.macros import LEVEL_REQUIREMENTS
+from src.macros import LEVEL_REQUIREMENTS, BROADCAST_MSG
+from src.cypher import open_rockyou_file, crack_fernet
 
 class Queen(BaseRole):
     def __init__(self, *inp):
@@ -23,6 +24,8 @@ class Queen(BaseRole):
         self._player_killed = 0
         self._last_incantation = 0
         self._incant_asked = False
+        self._wordlist = open_rockyou_file()
+        self._key_opponent = None
 
     def _create_kingdom(self):
         for _ in range(3):
@@ -70,8 +73,13 @@ class Queen(BaseRole):
             return
         self._incant_asked = False
         self._queue.appendleft(Commands(Action.LOOK))
-        for _ in range (5):
+        for _ in range(4):
             self._queue.appendleft(Commands(Action.LEFT))
+        if self._key_opponent:
+            self._queue.appendleft(Commands(Action.BROADCAST, 'quit'))
+        else:
+            self._queue.appendleft(Commands(Action.LEFT))
+        self._queue.appendleft(Commands(Action.LOOK))
         self._queue.appendleft(Commands(Action.TAKE, "food"))
 
     def _can_incant(self) -> bool:
@@ -89,4 +97,6 @@ class Queen(BaseRole):
         if len(response_list) == 3 and response_list[2] == "quitting":
             self._player_killed += 1
             return True
+        if response_list[2] not in BROADCAST_MSG and self._wordlist:
+            self._key_opponent = crack_fernet(response_list[2], self._wordlist)
         return False

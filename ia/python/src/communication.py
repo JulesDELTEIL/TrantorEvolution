@@ -68,7 +68,13 @@ class Communication():
         if self.role._queue:
             action = self.role._queue.pop()
             if action.action == Action.BROADCAST:
-                action.argument = cyp.cypher(action.argument, self._communication_team_name)
+                if isinstance(self.role, Queen):
+                    if self.role._key_opponent and action.argument == 'quit':
+                        action.argument = cyp.cypher(action.argument, self.role._key_opponent)
+                    else:
+                        action.argument = cyp.cypher(action.argument, self._communication_team_name)
+                else:
+                    action.argument = cyp.cypher(action.argument, self._communication_team_name)
             if action.action != Action.NONE:
                 self.send((action.__str__() + "\n").encode())
                 self.role._last_sent = action.action
@@ -154,8 +160,19 @@ class Communication():
             return self.handle_nobody(response)
         if response_list[0] == "message":
             deciphered_broadcast = self._translate_broadcast(response_list)
-            if not deciphered_broadcast:
-                return False
-            self.role.handle_broadcast(deciphered_broadcast)
+            if deciphered_broadcast:
+                if deciphered_broadcast[2] == 'quit':
+                    self._communication_sock.shutdown(socket.SHUT_RDWR)
+                    self._communication_sock.close()
+                    exit()
+                else:
+                    self.role.handle_broadcast(deciphered_broadcast)
+            else:
+                if response_list[2] == 'quit':
+                    self._communication_sock.shutdown(socket.SHUT_RDWR)
+                    self._communication_sock.close()
+                    exit()
+                else:
+                    self.role.handle_broadcast(response_list)
             return False
         return self._handle_action(response, response_list)
