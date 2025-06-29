@@ -15,6 +15,9 @@ from src.macros import X, Y
 from src.action import Action, Commands
 
 class Communication():
+    """
+    Manage all things received via server and send things AI want to.
+    """
     def __init__(self, team_name: str, sock):
         self._communication_team_name = team_name
         self._communication_sock = sock
@@ -30,13 +33,13 @@ class Communication():
     def _get_client_num(self, client_num_str: str) -> None:
         client_num_strip = client_num_str.strip()
         if not client_num_strip.isdigit():
-            raise Exception("Invalid client number left from server: %s" % client_num_str)
+            raise ValueError("Invalid client number left from server: %s" % client_num_str)
         self._player_num = int(client_num_strip)
 
     def _get_dimension(self, dimension_str: str) -> None:
         dimension_split = dimension_str.split()
         if len(dimension_split) != 2 or not all([val.isdigit() for val in dimension_split]):
-            raise Exception("Invalid dimension from server: %s" % dimension_str)
+            raise ValueError("Invalid dimension from server: %s" % dimension_str)
         dimension_tuple = (int(dimension_split[X]), int(dimension_split[Y]))
         self._dimension = dimension_tuple
 
@@ -68,7 +71,13 @@ class Communication():
         if self.role._queue:
             action = self.role._queue.pop()
             if action.action == Action.BROADCAST:
-                action.argument = cyp.cypher(action.argument, self._communication_team_name)
+                if isinstance(self.role, Queen):
+                    if self.role._key_opponent and action.argument == 'quit':
+                        action.argument = cyp.cypher(action.argument, self.role._key_opponent)
+                    else:
+                        action.argument = cyp.cypher(action.argument, self._communication_team_name)
+                else:
+                    action.argument = cyp.cypher(action.argument, self._communication_team_name)
             if action.action != Action.NONE:
                 self.send((action.__str__() + "\n").encode())
                 self.role._last_sent = action.action
@@ -111,10 +120,13 @@ class Communication():
             real_broadcast.append(item)
         return real_broadcast
 
-    def _handle_action(self, response: str, response_list: list[str]):
+    def _handle_action(self, response: str, response_list: list[str]) -> bool:
         if response_list[0] == "Current":
             self._incantation_success(response)
         elif self.role._last_sent:
+            if response_list[0] == "ko":
+                self.role._queue.clear()
+                return True
             if response_list[0][0] == '[':
                 if self.role._last_sent == Action.LOOK or self.role._last_sent == Action.INVENTORY:
                     self.COMMANDS[self.role._last_sent](response)
@@ -154,8 +166,19 @@ class Communication():
             return self.handle_nobody(response)
         if response_list[0] == "message":
             deciphered_broadcast = self._translate_broadcast(response_list)
-            if not deciphered_broadcast:
-                return False
-            self.role.handle_broadcast(deciphered_broadcast)
+            if deciphered_broadcast:
+                if deciphered_broadcast[2] == 'quit':
+                    self._communication_sock.shutdown(socket.SHUT_RDWR)
+                    self._communication_sock.close()
+                    exit()
+                else:
+                    self.role.handle_broadcast(deciphered_broadcast)
+            else:
+                if response_list[2] == 'quit':
+                    self._communication_sock.shutdown(socket.SHUT_RDWR)
+                    self._communication_sock.close()
+                    exit()
+                else:
+                    self.role.handle_broadcast(response_list)
             return False
         return self._handle_action(response, response_list)

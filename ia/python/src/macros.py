@@ -8,6 +8,8 @@
 X = 0
 Y = 1
 
+BROADCAST_MSG = ['quit', 'quitting', 'role;queen', 'role;foreman', 'role;matriarch', 'role;kamikaze', 'role;worker']
+
 STONES = ['thystame', 'phiras', 'mendiane', 'sibur', 'deraumere', 'linemate']
 
 LEVEL_REQUIREMENTS = {

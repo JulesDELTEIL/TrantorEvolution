@@ -5,18 +5,21 @@
 ## player.py
 ##
 
+import subprocess
+
 from src.roles.nobody import Nobody
 from src.action import Commands, Action
 from src.utils import parse_vision, parse_inventory
 from src.macros import X, Y
 
-import subprocess
-
 class Player():
+    """
+    All things related to AI logic. All actions handled when server send back 'ok'
+    """
     def __init__(self, host: str, port: str, team_name: str):
-        self._player_host = host
-        self._player_port = port
-        self._player_team_name = team_name
+        self._player_host: str = host
+        self._player_port: str = port
+        self._player_team_name: str = team_name
         self.role = Nobody()
         self.COMMANDS = {
             Action.FORWARD: self._move_forward,
@@ -26,7 +29,7 @@ class Player():
             Action.INVENTORY: self._update_inventory,
             Action.BROADCAST: self._void,
             Action.TAKE: self._take_object,
-            Action.SET: self._void,
+            Action.SET: self._set_object,
             Action.FORK: self._spawn_new_client,
             Action.INCANTATION: self._incantation_success,
             Action.CONNECT_NBR: self._update_connect_nbr,
@@ -37,15 +40,14 @@ class Player():
     def _spawn_new_client(self, response) -> None:
         subprocess.Popen(["./zappy_ai", "-p", self._player_port, "-n", self._player_team_name, "-h", self._player_host])
 
-    def _update_connect_nbr(self, connect_nbr: str) -> bool:
+    def _update_connect_nbr(self, connect_nbr: str) -> None:
         self.role._egg_left = int(connect_nbr)
-        return True
 
     def _update_mindmap(self, response: str) -> None:
         response_formatted = parse_vision(response)
-        self.role._last_vision = response_formatted[0]
+        self.role._last_vision = response_formatted
         if isinstance(self.role, Nobody):
-            if self.role._last_vision.count("player") > 1:
+            if self.role._last_vision[0].count("player") > 1:
                 self.role._is_there_anyone = True
             else:
                 self.role._is_there_anyone = False
@@ -65,17 +67,17 @@ class Player():
         self.role._queue.appendleft(Commands(Action.FORWARD))
         self.role._queue.appendleft(Commands(Action.LOOK))
         
-    def _turn_left(self, response: str):
+    def _turn_left(self, response: str) -> None:
         if self.role._direction is not None:
             mapping = {"up": "left", "left": "down", "down": "right", "right": "up"}
             self.role._direction = mapping[self.role._direction]
 
-    def _turn_right(self, response: str):
+    def _turn_right(self, response: str) -> None:
         if self.role._direction is not None:
             mapping = {"up": "right", "right": "down", "down": "left", "left": "up"}
             self.role._direction = mapping[self.role._direction]
 
-    def _move_forward(self, response: str):
+    def _move_forward(self, response: str) -> None:
         if self.role._direction == "up":
             self.role.pos[Y] += 1
         elif self.role._direction == "right":
@@ -85,14 +87,26 @@ class Player():
         elif self.role._direction == "left":
             self.role.pos[X] -= 1
             
-    def _take_object(self, response: str):
+    def _take_object(self, response: str) -> None:
         if response == "ko" or response == "ko\n":
             self.role.carry = None
             self.role._last_vision = None
         else:
+            self.role._queue.clear()
             self.role.mode = 'DELIVERING'
+            
+    def _set_object(self, response: str) -> None:
+        if response == "ko" or response == "ko\n":
+            self.role.carry = None
+            self.role._last_vision = None
+            self.role._queue.clear()
+        else:
+            self.role._queue.clear()
+            self.role.mode = 'GATHERING'
+            self.role.carry = None
+            self.role._last_vision = None
     
-    def _incantation_success(self, response: str):
+    def _incantation_success(self, response: str) -> None:
         self.role._queue.clear()
         if response == "Elevation underway":
             return
@@ -102,5 +116,5 @@ class Player():
             self.role._last_incantation = self.role._cycle
             self.role._incant_asked = False
 
-    def _void(self, response: str):
+    def _void(self, response: str) -> None:
         return

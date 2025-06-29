@@ -6,15 +6,13 @@
 #
 
 import socket
-from collections import deque
-import sys
 
 BUFF_SIZE = 1024
-INTERLOCUTOR = 0
-MESSAGE_CONTENT = 1
-WORD_COUNT = 2
 
 class ServerManager:
+    """
+    Communication with server with circular buffer
+    """
     def __init__(self, host: str, port: int):
         self._host = host
         self._port = port
