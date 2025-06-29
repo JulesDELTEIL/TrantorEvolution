@@ -91,7 +91,7 @@ void get_args(int ad, char *av[], arguments_t *args)
 
 int check_args(arguments_t *args)
 {
-    if (args->freq != DEFAULT_FREQ)
+    if (args->freq == 0)
         args->freq = DEFAULT_FREQ;
     if (args->debug != true)
         args->debug = false;
