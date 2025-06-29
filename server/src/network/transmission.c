@@ -23,8 +23,10 @@ static int add_circular(client_t *client, char *buffer)
     if (client->buffin != NULL)
         c_bufflen = strlen(client->buffin);
     newbuff = malloc(sizeof(char) * (c_bufflen + n_bufflen + 1));
-    if (!newbuff)
+    if (!newbuff) {
+        printf("newbuff fsodfof\n");
         return EXIT_FAILURE;
+    }
     for (uint_t k = 0; k < c_bufflen; k++)
         newbuff[k] = client->buffin[k];
     for (uint_t k = 0; k < n_bufflen; k++)

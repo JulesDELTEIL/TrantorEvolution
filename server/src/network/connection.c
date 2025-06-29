@@ -22,25 +22,12 @@ static int getnextfree(fdarray_t *fdarray)
     return -1;
 }
 
-static int destroy_buffout(message_t *head)
-{
-    message_t *temp = NULL;
-
-    while (head != NULL) {
-        temp = head->next;
-        free(head->data);
-        free(head);
-        head = temp;
-    }
-}
-
 int closeconnection(serverdata_t *sdata, fdarray_t *fdarray, client_t *client)
 {
     close(client->fd);
     destroy_client(client);
     if (client->type == AI)
         kill_player(sdata, fdarray, client);
-    destroy_buffout(client->buffout);
     setempty_client(client);
     return CLOSE_CONNECTION;
 }
