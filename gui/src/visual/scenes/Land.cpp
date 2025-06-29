@@ -261,8 +261,10 @@ void Land::addTile(const network::NetPack& pack)
     }
     index += 1;
     _loading.loadingPercent(static_cast<float>(index) / (_map_size.x * _map_size.y));
-    if (index >= (_map_size.x * _map_size.y))
+    if (index >= (_map_size.x * _map_size.y)) {
         _map_set = true;
+        _hud.setLaunch(_trantorians.size(), _time_unit_speed);
+    }
 }
 
 void Land::updateTile(const network::NetPack& pack)
@@ -452,7 +454,7 @@ bool Land::hitTile(const sf::Vector2f& mpos)
             if (hitTriangle(mpos, tile_top, tile_bot, tile_left) ||
                 hitTriangle(mpos, tile_top, tile_bot, tile_right)) {
                 _hud.changeTileInfo(tileX.second.tile);
-                _hud.updateInfo();
+                _hud.updateInfo(_clock);
                 return true;
             }
         }
