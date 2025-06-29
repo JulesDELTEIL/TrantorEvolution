@@ -42,6 +42,13 @@ struct ClearTile {
     sf::Vector2i tile;
 };
 
+struct LoneTrantor {
+    std::string team;
+    sf::Vector2f pos;
+    sf::Vector2i map_pos;
+    size_t lvl;
+};
+
 class Land : public AScene {
     public:
         Land(std::reference_wrapper<network::Client>);
@@ -74,6 +81,9 @@ class Land : public AScene {
 
         void clearResources(void);
         std::vector<ClearTile> _clear_resources;
+        
+        std::map<size_t, LoneTrantor> _temp;
+        void addTeam(const network::NetPack& pack);
 
         void addTrantorian(const network::NetPack& pack);
         void removeTrantorian(const network::NetPack& pack);
