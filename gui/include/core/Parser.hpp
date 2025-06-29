@@ -47,9 +47,8 @@ class Parser::Error : public std::exception
         std::string _ErrorType = "";
 };
 
-static const uint8_t ARGS_NB = 3;
-static const uint8_t PORT_NB_ARG_INDEX = 1;
-static const uint8_t HOST_NAME_ARG_INDEX = 2; 
+static const uint8_t ARGS_NB = 5;
+static const uint8_t LAST_ARG = 4;
 
 } // gui
 } // core

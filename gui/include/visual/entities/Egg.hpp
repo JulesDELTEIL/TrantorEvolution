@@ -18,10 +18,10 @@ namespace visual {
 
 static const AnimationInfos EGG_ANIM_INFO = {
     "assets/object/Egg-Sheet.png",
-    {64, 64},
+    {32, 32},
     {4, 1},
     {0, 0},
-    0.5,
+    2,
     sf::Clock()
 };
 

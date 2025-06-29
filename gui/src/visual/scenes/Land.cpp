@@ -17,7 +17,8 @@
 namespace gui {
 namespace visual {
 
-Land::Land(std::reference_wrapper<network::Client> client) : AScene(core::DEFAULT_VIEW), _client(client)
+Land::Land(std::reference_wrapper<network::Client> client) : AScene(core::DEFAULT_VIEW),
+    _client(client), _loading(core::DEFAULT_VIEW), _hud(std::ref(_teams))
 {
     std::srand(std::time({}));
     _tile.sprite.setOrigin({TILE_SIZE / 2, 0.0f});
@@ -36,9 +37,15 @@ Land::~Land()
 
 void Land::display(sf::RenderTarget& render)
 {
+    if (!_map_set) {
+        render.setView(_camera);
+        _loading.draw(render);
+        return;
+    }
     _backgroud.drawBackground(render);
     render.setView(_camera);
     clearResources();
+    moveToDest();
     drawEdge(render, -1);
     drawEdge(render, false);
     for (auto& tileY : _tiles) {
@@ -52,6 +59,8 @@ void Land::display(sf::RenderTarget& render)
     }
     for (auto& trantor : _trantorians)
         trantor.second->draw(render, _clock);
+    for (const auto& egg: _eggs)
+        egg.second->draw(render);
     drawEdge(render, true);
     _backgroud.drawWaterfall(render, _map_size);
     _hud.display(render, _clock);
@@ -60,12 +69,13 @@ void Land::display(sf::RenderTarget& render)
 
 void Land::event(const core::Engine& engine, const network::NetEventPack& net_pack)
 {
+    if (!_map_set) {
+        loadingEvents(net_pack);
+        return;
+    }
     viewEvent(engine.events);
     checkHudEvent(engine, net_pack);
     switch (static_cast<int>(net_pack.event)) {
-        case network::MSIZE:
-            _map_size = sf::Vector2f(net_pack.pack[0].getFloat(), net_pack.pack[1].getFloat());
-            break;
         case network::TILE:
             updateTile(net_pack.pack);
             break;
@@ -75,7 +85,7 @@ void Land::event(const core::Engine& engine, const network::NetEventPack& net_pa
         case network::PPOS:
             posTrantorian(net_pack.pack);
             break;
-        case network::TIME:
+        case network::TIMEM:
             _time_unit_speed = net_pack.pack[0].getSize_t();
             break;
         case network::PGET:
@@ -93,14 +103,41 @@ void Land::event(const core::Engine& engine, const network::NetEventPack& net_pa
         case network::ELAID:
             trantorLaidAnEgg(net_pack.pack);
             break;
+        case network::ENEW:
+            eggHatching(net_pack.pack);
+            break;
         case network::PDEAD:
             removeTrantorian(net_pack.pack);
+            break;
+        case network::PINV:
+            updateInventory(net_pack.pack);
+            break;
+        case network::PLVL:
+            _trantorians.at(net_pack.pack[0].getSize_t())->lvl = net_pack.pack[1].getSize_t();
+            break;
+    }
+}
+
+void Land::loadingEvents(const network::NetEventPack& net_pack)
+{
+    switch (static_cast<int>(net_pack.event)) {
+        case network::MSIZE:
+            _map_size = sf::Vector2i(net_pack.pack[0].getInt(), net_pack.pack[1].getInt());
+            break;
+        case network::BIOME:
+            addTile(net_pack.pack);
             break;
         case network::TEAMS:
             _teams.push_back({net_pack.pack[0].getString(), RANDOM_COLOR, {}});
             break;
-        case network::BIOME:
-            addTile(net_pack.pack);
+        case network::NEW:
+            addTrantorian(net_pack.pack);
+            break;
+        case network::TILE:
+            updateTile(net_pack.pack);
+            break;
+        case network::TIME:
+            _time_unit_speed = net_pack.pack[0].getSize_t();
             break;
     }
 }
@@ -148,7 +185,22 @@ void Land::viewEvent(const sf::Event& event)
             move(0, MOV_FACTOR);
         if (event.key.code == sf::Keyboard::Z)
             move(0, -MOV_FACTOR);
+        if (event.key.code == sf::Keyboard::Left && _time_unit_speed > 1) {
+            if (sf::Keyboard::isKeyPressed(sf::Keyboard::LShift) && _time_unit_speed >= 10)
+                _client.get().sendData("sst " + std::to_string(_time_unit_speed - 10));
+            else
+                _client.get().sendData("sst " + std::to_string(_time_unit_speed - 1));
+        }
+        if (event.key.code == sf::Keyboard::Right && _time_unit_speed < 99) {
+            if (sf::Keyboard::isKeyPressed(sf::Keyboard::LShift) && _time_unit_speed <= 90)
+                _client.get().sendData("sst " + std::to_string(_time_unit_speed + 10));
+            else
+                _client.get().sendData("sst " + std::to_string(_time_unit_speed + 1));
+        }
         updateAmbiantSound();
+    }
+    if (_selected_tr != -1 && _trantorians.find(_selected_tr) != _trantorians.end()) {
+        _camera.setCenter(_trantorians.at(_selected_tr)->actual_pos);;
     }
 }
 
@@ -157,14 +209,19 @@ void Land::askResources(void)
     _net_running = true;
     float ms_to_wait = 0;
 
-    while (_map_size.x == -1)
+    while (!_map_set)
         std::this_thread::yield();
     ms_to_wait = (_map_size.x * _map_size.y) * 10;
     while (_net_running) {
-        for (size_t y = 0; y < _map_size.y; ++y) {
-            for (size_t x = 0; x < _map_size.x; ++x) {
+        for (int y = 0; y < _map_size.y; ++y) {
+            for (int x = 0; x < _map_size.x; ++x) {
                 _client.get().sendData("bct " + std::to_string(x) + " " + std::to_string(y));
             }
+        }
+        for (const auto& trantor : _trantorians) {
+            std::string id =  std::to_string(trantor.first);
+            _client.get().sendData("pin " + id);
+            _client.get().sendData("plv " + id);
         }
         std::this_thread::sleep_for(std::chrono::duration<float, std::milli>(ms_to_wait));
     }
@@ -215,8 +272,11 @@ void Land::addTile(const network::NetPack& pack)
             _tiles[x][y].tile->updateResource(static_cast<resource_e>(i - 2), 0);
     }
     index += 1;
-    if (index >= (_map_size.x * _map_size.y))
+    _loading.loadingPercent(static_cast<float>(index) / (_map_size.x * _map_size.y));
+    if (index >= (_map_size.x * _map_size.y)) {
         _map_set = true;
+        _hud.setLaunch(_trantorians.size(), _time_unit_speed, _map_size);
+    }
 }
 
 void Land::updateTile(const network::NetPack& pack)
@@ -246,35 +306,44 @@ void Land::addTrantorian(const network::NetPack& pack)
 {
     int x = pack[1].getInt();
     int y = pack[2].getInt();
+    int tId = 0;
     sf::Vector2f pos = MAP_POS(CENTER_MAP(_map_size.y), x, y);
     std::shared_ptr<Trantorian> newT = nullptr;
 
-    for (auto& team : _teams)
+    for (auto& team : _teams) {
         if (!team.name.compare(pack[5].getString())) {
             newT = std::make_shared<Trantorian>(pos, sf::Vector2i(x, y),
-                pack[4].getSize_t(), team.name, team.color);
-            team.trantorians.push_back(newT);
+                pack[4].getSize_t(), tId, team.color);
+            team.trantorians[pack[0].getSize_t()] = newT;
             _tiles[x][y].trantorians[pack[0].getSize_t()] = newT;
             _trantorians[pack[0].getSize_t()] = newT;
         }
+        tId += 1;
+    }
 }
 
 void Land::removeTrantorian(const network::NetPack& pack)
 {
     size_t id = pack[0].getSize_t();
+    if (_trantorians.find(id) == _trantorians.end())
+        return;
     std::shared_ptr<Trantorian> trantor = _trantorians.at(id);
 
     _tiles[trantor->map_pos.x][trantor->map_pos.y].trantorians.erase(id);
+    _teams.at(_trantorians.at(id)->team).trantorians.erase(id);
     _trantorians.erase(id);
     trantor = nullptr;
 }
 
 void Land::trantorCollect(const network::NetPack& pack)
 {
-    sf::Vector2i tile_pos = _trantorians.at(pack[0].getSize_t())->map_pos;
+    size_t id = pack[0].getSize_t();
+    if (_trantorians.find(id) == _trantorians.end())
+        return;
+    sf::Vector2i tile_pos = _trantorians.at(id)->map_pos;
     resource_e type = static_cast<resource_e>(pack[1].getInt());
 
-    _trantorians.at(pack[0].getSize_t())->collect(_tiles[tile_pos.x][tile_pos.y].resources.at(type), ACT_TIME(7.0f) / 2, _clock);
+    _trantorians.at(id)->collect(_tiles[tile_pos.x][tile_pos.y].resources.at(type), ACT_TIME(7.0f) / 2, _clock);
     _clear_resources.push_back({ACT_TIME(7.0f) + _clock.getElapsedTime().asMilliseconds(), type, tile_pos});
 }
 
@@ -303,19 +372,41 @@ void Land::trantorEndIncantation(const network::NetPack& pack)
 
 void Land::trantorLayingAnEgg(const network::NetPack& pack)
 {
-    size_t trantor_id = pack[0].getSize_t();
-    _trantorians.at(trantor_id)->layAnEgg();
+    size_t id = pack[0].getSize_t();
+    
+    if (_trantorians.find(id) == _trantorians.end())
+        return;
+    _trantorians.at(id)->layAnEgg();
 }
 
 void Land::trantorLaidAnEgg(const network::NetPack& pack)
 {
-    size_t trantor_id = pack[1].getSize_t();
-    _trantorians.at(trantor_id)->laidAnEgg();
+    size_t egg_id = pack[0].getSize_t();
+    size_t id = pack[1].getSize_t();
+    if (_trantorians.find(id) == _trantorians.end() ||
+        _eggs.find(egg_id) == _eggs.end())
+        return;
+    sf::Vector2f egg_pos = _trantorians.at(id)->getBodyPos(0);
+    egg_pos.x += 5;
+    
+    _trantorians.at(id)->laidAnEgg();
+    _eggs.emplace(egg_id, std::make_shared<Egg>(egg_pos));
+}
+
+void Land::eggHatching(const network::NetPack& pack)
+{
+    size_t id = pack[0].getSize_t();
+
+    if (_eggs.find(id) == _eggs.end())
+        return;
+    _eggs.at(id)->hatch();
 }
 
 void Land::posTrantorian(const network::NetPack& pack)
 {
     size_t id = pack[0].getSize_t();
+    if (_trantorians.find(id) == _trantorians.end())
+        return;
     std::shared_ptr<Trantorian> trantor = _trantorians.at(id);
     int x = pack[1].getInt();
     int y = pack[2].getInt();
@@ -330,16 +421,36 @@ void Land::posTrantorian(const network::NetPack& pack)
     }
 }
 
+void Land::updateInventory(const network::NetPack& pack)
+{
+    size_t id = pack[0].getSize_t();
+
+    if (_trantorians.find(id) == _trantorians.end())
+        return;
+    _trantorians.at(id)->updateInventory(
+        pack[3].getSize_t(), pack[4].getSize_t(), pack[5].getSize_t(),
+        pack[6].getSize_t(), pack[7].getSize_t(), pack[8].getSize_t(),
+        pack[9].getSize_t()
+    );
+}
+
 void Land::checkHudEvent(const core::Engine& engine, const network::NetEventPack& net_pack)
 {
     _hud.event(engine.events, net_pack);
+    if (engine.events.type == sf::Event::KeyPressed) {
+        if (engine.events.key.code == sf::Keyboard::Escape)
+            _selected_tr = -1;
+    }
     if (engine.events.type == sf::Event::MouseButtonPressed) {
         if (engine.events.mouseButton.button == sf::Mouse::Left) {
-            sf::Vector2f mpos = engine.window.mapPixelToCoords(sf::Mouse::getPosition(engine.window), _camera);
-            if (hitTile(mpos))
-                _hud.changeStatus(HudType_e::TILE_INFO);
-            else
-                _hud.changeStatus(HudType_e::NO_INFO);
+            sf::Vector2i mpos = sf::Mouse::getPosition(engine.window);
+            _selected_tr = _hud.hitHudTeamInfo(mpos);
+            if (_selected_tr != -1);
+            else {
+                hitTile(engine.window.mapPixelToCoords(mpos, _camera));
+                _selected_tr = -1;
+                _hud.clearTrantorInfo();
+            }
         }
     }
 }
@@ -355,7 +466,7 @@ bool Land::hitTile(const sf::Vector2f& mpos)
             if (hitTriangle(mpos, tile_top, tile_bot, tile_left) ||
                 hitTriangle(mpos, tile_top, tile_bot, tile_right)) {
                 _hud.changeTileInfo(tileX.second.tile);
-                _hud.updateInfo();
+                _hud.updateInfo(_clock);
                 return true;
             }
         }

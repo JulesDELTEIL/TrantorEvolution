@@ -65,7 +65,9 @@ void Client::pushNetpackEvent(const std::string& command)
     if (CODE_EVENT_LINK.contains(infos.first)) {
         event.event = CODE_EVENT_LINK.at(infos.first);
         event.pack = infos.second;
+        _mutex.lock();
         _events.push(event);
+        _mutex.unlock();
     }
 }
 
@@ -107,7 +109,9 @@ bool Client::pollEvent(NetEventPack& event)
     if (_events.empty())
         return false;
     event = _events.front();
+    _mutex.lock();
     _events.pop();
+    _mutex.unlock();
     return true;
 }
 
@@ -117,5 +121,6 @@ void Client::sendData(const std::string& msg) const
     to_send.append("\n");
     write(_socket.getFd(), to_send.data(), to_send.size());
 }
+
 } // namespace network
 } // namespace gui

@@ -69,11 +69,11 @@ void get_args(int ad, char *av[], arguments_t *args)
 {
     size_t flw = 1;
 
-    args->freq = DEFAULT_FREQ;
-    args->debug = false;
     for (; flw < ad; flw++) {
         if (strcmp(av[flw], ARG_DEBUG) == 0)
             args->debug = true;
+        if (strcmp(av[flw], ARG_BIOME) == 0)
+            args->biome = true;
         if (strcmp(av[flw], ARG_PORT) == 0)
             get_port(av[flw + 1], args);
         if (strcmp(av[flw], ARG_WIDTH) == 0)
@@ -91,13 +91,17 @@ void get_args(int ad, char *av[], arguments_t *args)
 
 int check_args(arguments_t *args)
 {
+    if (args->freq == 0)
+        args->freq = DEFAULT_FREQ;
+    if (args->debug != true)
+        args->debug = false;
     if (args->port < MIN_PORT || args->port > MAX_PORT)
         return EXIT_FAILURE;
     if (args->height < MIN_MAP_SIZE || args->height > MAX_MAP_SIZE)
         return EXIT_FAILURE;
     if (args->width < MIN_MAP_SIZE || args->width > MAX_MAP_SIZE)
         return EXIT_FAILURE;
-    if (args->clientnb < MIN_CLIENTS || args->freq < MIN_FREQ)
+    if (args->clientnb < MIN_CLIENTS)
         return EXIT_FAILURE;
     if (args->team_name[FIRST_TEAM_NAME] == NULL ||
         args->team_name[A_SECOND_TEAM] == NULL)

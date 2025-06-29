@@ -11,6 +11,7 @@
     #include "pos.h"
 
 typedef struct egg_s {
+    size_t id;
     pos_t pos;
     struct egg_s *next;
 } egg_t;
@@ -19,6 +20,7 @@ typedef struct team_s {
     char *name;
     int space_left;
     egg_t *eggs;
+    int level_max;
 } team_t;
 
 #endif /* !GAME_H_ */

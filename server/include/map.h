@@ -9,8 +9,10 @@
     #define MAP_H_
 
     #include "map_tools.h"
-    #include <pthread.h>
     #include "threads.h"
+
+    #include <pthread.h>
+    #include <stdbool.h>
 
     #define FOOD_DENS 0.5
     #define WOOD_DENS 0.3
@@ -26,6 +28,7 @@
     #define BEACH_NOISE 0.35
     #define PLAINS_NOISE 0.50
     #define FOREST_NOISE 0.70
+    #define LAST_VALUE 1
 
 /*
 perlin noise function call for a 2d map
@@ -72,5 +75,25 @@ max density for every resources
 typedef struct density_s {
     unsigned int dens[NB_RESOURCES];
 } density_t;
+
+/*
+STATUES FUNCTIONS
+    Function that get the right ressoursces depending on if the
+    -b flag is active or not
+status.c
+*/
+biome_distribution_t get_first_refill_status(bool biome_active,
+    tile_t *tile);
+biome_distribution_t get_refill_status(bool biome_active,
+    int x,
+    int y,
+    tile_t **tiles);
+
+/*
+Get Biome based on perlin noise values
+get.c
+*/
+int get_biome(double noise);
+int get_spawn_biome(float noise);
 
 #endif /* !MAP_H_ */

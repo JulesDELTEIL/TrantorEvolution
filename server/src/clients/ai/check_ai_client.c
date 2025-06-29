@@ -84,10 +84,12 @@ static int cap_player_buff(client_t *client)
     char *newbuff = NULL;
 
     if (client->buffin == NULL || client->buffin_addition == false)
-        return EXIT_FAILURE;
+        return EXIT_SUCCESS;
     buffmax_idx = buff_max_idx(client);
     if (buffmax_idx != -1) {
         newbuff = malloc(sizeof(char) * (buffmax_idx + 1));
+        if (!newbuff)
+            return EXIT_FAILURE;
         for (uint_t k = 0; k < buffmax_idx; k++)
             newbuff[k] = client->buffin[k];
         newbuff[buffmax_idx] = 0;
@@ -134,6 +136,10 @@ int check_ai_client(serverdata_t *sdata, fdarray_t *fdarray,
 {
     if (client->player == NULL)
         return EXIT_FAILURE;
+    if (cap_player_buff(client) == EXIT_FAILURE) {
+        free(client->buffin);
+        client->buffin = NULL;
+    }
     if (check_player_life(sdata, fdarray, client) == EXIT_SUCCESS) {
         if (client->player->action.status != ONGOING)
             return buffer_handler(sdata, fdarray, client);

@@ -34,7 +34,7 @@ class Background {
         ~Background() = default;
     
         void drawBackground(sf::RenderTarget& render);
-        void drawWaterfall(sf::RenderTarget& render, const sf::Vector2f& map_size);
+        void drawWaterfall(sf::RenderTarget& render, const sf::Vector2i& map_size);
 
     private:
         Drawable _background;

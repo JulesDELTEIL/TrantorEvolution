@@ -22,25 +22,12 @@ static int getnextfree(fdarray_t *fdarray)
     return -1;
 }
 
-static int destroy_buffout(message_t *head)
-{
-    message_t *temp = NULL;
-
-    while (head != NULL) {
-        temp = head->next;
-        free(head->data);
-        free(head);
-        head = temp;
-    }
-}
-
 int closeconnection(serverdata_t *sdata, fdarray_t *fdarray, client_t *client)
 {
     close(client->fd);
     destroy_client(client);
     if (client->type == AI)
         kill_player(sdata, fdarray, client);
-    destroy_buffout(client->buffout);
     setempty_client(client);
     return CLOSE_CONNECTION;
 }
@@ -59,10 +46,8 @@ int openconnection(serverdata_t *sdata, fdarray_t *fdarray)
     int nextfree = NOFD;
 
     nextfree = getnextfree(fdarray);
-    if (nextfree == NOFD) {
-        set_message(&(fdarray->clients[nextfree]), "REFUSED", NULL);
+    if (nextfree == NOFD)
         return CLIENTS_OVERFLOW_CODE;
-    }
     newfd = accept(sdata->sockfd,
             (struct sockaddr*)&sdata->address, &sdata->addrlen);
     if (newfd < 0)
