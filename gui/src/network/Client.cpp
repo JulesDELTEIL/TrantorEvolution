@@ -17,8 +17,10 @@ namespace network {
 
 Client::~Client()
 {
-    _network_runing = false;
-    _network.join();
+    if (_network_runing == true) {
+        _network_runing = false;
+        _network.join();
+    }
 }
 
 static Command splitCodeAndArg(const std::string &string)
@@ -38,7 +40,13 @@ static Command splitCodeAndArg(const std::string &string)
 
 void Client::setSocket(const std::string &server, const int &port)
 {
-    _socket.setSocket(server, port);
+    try {
+        _socket.setSocket(server, port);
+    }
+    catch(const network::Socket::socketError& e) {
+        std::cerr << e.what() << std::endl;
+        return;
+    }
     _stream.reset(fdopen(_socket.getFd(), "r"));
     _network_runing = true;
     _network = std::thread(&Client::checkEvent, this);
@@ -57,7 +65,9 @@ void Client::pushNetpackEvent(const std::string& command)
     if (CODE_EVENT_LINK.contains(infos.first)) {
         event.event = CODE_EVENT_LINK.at(infos.first);
         event.pack = infos.second;
+        _mutex.lock();
         _events.push(event);
+        _mutex.unlock();
     }
 }
 
@@ -99,7 +109,9 @@ bool Client::pollEvent(NetEventPack& event)
     if (_events.empty())
         return false;
     event = _events.front();
+    _mutex.lock();
     _events.pop();
+    _mutex.unlock();
     return true;
 }
 
@@ -109,5 +121,6 @@ void Client::sendData(const std::string& msg) const
     to_send.append("\n");
     write(_socket.getFd(), to_send.data(), to_send.size());
 }
+
 } // namespace network
 } // namespace gui

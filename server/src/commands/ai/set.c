@@ -19,7 +19,7 @@ static int set_resource(serverdata_t *sdata, client_t *client, int resource)
     int pl_x = client->player->pos.x;
     int pl_y = client->player->pos.y;
 
-    if (resource < 0 || client->player->inventory[resource] == 0)
+    if (resource < 0 || client->player->inventory[resource] <= 0)
         return EXIT_FAILURE;
     client->player->inventory[resource] -= 1;
     pthread_mutex_lock(&(sdata->game_data.map.mutex));
@@ -91,7 +91,6 @@ int cmd_set(serverdata_t *sdata, fdarray_t *fdarray,
         set_message(client, "ko", NULL);
         return EXIT_FAILURE;
     }
-    client->player->level += 1;
     client->player->action.cmd = strdup(ACTIONS_ARR[SET].name);
     client->player->action.data = strdup(data);
     client->player->action.status = ONGOING;

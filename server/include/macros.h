@@ -21,7 +21,7 @@ typedef unsigned int uint_t;
     #define CLIENT_BUFFER_SIZE 1024
 
     #define CLOSE_PROCESS 12
-    #define NBCLIENTS_MAX 100
+    #define NBCLIENTS_MAX 500
     #define NBCLIENTS_QUEUE 100
     #define NB_SERVER_FD 2
     #define NBTOTAL_FD (NBCLIENTS_MAX + NB_SERVER_FD)
@@ -39,11 +39,24 @@ static const char CLIENTS_OVERFLOW_MSG[] =
     #define CLIENTS_OVERFLOW_CODE 42
 
 enum client_type_e {
-    UNSET = -1,
     AI = 0,
     GUI = 1,
+    UNSET = 2
 };
 
 static const char GRAPHIC_TEAM[] = "GRAPHIC";
+
+static const char PLAYER_STR_LEN = 6;
+
+// fit with RESSOURCES_NAMES indexes
+static const uint_t RESOURCES_STR_LEN[] = {
+    4,
+    8,
+    9,
+    5,
+    8,
+    6,
+    8
+};
 
 #endif

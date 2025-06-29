@@ -21,13 +21,9 @@ Core::Core(int argc, const char *argv[])
         std::cerr << e.what() << std::endl;
         exit(84);
     }
-    _scenes[visual::Scene_e::IN_GAME] = std::make_unique<visual::Land>();
+    _scenes[visual::Scene_e::IN_GAME] = std::make_unique<visual::Land>(std::ref(_client));
     changeScene(visual::Scene_e::IN_GAME);
-    try {
-        _client.setSocket(_parser.getHostName(), _parser.getPortNb());
-    } catch (const network::Socket::socketError& e) {
-        std::cerr << e.what() << std::endl;
-    }
+    _client.setSocket(_parser.getHostName(), _parser.getPortNb());
 }
 
 void Core::run(void)
@@ -47,7 +43,8 @@ void Core::display(void)
 
 void Core::events(void)
 {
-    network::NetEventPack net_event;
+    network::NetEventPack net_event = {network::NONE, {}};
+    int limiter = 0;
 
     while (_engine.window.pollEvent(_engine.events)) {
         if (_engine.events.type == sf::Event::Closed) {
@@ -57,15 +54,19 @@ void Core::events(void)
         _scenes.at(_selected_scene)->event(_engine, net_event);
     }
     _engine.events.type = sf::Event::SensorChanged;
-    while (_client.pollEvent(net_event)) {
+    while (_client.pollEvent(net_event) && limiter < EVENT_LIMITER) {
+        limiter += 1;
         if (net_event.event == network::CON) {
             _client.sendData(AUTHENTIFICATOR);
             _client.sendData("msz");
-            _client.sendData("mct");
             _client.sendData("sgt");
+            _client.sendData("tna");
+            _client.sendData("bio");
         }
         _scenes.at(_selected_scene)->event(_engine, net_event);
     }
+    if (limiter == EVENT_LIMITER)
+        _scenes.at(_selected_scene)->event(_engine, net_event);
 }
 
 void Core::changeScene(const visual::Scene_e& scene)

@@ -15,8 +15,10 @@ add_executable( ${PROJECT_NAME}
     ${GUI_SRC_DIR}core/Engine.cpp
     ${GUI_SRC_DIR}core/Parser.cpp
     ${GUI_SRC_DIR}visual/AScene.cpp
+    ${GUI_SRC_DIR}visual/Drawable.cpp
     ${GUI_SRC_DIR}visual/Animation.cpp
     ${GUI_SRC_DIR}visual/Movement.cpp
+    ${GUI_SRC_DIR}visual/Text.cpp
 
     # NETWORK
     ${GUI_SRC_DIR}network/Client.cpp
@@ -30,9 +32,14 @@ add_executable( ${PROJECT_NAME}
     ${GUI_SRC_DIR}visual/entities/Hud.cpp
     ${GUI_SRC_DIR}visual/entities/IncantationObject.cpp
     ${GUI_SRC_DIR}visual/entities/Background.cpp
+    ${GUI_SRC_DIR}visual/entities/Egg.cpp
+    ${GUI_SRC_DIR}visual/entities/LoadingScreen.cpp
 
     # SCENES
     ${GUI_SRC_DIR}visual/scenes/Land.cpp
+
+    # AUDIO 
+    ${GUI_SRC_DIR}audio/SoundManage.cpp
 )
 
 ########## LINKAGE ##########
@@ -40,6 +47,7 @@ target_link_libraries( ${PROJECT_NAME}
     sfml-graphics
     sfml-window
     sfml-system
+    sfml-audio
 )
 
 target_include_directories( ${PROJECT_NAME}

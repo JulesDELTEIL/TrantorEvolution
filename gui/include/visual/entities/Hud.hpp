@@ -12,9 +12,13 @@
     #include <SFML/Window/Event.hpp>
     #include <unordered_map>
 
+    #include "map_tools.h"
+    #include "core/Engine.hpp"
     #include "visual/Drawable.hpp"
+    #include "visual/Text.hpp"
     #include "network/events.hpp"
     #include "visual/visual.hpp"
+    #include "Teams.hpp"
 
     #include "visual/entities/Trantorian.hpp"
     #include "visual/entities/Tile.hpp"
@@ -22,17 +26,19 @@
 namespace gui {
 namespace visual {
 
-    #define UPDATE_INFO 500.0f
+    #define UPDATE_INFO 800.0f
+    #define HUD_FONT "assets/hud/hud_font.ttf"
     
     #define TILE_HUD_TEXTURE "assets/hud/hud_bg.png"
     #define TILE_HUD_SCALE 1.6f
     #define TILE_HUD_MARGIN 10.0f
     #define TILE_RESOURCES_TEXTURE "assets/hud/resources.png"
     #define TILE_FONT_SIZE 12
+    #define TILE_BIOME_FSIZE 16
+    #define TILE_BIOME_POS_FACTOR sf::Vector2f(-10.0f, -30.0f);
     #define TILE_COLOR_TEXT sf::Color(93, 60, 0, 255)
     #define TILE_INSIDE_MARGIN 32.0f
     #define TILE_INSIDE_SPLIT 20.0f
-
     #define HUD_RES_SIZE 10
 
 static const std::map<resource_e, sf::IntRect> HUD_RES_RECT = {
@@ -49,69 +55,124 @@ static const std::map<resource_e, sf::IntRect> HUD_RES_RECT = {
     #define GLOBAL_HUD_SCALE 2.0f
     #define GLOBAL_FONT_SIZE 21
     #define GLOBAL_COLOR_TEXT sf::Color(255, 204, 114, 255)
-
     #define GLOBAL_MARGIN 26.0f
     #define GLOBAL_TEXT_SPLIT(i) (30.0f * i) + 5.0f
-
     #define G_TIME_POS sf::Vector2f(GLOBAL_MARGIN, GLOBAL_TEXT_SPLIT(1))
     #define G_MAPS_POS sf::Vector2f(GLOBAL_MARGIN, GLOBAL_TEXT_SPLIT(2))
     #define G_NBTE_POS sf::Vector2f(GLOBAL_MARGIN, GLOBAL_TEXT_SPLIT(3))
     #define G_NBTR_POS sf::Vector2f(GLOBAL_MARGIN, GLOBAL_TEXT_SPLIT(4))
 
-    #define HUD_FONT "assets/hud/hud_font.ttf"
+    #define UNIT_FOR_DAY 365
+    #define DAY_PASS_TIME float(1000.0f * (UNIT_FOR_DAY / this->_time_unit_speed))
 
-enum HudType_e {
-    NO_INFO = -1,
-    TRANTOR_INFO,
-    TILE_INFO,
-};
+    #define DATE_HUD_TEXTURE "assets/hud/date.png"
+    #define DATE_HUD_SCALE 2.5f
+    #define DATE_FONT_SIZE 24
+    #define DATE_HUD_POS sf::Vector2f(WIN_X - 10.0f, 10.0f)
+    #define DATE_COLOR_TEXT sf::Color(255, 225, 170, 255)
+    #define DATE_NB_POS sf::Vector2f(DATE_HUD_POS.x - 155.0f, 20.0f)
 
-struct HudInfos {
+    #define TEAM_HUD_TEXTURE "assets/hud/team.png"
+    #define TEAM_HUD_SCALE 3.0f
+    #define T_TR_TEXTURE "assets/hud/trantor.png"
+    #define T_LVL_TEXTURE "assets/hud/king.png"
+    #define T_TO_GO_TEXTURE "assets/hud/go_to.png"
+    #define T_NAME_SIZE 16
+    #define T_POS sf::Vector2f(0.0f, 120.0f)
+    #define T_MARGIN sf::Vector2f(0.0f, 80.0f)
+    #define T_NAME_POS sf::Vector2f(25.0f, 12.0f)
+    #define T_INSIDE_MARGIN sf::Vector2f(0.0f, 25.0f)
+    #define T_LEFT_POS sf::Vector2f(25.0f, 35.0f)
+    #define T_RIGHT_POS sf::Vector2f(50.0f, 34.2f)
+    #define T_TO_GO_POS sf::Vector2f(130.0f, 35.0f)
+    #define T_HITBOX_KING(p) (sf::IntRect(p.x + T_INSIDE_MARGIN.x + T_TO_GO_POS.x, p.y + T_INSIDE_MARGIN.y + T_TO_GO_POS.y, 16.0f, 16.0f))
+
+    #define TR_INFO_TEXTURE "assets/hud/trantor_info.png"
+    #define TR_INFO_SCALE 5.0f
+    #define TR_INFO_POS sf::Vector2f(200.0f, 10.0f)
+    #define TR_INFO_RES_POS sf::Vector2f(0.0f, 45.0f)
+    #define TR_INFO_RES_MARGIN sf::Vector2f(0.0f, 22.0f)
+    #define TR_INFO_SIZE 18
+    #define TR_INFO_POS_R sf::Vector2f(60.0f, 0.0f)
+
+struct TileInfo {
     std::string type;
     sf::Vector2i position;
     ResourceGroup resources;
 };
 
+static const std::map<biome_e, std::string> BIOME_NAMES = {
+    {SEA, "sea"}, {FOREST, "forest"}, {MOUNTAINS, "mountain"},
+    {PLAINS, "plains"}, {BEACH, "beach"}, {EMPTY, "empty"},
+};
+
 struct HudDisplay {
     HudDisplay();
-    void moveTile(const sf::Vector2f& pos);
-    sf::Font font;
+    Font font;
+
     Drawable tile;
     Drawable tile_r;
-    sf::Text tile_rquantity;
+    Text tile_biome;
+    Text tile_rquantity;
+
     Drawable global;
-    sf::Text g_time;
-    sf::Text g_map_size;
-    sf::Text g_nb_trantors;
-    sf::Text g_nb_teams;
+    Text g_time;
+    Text g_map_size;
+    Text g_nb_teams;
+    Text g_nb_trantors;
+
+    Drawable date;
+    Text date_nb;
+
+    Drawable teams;
+    Drawable t_trantor;
+    Drawable t_lvl;
+    Drawable t_go_to;
+    Text t_info;
+
+    Drawable trantor;
+    Text tr_info;
 };
 
 class Hud {
     public:
-        Hud() = default;
+        Hud(std::reference_wrapper<Teams>);
         ~Hud() = default;
 
         void display(sf::RenderTarget& target, const sf::Clock& clock);
         void event(const sf::Event&, const network::NetEventPack&);
         
-        void changeStatus(HudType_e);
-        void changeTrantorInfo(std::shared_ptr<Trantorian>);
+        void setLaunch(size_t, size_t, const sf::Vector2i&);
         void changeTileInfo(std::shared_ptr<Tile>);
-        void updateInfo(void);
+        void updateInfo(const sf::Clock&);
+        int hitHudTeamInfo(const sf::Vector2i& mpos);
+        void clearTrantorInfo(void);
 
     private:
         float _last_time = 0;
-        HudType_e _status = NO_INFO;
-        HudInfos _infos;
+
         HudDisplay _display;
+        void drawHud(sf::RenderTarget&);
+    
+        float _last_day = 0;
+        size_t _time_unit_speed = 1;
+        size_t _nb_days = 0;
 
         size_t _nb_trantors = 0;
-        std::unordered_map<std::string, int> _nb_teams;
 
-        void drawTileInfo(sf::RenderTarget& render);
-    
-        std::shared_ptr<Trantorian> _trantorian = nullptr;
+        std::reference_wrapper<Teams> _teams;
+        std::vector<size_t> _best_lvl;
+        std::vector<size_t> _trantor_index;
+        void drawTeamsInfos(sf::RenderTarget&);
+
+        std::shared_ptr<Trantorian> _tr_selected = nullptr;
+        ResourceGroup _trantor_resources;
+        void drawTrantorInfos(sf::RenderTarget&);
+
         std::shared_ptr<Tile> _tile = nullptr;
+        TileInfo _infos;
+        void drawTileInfos(sf::RenderTarget& render);
+
 
 };
 

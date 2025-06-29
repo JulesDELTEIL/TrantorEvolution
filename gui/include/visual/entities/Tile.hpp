@@ -17,11 +17,11 @@
     #include "map_tools.h"
     #include "visual/visual.hpp"
     #include "visual/Drawable.hpp"
+    #include "visual/entities/Background.hpp"
 
 namespace gui {
 namespace visual {
 
-    #define TILE_SIZE 96
     #define BIOME_TEXTURE_PATH "assets/tiles/BiomTiles.png"
     #define NB_TYPE 3
     #define ANIMATION_CLOCK 500
@@ -51,9 +51,11 @@ class Tile {
         void draw(sf::RenderTarget&, const sf::Clock&);
 
         ResourceGroup getResources(void) const;
-        void updateResource(resource_e, int);
+        void updateResource(resource_e, size_t);
+        void lowerResource(resource_e, size_t);
 
         sf::Vector2f getPos(void) const;
+        biome_e getBiome(void) const;
 
     private:
         std::reference_wrapper<Drawable> _biome;

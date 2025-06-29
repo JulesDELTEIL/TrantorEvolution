@@ -13,43 +13,68 @@ namespace visual {
 ResourceNode::ResourceNode(const sf::Vector2f& pos, resource_e type, size_t quantity)
 {
     _type = type;
-    sf::Vector2f res_pos = {
-        pos.x + std::rand() % RES_RANGE_X + RES_MIN_X,
-        pos.y + std::rand() % RES_RANGE_Y + RES_MIN_Y
-    };
-    _resource.texture.loadFromFile(RESOURCE_NODE_TEXTURE.at(type));
-    _resource.sprite.setPosition(res_pos);
+    _pos = pos;
+    _resource.texture.loadFromFile(RESOURCE_NODE_TEXTURE.at(_type));
     _resource.sprite.setTexture(_resource.texture);
     _resource.sprite.setTextureRect(RESOURCE_RECT);
     _resource.sprite.setOrigin(sf::Vector2f(RESOURCE_RECT.width / 2, RESOURCE_RECT.height));
-    _quantity = quantity;
-    _resource.sprite.setScale(
-        MIN_SCALE + _quantity / SCALE_RATIO,
-        MIN_SCALE + _quantity / SCALE_RATIO
-    );
+    _resource.sprite.setScale(RES_SCALE, RES_SCALE);
+    updateQuantity(quantity);
+}
+
+void ResourceNode::addResource(void)
+{
+    sf::Vector2f res_pos = {
+        _pos.x + std::rand() % RES_RANGE_X + RES_MIN_X,
+        _pos.y + std::rand() % RES_RANGE_Y + RES_MIN_Y
+    };
+    _sprites_pos.push_back(res_pos);
 }
 
 void ResourceNode::draw(sf::RenderTarget& target)
 {
-    if (_quantity > 0)
-        target.draw(_resource.sprite);
+    if (_quantity > 0) {
+        for (size_t i = 0; i < _sprites_pos.size(); ++i) {
+            _resource.sprite.setPosition(_sprites_pos[i]);
+            target.draw(_resource.sprite);
+        }
+    }
 }
 
-sf::Vector2f ResourceNode::getCollectPosition(void)
+std::vector<sf::Vector2f> ResourceNode::getCollectPosition(void)
 {
-    return _resource.sprite.getPosition() + sf::Vector2f(-2, 0);
+    std::vector<sf::Vector2f> resources_pos = {};
+
+    for (size_t i = 0; i < _sprites_pos.size(); ++i)
+        resources_pos.push_back(_sprites_pos[i] + sf::Vector2f(-4, 0));
+    return resources_pos;
 }
 
 void ResourceNode::updateQuantity(size_t new_quantity)
 {
-    sf::Vector2f scale = {0, 0};
+    size_t nb_sprites = new_quantity;
 
     _quantity = new_quantity;
-    if (new_quantity > SCALE_RATIO)
-        new_quantity = SCALE_RATIO;
-    scale.x = MIN_SCALE + new_quantity / SCALE_RATIO;
-    scale.y = MIN_SCALE + new_quantity / SCALE_RATIO;
-    _resource.sprite.setScale(scale);
+    if (nb_sprites > 1 && (_type == FOOD || _type == ANTI_MATTER ||_type == OIL))
+        nb_sprites = 1;
+    if (nb_sprites > 3)
+        nb_sprites = 3;
+    if (nb_sprites > _sprites_pos.size()) {
+        for (size_t i = _sprites_pos.size(); i < nb_sprites; ++i)
+            addResource();
+    } else if (nb_sprites < _sprites_pos.size()) {
+        for (size_t i = _sprites_pos.size(); i > nb_sprites; --i)
+            _sprites_pos.pop_back();
+    }
+}
+
+void ResourceNode::lowerQuantity(size_t to_lower)
+{
+    if (to_lower > _quantity)
+        _quantity = 0;
+    else
+        _quantity -= to_lower;
+    updateQuantity(_quantity);
 }
 
 resource_e ResourceNode::getType(void) const

@@ -10,11 +10,14 @@
 
     #include <SFML/Graphics/Texture.hpp>
     #include <SFML/Graphics/Sprite.hpp>
+    #include <string>
 
 namespace gui {
 namespace visual {
 
 struct Drawable {
+    Drawable() = default;
+    Drawable(const std::string&, float scale = 1.0f);
     sf::Sprite sprite;
     sf::Texture texture;
 };
