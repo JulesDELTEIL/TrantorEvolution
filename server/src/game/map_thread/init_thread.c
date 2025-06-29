@@ -59,7 +59,7 @@ static density_t init_density(int map_dens)
     return all_dens;
 }
 
-static void *get_total(int *total, int width, int height, tile_t **tiles)
+static void get_total(int *total, int width, int height, tile_t **tiles)
 {
     int area = width * height;
     int x = 0;
