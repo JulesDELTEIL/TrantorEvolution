@@ -17,8 +17,8 @@ def create_configuration():
         "-n": "",
         "-p": ""
     }
-    if len(sys.argv) < ARG_NB:
-        raise Exception("Too few arguments")
+    if len(sys.argv) != ARG_NB:
+        raise Exception("USAGE: ./zappy_ai -p port -h ip -n team_name")
     for i in range(1, ARG_NB - 1, 2):
         if not sys.argv[i] in conf.keys():
             raise Exception("Flag mismatch")
