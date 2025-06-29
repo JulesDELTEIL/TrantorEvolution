@@ -30,13 +30,13 @@ class Communication():
     def _get_client_num(self, client_num_str: str) -> None:
         client_num_strip = client_num_str.strip()
         if not client_num_strip.isdigit():
-            raise Exception("Invalid client number left from server: %s" % client_num_str)
+            raise ValueError("Invalid client number left from server: %s" % client_num_str)
         self._player_num = int(client_num_strip)
 
     def _get_dimension(self, dimension_str: str) -> None:
         dimension_split = dimension_str.split()
         if len(dimension_split) != 2 or not all([val.isdigit() for val in dimension_split]):
-            raise Exception("Invalid dimension from server: %s" % dimension_str)
+            raise ValueError("Invalid dimension from server: %s" % dimension_str)
         dimension_tuple = (int(dimension_split[X]), int(dimension_split[Y]))
         self._dimension = dimension_tuple
 
