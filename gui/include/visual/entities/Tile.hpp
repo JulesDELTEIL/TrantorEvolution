@@ -10,37 +10,64 @@
 
     #include <memory>
     #include <map>
+    #include <SFML/System/Clock.hpp>
     #include <SFML/Graphics/Rect.hpp>
     #include <SFML/Graphics/RenderTarget.hpp>
 
     #include "map_tools.h"
+    #include "visual/visual.hpp"
     #include "visual/Drawable.hpp"
+    #include "visual/entities/Background.hpp"
 
 namespace gui {
 namespace visual {
 
-   #define BIOME_TEXTURE_PATH "assets/tiles/BiomTiles.png"
-   #define NB_TYPE 3
+    #define BIOME_TEXTURE_PATH "assets/tiles/BiomTiles.png"
+    #define NB_TYPE 3
+    #define ANIMATION_CLOCK 500
+    #define ANIMATION_GAP 288
+    #define SKIN_GAP 96
+    #define TILE_SKIN_NB 3
+    #define GET_ANIMATION(clock) (clock / ANIMATION_CLOCK % 2)
+
+    #define GET_TILE_BOT(top) (sf::Vector2f(top.x, top.y + TILE_SIZE / 4))
+    #define GET_TILE_LEFT(top) (sf::Vector2f(top.x - TILE_SIZE / 2, top.y + TILE_SIZE / 6))
+    #define GET_TILE_RIGHT(top) (sf::Vector2f(top.x + TILE_SIZE / 2, top.y + TILE_SIZE / 6))
 
 static const std::map<biome_e, sf::IntRect> TEXTURE_RECT = {
-    {SEA, sf::IntRect(64, 0, 32, 32)},
-    {FOREST, sf::IntRect(128, 0, 32, 32)},
-    {MOUNTAINS, sf::IntRect(96, 0, 32, 32)},
-    {PLAINS, sf::IntRect(0, 0, 32, 32)},
-    {BEACH, sf::IntRect(32, 0, 32, 32)},
-    {EMPTY, sf::IntRect(160, 0, 32, 32)}
+    {PLAINS, sf::IntRect(0, 0, TILE_SIZE, TILE_SIZE)},
+    {BEACH, sf::IntRect(96, 0, TILE_SIZE, TILE_SIZE)},
+    {SEA, sf::IntRect(192, 0, TILE_SIZE, TILE_SIZE)},
+    {MOUNTAINS, sf::IntRect(288, 0, TILE_SIZE, TILE_SIZE)},
+    {FOREST, sf::IntRect(384, 0, TILE_SIZE, TILE_SIZE)},
+    {EMPTY, sf::IntRect(480, 0, TILE_SIZE, TILE_SIZE)}
 };
 
 class Tile {
     public:
-        Tile(const sf::Vector2f& pos, biome_e type);
+        Tile(std::reference_wrapper<Drawable> biome, const sf::Vector2f& pos, biome_e type);
         ~Tile() = default;
 
-        void draw(sf::RenderTarget&);
+        void draw(sf::RenderTarget&, const sf::Clock&);
+
+        ResourceGroup getResources(void) const;
+        void updateResource(resource_e, size_t);
+        void lowerResource(resource_e, size_t);
+
+        sf::Vector2f getPos(void) const;
+        biome_e getBiome(void) const;
 
     private:
-        Drawable _biome;
+        std::reference_wrapper<Drawable> _biome;
+        uint8_t _tile_skin;
+        sf::Vector2f _pos;
+        biome_e _type;
 
+        ResourceGroup _resources = {
+            {FOOD, 0}, {WOOD, 0}, {STONE, 0},
+            {CLAY, 0}, {METAL, 0}, {OIL, 0},
+            {ANTI_MATTER, 0}
+        };
 };
 
 } // visual

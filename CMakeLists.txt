@@ -12,5 +12,5 @@ set(PROJECT_OUT "${PROJECT_SOURCE_DIR}")
 
 ########## BINARYs ##########
 add_subdirectory(server)
-#add_subdirectory(gui)
-#add_subdirectory(ia)
+add_subdirectory(gui)
+add_subdirectory(ia)

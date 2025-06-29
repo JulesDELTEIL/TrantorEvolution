@@ -12,6 +12,7 @@
     #include <SFML/Graphics/RenderTarget.hpp>
 
     #include "visual/entities/ResourceNode.hpp"
+    #include "visual/entities/IncantationObject.hpp"
 
     #include "map_tools.h"
     #include "visual/Drawable.hpp"
@@ -21,8 +22,8 @@
 namespace gui {
 namespace visual {
 
-    #define NB_TRANTORS 6
-    #define TRANTOR_SCALE 0.08f
+    #define NB_TRANTORS 3
+    #define TRANTOR_SCALE 0.3f
 
 enum BodyAnimIndex {
     IDLE = 0,
@@ -30,9 +31,12 @@ enum BodyAnimIndex {
     COLLECT,
     PICKAXE,
     AXE,
+    DEATH,
+    INCANT,
+    WATERING
 };
 
-    #define NB_BODY_ANIM 5
+    #define NB_BODY_ANIM 8
 
 static const std::vector<AnimationInfos> BODY_ANIM_INFOS = {
     {"assets/trantorians/body/Idle_Side-Sheet.png", {64, 64}, {4, 1}, {0, 0}, 0.3, sf::Clock()},
@@ -41,27 +45,44 @@ static const std::vector<AnimationInfos> BODY_ANIM_INFOS = {
     {"assets/trantorians/body/Crush_Side-Sheet.png", {64, 64}, {8, 1}, {0, 0}, 0.2, sf::Clock()},
     {"assets/trantorians/body/Slice_Side-Sheet.png", {64, 64}, {8, 1}, {0, 0}, 0.2, sf::Clock()},
     {"assets/trantorians/body/Death_Side-Sheet.png", {64, 64}, {8, 1}, {0, 0}, 0.2, sf::Clock()},
+    {"assets/trantorians/body/Evolution-Sheet.png", {64, 64}, {2, 1}, {0, 0}, 0.4, sf::Clock()},
+    {"assets/trantorians/body/Watering-Sheet.png", {64, 64}, {8, 1}, {0, 0}, 0.2, sf::Clock()},
 };
 
 class Trantorian {
     public:
-        Trantorian(const sf::Vector2f& pos, const sf::Vector2i& pos_in_map, size_t level);
+        Trantorian(const sf::Vector2f& pos, const sf::Vector2i& pos_in_map,
+            size_t level, size_t team_id, const sf::Color& color);
         ~Trantorian() = default;
 
-        void draw(sf::RenderTarget&);
-        void move(int index, const sf::Vector2f&, float);
+        void draw(sf::RenderTarget&, const sf::Clock&);
 
-        void changeTile(const sf::Vector2f&, float);
-        void collect(const std::vector<std::shared_ptr<ResourceNode>>&, float);
+        void changeTile(const sf::Vector2f&, float, const sf::Clock&);
+        void collect(const std::shared_ptr<ResourceNode>&, float, const sf::Clock& clock);
+        void startIncantation(const std::shared_ptr<IncantationObject>&,
+            float, const sf::Clock&);
+        void endIncantation(const sf::Vector2f&,
+            float, const sf::Clock&);
+        void layAnEgg();
+        void laidAnEgg();
+        ResourceGroup getInventory(void) const;
+        void updateInventory(size_t, size_t, size_t, size_t, size_t, size_t, size_t);
+        sf::Vector2f getBodyPos(const size_t&);
 
         sf::Vector2i map_pos;
+        sf::Vector2f actual_pos;
         size_t lvl;
+        size_t team;
     private:
+        void move(int index, const sf::Vector2f&, float, const sf::Clock&);
+
         std::vector<Drawable> _body;
         std::vector<BodyAnimIndex> _type;
         std::vector<Direction> _body_direction;
         std::vector<Animation> _body_animation;
         std::vector<Movement> _body_movement;
+
+        ResourceGroup _inventory;
 };
 
 } // visual
