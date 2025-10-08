@@ -2,6 +2,9 @@
 
 TrantorEvolution est un projet visant à simuler la vie sur une planète: `Trantor`.
 
+![Zappy main photo](./doc/zappy_main.png)
+![Zappy gif demo](./doc/demo.gif)
+
 ## Sommaire
 
 [1. Fonctionnement](#1-fonctionnement)
